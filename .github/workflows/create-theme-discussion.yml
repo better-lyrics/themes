@@ -50,7 +50,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          REPO_NODE_ID=$(gh api graphql -f query='query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { id } }' -f owner='${{ github.repository_owner }}' -f name='${{ github.event.repository.name }}' --jq '.data.repository.id')
+          REPO_NODE_ID=$(gh repo view --json id --jq '.id')
           echo "node_id=$REPO_NODE_ID" >> $GITHUB_OUTPUT
 
       - name: Create discussions for new themes
