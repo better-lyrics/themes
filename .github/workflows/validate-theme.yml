@@ -4,9 +4,16 @@ on:
   pull_request:
     paths:
       - 'index.json'
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: 'Theme repo to validate (e.g. username/theme-name)'
+        required: true
+        type: string
 
 jobs:
-  validate:
+  validate-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -30,7 +37,11 @@ jobs:
       - name: Get new themes
         id: new-themes
         run: |
-          jq -r '.themes[].repo' base/index.json 2>/dev/null | sort > old_themes.txt || echo "" > old_themes.txt
+          if [ -f base/index.json ]; then
+            jq -r '.themes[].repo' base/index.json 2>/dev/null | sort > old_themes.txt || touch old_themes.txt
+          else
+            touch old_themes.txt
+          fi
           jq -r '.themes[].repo' index.json | sort > new_themes.txt
           NEW_THEMES=$(comm -13 old_themes.txt new_themes.txt)
           echo "themes<<EOF" >> $GITHUB_OUTPUT
@@ -48,7 +59,6 @@ jobs:
             [ -z "$repo" ] && continue
             echo "Validating: $repo"
 
-            # Clone the theme repo
             git clone --depth 1 "https://github.com/$repo.git" theme-repo 2>/dev/null
 
             if [ ! -d "theme-repo" ]; then
@@ -57,7 +67,6 @@ jobs:
               continue
             fi
 
-            # Run validation
             OUTPUT=$(npx create-bl-theme@latest validate theme-repo 2>&1) || HAS_ERRORS=true
             RESULTS="$RESULTS\n### $repo\n\`\`\`\n$OUTPUT\n\`\`\`\n"
 
@@ -92,3 +101,21 @@ jobs:
       - name: Fail if errors
         if: steps.validate.outputs.has_errors == 'true'
         run: exit 1
+
+  validate-manual:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate theme
+        run: |
+          echo "Validating: ${{ inputs.theme }}"
+
+          git clone --depth 1 "https://github.com/${{ inputs.theme }}.git" theme-repo
+
+          npx create-bl-theme@latest validate theme-repo
