@@ -37,8 +37,8 @@ jobs:
       - name: Get new themes
         id: new-themes
         run: |
-          if [ -f base/index.json ]; then
-            jq -r '.themes[].repo' base/index.json 2>/dev/null | sort > old_themes.txt || touch old_themes.txt
+          if [ -f base/index.json ] && jq empty base/index.json 2>/dev/null; then
+            jq -r '.themes[].repo' base/index.json | sort > old_themes.txt
           else
             touch old_themes.txt
           fi

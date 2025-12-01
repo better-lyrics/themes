@@ -23,8 +23,9 @@ jobs:
       - name: Get new themes
         id: new-themes
         run: |
-          git show HEAD~1:index.json > old_index.json 2>/dev/null || echo '{"themes":[]}' > old_index.json
-          jq -r '.themes[].repo' old_index.json 2>/dev/null | sort > old_themes.txt || touch old_themes.txt
+          git show HEAD~1:index.json > old_index.json 2>/dev/null
+          jq empty old_index.json 2>/dev/null || echo '{"themes":[]}' > old_index.json
+          jq -r '.themes[].repo' old_index.json | sort > old_themes.txt
           jq -r '.themes[].repo' index.json | sort > new_themes.txt
           NEW_THEMES=$(comm -13 old_themes.txt new_themes.txt | tr '\n' ' ')
           echo "themes=$NEW_THEMES" >> $GITHUB_OUTPUT
