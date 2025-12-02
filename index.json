@@ -1,3 +1,7 @@
 {
-  "themes": [{ "repo": "boidushya/apple-music" }, { "repo": "ramansg/Minimal" }, { "repo": "tposejank/blyrics-am-theme" }]
+  "themes": [
+    { "repo": "boidushya/apple-music" },
+    { "repo": "ramansg/Minimal" },
+    { "repo": "tposejank/blyrics-am-theme" }
+  ]
 }
