@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "updated": "2025-12-06T03:29:00Z",
+  "themes": [
+    {
+      "repo": "ramansg/Minimal",
+      "id": "minimal",
+      "version": "1.5.3",
+      "commit": "59d87ee821d746c5bc4ac107b70f6c5171f1c4a4",
+      "integrity": "sha256-e55d00f9ab5829fb154426bb3010db2d1fb40a03cdc460e6319dbbe5c85fdf17",
+      "locked": "2025-12-06T03:29:00Z"
+    },
+    {
+      "repo": "tposejank/blyrics-am-theme",
+      "id": "apple-music",
+      "version": "1.0.0",
+      "commit": "f45aa7f3d40cd52a37f51f1ce1358864771122e7",
+      "integrity": "sha256-d0a41ef2b74bfccf48e77477cb7d281ba75fc3b60fce1e33d1f9111fb961efd5",
+      "locked": "2025-12-06T03:29:00Z"
+    }
+  ]
+}

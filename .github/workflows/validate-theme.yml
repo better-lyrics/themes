@@ -161,6 +161,85 @@ jobs:
 
           echo "has_errors=$HAS_ERRORS" >> $GITHUB_OUTPUT
 
+      - name: Vendor new themes
+        id: vendor
+        if: steps.new-themes.outputs.themes != '' && steps.check-duplicates.outputs.has_errors != 'true' && steps.validate.outputs.has_errors != 'true'
+        run: |
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          VENDORED_THEMES=""
+
+          # Initialize lockfile if it doesn't exist
+          if [ ! -f index.lock.json ]; then
+            echo '{"version":1,"updated":"'"$TIMESTAMP"'","themes":[]}' > index.lock.json
+          fi
+
+          while IFS= read -r repo; do
+            [ -z "$repo" ] && continue
+            echo "Vendoring: $repo"
+
+            git clone --depth 1 "https://github.com/$repo.git" theme-repo 2>/dev/null
+            if [ ! -d "theme-repo" ]; then
+              echo "Failed to clone $repo"
+              continue
+            fi
+
+            cd theme-repo
+            COMMIT=$(git rev-parse HEAD)
+            cd ..
+
+            THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
+            VERSION=$(jq -r '.version' theme-repo/metadata.json)
+
+            # Create vendor directory
+            mkdir -p "themes/$THEME_ID"
+
+            # Copy essential files
+            cp theme-repo/metadata.json "themes/$THEME_ID/"
+            [ -f theme-repo/style.rics ] && cp theme-repo/style.rics "themes/$THEME_ID/"
+            [ -f theme-repo/style.css ] && cp theme-repo/style.css "themes/$THEME_ID/"
+            [ -f theme-repo/shader.json ] && cp theme-repo/shader.json "themes/$THEME_ID/"
+            [ -f theme-repo/DESCRIPTION.md ] && cp theme-repo/DESCRIPTION.md "themes/$THEME_ID/"
+            [ -f theme-repo/cover.png ] && cp theme-repo/cover.png "themes/$THEME_ID/"
+            [ -d theme-repo/images ] && cp -r theme-repo/images "themes/$THEME_ID/"
+
+            # Calculate integrity hash
+            INTEGRITY=$(find "themes/$THEME_ID" -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+
+            # Add to lockfile
+            jq --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
+               --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
+               '.themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t}] | .updated = $t' \
+               index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+            VENDORED_THEMES="$VENDORED_THEMES$THEME_ID (v$VERSION)\n"
+
+            rm -rf theme-repo
+          done <<< "${{ steps.new-themes.outputs.themes }}"
+
+          # Format lockfile
+          jq -S . index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+          echo "vendored<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$VENDORED_THEMES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Commit vendored themes
+        if: steps.vendor.outputs.vendored != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add themes/ index.lock.json
+          git commit -m "chore: vendor new themes"
+          git push
+
+      - name: Generate App Token
+        id: app-token
+        if: steps.new-themes.outputs.themes != ''
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Comment on PR
         if: steps.new-themes.outputs.themes != ''
         uses: actions/github-script@v7
@@ -169,17 +248,24 @@ jobs:
           DUPLICATE_ERRORS: ${{ steps.check-duplicates.outputs.has_errors }}
           VALIDATE_RESULTS: ${{ steps.validate.outputs.results }}
           VALIDATE_ERRORS: ${{ steps.validate.outputs.has_errors }}
+          VENDORED: ${{ steps.vendor.outputs.vendored }}
         with:
+          github-token: ${{ steps.app-token.outputs.token }}
           script: |
             const duplicateResults = (process.env.DUPLICATE_RESULTS || '').trim();
             const duplicateErrors = process.env.DUPLICATE_ERRORS === 'true';
             const validateResults = (process.env.VALIDATE_RESULTS || '').trim();
             const validateErrors = process.env.VALIDATE_ERRORS === 'true';
+            const vendored = (process.env.VENDORED || '').trim();
             const hasErrors = duplicateErrors || validateErrors;
 
             let body = '## Theme Validation Results\n\n';
             if (duplicateResults) body += duplicateResults + '\n\n';
             if (validateResults) body += validateResults + '\n\n';
+            if (vendored && !hasErrors) {
+              body += '### Vendored Themes\n\n';
+              body += vendored.split('\n').filter(Boolean).map(t => `- ${t}`).join('\n') + '\n\n';
+            }
             body += hasErrors ? 'Please fix the errors above.' : 'All checks passed.';
 
             await github.rest.issues.createComment({
