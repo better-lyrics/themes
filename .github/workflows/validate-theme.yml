@@ -149,7 +149,7 @@ jobs:
               continue
             fi
 
-            OUTPUT=$(npx create-bl-theme@latest validate theme-repo 2>&1) || HAS_ERRORS=true
+            OUTPUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g') || HAS_ERRORS=true
             RESULTS="$RESULTS\n### $repo\n\`\`\`\n$OUTPUT\n\`\`\`\n"
 
             rm -rf theme-repo
@@ -205,10 +205,14 @@ jobs:
             # Calculate integrity hash
             INTEGRITY=$(find "themes/$THEME_ID" -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
-            # Add to lockfile
+            # Update or add to lockfile (upsert by repo)
             jq --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
                --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
-               '.themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t}] | .updated = $t' \
+               'if (.themes | map(.repo) | index($repo)) then
+                  .themes = [.themes[] | if .repo == $repo then {repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t} else . end]
+                else
+                  .themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t}]
+                end | .updated = $t' \
                index.lock.json > tmp.json && mv tmp.json index.lock.json
 
             VENDORED_THEMES="$VENDORED_THEMES$THEME_ID (v$VERSION)\n"
@@ -216,8 +220,8 @@ jobs:
             rm -rf theme-repo
           done <<< "${{ steps.new-themes.outputs.themes }}"
 
-          # Format lockfile
-          jq -S . index.lock.json > tmp.json && mv tmp.json index.lock.json
+          # Deduplicate lockfile (keep last occurrence per repo) and format
+          jq -S '.themes = (.themes | group_by(.repo) | map(.[-1]))' index.lock.json > tmp.json && mv tmp.json index.lock.json
 
           echo "vendored<<EOF" >> $GITHUB_OUTPUT
           echo -e "$VENDORED_THEMES" >> $GITHUB_OUTPUT
