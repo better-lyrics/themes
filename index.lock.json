@@ -31,8 +31,16 @@
       "locked": "2025-12-05T22:37:26Z",
       "repo": "adaliea/blyrics-colorful-vocals",
       "version": "1.0.0"
+    },
+    {
+      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
+      "id": "colorful-vocals",
+      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
+      "locked": "2025-12-05T22:42:25Z",
+      "repo": "adaliea/blyrics-colorful-vocals",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2025-12-05T22:37:26Z",
+  "updated": "2025-12-05T22:42:25Z",
   "version": 1
 }
