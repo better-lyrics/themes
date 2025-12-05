@@ -1,6 +1,14 @@
 {
   "themes": [
     {
+      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
+      "id": "colorful-vocals",
+      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
+      "locked": "2025-12-05T22:53:04Z",
+      "repo": "adaliea/blyrics-colorful-vocals",
+      "version": "1.0.0"
+    },
+    {
       "commit": "59d87ee821d746c5bc4ac107b70f6c5171f1c4a4",
       "id": "minimal",
       "integrity": "sha256-e55d00f9ab5829fb154426bb3010db2d1fb40a03cdc460e6319dbbe5c85fdf17",
@@ -15,48 +23,8 @@
       "locked": "2025-12-06T03:29:00Z",
       "repo": "tposejank/blyrics-am-theme",
       "version": "1.0.0"
-    },
-    {
-      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
-      "id": "colorful-vocals",
-      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
-      "locked": "2025-12-05T22:33:17Z",
-      "repo": "adaliea/blyrics-colorful-vocals",
-      "version": "1.0.0"
-    },
-    {
-      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
-      "id": "colorful-vocals",
-      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
-      "locked": "2025-12-05T22:37:26Z",
-      "repo": "adaliea/blyrics-colorful-vocals",
-      "version": "1.0.0"
-    },
-    {
-      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
-      "id": "colorful-vocals",
-      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
-      "locked": "2025-12-05T22:42:25Z",
-      "repo": "adaliea/blyrics-colorful-vocals",
-      "version": "1.0.0"
-    },
-    {
-      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
-      "id": "colorful-vocals",
-      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
-      "locked": "2025-12-05T22:43:31Z",
-      "repo": "adaliea/blyrics-colorful-vocals",
-      "version": "1.0.0"
-    },
-    {
-      "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
-      "id": "colorful-vocals",
-      "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
-      "locked": "2025-12-05T22:48:14Z",
-      "repo": "adaliea/blyrics-colorful-vocals",
-      "version": "1.0.0"
     }
   ],
-  "updated": "2025-12-05T22:48:14Z",
+  "updated": "2025-12-05T22:53:04Z",
   "version": 1
 }
