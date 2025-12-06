@@ -146,41 +146,33 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git config user.name "Harmonizer[bot]"
-          git config user.email "better-lyrics-themes[bot]@users.noreply.github.com"
+          git config user.email "2418247+better-lyrics-harmonizer[bot]@users.noreply.github.com"
           git add themes/ index.lock.json
           git commit -m "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
           git push
 
       - name: Report success status
         if: success()
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          curl -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ steps.payload.outputs.repo }}/statuses/${{ steps.payload.outputs.commit }}" \
+          curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
             -d '{
-              "state": "success",
-              "context": "Better Lyrics Registry",
-              "description": "Published v${{ steps.metadata.outputs.version }}",
-              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+              "repo": "${{ steps.payload.outputs.repo }}",
+              "commit": "${{ steps.payload.outputs.commit }}",
+              "success": true,
+              "description": "Published v${{ steps.metadata.outputs.version }}"
             }'
 
       - name: Report failure status
         if: failure()
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          ERROR="${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}"
-
-          curl -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/${{ steps.payload.outputs.repo }}/statuses/${{ steps.payload.outputs.commit }}" \
-            -d "{
-              \"state\": \"failure\",
-              \"context\": \"Better Lyrics Registry\",
-              \"description\": \"$ERROR\",
-              \"target_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
-            }"
+          curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
+            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "repo": "${{ steps.payload.outputs.repo }}",
+              "commit": "${{ steps.payload.outputs.commit }}",
+              "success": false,
+              "description": "${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}"
+            }'
