@@ -5,7 +5,7 @@
   "creators": ["boidushya"],
   "minVersion": "2.0.5.6",
   "hasShaders": true,
-  "version": "1.1.6",
+  "version": "1.1.7",
   "tags": ["dark", "minimal", "colorful"],
   "images": ["1.png", "2.png", "3.png"]
 }
