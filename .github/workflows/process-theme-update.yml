@@ -1,0 +1,186 @@
+name: Process Theme Update
+
+on:
+  repository_dispatch:
+    types: [theme-update]
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate payload
+        id: payload
+        run: |
+          REPO="${{ github.event.client_payload.repo }}"
+          COMMIT="${{ github.event.client_payload.commit }}"
+
+          if [ -z "$REPO" ] || [ -z "$COMMIT" ]; then
+            echo "error=Missing repo or commit in payload" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "repo=$REPO" >> $GITHUB_OUTPUT
+          echo "commit=$COMMIT" >> $GITHUB_OUTPUT
+
+      - name: Check theme is registered
+        id: check-registered
+        run: |
+          REPO="${{ steps.payload.outputs.repo }}"
+
+          if ! jq -e --arg repo "$REPO" '.themes[] | select(.repo == $repo)' index.json > /dev/null; then
+            echo "error=Theme $REPO is not registered in index.json" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "Theme $REPO is registered"
+
+      - name: Clone theme repo
+        id: clone
+        run: |
+          REPO="${{ steps.payload.outputs.repo }}"
+          COMMIT="${{ steps.payload.outputs.commit }}"
+
+          git clone "https://github.com/$REPO.git" theme-repo
+          cd theme-repo
+          git checkout "$COMMIT"
+          cd ..
+
+          echo "Cloned $REPO at $COMMIT"
+
+      - name: Get theme metadata
+        id: metadata
+        run: |
+          THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
+          VERSION=$(jq -r '.version' theme-repo/metadata.json)
+
+          echo "id=$THEME_ID" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Check version increment
+        id: version-check
+        run: |
+          REPO="${{ steps.payload.outputs.repo }}"
+          NEW_VERSION="${{ steps.metadata.outputs.version }}"
+
+          # Get current version from lockfile
+          CURRENT_VERSION=$(jq -r --arg repo "$REPO" '.themes[] | select(.repo == $repo) | .version // "0.0.0"' index.lock.json)
+
+          echo "Current version: $CURRENT_VERSION"
+          echo "New version: $NEW_VERSION"
+
+          # Compare versions using semver
+          if ! npx semver "$NEW_VERSION" -r ">$CURRENT_VERSION" > /dev/null 2>&1; then
+            echo "error=Version $NEW_VERSION is not greater than $CURRENT_VERSION" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          echo "Version check passed: $CURRENT_VERSION -> $NEW_VERSION"
+
+      - name: Validate theme
+        id: validate
+        run: |
+          OUTPUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -qi "error\|failed"; then
+            echo "error=Theme validation failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Vendor theme
+        id: vendor
+        run: |
+          THEME_ID="${{ steps.metadata.outputs.id }}"
+          VERSION="${{ steps.metadata.outputs.version }}"
+          REPO="${{ steps.payload.outputs.repo }}"
+          COMMIT="${{ steps.payload.outputs.commit }}"
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          # Remove old vendored files
+          rm -rf "themes/$THEME_ID"
+          mkdir -p "themes/$THEME_ID"
+
+          # Copy essential files
+          cp theme-repo/metadata.json "themes/$THEME_ID/"
+          [ -f theme-repo/style.rics ] && cp theme-repo/style.rics "themes/$THEME_ID/"
+          [ -f theme-repo/style.css ] && cp theme-repo/style.css "themes/$THEME_ID/"
+          [ -f theme-repo/shader.json ] && cp theme-repo/shader.json "themes/$THEME_ID/"
+          [ -f theme-repo/DESCRIPTION.md ] && cp theme-repo/DESCRIPTION.md "themes/$THEME_ID/"
+          [ -f theme-repo/cover.png ] && cp theme-repo/cover.png "themes/$THEME_ID/"
+          [ -d theme-repo/images ] && cp -r theme-repo/images "themes/$THEME_ID/"
+
+          # Calculate integrity hash
+          INTEGRITY=$(find "themes/$THEME_ID" -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+
+          # Update lockfile
+          jq --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
+             --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
+             '.themes = [.themes[] | if .repo == $repo then {repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t} else . end] | .updated = $t' \
+             index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+          # Format lockfile
+          jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+          echo "Vendored $THEME_ID v$VERSION"
+
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Commit changes
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          git config user.name "Harmonizer[bot]"
+          git config user.email "better-lyrics-themes[bot]@users.noreply.github.com"
+          git add themes/ index.lock.json
+          git commit -m "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
+          git push
+
+      - name: Report success status
+        if: success()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ steps.payload.outputs.repo }}/statuses/${{ steps.payload.outputs.commit }}" \
+            -d '{
+              "state": "success",
+              "context": "Better Lyrics Registry",
+              "description": "Published v${{ steps.metadata.outputs.version }}",
+              "target_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }'
+
+      - name: Report failure status
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          ERROR="${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}"
+
+          curl -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ steps.payload.outputs.repo }}/statuses/${{ steps.payload.outputs.commit }}" \
+            -d "{
+              \"state\": \"failure\",
+              \"context\": \"Better Lyrics Registry\",
+              \"description\": \"$ERROR\",
+              \"target_url\": \"https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}\"
+            }"

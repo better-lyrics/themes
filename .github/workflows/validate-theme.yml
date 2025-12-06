@@ -78,29 +78,56 @@ jobs:
           fi
           jq -r '.themes[].repo' index.json | sort > new_themes.txt
           NEW_THEMES=$(comm -13 old_themes.txt new_themes.txt)
+          REMOVED_THEMES=$(comm -23 old_themes.txt new_themes.txt)
           echo "themes<<EOF" >> $GITHUB_OUTPUT
           echo "$NEW_THEMES" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "removed<<EOF" >> $GITHUB_OUTPUT
+          echo "$REMOVED_THEMES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-      - name: Collect existing theme IDs
+      - name: Clean up removed themes
+        id: cleanup
+        if: steps.new-themes.outputs.removed != ''
+        run: |
+          REMOVED_THEMES=""
+
+          while IFS= read -r repo; do
+            [ -z "$repo" ] && continue
+            echo "Removing: $repo"
+
+            # Find theme ID from lockfile
+            if [ -f index.lock.json ]; then
+              THEME_ID=$(jq -r --arg repo "$repo" '.themes[] | select(.repo == $repo) | .id' index.lock.json)
+
+              if [ -n "$THEME_ID" ] && [ "$THEME_ID" != "null" ]; then
+                # Remove vendored files
+                if [ -d "themes/$THEME_ID" ]; then
+                  rm -rf "themes/$THEME_ID"
+                  echo "Removed themes/$THEME_ID"
+                fi
+
+                # Remove from lockfile
+                jq --arg repo "$repo" '.themes = [.themes[] | select(.repo != $repo)]' index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+                REMOVED_THEMES="$REMOVED_THEMES$THEME_ID\n"
+              fi
+            fi
+          done <<< "${{ steps.new-themes.outputs.removed }}"
+
+          echo "removed<<EOF" >> $GITHUB_OUTPUT
+          echo -e "$REMOVED_THEMES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Collect existing theme IDs from lockfile
         id: existing-ids
         run: |
           EXISTING_IDS=""
-          if [ -f base/index.json ] && jq empty base/index.json 2>/dev/null; then
-            while IFS= read -r repo; do
-              [ -z "$repo" ] && continue
-              git clone --depth 1 "https://github.com/$repo.git" existing-theme 2>/dev/null || continue
-              if [ -f "existing-theme/metadata.json" ]; then
-                ID=$(jq -r '.id // empty' existing-theme/metadata.json)
-                if [ -n "$ID" ]; then
-                  EXISTING_IDS="$EXISTING_IDS$ID\n"
-                fi
-              fi
-              rm -rf existing-theme
-            done < <(jq -r '.themes[].repo' base/index.json)
+          if [ -f base/index.lock.json ] && jq empty base/index.lock.json 2>/dev/null; then
+            EXISTING_IDS=$(jq -r '.themes[].id' base/index.lock.json | tr '\n' '\n')
           fi
           echo "ids<<EOF" >> $GITHUB_OUTPUT
-          echo -e "$EXISTING_IDS" >> $GITHUB_OUTPUT
+          echo "$EXISTING_IDS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Check for duplicate theme IDs
@@ -239,14 +266,14 @@ jobs:
 
       - name: Generate App Token for vendor commit
         id: app-token-vendor
-        if: steps.vendor.outputs.vendored != ''
+        if: steps.vendor.outputs.vendored != '' || steps.cleanup.outputs.removed != ''
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Commit vendored themes
-        if: steps.vendor.outputs.vendored != ''
+      - name: Commit theme changes
+        if: steps.vendor.outputs.vendored != '' || steps.cleanup.outputs.removed != ''
         continue-on-error: true
         env:
           GH_TOKEN: ${{ steps.app-token-vendor.outputs.token }}
@@ -254,19 +281,33 @@ jobs:
           git config user.name "Harmonizer[bot]"
           git config user.email "better-lyrics-themes[bot]@users.noreply.github.com"
           git add themes/ index.lock.json
-          git commit -m "chore: vendor new themes"
+
+          # Build commit message
+          MSG=""
+          if [ -n "${{ steps.vendor.outputs.vendored }}" ]; then
+            MSG="chore: vendor new themes"
+          fi
+          if [ -n "${{ steps.cleanup.outputs.removed }}" ]; then
+            if [ -n "$MSG" ]; then
+              MSG="$MSG and remove old themes"
+            else
+              MSG="chore: remove themes"
+            fi
+          fi
+
+          git commit -m "$MSG"
           git push
 
       - name: Generate App Token for comments
         id: app-token-comment
-        if: steps.new-themes.outputs.themes != ''
+        if: steps.new-themes.outputs.themes != '' || steps.cleanup.outputs.removed != ''
         uses: actions/create-github-app-token@v1
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
       - name: Comment on PR
-        if: steps.new-themes.outputs.themes != ''
+        if: steps.new-themes.outputs.themes != '' || steps.cleanup.outputs.removed != ''
         uses: actions/github-script@v7
         env:
           DUPLICATE_RESULTS: ${{ steps.check-duplicates.outputs.results }}
@@ -274,6 +315,7 @@ jobs:
           VALIDATE_RESULTS: ${{ steps.validate.outputs.results }}
           VALIDATE_ERRORS: ${{ steps.validate.outputs.has_errors }}
           VENDORED: ${{ steps.vendor.outputs.vendored }}
+          REMOVED: ${{ steps.cleanup.outputs.removed }}
         with:
           github-token: ${{ steps.app-token-comment.outputs.token }}
           script: |
@@ -282,14 +324,19 @@ jobs:
             const validateResults = (process.env.VALIDATE_RESULTS || '').trim();
             const validateErrors = process.env.VALIDATE_ERRORS === 'true';
             const vendored = (process.env.VENDORED || '').trim();
+            const removed = (process.env.REMOVED || '').trim();
             const hasErrors = duplicateErrors || validateErrors;
 
-            let body = '## Theme Validation Results\n\n';
+            let body = '## Theme Changes\n\n';
             if (duplicateResults) body += duplicateResults + '\n\n';
             if (validateResults) body += validateResults + '\n\n';
             if (vendored && !hasErrors) {
-              body += '### Vendored Themes\n\n';
+              body += '### Added Themes\n\n';
               body += vendored.split('\n').filter(Boolean).map(t => `- ${t}`).join('\n') + '\n\n';
+            }
+            if (removed) {
+              body += '### Removed Themes\n\n';
+              body += removed.split('\n').filter(Boolean).map(t => `- ${t}`).join('\n') + '\n\n';
             }
             body += hasErrors ? 'Please fix the errors above.' : 'All checks passed.';
 
