@@ -11,8 +11,17 @@ jobs:
       contents: write
 
     steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -134,23 +143,10 @@ jobs:
 
           echo "Vendored $THEME_ID v$VERSION"
 
-      - name: Generate App Token
-        id: app-token
-        uses: actions/create-github-app-token@v1
-        with:
-          app-id: ${{ secrets.APP_ID }}
-          private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - name: Commit changes
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           git config user.name "better-lyrics-harmonizer[bot]"
           git config user.email "2418247+better-lyrics-harmonizer[bot]@users.noreply.github.com"
-
-          # Configure git to use app token for push
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git"
-
           git add themes/ index.lock.json
           git commit -m "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
           git push
