@@ -145,7 +145,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git config user.name "Harmonizer[bot]"
+          git config user.name "better-lyrics-harmonizer[bot]"
           git config user.email "2418247+better-lyrics-harmonizer[bot]@users.noreply.github.com"
           git add themes/ index.lock.json
           git commit -m "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
@@ -162,7 +162,8 @@ jobs:
               "commit": "${{ steps.payload.outputs.commit }}",
               "installationId": ${{ github.event.client_payload.installationId }},
               "success": true,
-              "description": "Published v${{ steps.metadata.outputs.version }}"
+              "description": "Published v${{ steps.metadata.outputs.version }}",
+              "targetUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }'
 
       - name: Report failure status
@@ -176,5 +177,6 @@ jobs:
               "commit": "${{ steps.payload.outputs.commit }}",
               "installationId": ${{ github.event.client_payload.installationId }},
               "success": false,
-              "description": "${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}"
+              "description": "${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}",
+              "targetUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }'
