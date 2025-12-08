@@ -48,15 +48,13 @@ jobs:
       - name: Commit formatting
         if: steps.format.outputs.changed == 'true'
         continue-on-error: true
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "chore: format index.json [skip ci]"
+          repo: ${{ github.event.pull_request.head.repo.full_name }}
+          branch: ${{ github.event.pull_request.head.ref }}
         env:
-          GH_TOKEN: ${{ steps.app-token-commit.outputs.token }}
-        run: |
-          git config user.name "better-lyrics-harmonizer[bot]"
-          git config user.email "248079304+better-lyrics-harmonizer[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.event.pull_request.head.repo.full_name }}.git"
-          git add index.json
-          git commit -m "chore: format index.json"
-          git push
+          GITHUB_TOKEN: ${{ steps.app-token-commit.outputs.token }}
 
       - name: Checkout base
         uses: actions/checkout@v4
@@ -276,29 +274,13 @@ jobs:
       - name: Commit theme changes
         if: steps.vendor.outputs.vendored != '' || steps.cleanup.outputs.removed != ''
         continue-on-error: true
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "${{ steps.vendor.outputs.vendored != '' && steps.cleanup.outputs.removed != '' && 'chore: vendor new themes and remove old themes [skip ci]' || steps.vendor.outputs.vendored != '' && 'chore: vendor new themes [skip ci]' || 'chore: remove themes [skip ci]' }}"
+          repo: ${{ github.event.pull_request.head.repo.full_name }}
+          branch: ${{ github.event.pull_request.head.ref }}
         env:
-          GH_TOKEN: ${{ steps.app-token-vendor.outputs.token }}
-        run: |
-          git config user.name "better-lyrics-harmonizer[bot]"
-          git config user.email "248079304+better-lyrics-harmonizer[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/${{ github.event.pull_request.head.repo.full_name }}.git"
-          git add themes/ index.lock.json
-
-          # Build commit message
-          MSG=""
-          if [ -n "${{ steps.vendor.outputs.vendored }}" ]; then
-            MSG="chore: vendor new themes"
-          fi
-          if [ -n "${{ steps.cleanup.outputs.removed }}" ]; then
-            if [ -n "$MSG" ]; then
-              MSG="$MSG and remove old themes"
-            else
-              MSG="chore: remove themes"
-            fi
-          fi
-
-          git commit -m "$MSG"
-          git push
+          GITHUB_TOKEN: ${{ steps.app-token-vendor.outputs.token }}
 
       - name: Generate App Token for comments
         id: app-token-comment

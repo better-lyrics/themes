@@ -143,13 +143,14 @@ jobs:
 
           echo "Vendored $THEME_ID v$VERSION"
 
-      - name: Commit changes
-        run: |
-          git config user.name "better-lyrics-harmonizer[bot]"
-          git config user.email "248079304+better-lyrics-harmonizer[bot]@users.noreply.github.com"
-          git add themes/ index.lock.json
-          git commit -m "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
-          git push
+      - name: Commit and push changes
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }} [skip ci]"
+          repo: ${{ github.repository }}
+          branch: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
       - name: Report success status
         if: success()
