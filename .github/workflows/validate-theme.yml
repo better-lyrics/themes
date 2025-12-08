@@ -45,6 +45,10 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
+      - name: Stage formatting changes
+        if: steps.format.outputs.changed == 'true'
+        run: git add index.json
+
       - name: Commit formatting
         if: steps.format.outputs.changed == 'true'
         continue-on-error: true
@@ -270,6 +274,10 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Stage theme changes
+        if: steps.vendor.outputs.vendored != '' || steps.cleanup.outputs.removed != ''
+        run: git add themes/ index.lock.json
 
       - name: Commit theme changes
         if: steps.vendor.outputs.vendored != '' || steps.cleanup.outputs.removed != ''

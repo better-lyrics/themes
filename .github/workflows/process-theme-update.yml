@@ -143,6 +143,9 @@ jobs:
 
           echo "Vendored $THEME_ID v$VERSION"
 
+      - name: Stage changes
+        run: git add themes/ index.lock.json
+
       - name: Commit and push changes
         uses: planetscale/ghcommit-action@v0.2.19
         with:
