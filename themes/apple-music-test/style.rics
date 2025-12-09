@@ -53,7 +53,7 @@ $menu-padding: 0 10px;
 :root {
   --blyrics-lyric-active-color: color(display-p3 1 1 1 /1);
   --blyrics-lyric-inactive-color: color(display-p3 1 1 1 /0.2);
-  --blyrics-font-family: "Papyrus", "SF Pro", system-ui, "Segoe UI",
+  --blyrics-font-family: "MySanFrancisco", "SF Pro", system-ui, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol";
   --blyrics-lyric-scroll-duration: 400ms;
@@ -71,7 +71,7 @@ $menu-padding: 0 10px;
 }
 
 * {
-  font-family: "Papyrus", "SF Pro", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  font-family: "MySanFrancisco", "SF Pro", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
 }
 
 ytmusic-player-page:before {
@@ -233,7 +233,7 @@ ytmusic-player[is-mweb-player-page-modernization-enabled]:not([video-mode]) {
 
 #blyrics-title,
 #blyrics-artist {
-  font-family: "Papyrus", "SF Pro", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "MySanFrancisco", "SF Pro", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 2rem !important;
 }
 
