@@ -1,0 +1,52 @@
+:root {
+    /* Looks too wide with the default value, so
+    I shrink it a bit to make it look nicely */
+    --blyrics-fullscreen-panel-size: 60%
+}
+
+/* Makes the track cover fills up the entire screen height */
+ytmusic-player-page:not([is-mweb-modernization-enabled]):not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] #player.ytmusic-player-page {
+    position: fixed;
+    max-width: none !important;
+    width: 50%;
+    height: 100%;
+    background: transparent;
+    box-shadow: none;
+    z-index: 0;
+}
+
+/* Makes the image of the track cover fills the entire element and with a nice opacity gradient */
+ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] #thumbnail > img {
+    object-fit: cover !important;
+    mask-image: linear-gradient(
+        to right, 
+        rgba(0, 0, 0, 1),
+        rgba(0, 0, 0, 0)
+    );
+}
+
+/* So that there won't be this black gradient from the top showing up whenever you paused the track on fullscreen */
+ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] .song-media-controls.ytmusic-player {
+    background: transparent;
+}
+
+/* Puts the track info on top left screen
+(originally was put on the bottom left but it was covered by the player controls so I moved it) */
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened] #blyrics-song-info {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    background-color: rgba(0, 0, 0, .5);
+    backdrop-filter: blur(1rem);
+    left: 3rem;
+    top: 3rem;
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+/* Basically make it left-handed */
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened] #blyrics-song-info > p {
+    text-align: left;
+}
