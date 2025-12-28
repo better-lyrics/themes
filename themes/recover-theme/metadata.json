@@ -1,0 +1,11 @@
+{
+    "id": "recover-theme",
+    "title": "reCover",
+    "description": "Literally makes the track cover fills up the entire screen on Full-screen mode",
+    "creators": ["mukeenanyafiq"],
+    "minVersion": "2.0.5.6",
+    "hasShaders": false,
+    "version": "1.0.1",
+    "tags": ["minimal"],
+    "images": ["1.png", "2.png", "3.png", "4.png"]
+}

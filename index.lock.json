@@ -31,8 +31,16 @@
       "locked": "2025-12-06T03:29:00Z",
       "repo": "tposejank/blyrics-am-theme",
       "version": "1.0.0"
+    },
+    {
+      "commit": "9d031289dd9ee5692f5bc2c124021e84faf15b21",
+      "id": "recover-theme",
+      "integrity": "sha256-4095e8862361955bee6dc7b74786da72792bd26903a3a833751f370d7be25080",
+      "locked": "2025-12-28T16:11:36Z",
+      "repo": "mukeenanyafiq/recover-theme",
+      "version": "1.0.1"
     }
   ],
-  "updated": "2025-12-23T11:43:16Z",
+  "updated": "2025-12-28T16:11:36Z",
   "version": 1
 }
