@@ -19,7 +19,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]):not([is-mweb-modernizat
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] #player.ytmusic-player-page {
     position: fixed;
     max-width: none !important;
-    width: 865px;
+    width: 56.2%;
     background: transparent;
     box-shadow: none;
     z-index: 0;
