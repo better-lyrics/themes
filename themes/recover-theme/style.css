@@ -1,31 +1,33 @@
 :root {
     /* Looks too wide with the default value, so
     I shrink it a bit to make it look nicely */
-    --blyrics-fullscreen-panel-size: 57.5%;
+    --blyrics-fullscreen-panel-size: 52vw;
 
     /* Made a slight change to the extension code
     to make this property possible */
     --ytmusic-album-art-img-size: 1280;
 
+    --yt-album-fullscreen-size: 100vh;
     --yt-album-size: 500px;
 }
 
+/* Makes the album art bigger on outside fullscreen mode */
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([is-mweb-modernization-enabled]):not([video-mode]) #player.ytmusic-player-page {
     max-width: var(--yt-album-size) !important;
     overflow: hidden;
 }
 
-/* Makes the track cover fills up the entire screen height */
+/* Makes the album art fills up the entire screen height */
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] #player.ytmusic-player-page {
     position: fixed;
-    max-width: none !important;
-    width: 56.2%;
+    max-width: var(--yt-album-fullscreen-size) !important;
+    height: var(--yt-album-fullscreen-size);
     background: transparent;
     box-shadow: none;
     z-index: 0;
 }
 
-/* Makes the image of the track cover fills the entire element and with a nice opacity gradient */
+/* Makes the image of the album art fills the entire element and with a nice opacity gradient */
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode])[player-fullscreened] #thumbnail > img {
     mask-image: linear-gradient(
         to right, 
@@ -60,7 +62,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened] #b
     text-align: left;
     font-family: var(--blyrics-translated-font-family);
     font-weight: 500;
-    line-height: 1.25;
+    line-height: 1.2;
     text-shadow: 0 0 1rem hsl(0, 0%, 0%, .5);
 }
 
