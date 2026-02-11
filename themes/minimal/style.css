@@ -1,5 +1,5 @@
 
-/* 2026-02-07T19-32-13 v1.6.5                       */
+/* 2026-02-11T21-50-06 v1.6.6                       */
 
 /* This theme explicitly changes/disables lyrics    */
 /* swipe animation. To bring back default lyric     */ 
@@ -271,7 +271,26 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 }
 
 /* ## SECTION-7 - Before Lyrics are Loaded ######## */
-/* Loader styles */
+
+@keyframes blyrics-shimmer {
+    0% { 
+        opacity: 1;
+    }
+    100% { 
+        opacity: 0.5;
+    }
+}
+
+@keyframes blyrics-spin {
+	0% {
+		transform: none;
+	}
+	to {
+		transform: none;
+	}
+}
+
+/* # SECTION-7.1 - Loader styles ################## */
 #blyrics-loader {
 	display: none !important;
 	flex-direction: row;
@@ -285,18 +304,18 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	z-index: 10;
 	pointer-events: none;
 	transition:
-        height 0.3s ease-out,
-        opacity 0.3s ease-out,
-        padding-top 0.3s ease-out,
-        display 0.3s allow-discrete 0.6;
+        height 0.2s ease-out,
+        opacity 0.2s ease-out,
+     /*   padding-top 0.2s ease-out, */
+        display 0.2s allow-discrete 0.4s;
 }
 
 #blyrics-loader[no-sync-available]:not([active]) {
 	transition:
-        height 0.3s ease-in 3s,
-		opacity 0.3s ease-in 3s,
-		padding-top 0.3s ease-in 3s,
-        display 0.3s allow-discrete 3.3s;
+        height 0.2s ease-in 3s,
+		opacity 0.2s ease-in 3s,
+	/*	padding-top 0.2s ease-in 3s, */
+        display 0.2s allow-discrete 3.2s;
 }
 
 #blyrics-loader[active] {
@@ -305,9 +324,9 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	opacity: 1;
     animation: none;
     transition:
-		height 0.3s ease-out,
-		opacity 0.3s ease-out,
-		padding-top 0.3s ease-out,
+		height 0.2s ease-out,
+		opacity 0.2s ease-out,
+	/*	padding-top 0.2s ease-out, */
 		display 0s allow-discrete;
 }
 
@@ -315,7 +334,7 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	#blyrics-loader[active] {
 		opacity: 0;
 		height: 0;
-		padding-top: 0;
+		padding-top: initial;
 	}
 }
 
@@ -334,10 +353,10 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	background-repeat: no-repeat;
     animation: blyrics-shimmer 1s infinite alternate var(--transition-curve);
 	transition:
-		width 0.3s ease,
-		height 0.3s ease,
-		min-width 0.3s ease,
-		min-height 0.3s ease;
+		width 0.2s ease,
+		height 0.2s ease,
+		min-width 0.2s ease,
+		min-height 0.2s ease;
 }
 
 #blyrics-loader:after {
@@ -347,14 +366,14 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	font-weight: 700;
 	line-height: 1.5;
 	text-align: center;
-	white-space: pre;
+	white-space: pre-wrap;
 	align-items: center;
 	color: var(--base-white);
 	isolation: isolate;
     z-index: 1;
 	transition:
-		opacity 0.5s ease-in-out,
-		font-size 0.3s ease-out; 
+		opacity 0.2s ease-in-out,
+		font-size 0.2s ease-out; 
 }
 
 #blyrics-loader:not([no-sync-available]):after {
@@ -390,9 +409,9 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 #blyrics-loader[no-sync-available][active] {
 	max-height: 5rem;
 	transition:
-		height 0.3s linear 0s,
-		opacity 0.3s linear 0s,
-		padding-top 0.3s linear 0s;
+		height 0.2s linear 0s,
+	/*	padding-top 0.2s linear 0s, */
+        opacity 0.2s linear 0s;
 }
 
 #blyrics-loader[no-sync-available]:after {
@@ -401,22 +420,88 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 	color: var(--base-white);
 }
 
-@keyframes blyrics-shimmer {
-    0% { 
-        opacity: 1;
-    }
-    100% { 
-        opacity: 0.5;
-    }
+/* ad-overlay */
+/* # Section 7.2 - Ad-overlay ########## */
+
+#blyrics-ad-overlay {
+  display: none !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+  height: 0;
+  max-height: 100%;
+  opacity: 0;
+  z-index: 10;
+  overflow: hidden;
+  transition:
+    height 0.2s ease-in,
+    opacity 0.2s ease-in,
+    display 0.2s allow-discrete 0.2s;
 }
 
-@keyframes blyrics-spin {
-	0% {
-		transform: none;
-	}
-	to {
-		transform: none;
-	}
+#blyrics-ad-overlay[active],
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+  display: flex !important;
+  height: 100%;
+  opacity: 1;
+  overflow: visible;
+  transition:
+    height 0.2s ease-out,
+    opacity 0.2s ease-out,
+    display 0s allow-discrete;
+}
+
+@starting-style {
+  #blyrics-ad-overlay[active],
+  :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+#blyrics-ad-overlay:before {
+  animation: blyrics-shimmer 1s infinite alternate var(--transition-curve);
+  background: url(https://better-lyrics.boidu.dev/icon-512.png);
+  background-position: 50%;
+  background-size: cover;
+  content: "";
+  display: block;
+  height: 3rem;
+  width: 3rem;
+  
+}
+
+#blyrics-ad-overlay:after {
+  content: var(--blyrics-text-ad-playing, "[elevator music]");
+  font-family: var(--blyrics-font-family);
+  font-size: 2rem;
+  font-weight: 700;
+  isolation: isolate;
+  line-height: 1.5;
+  white-space: pre;
+  z-index: 1;
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--base-white);
+  animation: blyrics-shimmer 1s infinite alternate var(--transition-curve);
+  will-change: auto;
+}
+
+#blyrics-ad-overlay[active] ~ #blyrics-wrapper,
+#blyrics-ad-overlay[active] ~ .blyrics-container,
+#blyrics-ad-overlay[active] ~ #blyrics-loader,
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-wrapper,
+:has(ytmusic-player-bar[is-advertisement]) .blyrics-container,
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
+  display: none !important;
+}
+
+#tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]
+  tp-yt-paper-spinner-lite {
+  display: none !important;
 }
 
 /* ## SECTION-8 - Player Background ############### */
@@ -468,35 +553,30 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   .background-gradient.ytmusic-player-page,
 ytmusic-player-page[is-mweb-modernization-enabled]
   .background-thumbnail.ytmusic-player-page {
-  display: none;
+    display: none;
 }
 
 /* ## SECTION-11 - Portrait Window Lyrics Background*/
-ytmusic-player-page[is-mweb-modernization-enabled]
-  .background-gradient.ytmusic-player-page,
+
 ytmusic-player-page[is-mweb-modernization-enabled]
   .background-image.ytmusic-player-page,
 ytmusic-player-page[is-mweb-modernization-enabled]
-  .background-thumbnail.ytmusic-player-page,
-ytmusic-player-page[is-mweb-modernization-enabled]
   .side-panel.ytmusic-player-page {
-  backdrop-filter: none;
-  background: none;
-  filter: none;
+    background: none;
 }
 ytmusic-player-page[is-mweb-modernization-enabled]
   .background-gradient.ytmusic-player-page,
 ytmusic-player-page[is-mweb-modernization-enabled]
   .background-thumbnail.ytmusic-player-page {
-  display: none;
+    display: none;
 }
 ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
   #side-panel.ytmusic-player-page,
 ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
   #top-player-bar.ytmusic-player-page {
-  backdrop-filter: none;
-  background: transparent !important;
-  filter: none;
+    backdrop-filter: none;
+    background: transparent !important;
+    border: 0;
 }
 #tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"],
 [is-mweb-modernization-enabled] #player-bar-background.ytmusic-app-layout,
@@ -506,10 +586,15 @@ ytmusic-app-layout .ytmusic-app[is-mweb-modernization-enabled] {
   backdrop-filter: none;
   background: none !important;
   filter: none !important;
+  border: 0;
 }
 [is-mweb-modernization-enabled] .blyrics-container::after,
 [is-mweb-modernization-enabled] .blyrics-container::before {
   opacity: 0;
+}
+[is-mweb-modernization-enabled][player-page-open] #guide,
+ytmusic-app-layout[is-mweb-modernization-enabled][player-page-open]>[slot=nav-bar] {
+  display: none;
 }
 
 /* ## SECTION-12 - Player bar background ########## */
@@ -1114,3 +1199,11 @@ ytmusic-player-page[is-mweb-modernization-enabled]
 .blyrics-container[data-no-lyrics="true"]:hover .blyrics--line::after {
   content: "No lyrics found";
 }
+
+/* ### Section 30 - Smooth sidebar entry ########## */
+#contentContainer
+{
+transition: transform 0.2s ease-out !important;
+}
+
+

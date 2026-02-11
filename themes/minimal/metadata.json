@@ -5,7 +5,7 @@
   "creators": ["semicolonhope"],
   "minVersion": "2.0.0.0",
   "hasShaders": false,
-  "version": "1.6.5",
+  "version": "1.6.6",
   "tags": ["minimal"],
   "images": ["1.png", "2.png", "3.png", "4.png", "5.png"]
 }
