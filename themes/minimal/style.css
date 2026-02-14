@@ -1,5 +1,5 @@
 
-/* 2026-02-11T21-50-06 v1.6.6                       */
+/* 2026-02-14T18-29-48 v1.6.7                       */
 
 /* This theme explicitly changes/disables lyrics    */
 /* swipe animation. To bring back default lyric     */ 
@@ -598,37 +598,47 @@ ytmusic-app-layout[is-mweb-modernization-enabled][player-page-open]>[slot=nav-ba
 }
 
 /* ## SECTION-12 - Player bar background ########## */
-#layout:not([player-ui-state="PLAYER_PAGE_OPEN"])
-  #player-bar-background.ytmusic-app-layout:not([player-fullscreened]),
-#layout:not([player-ui-state="PLAYER_PAGE_OPEN"])
-  ytmusic-player-bar:not([player-fullscreened]) {
-  background: transparent;
+
+ytmusic-player-bar {
+  background: transparent !important;
 }
-#layout:not([player-ui-state="PLAYER_PAGE_OPEN"])
-  ytmusic-player-bar:not([player-fullscreened]) {
-  backdrop-filter: var(--background-image-filter);
-}
-#layout:not([player-ui-state="PLAYER_PAGE_OPEN"])
-  #player-bar-background.ytmusic-app-layout:not([player-fullscreened])::before {
-  background: var(--blyrics-background-img, var(--ytmusic-brand-background-solid));
-  background-position: 50%;
-  background-size: cover;
-  content: "";
-  inset: 0;
-  position: absolute;
-  transition: var(--background-image-transition);
-  z-index: -1;
-}
-ytmusic-app-layout[is-mweb-modernization-enabled]:not(
-    [player-ui-state="PLAYER_BAR_ONLY"]
-  )
-  [slot="player-page"]
-  ~ #player-bar-background.ytmusic-app-layout::before {
+ytmusic-player-bar:not([player-fullscreened]),
+ytmusic-app-layout:not([player-ui-state="FULLSCREEN"]) #player-bar-background {
   backdrop-filter: none !important;
-  background: none !important;
-  content: none !important;
 }
 
+#player-bar-background {
+  overflow: hidden;
+  background-color: transparent;
+  /* background: black !important; */
+}
+
+ytmusic-app-layout[player-ui-state="PLAYER_BAR_ONLY"]
+  #player-bar-background::before {
+  content: "";
+  position: absolute;
+  inset: -90px;
+  /* background-color: black; */
+  background: var(
+    --blyrics-background-img,
+    var(--ytmusic-brand-background-solid)
+  );
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: var(--background-image-transition);
+  filter: var(--background-image-filter);
+  z-index: 0;
+}
+
+ytmusic-app-layout:not[player-ui-state="PLAYER_BAR_ONLY"]
+  #player-bar-background::before {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+#player-bar-background.ytmusic-app-layout {
+  background: transparent;
+}
 /* ## SECTION-13 - Bottom Left Nofication ######### */
 tp-yt-paper-toast #close-button {
   display: none;
@@ -1106,8 +1116,8 @@ tp-yt-paper-tab {
   text-transform: uppercase;
   box-shadow: inset 0 -0.8px 0 0 transparent;
   transition:
-    color 0.4s ease-out,
-    box-shadow 0.4s ease-out;
+    color 0.2s ease-out,
+    box-shadow 0.2s ease-out;
 }
 
 [is-mweb-modernization-enabled][player-ui-state="MINIPLAYER_IN_PLAYER_PAGE"]
@@ -1126,6 +1136,9 @@ tp-yt-paper-tab .tab-content:hover {
 tp-yt-paper-tab:not(.iron-selected) .tab-content:hover {
   color: #fff;
   background: oklch(1 0 0 / 0.1);
+}
+[is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"] tp-yt-paper-tab.iron-selected.ytmusic-player-page {
+    color: rgba(255, 255, 255, .7);
 }
 
 [player-ui-state="MINIPLAYER_IN_PLAYER_PAGE"]
@@ -1205,5 +1218,6 @@ ytmusic-player-page[is-mweb-modernization-enabled]
 {
 transition: transform 0.2s ease-out !important;
 }
+
 
 
