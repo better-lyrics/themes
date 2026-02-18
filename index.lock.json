@@ -9,12 +9,12 @@
       "version": "1.0.0"
     },
     {
-      "commit": "c6203a603478b4ce04b3cbddb82afcbf4beae746",
+      "commit": "b51f1bfd5ddc53df076a811485222890e6ab37ff",
       "id": "minimal",
-      "integrity": "sha256-49ae037a312de01ddf1b7ca41e9255a2f5728d9cb9ceaeaa620ff59784bb6c11",
-      "locked": "2026-02-15T20:08:49Z",
+      "integrity": "sha256-1992aae3f24e4a7a94d1737dddedfcf2aca7901aafdbe79d89b7a2ad3fd62164",
+      "locked": "2026-02-18T19:25:35Z",
       "repo": "ramansg/Minimal",
-      "version": "1.6.8"
+      "version": "1.6.9"
     },
     {
       "commit": "f45aa7f3d40cd52a37f51f1ce1358864771122e7",
@@ -41,6 +41,6 @@
       "version": "3.0.3"
     }
   ],
-  "updated": "2026-02-18T01:24:51Z",
+  "updated": "2026-02-18T19:25:35Z",
   "version": 1
 }

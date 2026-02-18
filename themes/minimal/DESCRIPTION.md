@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.6.8)
+# Better Lyrics – Minimal Immersive Theme (v1.6.9)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -153,7 +153,7 @@ No harsh error screens. Just a calm fallback.
 Custom loader system:
 
 * Opacity animation instead of complex shimmer
-* Smooth entry/exit
+* No animations when not in use
 * No logo spinning
 
 ---
@@ -213,8 +213,8 @@ Please report bugs or suggestions on Discord.
 
 ## 🔖 Version
 
-**v1.6.8**
-Last updated: 2026-02-15
+**v1.6.9**
+Last updated: 2026-02-18
 
 ---
 
@@ -455,5 +455,29 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 .blyrics-container>div>div>span>span.blyrics--animating::after,
 .blyrics-container>div>div>span>span.blyrics--animating {
   animation: none;
+}
+```
+
+### Optional Musical Note Plugins
+
+```css
+/* (Optional) To disable musical note animation */
+.blyrics--instrumental-icon {
+  display: none;
+}
+.blyrics--instrumental.blyrics--line::after {
+  content: "♫";
+}
+
+/* (optional) to replace all breaks with musical notes */
+.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5em;
+  line-height: var(--blyrics-line-height);
+}
+.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
+  content: "♫";
+  visibility: visible;
 }
 ```
