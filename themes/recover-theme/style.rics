@@ -1,19 +1,23 @@
 :root {
-    /* Looks too wide with the default value, so I shrink it a bit to make it look nicely */
-    --blyrics-fullscreen-panel-size: 52vw;
-    /* Make the lyric height a bit shorter since seeing a wrapped background line just makes me feel something else */
-    --blyrics-line-height: 1.25;
+    --blyrics-fullscreen-panel-size: 55%; // Looks too wide with the default value, so I shrink it a bit to make it look nicely
+    --blyrics-line-height: 1.25; // Make the lyric height a bit shorter since seeing a wrapped background line just makes me feel something else
+    --blyrics-font-size: 3.25rem; // Make the lyric font size bigger since the default one feels too small, probably side effects after using other themes
+    --blyrics-padding: 1.3rem; // I just discovered this variable lolll i don't actually have to JUST adjust the line height of the lyrics
 
+    /* Quick adjustments to the album cover display */
     --yt-album-fullscreen-size: 100vh;
-    --yt-album-size: 500px;
+    --yt-album-size: 80%;
+    --yt-album-border-radius: .9rem;
 }
 
+/* Core of the album art */
 ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     /* If the currently playing is NOT on video mode */
     &:not([video-mode]) {
         /* Makes the album art bigger on outside fullscreen mode */
         #player.ytmusic-player-page {
             max-width: var(--yt-album-size) !important;
+            border-radius: var(--yt-album-border-radius);
             overflow: hidden;
         }
 
@@ -25,6 +29,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
                 max-width: var(--yt-album-fullscreen-size) !important;
                 height: var(--yt-album-fullscreen-size);
                 background: transparent;
+                border-radius: 0;
                 box-shadow: none;
                 z-index: 0;
             }
@@ -56,37 +61,56 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
             }
         }
     }
-
+    
     /* If the player is on Full-screen mode on everything else */
     &[player-fullscreened] {
-        /* Puts the track info on top left screen
-        (originally was put on the bottom left but it was covered by the player controls so I moved it) */
+        /* Show the track info */
         &:not([blyrics-dfs]) #blyrics-song-info {
             display: flex;
-            flex-direction: column;
-            position: fixed;
-            background-color: rgba(0, 0, 0, .45);
-            backdrop-filter: blur(1rem);
-            left: 2rem;
-            top: 2rem;
-            border-radius: .5rem;
             padding: 1rem 1.25rem;
-            justify-content: flex-end;
-            align-items: flex-start;
         }
-            
-        /* Basically make it left-handed and change the text font to the one being used for the lyrics */
-        #blyrics-song-info > p {
-            text-align: left;
-            font-family: var(--blyrics-translated-font-family);
-            font-weight: 500;
-            line-height: 1.2;
-            text-shadow: 0 0 1rem hsl(0, 0%, 0%, .5);
-        }
+    }
+
+    /* Puts the track info on top left screen (originally was put on the bottom left but it was covered by the player controls so I moved it) */
+    &:not([blyrics-dfs]) #blyrics-song-info {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        background-color: rgba(0, 0, 0, .45);
+        backdrop-filter: blur(1rem);
+        left: 2rem;
+        top: 2rem;
+        border-radius: .5rem;
+        justify-content: flex-end;
+        align-items: flex-start;
+    }
+        
+    /* Basically make it left-handed and change the text font to the one being used for the lyrics */
+    #blyrics-song-info > p {
+        text-align: left;
+        font-family: var(--blyrics-translated-font-family);
+        font-weight: 500;
+        line-height: 1.2;
+        text-shadow: 0 0 1rem hsl(0, 0%, 0%, .5);
     }
 }
 
 /* Add a shadow to each lyric line so it's more readable */
-.blyrics--word {
-    text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .15);
+.blyrics--line {
+    text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .1);
+}
+
+/* Add blur to lyrics */
+.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active) {
+    // Already sung lyrics
+    &:not(.blyrics--active ~ div) {
+        opacity: 0.6;
+        filter: blur(.3rem);
+        transition: 0.5s 0.3s, transform 0.15s var(--blyrics-anim-delay, 0s) !important;
+    }
+
+    // About to be sung lyrics
+    :not(.blyrics--active ~ div) {
+        filter: blur(.05rem);
+    }
 }
