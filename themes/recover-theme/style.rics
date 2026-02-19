@@ -58,6 +58,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
 
                 #player {
                     transition: none;
+                    max-width: var(--yt-album-fullscreen-size) !important;
                 }
             }
         }
