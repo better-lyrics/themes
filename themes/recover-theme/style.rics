@@ -3,6 +3,7 @@
     --blyrics-line-height: 1.25; // Make the lyric height a bit shorter since seeing a wrapped background line just makes me feel something else
     --blyrics-font-size: 3.25rem; // Make the lyric font size bigger since the default one feels too small, probably side effects after using other themes
     --blyrics-padding: 1.3rem; // I just discovered this variable lolll i don't actually have to JUST adjust the line height of the lyrics
+    --blyrics-hover-scale: 1; // Make the lyric line scale up a bit when on hover
 
     /* Quick adjustments to the album cover display */
     --yt-album-fullscreen-size: 100vh;
@@ -100,17 +101,24 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .1);
 }
 
-/* Add blur to lyrics */
-.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active) {
-    // Already sung lyrics
-    &:not(.blyrics--active ~ div) {
-        opacity: 0.6;
-        filter: blur(.3rem);
-        transition: 0.5s 0.3s, transform 0.15s var(--blyrics-anim-delay, 0s) !important;
-    }
+/* Add blur to lyrics and hovering */
+.blyrics-container:has(.blyrics--active) {
+    &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active) {
+        // Already sung lyrics
+        &:not(.blyrics--active ~ .blyrics--line) {
+            opacity: 0.6;
+            filter: blur(.3rem);
+            transition: 0.5s 0.3s, transform 0.15s var(--blyrics-anim-delay, 0s) !important;
+        }
 
-    // About to be sung lyrics
-    :not(.blyrics--active ~ div) {
-        filter: blur(.05rem);
+        // Upcoming lyrics
+        :not(.blyrics--active ~ .blyrics--line) {
+            filter: blur(.05rem);
+        }
+    }
+    
+    & > .blyrics--line:hover {
+        transform: scale(var(--blyrics-hover-scale));
+        transition: all 0.3s ease;
     }
 }
