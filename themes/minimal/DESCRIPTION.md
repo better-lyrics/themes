@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.6.9)
+# Better Lyrics – Minimal Immersive Theme (v1.6.10)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -213,8 +213,8 @@ Please report bugs or suggestions on Discord.
 
 ## 🔖 Version
 
-**v1.6.9**
-Last updated: 2026-02-18
+**v1.6.10**
+Last updated: 2026-02-22
 
 ---
 
@@ -245,6 +245,7 @@ Enjoy the calm.
 ## Plug-in code for converting Karaoke style lyric animation to Opacity-Scroll style
 
 ```css
+
 :root {
   --current-lyric-visibility: 1;
   /* 1 would mean 100%   */
@@ -275,16 +276,16 @@ Enjoy the calm.
   --blyrics-lyric-scroll-duration: 0.5s;
   /* dont change without blyrics-queue-scroll-ms */
 
-  --blyrics-lyric-scroll-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --blyrics-lyric-scroll-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
   /* scroll animation curve */
 
-  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) / 2) var(--blyrics-lyric-scroll-timing-function);
+  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 0.8) var(--blyrics-lyric-scroll-timing-function);
   /* opacity transition time and curve. Opacity changes twice as fast as it scrolls */
 
   --blyrics-scale-transition-duration: var(--blyrics-lyric-scroll-duration);
   --blyrics-lyric-highlight-fade-in-duration: var(--blyrics-lyric-scroll-duration);
   --blyrics-lyric-highlight-fade-out-duration: var(--blyrics-lyric-scroll-duration);
-  --blyrics-scroll-timing-offset: 0.2s;
+  --blyrics-scroll-timing-offset: 0.5s;
   --blyrics-wobble-duration: 0s;
   --blyrics-timing-offset: 0s;
   --blyrics-richsync-timing-offset: 0s;
@@ -306,19 +307,11 @@ blyrics-add-extra-top-padding = true;
 
 /* Override Keyframes */
 @keyframes blyrics-wobble {
-
-  from,
-  to {
-    transform: none;
-  }
+  from, to { transform: none; }
 }
 
 @keyframes blyrics-glow {
-
-  from,
-  to {
-    transform: none;
-  }
+  from, to { transform: none; }
 }
 
 /* Resetting Pseudo-elements and animations */
@@ -368,8 +361,8 @@ blyrics-add-extra-top-padding = true;
   opacity: var(--current-lyric-visibility);
 }
 
-/* Next Lines (Lines after active) */
-#blyrics-wrapper .blyrics-container>div.blyrics--active~div {
+/* Next Lines (Lines strictly after the LAST active line) */
+#blyrics-wrapper .blyrics-container > div.blyrics--active ~ div:where(:not(.blyrics--active):not(:has(~ .blyrics--active))) {
   opacity: var(--next-lyrics-visibility);
 }
 
@@ -440,8 +433,8 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
   opacity: var(--current-lyric-visibility);
 }
 
-/* Not scrolling, target previous lines to active line*/
-#blyrics-wrapper .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling)>div:not(.blyrics--active):not(.blyrics--active ~ div) {
+/* Not scrolling, target previous lines to active line (including finished lines between vocals) */
+#blyrics-wrapper .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling) > div:not(.blyrics--active):not(:where(.blyrics--active ~ div):not(:has(~ .blyrics--active))) {
   opacity: var(--previous-lyrics-visibility);
 }
 
