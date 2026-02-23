@@ -39,8 +39,16 @@
       "locked": "2026-02-06T11:45:56Z",
       "repo": "chengggit/YouTube-Music-Dynamic-Theme",
       "version": "3.0.3"
+    },
+    {
+      "commit": "00124e88fdbcc6c6a3cc01fe96da20dafb3fd0f2",
+      "id": "spotifont",
+      "integrity": "sha256-106824142506941c478fb89def4c6490677be3f31a3a727c41d2cefd16f26785",
+      "locked": "2026-02-23T13:43:36Z",
+      "repo": "mukeenanyafiq/spotifont-theme",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2026-02-23T09:52:13Z",
+  "updated": "2026-02-23T13:43:36Z",
   "version": 1
 }
