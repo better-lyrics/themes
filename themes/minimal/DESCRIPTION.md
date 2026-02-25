@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.6.10)
+# Better Lyrics – Minimal Immersive Theme (v1.6.11)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -9,8 +9,24 @@ This theme removes most lyric swipe/word animations and replaces them with a smo
 > _“Time, Tide, & I wait for nothing.”_
 > 
 > — Boidu _(probably)_
+
+![Performance and Elegance](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/2.png)
+
+## 📖 Table of Contents
+- [✨ Core Philosophy](#-core-philosophy)
+- [🔤 Typography](#-typography)
+- [🎯 Lyrics Behavior](#-lyrics-behavior)
+- [🚫 Animation Changes](#-animation-changes)
+- [🌌 Background System](#-background-system-section-33)
+- [📱 Fullscreen & Portrait Support](#-fullscreen--portrait-support)
+- [🎵 No Lyrics Experience](#-no-lyrics-experience)
+- [📦 Loader & Ad Overlay](#-loader--ad-overlay)
+- [🎨 UI Enhancements](#-ui-enhancements)
+- [⚙ Performance Notes](#-performance-notes)
+- [🛠 Customization Guide](#-customization-guide)
+- [🔌 Standalone Plugins](#-standalone-plugins)
  
-`Plugin codeblock for replacing karaoke with opacity based animation at the end`
+[`Plugin codeblock for replacing karaoke with opacity based animation at the end`](#-standalone-plugins)
 
 ---
 
@@ -44,21 +60,15 @@ To revert to default YouTube font:
 
 ### Visibility Model (Section 3.1)
 
-The theme uses opacity instead of animation emphasis:
+![Edit lyrics' transparency levels](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/1.png)
 
-| Lyric State | Default Opacity |
-|-------------|-----------------|
-| Current     | `1` (100%)      |
-| Previous    | `0.35`          |
-| Next        | `0.02`          |
-
-You can adjust:
+The theme uses opacity instead of animation emphasis. You can adjust the focus intensity by modifying these variables in `:root` (Section 3.1):
 
 ```css
---current-lyric-visibility
---previous-lyrics-visibility
---next-lyrics-visibility
-````
+--current-lyric-visibility: 1;      /* 100% opacity for active line */
+--previous-lyrics-visibility: 0.35; /* 35% opacity for past lines */
+--next-lyrics-visibility: 0.02;     /* 2% opacity for upcoming lines */
+```
 
 This makes it very easy to:
 
@@ -88,6 +98,7 @@ Delete:
 * **Section 3.2**
 * **Section 4**
 * **Section 6**
+* **Section 25**
 
 Then control animations via Better Lyrics settings instead.
 
@@ -160,19 +171,20 @@ Custom loader system:
 
 ## 🎨 UI Enhancements
 
-Includes refined styling for:
+Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
-* Player queue
-* 3-dot menu popup
-* Search box background
-* Queue drag states
-* Toast notifications (auto-dismiss)
-* Player bar transparency
-* Tab headings (underline highlight system)
-* Volume popup rounding
-* Album immersive backgrounds
+![Dynamically Refined Artist Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/3.png)
+* **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll-fading masks.
 
-All adjusted to match the immersive dark aesthetic.
+![Immersive Album Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/4.png)
+* **Immersive Album Pages:** Dynamic background dimming applies beautifully to album and podcast pages.
+
+![Miscellaneous Touches - QoL](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/5.png)
+* **Player Queue:** Sticky headers, custom transparent chip designs, and fixed dragging-state backgrounds.
+* **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
+* **Search & Navigation:** Darker Bauhaus search box backgrounds and customized tab headings with underline highlights.
+* **Notifications:** Auto-dismissing toast notifications that sweep away smoothly.
+* **UI Cleanups:** Hidden scrollbars, transparent player bars, and removed gradient overlays.
 
 ---
 
@@ -213,8 +225,8 @@ Please report bugs or suggestions on Discord.
 
 ## 🔖 Version
 
-**v1.6.10**
-Last updated: 2026-02-22
+**v1.6.11**
+Last updated: 2026-02-25
 
 ---
 
@@ -242,7 +254,12 @@ Enjoy the calm.
 
 ---
 
-## Plug-in code for converting Karaoke style lyric animation to Opacity-Scroll style
+## 🔌 Standalone Plugins
+
+If you prefer using the default Better Lyrics theme but just want to cherry-pick specific features from this Minimal theme, you can copy and paste the standalone code blocks below into your Custom CSS.
+
+### 1. Opacity-Scroll Lyric Animation
+*Replaces default karaoke styles, wobbles, and glows with smooth, opacity-based scrolling.*
 
 ```css
 
@@ -253,7 +270,9 @@ Enjoy the calm.
   /* 0.35 would mean 35% */
   --next-lyrics-visibility: 0.35;
   /* 0.02 would mean 2%  */
-
+  --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
+  --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
+  --translated-lyric-visibility: 0.7; /* also romanized */
   --blyrics-footer-font-family: var(--blyrics-font-family);
   --blyrics-font-weight: 600;
   --blyrics-font-size: 3.5rem;
@@ -378,28 +397,24 @@ blyrics-add-extra-top-padding = true;
   color: var(--base-white);
   font-size: var(--blyrics-translated-font-size);
   line-height: 1.5;
-  opacity: 0.7;
+  opacity: var(--translated-lyric-visibility);
   transition: var(--lyrics-opacity-transition);
 }
 
 #blyrics-wrapper .blyrics-container>div.blyrics--active :is(.blyrics--romanized, .blyrics--translated) {
-  opacity: 0.7;
+  opacity: var(--translated-lyric-visibility);
 }
 
-/* User Scrolling */
-#blyrics-wrapper .blyrics-user-scrolling>div:not(.blyrics--active) {
-  opacity: 0.5;
+/* User Scrolling or Hover */
+#blyrics-wrapper .blyrics-container:is(:hover, .blyrics-user-scrolling) > div:not(.blyrics--active):not(:hover) {
+  opacity: var(--non-hovered-lines-visibility);
   transition: opacity 0.3s ease-out;
 }
 
-/* Hover Effects */
-#blyrics-wrapper .blyrics-container:hover .blyrics--line:not(:hover, .blyrics--active) {
-  opacity: 0.5;
-  transition: opacity 0.3s ease-out;
-}
-
-#blyrics-wrapper .blyrics-container .blyrics--line:hover {
-  opacity: 0.85;
+/* Specific Line Hover */
+#blyrics-wrapper .blyrics-container:is(:hover, .blyrics-user-scrolling) > div:not(.blyrics--active):hover {
+  opacity: var(--hovered-line-visibility);
+  transition: opacity 0.1s ease-out;
 }
 
 /* Unsynced Lyrics */
@@ -433,13 +448,24 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
   opacity: var(--current-lyric-visibility);
 }
 
-/* Not scrolling, target previous lines to active line (including finished lines between vocals) */
-#blyrics-wrapper .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling) > div:not(.blyrics--active):not(:where(.blyrics--active ~ div):not(:has(~ .blyrics--active))) {
+/* Previous Lines Enforcer */
+#blyrics-wrapper .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling):not(:hover) > div:not(.blyrics--active):not(:where(.blyrics--active ~ div):not(:has(~ .blyrics--active))) {
   opacity: var(--previous-lyrics-visibility);
 }
 
-#blyrics-wrapper#blyrics-wrapper>.blyrics-container .blyrics-footer {
-  opacity: 0.87;
+/* Footer's opacity is affected by .blyrics container */
+/* Override for it along with hover implementation  */
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
+    opacity: 1; 
+}
+
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer > * { 
+    opacity: 0.3; 
+    transition: opacity 0.1s ease;
+}
+
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer > *:hover { 
+    opacity: 1;
 }
 
 /* Hardcoding system lyric stylization disabling */
@@ -449,20 +475,24 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 .blyrics-container>div>div>span>span.blyrics--animating {
   animation: none;
 }
+
 ```
 
-### Optional Musical Note Plugins
+### 2. Optional Musical Note Plugins
+*(Optional) To disable musical note animation*
 
 ```css
-/* (Optional) To disable musical note animation */
 .blyrics--instrumental-icon {
   display: none;
 }
 .blyrics--instrumental.blyrics--line::after {
   content: "♫";
 }
+```
 
-/* (optional) to replace all breaks with musical notes */
+*(Optional) to replace all breaks with musical notes*
+
+```css
 .blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break {
   display: inline-flex;
   align-items: center;
