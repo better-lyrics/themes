@@ -13,7 +13,7 @@
     --font-weight-heading: 600;
     --font-settings-heading: "slnt" 0, "wdth" 112.5, "GRAD" 50, "ROND" 0;
     --bg-primary: #000000;
-    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color: rgba(255, 255, 255, 0.2);
     --border-radius-small: 6px;
     --border-radius-large: 12px;
 }
@@ -45,6 +45,11 @@ ytmusic-player-bar {
 ytmusic-player-bar yt-formatted-string {
     font-weight: var(--font-weight-heading) !important;
     font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style player expanding menu */
+ytmusic-player-expanding-menu {
+    background: black !important;
 }
 
 /* style player bar when not in full screen */
@@ -230,14 +235,12 @@ ytmusic-add-to-playlist-renderer
 
 /* style song title */
 #blyrics-title {
-    font-size: 0.9em !important;
     font-weight: var(--font-weight-default) !important;
     font-variation-settings: var(--font-settings-default) !important;
 }
 
 /* style artist name */
 #blyrics-artist {
-    font-size: 0.85em !important;
     font-weight: var(--font-weight-default) !important;
     font-variation-settings: var(--font-settings-default) !important;
 }
@@ -410,6 +413,20 @@ ytmusic-dialog {
     overflow: hidden !important;
 }
 
+/* style share dialog */
+tp-yt-paper-dialog {
+    background: var(--bg-primary) !important;
+    border-radius: var(--border-radius-large) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* style share dialog "Share" title and "Start at" text with wide font */
+yt-share-panel-title-v15-renderer #title,
+yt-start-at-renderer yt-formatted-string {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
 /* style dialog content */
 ytmusic-dialog #content,
 ytmusic-dialog + tp-yt-paper-dialog-scrollable {
@@ -498,7 +515,7 @@ tp-yt-paper-toggle-button #toggleBar {
     height: 22px !important;
     border-radius: 999px !important;
     background: transparent !important;
-    border: 2px solid rgba(255, 255, 255, 0.35) !important;
+    border: 2px solid rgba(255, 255, 255, 1) !important;
     transition: border 0.25s ease !important;
 }
 
