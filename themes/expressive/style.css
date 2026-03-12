@@ -1,0 +1,633 @@
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,slnt,wdth,wght,GRAD,ROND@6..144,-10..0,25..151,1..1000,0..100,0..100&display=swap");
+
+/* ==================== */
+/* GLOBAL CONFIGURATION */
+/* ==================== */
+
+:root {
+    --blyrics-font-family:
+        "Google Sans Flex", var(--noto-sans-universal), sans-serif;
+    --font-family: "Google Sans Flex", var(--noto-sans-universal), sans-serif;
+    --font-weight-default: 500;
+    --font-settings-default: "slnt" 0, "wdth" 87.5, "GRAD" 0, "ROND" 100;
+    --font-weight-heading: 600;
+    --font-settings-heading: "slnt" 0, "wdth" 112.5, "GRAD" 50, "ROND" 0;
+    --bg-primary: #000000;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-radius-small: 6px;
+    --border-radius-large: 12px;
+}
+
+/* ========== */
+/* TYPOGRAPHY */
+/* ========== */
+
+/* apply default typography to all elements */
+* {
+    font-family: var(--font-family) !important;
+    font-optical-sizing: auto;
+    font-weight: var(--font-weight-default);
+    font-style: normal;
+    font-variation-settings: var(--font-settings-default) !important;
+}
+
+/* =================== */
+/* PLAYER BAR (BOTTOM) */
+/* =================== */
+
+/* expand player bar to full width */
+ytmusic-player-bar {
+    width: 100vw !important;
+    left: 0 !important;
+}
+
+/* apply heading font weight to player bar text */
+ytmusic-player-bar yt-formatted-string {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style player bar when not in full screen */
+ytmusic-app:not([player-page-open]) ytmusic-player-bar {
+    background: var(--bg-primary) !important;
+    border-top: 1px solid var(--border-color) !important;
+}
+
+/* make control sections transparent when not in full screen */
+ytmusic-app:not([player-page-open]) ytmusic-player-bar .left-controls,
+ytmusic-app:not([player-page-open]) ytmusic-player-bar .middle-controls,
+ytmusic-app:not([player-page-open]) ytmusic-player-bar .right-controls {
+    background: transparent !important;
+}
+
+/* make fullscreen player bar transparent */
+ytmusic-app ytmusic-player-bar[player-fullscreened],
+ytmusic-app[player-page-open] ytmusic-player-bar[player-fullscreened] {
+    background: transparent !important;
+    border-top: none !important;
+}
+
+/* make fullscreen control sections transparent */
+ytmusic-app ytmusic-player-bar[player-fullscreened] .left-controls,
+ytmusic-app ytmusic-player-bar[player-fullscreened] .middle-controls,
+ytmusic-app ytmusic-player-bar[player-fullscreened] .right-controls,
+ytmusic-app[player-page-open]
+    ytmusic-player-bar[player-fullscreened]
+    .left-controls,
+ytmusic-app[player-page-open]
+    ytmusic-player-bar[player-fullscreened]
+    .middle-controls,
+ytmusic-app[player-page-open]
+    ytmusic-player-bar[player-fullscreened]
+    .right-controls {
+    background: transparent !important;
+}
+
+/* ================= */
+/* FULLSCREEN PLAYER */
+/* ================= */
+
+/* style lyrics title in fullscreen mode */
+ytmusic-player-page[player-fullscreened] #blyrics-title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ===================== */
+/* PLAYER PAGE ALBUM ART */
+/* ===================== */
+
+/* limit album art width and add rounded corners */
+ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not(
+        [blyrics-dfs]
+    ):not([player-ui-state="MINIPLAYER"])
+    #player.ytmusic-player-page,
+ytmusic-player[player-ui-state="FULLSCREEN"],
+ytmusic-player {
+    max-width: 60% !important;
+    border-radius: var(--border-radius-large) !important;
+}
+
+/* ===================== */
+/* PLAYER QUEUE SIDEBAR  */
+/* ===================== */
+
+/* style queue header subtitle */
+ytmusic-queue-header-renderer yt-formatted-string.subtitle {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* remove bottom border from queue items */
+ytmusic-player-queue-item {
+    border-bottom: none !important;
+}
+
+/* style song titles in queue */
+ytmusic-player-queue-item yt-formatted-string.song-title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style selected queue item */
+ytmusic-player-queue-item[selected] {
+    margin: 4px 8px !important;
+    border-radius: 8px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* hide pseudo elements on selected items */
+ytmusic-player-queue-item[selected]::before,
+ytmusic-player-queue-item[selected]::after {
+    display: none !important;
+}
+
+/* ==================== */
+/* PLAYER CONTEXT MENU  */
+/* ==================== */
+
+/* style context menu container */
+ytmusic-menu-popup-renderer tp-yt-paper-listbox#items {
+    padding: 8px !important;
+    border-radius: 10px !important;
+    background: var(--bg-primary) !important;
+}
+
+/* style menu items */
+ytmusic-menu-popup-renderer tp-yt-paper-listbox#items > * {
+    margin: 0 !important;
+    border-radius: var(--border-radius-small) !important;
+}
+
+/* add hover effect to menu items */
+ytmusic-menu-popup-renderer tp-yt-paper-listbox#items > *:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* set consistent height for menu items */
+ytmusic-menu-navigation-item-renderer #navigation-endpoint,
+ytmusic-menu-service-item-renderer,
+ytmusic-toggle-menu-service-item-renderer {
+    min-height: 32px !important;
+    height: 32px !important;
+}
+
+/* set height for download menu item */
+ytmusic-menu-service-item-download-renderer tp-yt-paper-item {
+    --paper-item-min-height: 32px !important;
+}
+
+/* ==================== */
+/* ADD TO PLAYLIST MENU */
+/* ==================== */
+
+/* style playlist menu background */
+ytmusic-add-to-playlist-renderer {
+    background: var(--bg-primary) !important;
+}
+
+/* style top bar text in playlist menu */
+ytmusic-add-to-playlist-renderer .top-bar yt-formatted-string {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style section headings in playlist menu */
+ytmusic-add-to-playlist-renderer yt-formatted-string.section-heading {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style playlist option titles */
+ytmusic-add-to-playlist-renderer
+    #playlists
+    ytmusic-playlist-add-to-option-renderer
+    yt-formatted-string#title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ============= */
+/* BETTER LYRICS */
+/* ============= */
+
+/* style lyrics words */
+.blyrics--word {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style romanized and translated text */
+.blyrics--romanized,
+.blyrics--translated {
+    font-weight: var(--font-weight-default) !important;
+}
+
+/* style song info container */
+#blyrics-song-info {
+    font-variation-settings: var(--font-settings-default) !important;
+}
+
+/* style song title */
+#blyrics-title {
+    font-size: 0.9em !important;
+    font-weight: var(--font-weight-default) !important;
+    font-variation-settings: var(--font-settings-default) !important;
+}
+
+/* style artist name */
+#blyrics-artist {
+    font-size: 0.85em !important;
+    font-weight: var(--font-weight-default) !important;
+    font-variation-settings: var(--font-settings-default) !important;
+}
+
+/* ======== */
+/* HOMEPAGE */
+/* ======== */
+
+/* style carousel shelf header titles */
+ytmusic-carousel-shelf-basic-header-renderer yt-formatted-string.title,
+ytmusic-carousel-shelf-basic-header-renderer yt-formatted-string.title a {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style two row item titles */
+.ytmusic-two-row-item-renderer .title-group yt-formatted-string.title,
+.ytmusic-two-row-item-renderer
+    .title-group
+    yt-formatted-string.title
+    > a.yt-simple-endpoint {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style responsive list item titles */
+.ytmusic-responsive-list-item-renderer
+    .title-column
+    yt-formatted-string.title
+    > a {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style card shelf titles */
+ytmusic-card-shelf-renderer yt-formatted-string.title,
+ytmusic-card-shelf-renderer yt-formatted-string.title a {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style card shelf header titles */
+ytmusic-card-shelf-header-basic-renderer
+    .ytmusicCardShelfHeaderBasicRendererTitle {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style card shelf attributed string titles */
+ytmusic-card-shelf-header-basic-renderer
+    .ytmusicCardShelfHeaderBasicRendererTitle
+    .yt-core-attributed-string {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ================= */
+/* NAVIGATION SIDEBAR */
+/* ================= */
+
+/* style sidebar navigation titles */
+ytmusic-guide-entry-renderer yt-formatted-string.title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ========== */
+/* SEARCH BAR */
+/* ========== */
+
+/* style search suggestion links */
+ytmusic-search-suggestions-section-renderer a.yt-simple-endpoint {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ======================== */
+/* PAGE HEADERS AND SHELVES */
+/* ======================== */
+
+/* style page header titles */
+ytmusic-header-renderer yt-formatted-string.title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style responsive header titles */
+ytmusic-responsive-header-renderer yt-formatted-string.title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style avatar stack text */
+ytmusic-responsive-header-renderer
+    .yt-avatar-stack-view-model__avatar-stack-text {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+    font-size: 1.1em !important;
+}
+
+/* style shelf titles */
+ytmusic-shelf-renderer .header h2.title yt-formatted-string,
+ytmusic-shelf-renderer h2.title yt-formatted-string {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ============ */
+/* CHANNEL PAGE */
+/* ============ */
+
+/* style channel visual header title */
+ytmusic-visual-header-renderer yt-formatted-string.title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ============== */
+/* TAB NAVIGATION */
+/* ============== */
+
+/* style tab content text */
+tp-yt-paper-tab .tab-content {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ============ */
+/* ACCOUNT MENU */
+/* ============ */
+
+/* style account name and channel handle */
+#account-name,
+#channel-handle {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style multi-page menu container */
+ytmusic-multi-page-menu-renderer {
+    background: var(--bg-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 10px !important;
+}
+
+/* style compact link renderers in menu */
+ytmusic-multi-page-menu-renderer #sections ytd-compact-link-renderer {
+    border-radius: var(--border-radius-small) !important;
+}
+
+/* set menu item min height */
+ytmusic-multi-page-menu-renderer tp-yt-paper-item {
+    --paper-item-min-height: 32px !important;
+}
+
+/* add padding to menu sections */
+yt-multi-page-menu-section-renderer {
+    padding: 8px !important;
+}
+
+/* =============== */
+/* SETTINGS DIALOG */
+/* =============== */
+
+/* style dialog container */
+ytmusic-dialog {
+    background: var(--bg-primary) !important;
+    border-radius: var(--border-radius-large) !important;
+    border: 1px solid var(--border-color) !important;
+    overflow: hidden !important;
+}
+
+/* style dialog content */
+ytmusic-dialog #content,
+ytmusic-dialog + tp-yt-paper-dialog-scrollable {
+    background: var(--bg-primary) !important;
+}
+
+/* style settings dialog title */
+ytmusic-settings-page .dialog-title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style settings item titles */
+ytmusic-settings-page ytmusic-setting-boolean-renderer .title,
+ytmusic-settings-page ytmusic-setting-single-option-menu-renderer .title,
+ytmusic-settings-page ytmusic-setting-action-renderer .title,
+ytmusic-settings-page ytmusic-setting-read-only-item-renderer .title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* style settings category collection */
+ytmusic-setting-category-collection-renderer {
+    background: var(--bg-primary) !important;
+}
+
+/* remove borders from category items */
+ytmusic-setting-category-collection-renderer #items > * {
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+/* remove borders from setting renderers */
+ytmusic-setting-single-option-menu-renderer,
+ytmusic-setting-boolean-renderer,
+ytmusic-setting-read-only-item-renderer {
+    border: none !important;
+}
+
+/* remove border and shadow from action buttons */
+ytmusic-setting-action-renderer button.action {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* ================ */
+/* SETTINGS SIDEBAR */
+/* ================ */
+
+/* style category menu container */
+ytmusic-settings-page tp-yt-paper-listbox.category-menu {
+    padding: 6px !important;
+    background: var(--bg-primary) !important;
+}
+
+/* style category menu items */
+ytmusic-settings-page tp-yt-paper-item.category-menu-item {
+    border-radius: var(--border-radius-small) !important;
+    margin: 2px 0 !important;
+    transition: background 0.18s ease !important;
+}
+
+/* add hover effect to category menu items */
+ytmusic-settings-page tp-yt-paper-item.category-menu-item:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* style selected category menu item */
+ytmusic-settings-page tp-yt-paper-item.category-menu-item.iron-selected {
+    background: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* style category menu item titles */
+ytmusic-settings-page .category-menu-item .title {
+    font-weight: var(--font-weight-heading) !important;
+    font-variation-settings: var(--font-settings-heading) !important;
+}
+
+/* ================ */
+/* SETTINGS TOGGLES */
+/* ================ */
+
+/* style toggle bar track */
+tp-yt-paper-toggle-button #toggleBar {
+    width: 40px !important;
+    height: 22px !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+    border: 2px solid rgba(255, 255, 255, 0.35) !important;
+    transition: border 0.25s ease !important;
+}
+
+/* style toggle button handle */
+tp-yt-paper-toggle-button #toggleButton {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 50% !important;
+    top: 5px !important;
+    left: 5px !important;
+    background: rgba(255, 255, 255, 0.45) !important;
+    transform: translateX(0) scale(1) !important;
+    transition:
+        transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+        background 0.25s ease !important;
+}
+
+/* style checked toggle button */
+tp-yt-paper-toggle-button[checked] #toggleButton {
+    transform: translateX(18px) scale(1) !important;
+    background: white !important;
+}
+
+/* add hover effect to toggle button */
+tp-yt-paper-toggle-button:hover #toggleButton {
+    transform: translateX(0) scale(1.12) !important;
+}
+
+/* add hover effect to checked toggle button */
+tp-yt-paper-toggle-button[checked]:hover #toggleButton {
+    transform: translateX(18px) scale(1.12) !important;
+}
+
+/* hide ripple effect on toggles */
+tp-yt-paper-toggle-button tp-yt-paper-ripple,
+tp-yt-paper-toggle-button .paper-ripple {
+    display: none !important;
+}
+
+/* ================== */
+/* SETTINGS DROPDOWNS */
+/* ================== */
+
+/* style dropdown container */
+tp-yt-iron-dropdown #contentWrapper > .dropdown-content {
+    background: var(--bg-primary) !important;
+    border-radius: var(--border-radius-large) !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 4px !important;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* style dropdown listbox */
+tp-yt-iron-dropdown tp-yt-paper-listbox.dropdown-content {
+    background: transparent !important;
+    padding: 4px 0 !important;
+}
+
+/* style dropdown menu items */
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item {
+    position: relative !important;
+    border-radius: var(--border-radius-small) !important;
+    min-height: 32px !important;
+    transition: background 0.15s ease !important;
+    overflow: hidden !important;
+}
+
+/* add hover effect to dropdown items */
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item:hover {
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* style selected/focused dropdown items */
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item.iron-selected,
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item:focus,
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item:focus-visible {
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-radius: var(--border-radius-small) !important;
+    outline: none !important;
+}
+
+/* style dropdown item pseudo element */
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item::before {
+    border-radius: var(--border-radius-small) !important;
+}
+
+/* style dropdown item text */
+tp-yt-iron-dropdown tp-yt-paper-item.menu-item span {
+    background: transparent !important;
+}
+
+/* ===================== */
+/* SETTINGS INPUT FIELDS */
+/* ===================== */
+
+/* style input container */
+tp-yt-paper-input-container {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border-radius: var(--border-radius-small) !important;
+    padding: 6px 10px !important;
+    transition:
+        background 0.18s ease,
+        box-shadow 0.18s ease,
+        transform 0.12s ease !important;
+}
+
+/* hide default input underlines */
+tp-yt-paper-input-container .underline,
+tp-yt-paper-input-container .focused-line,
+tp-yt-paper-input-container .unfocused-line {
+    display: none !important;
+}
+
+/* style input text */
+tp-yt-paper-input-container input {
+    color: white !important;
+    font-size: 13px !important;
+}
+
+/* add hover effect to input container */
+tp-yt-paper-input-container:hover {
+    background: rgba(255, 255, 255, 0.09) !important;
+}
+
+/* style focused input container */
+tp-yt-paper-input-container.iron-input-focus,
+tp-yt-paper-input-container:focus-within {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        0 2px 10px rgba(0, 0, 0, 0.45) !important;
+}
