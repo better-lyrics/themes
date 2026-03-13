@@ -1,6 +1,5 @@
 
-
-/* 2026-03-05T21-09-41 v1.6.12                      */
+/* 2026-03-13T18-11-18 v1.6.13                      */
 
 /* Install from Theme Marketplace to always have    */ 
 /* the latest version!                              */
@@ -33,9 +32,12 @@
 
 /* ## SECTION-2 - WEBSITE-WIDE FONT SETTINGS ###### */
 * {
-  font-family: "Roboto Flex", system-ui, sans-serif, var(--noto-sans-universal) !important;
+  --whole-website-font-family: "Roboto Flex", 
+                               system-ui, sans-serif,
+                               var(--noto-sans-universal);
   /* Font for everthing, delete above line if you   */
   /* want to use YT default                         */
+  font-family: var(--whole-website-font-family) !important;
   font-optical-sizing: auto;
   scrollbar-width: thin;
 }
@@ -49,21 +51,18 @@
   --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
   --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
   --translated-lyric-visibility: 0.7; /* also romanized */
-  --blyrics-font-family:
-    "Roboto Flex", system-ui, sans-serif, var(--noto-sans-universal);
+  --blyrics-font-family: var(--whole-website-font-family);
   --blyrics-footer-font-family: var(--blyrics-font-family);
   --blyrics-font-weight: 600;
   --blyrics-font-size: 3.5rem;
   --blyrics-translated-font-size: 0.6667em;
   --blyrics-line-height: 1.5;
   --blyrics-padding: 0.45em;
-  --base-white: oklch(1 0 0/1);
-  --base-white-half: oklch(1 0 0 / 0.6);
   --blyrics-lyric-inactive-color: oklch(1 0 0/0.35);
-  --blyrics-lyric-active-color: var(--base-white);
+  --blyrics-lyric-active-color: var(--white-1);
   --blyrics-error-color: oklch(0.75 0.25 20);
   --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
-  --blyrics-translated-color: var(--base-white-half);
+  --blyrics-translated-color: var(--white-dot-60);
 
   /*# SECTION-3.2 ################################# */
   --blyrics-lyric-scroll-duration: 0.5s; 
@@ -87,7 +86,6 @@
 
   /*# SECTION-3.3 Background Effects ############## */
   --blyrics-gradient-stops: none;
-  --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
   --background-image-transition: background 3s ease-in-out 5s;
   --blyrics-background-blur: 30px;
   --blyrics-background-saturate: 1.4;
@@ -96,8 +94,23 @@
   --background-image-filter: saturate(var(--blyrics-background-saturate))
   brightness(var(--background-brightness)) contrast(var(--background-contrast))
   blur(var(--blyrics-background-blur));
-  /*# End of SECTION-3.3 ########################## */
+  
+  
+  /*# SECTION-3.4 Custom Variables ################ */
+  --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+  --white-1: oklch(1 0 0 / 1);
+  --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-dot-87: oklch(1 0 0 / 0.87);
+  --white-dot-10: oklch(1 0 0 / 0.10);
+  --black-dot-87: oklch(0 0 0 / 0.87);
+  
+  /* ## End of SECTION-3 ########################## */
+  
+  
+  /* Do not delete the following bracket            */
 }
+
+
 /* ## End of SECTION-3 ############################ */
 
 
@@ -190,14 +203,14 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Text Colors */
 #blyrics-wrapper .blyrics-container > div > span {
-  color: var(--base-white);
+  color: var(--white-1);
 }
 
 /* Translations and Romanization */
 #blyrics-wrapper :is(.blyrics--romanized, .blyrics--translated),
 #blyrics-wrapper .blyrics--romanized,
 #blyrics-wrapper .blyrics--translated {
-  color: var(--base-white);
+  color: var(--white-1);
   font-size: var(--blyrics-translated-font-size);
   line-height: 1.5;
   opacity: var(--translated-lyric-visibility); 
@@ -496,16 +509,16 @@ tp-yt-paper-toast #close-button {
 
 #toast {
   background-color: var(--ytmusic-brand-background-solid);
-  border: 1.5px solid oklch(1 0 0 / 0.1);
+  border: 1.5px solid var(--white-dot-10);
   border-radius: 12px !important;
 }
 
 .yt-spec-button-shape-next--call-to-action-inverse.yt-spec-button-shape-next--text {
-  color: #2b87ff;
+  color: oklch(0.63 0.19 257.14);
 }
 
 .yt-spec-button-shape-next--call-to-action-inverse.yt-spec-button-shape-next--text:hover {
-  background: oklch(from #2b87ff l c h / 0.13);
+  background: oklch(0.63 0.19 257.14 / 0.13);
 }
 
 /* Only target toasts inside the action renderer */
@@ -546,7 +559,7 @@ yt-notification-action-renderer #toast:hover {
 }
 
 #text.yt-notification-action-renderer, #sub-text.yt-notification-action-renderer {
-    color: oklch(1 0 0);
+    color: var(--white-1);
     opacity: 0.87;
 }
 
@@ -656,7 +669,7 @@ ytmusic-popup-container #contentWrapper {
 
 /* ## SECTION-19 - Player Queue Header ############ */
 ytmusic-queue-header-renderer {
-  border: 1.5px solid oklch(1 0 0 / 0.1);
+  border: 1.5px solid var(--white-dot-10);
   border-top: none;
   border-radius: 0px 0px 24px 24px;
   align-items: flex-start;
@@ -685,9 +698,12 @@ ytmusic-queue-header-renderer::before {
 ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"]
   a.ytmusic-chip-cloud-chip-renderer {
   border-radius: 0px 0px 16px 16px;
-  background: oklch(1 0 0 / 0.65);
+  background: var(--white-dot-60);
   padding: 6px;
-  color: oklch(0 0 0 / 0.87);
+  color: var(--black-dot-87);
+}
+ytmusic-chip-cloud-chip-renderer[chip-style=STYLE_TRANSPARENT] a.ytmusic-chip-cloud-chip-renderer:hover {
+    background-color: var(--white-dot-87);
 }
 #tab-renderer
   > div.style-scope.ytmusic-tab-renderer
@@ -701,7 +717,7 @@ ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"]
   margin-left: 5px;
 }
 ytmusic-queue-header-renderer .container-name :is(.title, .subtitle) {
-  color: oklch(1 0 0 / 0.87);
+  color: var(--white-dot-87);
 }
 
 /* ## SECTION-20 - Player Queue ################### */
@@ -986,7 +1002,7 @@ tp-yt-paper-tab {
 :not([is-mweb-modernization-enabled])[player-ui-state="PLAYER_PAGE_OPEN"]
   tp-yt-paper-tab.iron-selected {
   color: #fff;
-  box-shadow: inset 0 -0.8px 0 0 oklch(1 0 0 / 0.6);
+  box-shadow: inset 0 -0.8px 0 0 var(--white-dot-60);
 }
 
 tp-yt-paper-tab .tab-content:hover {
@@ -996,7 +1012,7 @@ tp-yt-paper-tab .tab-content:hover {
 [is-mweb-modernization-enabled] tp-yt-paper-tab .tab-content:hover,
 tp-yt-paper-tab:not(.iron-selected) .tab-content:hover {
   color: #fff;
-  background: oklch(1 0 0 / 0.1);
+  background: var(--white-dot-10);
 }
 [is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"] tp-yt-paper-tab.iron-selected.ytmusic-player-page {
     color: rgba(255, 255, 255, .7);
@@ -1108,8 +1124,8 @@ transition: transform 0.2s ease-out !important;
 
 /* ### Section 32 - Progress bar and knob ######### */
 #hover-time-info.ytmusic-player-bar {
-	background-color: #e3e3e3;
-	color: oklch(0 0 0 / 0.87);
+	background-color: var(--white-dot-87);
+	color: var(--black-dot-87);
 	font-size: 13px;
 	font-weight: 600;
 	padding: 5px 12px;
@@ -1118,17 +1134,41 @@ transition: transform 0.2s ease-out !important;
 	transform: translateX(-50%);
 	box-shadow: 0 4px 12px oklch(0 0 0 / 0.2);
 }
+
 tp-yt-paper-slider {
-	--paper-progress-active-color: var(--base-white);
-	--paper-progress-secondary-color: oklch(1 0 0 / 0.15);
+	--paper-progress-active-color: var(--white-dot-60);
+	--paper-progress-secondary-color: var(--white-dot-10);
 }
+
 #progress-bar.ytmusic-player-bar[focused],
+#progress-bar.ytmusic-player-bar,
+ytmusic-player-bar[player-fullscreened] #progress-bar.ytmusic-player-bar,
 ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar,
 #progress-bar.ytmusic-player-controls {
-	--paper-slider-knob-color: var(--base-white-half);
-	--paper-slider-knob-start-color: var(--base-white-half);
-	--paper-slider-knob-start-border-color: var(--base-white-half);
+	--paper-slider-knob-color: var(--white-dot-60);
+	--paper-slider-knob-start-color: var(--white-dot-60);
+	--paper-slider-knob-start-border-color: var(--white-dot-60);
+    --paper-slider-container-color: var(--white-dot-10);
+    --paper-slider-active-color: var(--paper-progress-active-color);
+    --paper-slider-secondary-color: var(--paper-progress-secondary-color);
 }
+
+#progress-bar.ytmusic-player-bar {
+	--paper-slider-knob-color: transparent;
+    --paper-slider-knob-start-color: transparent;
+    --paper-slider-knob-start-border-color: transparent;
+}
+
+ytmusic-player-bar[is-mweb-player-bar-modernization-enabled] #progress-bar.ytmusic-player-bar, ytmusic-player-bar[is-mweb-player-bar-modernization-enabled] #progress-bar.ytmusic-player-bar[focused] {
+    --paper-slider-disabled-active-color: var(--white-dot-87);
+    --paper-slider-disabled-secondary-color: var(--white-dot-10);
+    --paper-slider-disabled-knob-color: transparent;
+    --paper-slider-container-color: var(--white-dot-10);
+    --paper-slider-knob-color: transparent;
+    --paper-slider-knob-start-color: transparent;
+    --paper-slider-knob-start-border-color: transparent;
+}
+
 .slider-knob-inner.tp-yt-paper-slider {
 	width: calc(100% - 10px) !important;
 	height: calc(100% - 20px) !important;
@@ -1141,3 +1181,21 @@ ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar,
 	margin: auto !important;
 }
 
+.slider-knob.tp-yt-paper-slider {
+  transition: left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: left;
+  transform: translateZ(0);
+}
+
+#primaryProgress.tp-yt-paper-progress,
+#secondaryProgress.tp-yt-paper-progress {
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform;
+}
+
+.time-info.ytmusic-player-bar, 
+.current-time.ytmusic-player-controls, 
+.total-time.ytmusic-player-controls {
+  color: var(--white-dot-87) !important;
+  font-weight: 200 !important;
+} 

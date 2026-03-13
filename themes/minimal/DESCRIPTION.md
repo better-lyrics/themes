@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.6.11)
+# Better Lyrics – Minimal Immersive Theme (v1.6.13)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -44,7 +44,7 @@ Animations are intentionally disabled or simplified for a stable and readable ex
 
 ## 🔤 Typography
 
-- Uses **Roboto Flex** via Google Fonts.
+- Uses **Roboto Flex** via Google Fonts, backed by native system fonts and Noto Sans for universal language and character support.
 - Applies globally across the page (can be removed in Section 2 if you prefer YouTube defaults).
 - Heavy emphasis on:
   - High contrast white text
@@ -76,6 +76,9 @@ This makes it very easy to:
 * Fade surrounding lines more
 * Create a “floating spotlight” effect
 * Prevent accidental reading of next lyrics
+
+### Translations & Romanization
+* **Smooth Reveal:** Translated and romanized lines ease into view beautifully without jarring the layout, when enabled.
 
 ---
 
@@ -174,17 +177,18 @@ Custom loader system:
 Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
 ![Dynamically Refined Artist Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/3.png)
-* **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll-fading masks.
+* **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll linked background.
 
 ![Immersive Album Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/4.png)
-* **Immersive Album Pages:** Dynamic background dimming applies beautifully to album and podcast pages.
+* **Immersive Album Pages:** Album Pages feature the album cover spanned over the background with black tint.
 
 ![Miscellaneous Touches - QoL](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/5.png)
 * **Player Queue:** Sticky headers, custom transparent chip designs, and fixed dragging-state backgrounds.
 * **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
-* **Search & Navigation:** Darker Bauhaus search box backgrounds and customized tab headings with underline highlights.
+* **Search & Navigation:** Darker search box backgrounds and customized tab headings with underline highlights.
 * **Notifications:** Auto-dismissing toast notifications that sweep away smoothly.
 * **UI Cleanups:** Hidden scrollbars, transparent player bars, and removed gradient overlays.
+* **Progress Bar & Controls:** Added smooth movement to the progress bar. Improved aesthetic of floating timestamps-tooltip.
 
 ---
 
@@ -202,18 +206,11 @@ This theme is built to be visually rich without relying on heavy animation logic
 
 ## 🛠 Customization Guide
 
-Most quick edits are inside:
+Most quick edits are inside **Section 3**:
 
-### Section 3 – EASY CHANGE SETTINGS
-
-You can safely tweak:
-
-* Font size
-* Font weight
-* Line height
-* Opacity levels
-* Scroll timing
-* Background filters
+* **Section 3.1 & 3.2:** Tweak font sizes, weights, scroll timing, and lyric opacity levels.
+* **Section 3.3:** Adjust background blur, saturation, brightness, and contrast. 
+* **Section 3.4:** The whole theme relies on the custom variables of oklch colors. Altering these may break parts of the theme configuration.
 
 ---
 
@@ -225,8 +222,8 @@ Please report bugs or suggestions on Discord.
 
 ## 🔖 Version
 
-**v1.6.11**
-Last updated: 2026-02-25
+**v1.6.13**
+Last updated: 2026-03-13
 
 ---
 
