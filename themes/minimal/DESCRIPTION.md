@@ -10,7 +10,7 @@ This theme removes most lyric swipe/word animations and replaces them with a smo
 > 
 > — Boidu _(probably)_
 
-![Performance and Elegance](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/2.png)
+![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.png)
 
 ## 📖 Table of Contents
 - [✨ Core Philosophy](#-core-philosophy)
@@ -60,7 +60,7 @@ To revert to default YouTube font:
 
 ### Visibility Model (Section 3.1)
 
-![Edit lyrics' transparency levels](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/1.png)
+![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.png)
 
 The theme uses opacity instead of animation emphasis. You can adjust the focus intensity by modifying these variables in `:root` (Section 3.1):
 
@@ -176,13 +176,13 @@ Custom loader system:
 
 Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
-![Dynamically Refined Artist Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/3.png)
+![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.png)
 * **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll linked background.
 
-![Immersive Album Pages](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/4.png)
+![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.png)
 * **Immersive Album Pages:** Album Pages feature the album cover spanned over the background with black tint.
 
-![Miscellaneous Touches - QoL](https://github.com/ramansg/Minimal/blob/53bad0eca3f0f033a00f81151fc9d4ff5dd85227/images/5.png)
+![Miscellaneous Touches - QoL](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.png)
 * **Player Queue:** Sticky headers, custom transparent chip designs, and fixed dragging-state backgrounds.
 * **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
 * **Search & Navigation:** Darker search box backgrounds and customized tab headings with underline highlights.

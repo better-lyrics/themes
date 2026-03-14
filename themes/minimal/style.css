@@ -1,5 +1,5 @@
 
-/* 2026-03-13T18-11-18 v1.6.13                      */
+/* 2026-03-13T18-11-18 v1.6.13.1                    */
 
 /* Install from Theme Marketplace to always have    */ 
 /* the latest version!                              */
@@ -32,9 +32,10 @@
 
 /* ## SECTION-2 - WEBSITE-WIDE FONT SETTINGS ###### */
 * {
-  --whole-website-font-family: "Roboto Flex", 
-                               system-ui, sans-serif,
-                               var(--noto-sans-universal);
+  --whole-website-font-family:  "Roboto Flex", "Roboto",
+                                var(--noto-sans-universal),
+                                sans-serif,
+                                system-ui ;
   /* Font for everthing, delete above line if you   */
   /* want to use YT default                         */
   font-family: var(--whole-website-font-family) !important;
