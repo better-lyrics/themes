@@ -58,7 +58,7 @@ jobs:
         continue-on-error: true
         uses: planetscale/ghcommit-action@v0.2.19
         with:
-          commit_message: "chore: format index.json [skip ci]"
+          commit_message: "chore: format index.json"
           repo: ${{ github.event.pull_request.head.repo.full_name }}
           branch: ${{ github.event.pull_request.head.ref }}
         env:

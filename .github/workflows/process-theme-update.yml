@@ -6,6 +6,7 @@ on:
   push:
     branches: [master]
     paths: ['index.json']
+  workflow_dispatch:
 
 concurrency:
   group: theme-vendoring
@@ -202,7 +203,7 @@ jobs:
 
   # Job for push events (new themes added via PR merge)
   vendor-new:
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write
