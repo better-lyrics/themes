@@ -1,0 +1,11 @@
+{
+  "id": "spotlight",
+  "title": "Spotlight",
+  "creators": ["boidushya"],
+  "minVersion": "2.0.5.6",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": ["dark", "blur"],
+  "images": ["spotlight-1.png", "spotlight-2.png", "spotlight-3.png"],
+  "description": "A focused lyrics theme with blur effects on inactive lines"
+}

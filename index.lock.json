@@ -71,8 +71,16 @@
       "locked": "2026-03-18T12:45:16Z",
       "repo": "better-lyrics/theme-eblp",
       "version": "1.0.0"
+    },
+    {
+      "commit": "5ba22d84039aba95d00426114fea8077a63eaf03",
+      "id": "spotlight",
+      "integrity": "sha256-00e67c7bbf5a98681011de777c7f4b66658178a16959d14ebbd60e2e5d933fbe",
+      "locked": "2026-03-18T18:27:03Z",
+      "repo": "better-lyrics/theme-spotlight",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2026-03-18T12:45:16Z",
+  "updated": "2026-03-18T18:27:03Z",
   "version": 1
 }
