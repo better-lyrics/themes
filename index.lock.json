@@ -63,8 +63,16 @@
       "locked": "2026-03-16T10:32:37Z",
       "repo": "WolftheE/better-ytm",
       "version": "1.2.0"
+    },
+    {
+      "commit": "7665b3daf0f88b0f201beabcb9e22f0aca8c7066",
+      "id": "eblp",
+      "integrity": "sha256-90227e169d7895d649cc3107752c5177bb8d7cb51b13373fc47ff2da55b58e43",
+      "locked": "2026-03-18T12:45:16Z",
+      "repo": "better-lyrics/theme-eblp",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2026-03-16T10:32:37Z",
+  "updated": "2026-03-18T12:45:16Z",
   "version": 1
 }
