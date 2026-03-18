@@ -132,6 +132,16 @@ Once installed, just bump the `version` in your `metadata.json` and push - your 
 - Keep your description concise but informative
 - Don't include malicious or obfuscated CSS
 
+## Install Count Badge
+
+Add an install count badge to your theme's README:
+
+```markdown
+![Installs](https://img.shields.io/endpoint?url=https://store.betterlyrics.net/api/badge/your-theme-id)
+```
+
+Replace `your-theme-id` with the `id` from your `metadata.json`. You can customize the badge with [shields.io query parameters](https://shields.io/badges/endpoint-badge) like `&style=for-the-badge` or `&labelColor=black`.
+
 ## Direct Install
 
 Users can also install themes directly from any GitHub repo URL via **Install from URL** in the extension — no submission required.
