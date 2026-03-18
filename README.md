@@ -137,10 +137,10 @@ Once installed, just bump the `version` in your `metadata.json` and push - your 
 Add an install count badge to your theme's README:
 
 ```markdown
-![Installs](https://img.shields.io/endpoint?url=https://store.betterlyrics.net/api/badge/your-theme-id)
+![Installs](https://img.shields.io/endpoint?url=https://better-lyrics-themes-api.boidu.dev/api/badge/dynamic-background)
 ```
 
-Replace `your-theme-id` with the `id` from your `metadata.json`. You can customize the badge with [shields.io query parameters](https://shields.io/badges/endpoint-badge) like `&style=for-the-badge` or `&labelColor=black`.
+Replace `dynamic-background` with the `id` from your `metadata.json`. You can customize the badge with [shields.io query parameters](https://shields.io/badges/endpoint-badge) like `&style=for-the-badge` or `&labelColor=black`.
 
 ## Direct Install
 
