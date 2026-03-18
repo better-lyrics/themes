@@ -26,6 +26,9 @@
     },
     {
       "repo": "better-lyrics/theme-eblp"
+    },
+    {
+      "repo": "better-lyrics/theme-spotlight"
     }
   ]
 }
