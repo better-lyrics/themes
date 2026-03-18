@@ -134,13 +134,16 @@ Once installed, just bump the `version` in your `metadata.json` and push - your 
 
 ## Install Count Badge
 
-Add an install count badge to your theme's README:
+Add an install count/rating badge to your theme's README:
 
 ```markdown
-![Installs](https://img.shields.io/endpoint?url=https://better-lyrics-themes-api.boidu.dev/api/badge/your-theme-id)
+[![Installs](https://img.shields.io/endpoint?url=https://better-lyrics-themes-api.boidu.dev/api/badge/your-theme-id)](https://github.com/your-username/your-theme-repo)
+
+[![Rating](https://img.shields.io/endpoint?url=https://better-lyrics-themes-api.boidu.dev/api/badge/your-theme-id/rating)](https://github.com/your-username/your-theme-repo)
 ```
 
-Replace `your-theme-id` with the `id` from your `metadata.json`. You can customize the badge with [shields.io query parameters](https://shields.io/badges/endpoint-badge) like `&style=for-the-badge` or `&labelColor=black`.
+Replace `your-theme-id` with the `id` from your `metadata.json` & `your-username/your-theme-repo` with your GitHub repo path.
+You can customize the badge with [shields.io query parameters](https://shields.io/badges/endpoint-badge) like `&style=for-the-badge` or `&labelColor=black`.
 
 ## Direct Install
 
