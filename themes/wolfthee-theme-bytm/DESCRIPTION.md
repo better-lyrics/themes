@@ -1,14 +1,13 @@
-A theme that adds a more dynamic animations and UI modification for the best experience ever!
+The way YouTube Music should have been
 
 ## What this themes Adds/Changes
-- Buttons
-- Searchbar
-- Background of Navbar and player bar
-- Adds more shadows to some elements
-- Animations
-- Transparent menus
-- Fixed context menu spacing and theming
-- And more to come soon!
+- Better Scaling
+- Background Blur effects
+- Button redesigns
+- Small UI fixes/changes
+- More UI consistency
+- Glow and shadows effects
+- More coming soon
 
 ## Installation Notes
 This theme works best with the album art background enabled.
