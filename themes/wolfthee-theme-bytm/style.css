@@ -1,43 +1,21 @@
-/* better ytm test, a custom theme for BetterLyrics */
+/* Hey there, feel free to edit this or use this theme as a base
+If you have any sugestions, tell me on discord. Just ping @wolfthee on the blyrics discord server!
+
+Credits goes to
+https://github.com/ramansg/Minimal/tree/main
+https://github.com/tposejank/blyrics-am-theme
+https://github.com/chengggit/YouTube-Music-Dynamic-Theme
+*/
 
 :root {
 
-
-  #progress-bar.ytmusic-player-bar{
-    --paper-slider-active-color: white;
-    --calculated-paper-slider-height: 4px;
-  }
-  #progress-bar.ytmusic-player-bar[focused], ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
-      --paper-slider-knob-color: white;
-      --paper-slider-knob-start-color: white;
+/* change ytm logo bc why not 
+  .logo.ytmusic-logo {
+    content: url(https://better-lyrics.boidu.dev/icon-512.png);
   }
 
-  #primaryProgress.tp-yt-paper-progress {
-    box-shadow: 0px 0px 8px rgba(255,255,255,0.5);
-  }
 
-  
-
-
-
-  @keyframes rotate{
-    from{
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(359);
-    }
-  }
-
-  @keyframes dropdownsearch{
-    from{
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
+/* blyrics config, feel free to edit this */
   --blyrics-footer-bg-color: transparent;
   --blyrics-footer-border-color: transparent;
   .blyrics-footer__container {
@@ -53,12 +31,9 @@
 
   
   --blyrics-active-scale: 1.0;
-  --blyrics-scale: 0.75;
-
-  .blyrics--line {
-    font-weight: 650;
-
-  }
+  --blyrics-scale: 0.65;
+  --blyrics-font-size: 3.25rem;
+  --blyrics-font-weight: 650;
   
   .blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling) > div:not(.blyrics--active):not(.blyrics--active ~ div) > span{
     transition: color 0.5s ease-out;
@@ -66,8 +41,23 @@
     
   }
 
+  /* remove these if you want these buttons back */
+    .dislike {
+      display: none;
+  }
+
+  .cast-button {
+    display: none;
+  }
+/*
+  .logo.ytmusic-logo {
+    display: none;
+  }*/
 
 
+
+
+/* -------------------------------- */
 
 
 /* background tuff */
@@ -233,6 +223,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   /* media player bar */
   .tp-yt-paper-slider {
     marign: 0px !important;
+    overflow: visible;
   }
   #progress-bar.ytmusic-player-bar {
     left: -12px;
@@ -289,11 +280,6 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     overflow: hidden;
   }
 
-
-  
-  .dislike {
-      display: none;
-  }
     
   #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background, #nav-bar-background.ytmusic-app-layout {
     background-image: linear-gradient(rgba(0,0,0,1) 1%, rgba(0,0,0,0) 100%) !important;
@@ -313,6 +299,14 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     max-width: 80% !important;
     box-shadow: 5px 5px 20px rgba(0,0,0,0.5);
             
+  }
+  .song-media-controls.ytmusic-player {
+    background: none;
+  }
+
+  .top-row-buttons.ytmusic-player > * {
+    box-shadow: 0 0 15px 5px rgba(0,0,0,0.5); 
+    background: rgba(0,0,0,0.5); 
   }
 
 
@@ -444,6 +438,59 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   
   .category-menu-item.iron-selected.ytmusic-settings-page {
       background: rgba(255,255,255,0.1) !important;
+  }
+
+
+
+  
+/* Knob stuff */
+  #progress-bar.ytmusic-player-bar{
+    --paper-slider-active-color: white;
+    --calculated-paper-slider-height: 4px;
+  }
+  #progress-bar.ytmusic-player-bar[focused], ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
+      --paper-slider-knob-color: white;
+      --paper-slider-knob-start-color: white;
+  }
+
+ /* thank you ramansg for this */
+  .slider-knob-inner.tp-yt-paper-slider {
+	width: calc(100% - 23px) !important;
+	height: calc(100% - 14px) !important;
+	border-radius: 100px !important;
+	position: absolute !important;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto !important;
+  }
+
+
+  #primaryProgress.tp-yt-paper-progress {
+    filter: drop-shadow(0px 0px 4px rgba(255,255,255,0.5));
+  }
+
+  
+
+
+
+  @keyframes rotate{
+    from{
+      transform: rotate(0);
+    }
+    to {
+      transform: rotate(359);
+    }
+  }
+
+  @keyframes dropdownsearch{
+    from{
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
   
   
