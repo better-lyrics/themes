@@ -79,8 +79,16 @@
       "locked": "2026-03-18T18:27:03Z",
       "repo": "better-lyrics/theme-spotlight",
       "version": "1.0.0"
+    },
+    {
+      "commit": "f794ebe8521e31475a24961d0fe8a3e330927b2e",
+      "id": "modern-player",
+      "integrity": "sha256-ce04b51d27996d051d64e6d690d002104ff9f1cc4e737f781e9728f253f5fada",
+      "locked": "2026-03-22T11:48:29Z",
+      "repo": "snw-mint/better-lyrics-modern-player",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2026-03-22T05:51:13Z",
+  "updated": "2026-03-22T11:48:29Z",
   "version": 1
 }

@@ -1,0 +1,11 @@
+{
+  "id": "modern-player",
+  "title": "ModernPlayer",
+  "description": "A clean theme with a focus on expanded album covers and refined typography.",
+  "creators": ["snw-mint"],
+  "minVersion": "2.0.5.6",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": ["modern", "blur", "simple"],
+  "images": ["preview.png", "image1.png", "image2.png"]
+}
