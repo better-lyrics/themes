@@ -4,8 +4,8 @@
   "description": "A theme that adds a more dynamic animations and UI modification.",
   "creators": ["WolftheE"],
   "minVersion": "2.0.5.6",
-  "hasShaders": false,
-  "version": "1.4.0",
+  "hasShaders": true,
+  "version": "1.4.1",
   "tags": ["dark", "animations", "dynamic"],
   "images": ["1.png", "2.png", "3.png", "4.png"]
 }
