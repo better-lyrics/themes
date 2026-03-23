@@ -7,6 +7,38 @@ https://github.com/tposejank/blyrics-am-theme
 https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 */
 
+/* Animations here */
+@keyframes blyrics-wobble {
+	0% {
+		transform: translateY(0px) scaleX(1);
+	}
+    12.5% {
+      transform: scaleX(1.05);
+      animation-timing-function: ease-in-out;
+    }
+	75% {
+		transform: translateY(-0.1em) scaleX(1);
+	}
+	100% {
+		transform: translateY(0px) scaleX(1);
+        animation-timing-function: ease-out;
+	}
+}
+
+@keyframes blyrics-glow {
+  0% {
+    filter: drop-shadow(0 0 0.8rem var(--blyrics-glow-color));
+  }
+  65% {
+    filter: drop-shadow(0 0 0.2rem var(--blyrics-glow-color));
+  }
+  to {
+    filter: drop-shadow(0 0 0rem var(--blyrics-glow-color));
+  }
+}
+
+
+
 :root {
 
 /* change ytm logo bc why not 
@@ -53,6 +85,10 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
   .logo.ytmusic-logo {
     display: none;
   }*/
+
+
+
+
 
 
 
@@ -151,7 +187,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   }
 
   ytmusic-app-layout:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) > [slot="player-page"] #main-panel > #blyrics-song-info > #blyrics-title {
-    font-size: 3.25em;
+    font-size: 2.5em;
     text-shadow: 0px 0px 20px rgba(255,255,255,0.35);
   }
 
@@ -213,6 +249,10 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     border-bottom: 3px solid white;
   }
 
+  #tabsContent.tp-yt-paper-tabs>:not(#selectionBar):hover {
+    background: rgba(255,255,255,0.2);
+  }
+
 
 
 
@@ -243,19 +283,29 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   .left-controls.ytmusic-player-bar {
       grid-area: middle;
       justify-content: center;
-      margin-bottom: 12px;
 
       .time-info {
+        transform: translateY(-20px);
         position: absolute;
-        bottom: -1px;
+        top: 0;
         margin: 0;
         padding: 0;
         border-radius: 50px;
         color: white;
-        padding-bottom: 8px;
+        padding-bottom: 0px;
         margin-left: 2px;
         text-shadow: 0 0 10px rgba(255,255,255,0.5);
       }
+  }
+
+  .play-pause-button {
+    background: white;
+    color: black !important;
+    border-radius: 50% !important;
+  }
+
+  .play-pause-button > button {
+    scale: 0.8;
   }
 
   /* Player buttons */
@@ -492,6 +542,13 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
       opacity: 1;
     }
   }
-  
+  /* Mobile view */
+  @media (max-width: 616px) {
+    tp-yt-paper-tabs.ytmusic-player-page {
+      background: rgba(255, 255, 255, 0.01) !important;
+      position: static !important;
+    }
+  }
   
 }
+
