@@ -81,14 +81,14 @@
       "version": "1.0.0"
     },
     {
-      "commit": "f794ebe8521e31475a24961d0fe8a3e330927b2e",
+      "commit": "98cfaab13a28f394f674a3159cd59a03c0c76009",
       "id": "modern-player",
-      "integrity": "sha256-ce04b51d27996d051d64e6d690d002104ff9f1cc4e737f781e9728f253f5fada",
-      "locked": "2026-03-22T11:48:29Z",
+      "integrity": "sha256-8a37bdf803e8542552a5c7ebb76244af46b98e2a48b7315927af07f91e190400",
+      "locked": "2026-03-23T00:51:41Z",
       "repo": "snw-mint/better-lyrics-modern-player",
-      "version": "1.0.0"
+      "version": "1.0.1"
     }
   ],
-  "updated": "2026-03-22T11:48:29Z",
+  "updated": "2026-03-23T00:51:41Z",
   "version": 1
 }

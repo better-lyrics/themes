@@ -8,21 +8,6 @@ A clean and immersive theme for YouTube Music that transforms the default player
 - **Custom UI Elements:** Minimalist thin scrollbars, pill-shaped tab indicators, and semi-transparent controls.
 - **Immersive Ambient Glow:** The background dynamically adapts to the current song with a high-saturation blur effect.
 
-## Screenshots
-
-### Lyrics View
-![Lyrics View](images/preview.png)
-
-### Up Next / Queue
-![Queue View](images/image1.png)
-
-### Related Content
-![Related Content](images/image2.png)
-
-## Installation Notes
-
-For the best visual experience, ensure that the **"Album Art Background"** option is enabled in the Better Lyrics extension settings to take full advantage of the ambient glow effects.
-
 ## Compatibility
 
 - Works with Better Lyrics v2.0.5.6+ 

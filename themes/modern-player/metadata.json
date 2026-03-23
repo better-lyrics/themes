@@ -5,7 +5,7 @@
   "creators": ["snw-mint"],
   "minVersion": "2.0.5.6",
   "hasShaders": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "tags": ["modern", "blur", "simple"],
   "images": ["preview.png", "image1.png", "image2.png"]
 }
