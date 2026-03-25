@@ -65,12 +65,12 @@
       "version": "1.4.1"
     },
     {
-      "commit": "a902339b841346223ed0e3fffe485e7152ebba60",
+      "commit": "00df44eb658e1e26d5202c466f50e38b6d978d70",
       "id": "eblp",
-      "integrity": "sha256-8c196f50b4ed7db5e012171fda566b2c03d3be1ece6a750028494137f41c954a",
-      "locked": "2026-03-21T11:12:07Z",
+      "integrity": "sha256-60edad771d50dd4646830bb4a7fa2795243a6b2ea31b84b78a25f1df2446e08b",
+      "locked": "2026-03-25T23:58:56Z",
       "repo": "better-lyrics/theme-eblp",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     {
       "commit": "5ba22d84039aba95d00426114fea8077a63eaf03",
@@ -89,6 +89,6 @@
       "version": "1.0.1"
     }
   ],
-  "updated": "2026-03-25T05:33:20Z",
+  "updated": "2026-03-25T23:58:56Z",
   "version": 1
 }

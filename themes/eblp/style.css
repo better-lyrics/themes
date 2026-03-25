@@ -50,7 +50,7 @@ ytmusic-player[is-mweb-player-page-modernization-enabled]:not([video-mode]) {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding-top: 10px;
-  padding-inline: 10px;
+  padding-inline: 20px 10px;
 }
 
 .blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
@@ -225,4 +225,10 @@ ytmusic-player-bar {
 
 .ytmusic-av-toggle[aria-pressed="true"] {
   background: rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 936px) {
+  .side-panel.ytmusic-player-page {
+    margin: 0 0 0 calc(var(--ytmusic-player-page-content-gap) - 10px);
+  }
 }
