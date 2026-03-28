@@ -1,3 +1,5 @@
+
+
 /* Hey there, feel free to edit this or use this theme as a base
 If you have any sugestions, tell me on discord. Just ping @wolfthee on the blyrics discord server!
 
@@ -38,13 +40,16 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 }
 
 
-
 :root {
 
 /* change ytm logo bc why not 
   .logo.ytmusic-logo {
     content: url(https://better-lyrics.boidu.dev/icon-512.png);
   }
+  
+  
+  Set this to your titlebar color*/ 
+  --titlebar-color: rgba(19,19,19,1);
 
 
 /* blyrics config, feel free to edit this */
@@ -98,10 +103,11 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 
 /* background tuff */
   ytmusic-player-page:before {
-    background-size: unset;
+    background-size: cover;
     transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
-    filter: brightness(50%) blur(35px) saturate(200%);
-    scale: 4;
+    filter: brightness(50%) blur(65px) saturate(200%);
+    object-fit: cover;
+    object-position: center;
   }
 
 
@@ -114,15 +120,14 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-size: unset;
     transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
-    filter: brightness(15%) blur(20px) saturate(200%);
-    scale: 4;
+    filter: brightness(15%) blur(50px) saturate(200%);
   }
 
   /* Sidebar stuff */
   ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
     background: rgba(0,0,0,0.3); 
+    backdrop-filter: blur(20px);
   }
 
   ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-renderer {
@@ -190,6 +195,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     font-size: 2.5em;
     text-shadow: 0px 0px 20px rgba(255,255,255,0.35);
   }
+  
 
 
 
@@ -294,7 +300,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
         color: white;
         padding-bottom: 0px;
         margin-left: 2px;
-        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        text-shadow: 0 0 15px rgba(255,255,255,0.7);
       }
   }
 
@@ -330,9 +336,9 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     overflow: hidden;
   }
 
-    
+  /* topnavbar*/
   #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background, #nav-bar-background.ytmusic-app-layout {
-    background-image: linear-gradient(rgba(0,0,0,1) 1%, rgba(0,0,0,0) 100%) !important;
+    background-image: linear-gradient(var(--titlebar-color) 1%, rgba(0,0,0,0) 100%) !important;
     border-bottom: none;
     backdrop-filter: blur(10px) brightness(50%);
   }
@@ -343,6 +349,15 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
    #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background {
        backdrop-filter: blur(0px);
    }
+
+   ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar {
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    padding-left: 0;
+    flex-shrink: 1;
+     backdrop-filter: blur(50px);
+  }
 
 /* album art */
   ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode]) #player.ytmusic-player-page {
@@ -365,7 +380,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   }
 
   #player-bar-background.ytmusic-app-layout {
-    background: rgba(20, 20, 20, 0.85);
+    background: rgba(15, 15, 15, 0.7);
     backdrop-filter: blur(10px);
   }
   
@@ -520,9 +535,17 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   #primaryProgress.tp-yt-paper-progress {
     filter: drop-shadow(0px 0px 4px rgba(255,255,255,0.5));
   }
-
+/* ================== */
   
 
+  .strapline.ytmusic-carousel-shelf-basic-header-renderer::before {
+    content: "Hello, ";
+    text-transform: none;
+  }
+  
+  ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {
+      padding-right: 8px;
+  }
 
 
   @keyframes rotate{
@@ -551,4 +574,3 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   }
   
 }
-
