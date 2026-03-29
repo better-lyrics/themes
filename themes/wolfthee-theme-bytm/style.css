@@ -197,6 +197,51 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
     font-size: 2.5em;
     text-shadow: 0px 0px 20px rgba(255,255,255,0.35);
   }
+
+  ytmusic-item-thumbnail-overlay-renderer[display-style=MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER] #play-button.ytmusic-item-thumbnail-overlay-renderer, #background.ytmusic-item-thumbnail-overlay-renderer, ytmusic-item-thumbnail-overlay-renderer>:not(.ytmusic-item-thumbnail-overlay-renderer) {
+    transition: opacity 0.2s ease-out;
+    border-radius: inherit;
+  }
+
+  ytmusic-thumbnail-renderer[thumbnail-crop=MUSIC_THUMBNAIL_CROP_CIRCLE] .image.ytmusic-thumbnail-renderer {
+    transition: filter 0.3s ease-out;
+
+    &:hover {
+        filter: brightness(0.75);
+    }
+  }
+
+  .content-wrapper.ytmusic-play-button-renderer {
+    transition: transform .2s cubic-bezier(.2, 0, .6, 1), background .2s cubic-bezier(.2, 0, .6, 1), box-shadow .2s cubic-bezier(.2, 0, .6, 1);
+    background: white;
+    color: black !important;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+
+    &:hover {
+      background: white;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+    }
+
+    & > .icon.ytmusic-play-button-renderer {
+      color: black;
+    }
+
+  }
+  ytmusic-play-button-renderer[size=MUSIC_PLAY_BUTTON_SIZE_HUGE] > .content-wrapper.ytmusic-play-button-renderer {
+    transition: scale .2s cubic-bezier(.2, 0, .6, 1);
+    background: rgba(0,0,0,0.0);
+    color: white !important;
+    box-shadow: none;
+
+    &:hover {
+      scale: 1.1;
+      box-shadow: none;
+    }
+
+    & > .icon.ytmusic-play-button-renderer {
+      color: white;
+    }
+  }
   
 
 
@@ -352,13 +397,20 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
        backdrop-filter: blur(0px);
    }
 
+   ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .left-content.ytmusic-nav-bar {
+    width: fit-content;
+  }
+
+
    ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar {
     position: relative;
     justify-content: center;
     align-items: center;
     padding-left: 0;
     flex-shrink: 1;
-     backdrop-filter: blur(50px);
+    left: 0 !important;
+    margin-left: 0;
+    transform: none;
   }
 
 /* album art */
@@ -410,7 +462,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
       background-color: white !important;
       color: black !important;
       transition: 0.2s ease-out;
-      box-shadow: 0px 0px 10px rgba(255,255,255, 0.5);
+      box-shadow: 0px 0px 7px rgba(255,255,255, 0.5);
     }
     &:active {
       scale: 0.95;
