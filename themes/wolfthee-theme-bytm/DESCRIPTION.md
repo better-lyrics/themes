@@ -1,5 +1,7 @@
 The way YouTube Music should have been
 
+# VERSION 2.0 OUT NOW! MAJOR RECODE!
+
 ## What this themes Adds/Changes
 - Better Scaling
 - Background Blur effects
@@ -17,7 +19,13 @@ The way YouTube Music should have been
 This theme works best with the album art background enabled.
 If using a laptop, disable Show stylized animations to save power.
 
-## This version changelog - ver 1.4.4
-- Small fix for nav bar (its still buggy but I am rewriting the css code for it)
-- Diffrent play button when hovering over albums
-- Playlist dialog improved
+## This version changelog - ver 2.0!
+- Re-coded everything! The css file is so much cleaner
+- Performance improvements
+- Redone lyric animations, like a hold animation for longer sang words
+- More Transitions
+- Re-did buttons for a cleaner look
+- Removed some glow effects
+- Removed lots of margins and padding
+- Attempt to fix mobile view bugs
+- Attempt for this theme to work on non-blyric css loaders
