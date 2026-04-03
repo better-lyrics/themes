@@ -17,12 +17,12 @@
       "version": "1.6.14"
     },
     {
-      "commit": "27fe05a08a3f6830a07e6bb958a27b08e2084251",
+      "commit": "d4d7ccb1e543c7ab7242d355b7fa689e320dd989",
       "id": "apple-music",
-      "integrity": "sha256-02b41a601af113445f935b72db948cce7f32218becb2f396e3f62c05a1b2831f",
-      "locked": "2026-02-21T02:17:45Z",
+      "integrity": "sha256-f80b96a1823d50b6e9d29198573f0ee2c431d3483d2f1369debd64d814656d73",
+      "locked": "2026-04-03T00:05:43Z",
       "repo": "tposejank/blyrics-am-theme",
-      "version": "1.0.1"
+      "version": "1.0.2"
     },
     {
       "commit": "d6a0999dc528fd8be3e4637b025653d0d0fb9279",
@@ -89,6 +89,6 @@
       "version": "1.0.1"
     }
   ],
-  "updated": "2026-04-02T05:38:41Z",
+  "updated": "2026-04-03T00:05:43Z",
   "version": 1
 }
