@@ -11,7 +11,9 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 */
 
 
+
 :root {  
+  
   /*Set this to your titlebar color*/ 
   --titlebar-color: rgba(19,19,19,1);
 
@@ -27,10 +29,13 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
   --blyrics-footer-bg-color: transparent;
   --blyrics-footer-border-color: transparent;
   --blyrics-active-scale: 1.0;
-  --blyrics-scale: 0.65;
-  --blyrics-font-size: 3.25rem;
+  --blyrics-scale: 0.55;
+  --blyrics-line-height: 1.5;
+  --blyrics-font-size: 3.5rem;
   --blyrics-font-weight: 650;
   --smaller-lyrics-size: 0.6em;
+
+  --blyrics-fullscreen-panel-size: 55%;
 
 
   --blur-amount: blur(60px);
@@ -88,7 +93,7 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 }
 
 .blyrics--word.blyrics--animating { /* Holds the synced lyric on longer notes */
-  animation: blyrics-wobble max(calc(var(--blyrics-duration) * 1.2), 1s) forwards ease; 
+  animation: blyrics-wobble max(calc(var(--blyrics-duration)), 0.7s) forwards ease; 
   animation-delay: var(--blyrics-anim-delay);
 }
 
@@ -165,21 +170,48 @@ https://github.com/chengggit/YouTube-Music-Dynamic-Theme
 /* ================================= */
 /* Main Player layout */
 /* ================================= */
+
+  
 ytmusic-player-page:not([is-mweb-modernization-enabled]) .content.ytmusic-player-page { /* Use full space */ padding: 0 var(--ytmusic-player-page-horizontal-padding) 0;}
 
 ytmusic-app-layout:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) > [slot="player-page"] #side-panel {
-  width: 55vw !important; /* Fullscreen Player spacing/scaling edits */
+  /*width: 50vw !important; /* Fullscreen Player spacing/scaling edits */
   padding-bottom: 75px;
 }
 ytmusic-app-layout:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) > [slot="player-page"] #main-panel > #blyrics-song-info > #blyrics-title {
   font-size: 2.5em;
   text-shadow: 0px 0px 20px var(--glow);
 }
+/*
+@keyframes movebackground {
+  0% {
+    transform: translate(0, 0) ;
+    opacity: 1;
+  }
+  10% {
+     transform: translate(5px, -3px) ;
+     opacity: 0.9;
+     animation-timing-function: ease-out;
+  }
+  40% {
+    transform: translate(-5px, -7px) ;
+    opacity: 1;
+    animation-timing-function: ease-out;
+  }
+  80% {
+    transform: translate(2px, -3px) ;
+    opacity: 0.85;
+  100% {
+    transform: translate(0px , 0px) ;
+    opacity: 1;
+  }
+} */
 
 ytmusic-player-page:before { /* Cool blured background with Blyrics! */
   background-size: cover;
   transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
   filter: brightness(45%) var(--blur-amount) saturate(200%);
+  /*animation: movebackground 20s infinite ease-out; */
   object-fit: cover;
   object-position: center;
   scale: 1.2;
@@ -311,7 +343,7 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] {justify-content: space-between;}
 
 /* =============== PlayerBar ================== */
 #player-bar-background.ytmusic-app-layout { /* Makes the PlayerBar transparent */
-  background: rgba(15, 15, 15, 0.7);
+  background: rgba(15, 15, 15, 0.0);
   backdrop-filter: blur(10px);
 }
 ytmusic-player-bar { /* Makes it transparent when in Media View */
@@ -322,6 +354,7 @@ ytmusic-player-bar { /* Makes it transparent when in Media View */
 ytmusic-player-bar { /* Rearange elements of the bar around */
   grid-template-columns: 1fr 0.5fr 1fr;
   grid-template-areas: "start middle end";
+  display: grid;
 }
 
 .left-controls.ytmusic-player-bar { /* Make the player controls center */
@@ -340,11 +373,24 @@ ytmusic-player-bar { /* Rearange elements of the bar around */
     text-shadow: 0 0 15px rgba(255,255,255,0.7);
   }
 }
+
+ytmusic-player-bar[is-web-delhi-icons-enabled] .left-controls.ytmusic-player-bar yt-icon-button.ytmusic-player-bar { /* Change the Foward and back buttons*/
+  background: rgba(255,255,255,0.05);
+  width: 36px ;
+  height: 36px ;
+  & > #button {scale: 0.8;}
+}
 .play-pause-button { /* Make the Play button diffrent */
-  background: var(--main-color);
+  width: 52px !important;
+  height: 52px !important;
+  background: var(--main-color) !important;
   color: var(--main-font-color) !important;
   border-radius: 50% !important;
   & button {scale: 0.8;}
+}
+ytmusic-player-bar[player-fullscreened] .left-controls.ytmusic-player-bar yt-icon-button.ytmusic-player-bar {
+    padding: 0;
+    transform: scale(1.1);
 }
 
 .middle-controls { /* Make the player info on the left */
@@ -379,15 +425,19 @@ ytmusic-player-bar[is-web-delhi-icons-enabled] yt-icon-button.ytmusic-player-bar
   marign: 0px !important;
   overflow: visible;
 }
-#progress-bar.ytmusic-player-bar {left: -12px !important;}  /* Move it a bit for spacing */
+#progress-bar.ytmusic-player-bar {left: -12px !important; }  /* Move it a bit for spacing */
 ytmusic-player-bar[player-fullscreened] #progress-bar.ytmusic-player-bar {left: calc(-16px + var(--ytmusic-player-bar-fullscreen-progress-bar-inset)) !important;}  /* Remove the spacing in fullscreen as there already is */
-ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padding-right: 8px !important;} 
+ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padding-right: 8px !important; } 
 
-#primaryProgress.tp-yt-paper-progress {filter: drop-shadow( 0 0 5px var(--glow));}  /* Glow effect on bar*/
+#primaryProgress.tp-yt-paper-progress {
+  filter: drop-shadow( 0 0 5px var(--glow));
+  transition: transform 0.3s;
+  border-radius: 100px;
+}  /* Glow effect on bar*/
 
 #progress-bar.ytmusic-player-bar{  /* Edit the default vaules of the progression bar */
   --paper-slider-active-color: white;
-  --calculated-paper-slider-height: 4px;
+  --calculated-paper-slider-height: 5px;
 }
 #progress-bar.ytmusic-player-bar[focused], ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
   --paper-slider-knob-color: white;
@@ -396,7 +446,7 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padd
 
  /* thank you ramansg for this - changing the knob */
 .slider-knob-inner.tp-yt-paper-slider {
-  width: calc(100% - 23px) !important;
+  width: calc(100% - 25px) !important;
   height: calc(100% - 14px) !important;
   border-radius: 100px !important;
   position: absolute !important;
@@ -405,6 +455,11 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padd
   left: 0;
   right: 0;
   margin: auto !important;
+}
+.slider-knob.tp-yt-paper-slider {
+  transition: left 0.3s;
+  will-change: left;
+  transform: translateZ(0);
 }
 
 
