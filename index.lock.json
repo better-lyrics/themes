@@ -87,8 +87,16 @@
       "locked": "2026-03-23T00:51:41Z",
       "repo": "snw-mint/better-lyrics-modern-player",
       "version": "1.0.1"
+    },
+    {
+      "commit": "146461fdaa68555f1efa53822a508951ef2a4d0e",
+      "id": "lucid",
+      "integrity": "sha256-28d24d66b6d8dbcccbe0bfe6d6536b571f82abe626e2d1ba9048ef598b82a328",
+      "locked": "2026-04-06T07:52:41Z",
+      "repo": "drago-oo/lucid-theme",
+      "version": "1.0.0"
     }
   ],
-  "updated": "2026-04-06T00:32:25Z",
+  "updated": "2026-04-06T07:52:41Z",
   "version": 1
 }
