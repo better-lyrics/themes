@@ -18,8 +18,5 @@ The way YouTube Music should have been
 This theme works best with the album art background enabled.
 If using a laptop, disable Show stylized animations to save power.
 
-## This version changelog - ver 2.1.0!
-- Edited fullscreen lyrics size for music videos
-- Change lyric timing 
-- Changed some background effects
-- Added some backgrounds to some buttons in the player bar
+## This version changelog - ver 2.1.1!
+- Fix bugs with the search page

@@ -1,4 +1,4 @@
-/* Better-YTM Version 2.0 - Recoded */
+/* BETTER YTM 2.0!!! */
 
 /* Hey there, feel free to edit this or use this theme as a base
 If you have any sugestions, tell me on discord. Just ping @wolfthee on the blyrics discord server!
@@ -328,7 +328,7 @@ ytmusic-guide-section-renderer {padding: 0;}
 
 ytmusic-app-layout[is-bauhaus-sidenav-enabled] #nav-bar-divider.ytmusic-app-layout { border-top: none;}
 
-ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar {
+ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar { /* Center Search bar */ 
   position: absolute;
   justify-content: center;
   align-items: center;
@@ -339,8 +339,25 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar {
   transform: none;
   width: 100vw;
 }
+
+ytmusic-nav-bar[is-bauhaus-sidenav-enabled][is-search-page] .center-content.ytmusic-nav-bar { /* Center Search bar */ 
+    position: absolute;
+    width: 100%;
+    left: 50%;
+    margin-left: 0;
+    transform: none;
+    padding-left: 0;
+}
 ytmusic-nav-bar[is-bauhaus-sidenav-enabled] {justify-content: space-between;}
 
+ytmusic-tabs.stuck {
+    transition: transform 0.5s ease-out;
+    background-color: rgba(255,255,255,0.0);
+    border-radius: 8px;
+    margin: 0 32px;
+    transform: translateY(10px);
+    backdrop-filter: blur(15px) brightness(0.7);
+}
 /* =============== PlayerBar ================== */
 #player-bar-background.ytmusic-app-layout { /* Makes the PlayerBar transparent */
   background: rgba(15, 15, 15, 0.0);
