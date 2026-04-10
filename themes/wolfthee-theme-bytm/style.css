@@ -358,7 +358,7 @@ ytmusic-app-layout[is-bauhaus-sidenav-enabled] #mini-guide-background.ytmusic-ap
 
 ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
   background: rgba(0,0,0,0.3); 
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px) brightness(110%);
   transition: width 0.5s ease-out;
   overflow: hidden;
 }
@@ -394,9 +394,9 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
 .search-container.ytmusic-search-box { /* Fixes some visual bugs with the search bar */ overflow: visible;}
 
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background, #nav-bar-background.ytmusic-app-layout {
-  background-image: linear-gradient(var(--titlebar-color) 1%, transparent 100%) !important;
+  background-image: linear-gradient(var(--titlebar-color) 1%, rgba(0,0,0,0.2) 100%) !important;
   border-bottom: none;
-  backdrop-filter: blur(10px) brightness(50%);
+  backdrop-filter: blur(10px) brightness(110%);
 }
 #nav-bar-background.ytmusic-app-layout { /* Remove duplicated background */background: none;}
 
@@ -505,8 +505,8 @@ ytmusic-tabs.stuck { /* fix tab bar when searching on ytm */
 }
 /* =============== PlayerBar ================== */
 #player-bar-background.ytmusic-app-layout { /* Makes the PlayerBar transparent */
-  background: rgba(15, 15, 15, 0.0);
-  backdrop-filter: blur(10px);
+  background: rgba(15, 15, 15, 0.15);
+  backdrop-filter: blur(10px) brightness(110%);
 }
 ytmusic-player-bar { /* Makes it transparent when in Media View */
   background-color: transparent;
@@ -667,6 +667,23 @@ ytmusic-subscribe-button-renderer .yt-spec-button-shape-next--size-m.yt-spec-but
 
 tp-yt-paper-listbox.ytmusic-menu-popup-renderer *:not(yt-formatted-string, yt-icon.ytmusic-menu-service-item-download-renderer > .ytSpecIconShapeHost > div > svg > rect) {height: 36px !important; /* fix the P symbol for broke people like me :( */}
 tp-yt-paper-item.ytmusic-menu-service-item-download-renderer {--paper-item-min-height: 32px;} /* Make each item in the context menu shorter */
+
+tp-yt-paper-listbox.ytmusic-menu-popup-renderer {
+  padding: 16px 6px;
+}
+
+ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer {
+  border-radius: var(--radius);
+
+  &:hover {
+    background: var(--hover-color) !important;
+    color: var(--hover-font-color) !important;
+    & * {
+      color: var(--hover-font-color) !important;
+    }
+  }
+}
+
 
 #contentWrapper.tp-yt-iron-dropdown:not(.ytmusicMultiPageMenuRendererHostAccountMenu){ /* Make the account dropdown consitent with the context menu */
   background: rgba(20, 20, 20, 0.6) !important;
