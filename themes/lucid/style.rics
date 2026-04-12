@@ -1,3 +1,5 @@
+/* Lucid, a marketplace theme by drago-oo */
+
 /* Lucid V1.0.0, a custom theme for BetterLyrics */
 
 @font-face {
@@ -175,29 +177,29 @@ ytmusic-search-box[has-query] .search-container {
 
 /* Search Input Pill (Closed & Hover States) */
 ytmusic-search-box .search-box {
-  border-radius: 20px !important;
-  background: rgba(35, 35, 35, 0.3) !important;
+  border-radius: 12px !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   transition: background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease 0.15s !important;
 }
 
 ytmusic-search-box:hover .search-box { 
-  background: rgba(50, 50, 50, 0.9) !important; 
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
 }
 
-/* Search Input Pill (Opened State) */
+/* Search Input Pill (Opened State) - SEAMLESS GLASS INTEGRATION */
 ytmusic-search-box[opened]:has(ytmusic-search-suggestion) .search-box,
 ytmusic-search-box[opened]:has(ytmusic-responsive-list-item-renderer) .search-box {
-  background: rgba(25, 25, 25, 0.96) !important;
-  border-radius: 20px 20px 0 0 !important; 
-  border-bottom-color: transparent !important; 
+  background: transparent !important; 
+  border-radius: 12px 12px 0 0 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
   transition: background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease 0s !important;
 }
 
 ytmusic-search-box[opened]:not(:has(ytmusic-search-suggestion)):not(:has(ytmusic-responsive-list-item-renderer)) .search-box {
-  background: rgba(25, 25, 25, 0.96) !important;
-  border-radius: 20px !important; 
-  border-bottom-color: rgba(255, 255, 255, 0.1) !important; 
+  background: transparent !important;
+  border-radius: 12px !important; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   transition: background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease 0s !important;
 }
 
@@ -406,39 +408,35 @@ ytmusic-two-row-item-renderer:hover ytmusic-thumbnail-renderer {
   box-shadow: 0 16px 32px rgba(0,0,0,0.5) !important; 
 }
 
-ytmusic-two-row-item-renderer .image-wrapper, 
-ytmusic-two-row-item-renderer yt-img-shadow, 
-.thumbnail-overlay { 
+/* Apply 12px squircle to Home Page grid, strictly excluding Circular Artists */
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"]):not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])) .image-wrapper,
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"]):not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])) yt-img-shadow,
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"]):not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])) .thumbnail-overlay { 
   border-radius: 12px !important; 
-  overflow: hidden !important; 
+  overflow: hidden !important;
 }
 
-/* Quick Picks & List Items */
-ytmusic-responsive-list-item-renderer yt-img-shadow, 
-ytmusic-responsive-list-item-renderer yt-img-shadow img { 
+/* Apply 10px squircle to Quick Picks, strictly excluding Circular Artists */
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):not([music-item-style="MUSIC_ITEM_STYLE_ARTIST"]) yt-img-shadow, 
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):not([music-item-style="MUSIC_ITEM_STYLE_ARTIST"]) yt-img-shadow img { 
   border-radius: 10px !important; 
-  overflow: hidden !important; 
+  overflow: hidden !important;
 }
 
 ytmusic-responsive-list-item-renderer yt-img-shadow img { 
-  transition: filter 0.3s ease !important; 
+  transition: filter 0.3s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
 }
 
-ytmusic-responsive-list-item-renderer:hover yt-img-shadow img, 
-ytmusic-responsive-list-item-renderer[play-button-state="playing"] yt-img-shadow img,
-ytmusic-responsive-list-item-renderer[play-button-state="paused"] yt-img-shadow img { 
-  filter: brightness(0.4) !important; 
+/* ALWAYS scale up on hover (Songs, Videos, AND Artists) */
+ytmusic-responsive-list-item-renderer:hover yt-img-shadow img {
+  transform: scale(1.15) !important;
 }
 
-/* ARTIST PROFILE PICTURE FIX (Restore Circles) */
-ytmusic-two-row-item-renderer[aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"] .image-wrapper,
-ytmusic-two-row-item-renderer[aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"] yt-img-shadow,
-ytmusic-two-row-item-renderer[aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"] yt-img-shadow img,
-[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow,
-[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow img,
-ytmusic-responsive-list-item-renderer[music-item-style="MUSIC_ITEM_STYLE_ARTIST"] yt-img-shadow,
-ytmusic-responsive-list-item-renderer[music-item-style="MUSIC_ITEM_STYLE_ARTIST"] yt-img-shadow img {
-  border-radius: 50% !important;
+/* ONLY darken if it is NOT a circular artist image */
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):hover yt-img-shadow img, 
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="playing"] yt-img-shadow img,
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="paused"] yt-img-shadow img { 
+  filter: brightness(0.4) !important;
 }
 
 /* Remove Native Overlays */
@@ -457,6 +455,58 @@ ytmusic-responsive-list-item-renderer ytmusic-item-thumbnail-overlay-renderer {
 
 ytmusic-responsive-list-item-renderer tp-yt-paper-ripple { 
   border-radius: 10px !important; 
+}
+
+/* ================================
+      TOP SEARCH RESULT OVERLAYS
+   ================================ */
+
+/* 1. Remove the native square background overlays on top results */
+ytmusic-card-shelf-renderer ytmusic-item-thumbnail-overlay-renderer #background,
+ytmusic-card-shelf-renderer ytmusic-background-overlay-renderer,
+ytmusic-top-result-item-renderer ytmusic-item-thumbnail-overlay-renderer #background,
+ytmusic-top-result-item-renderer ytmusic-background-overlay-renderer {
+  display: none !important;
+  opacity: 0 !important;
+  background: transparent !important;
+}
+
+/* 2. Strip background from the overlay container itself */
+ytmusic-card-shelf-renderer ytmusic-item-thumbnail-overlay-renderer,
+ytmusic-top-result-item-renderer ytmusic-item-thumbnail-overlay-renderer {
+  background: transparent !important;
+}
+
+/* 3. Apply your custom border-radius and smooth transitions */
+ytmusic-card-shelf-renderer yt-img-shadow,
+ytmusic-card-shelf-renderer yt-img-shadow img,
+ytmusic-top-result-item-renderer yt-img-shadow,
+ytmusic-top-result-item-renderer yt-img-shadow img {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+}
+
+ytmusic-card-shelf-renderer yt-img-shadow img,
+ytmusic-top-result-item-renderer yt-img-shadow img {
+  /* Added transform transition */
+  transition: filter 0.3s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* 4. SCALE EFFECT: Top Results (Applies to EVERYTHING, including artists) */
+ytmusic-top-result-item-renderer:not(:has(ytmusic-responsive-list-item-renderer:hover)):has(ytmusic-item-thumbnail-overlay-renderer:hover, yt-img-shadow:hover, #thumbnail:hover, .title:hover, #buttons:hover, .buttons:hover) yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+ytmusic-card-shelf-renderer:not(:has(ytmusic-responsive-list-item-renderer:hover)):has(ytmusic-item-thumbnail-overlay-renderer:hover, yt-img-shadow:hover, #thumbnail:hover, .title:hover, #buttons:hover, .buttons:hover) yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img {
+  transform: scale(1.15) !important; 
+}
+
+/* 5. DARKEN EFFECT: Top Results (Ignores artists via circular crop check) */
+ytmusic-top-result-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):not(:has(ytmusic-responsive-list-item-renderer:hover)):has(ytmusic-item-thumbnail-overlay-renderer:hover, yt-img-shadow:hover, #thumbnail:hover, .title:hover, #buttons:hover, .buttons:hover) yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+ytmusic-card-shelf-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):not(:has(ytmusic-responsive-list-item-renderer:hover)):has(ytmusic-item-thumbnail-overlay-renderer:hover, yt-img-shadow:hover, #thumbnail:hover, .title:hover, #buttons:hover, .buttons:hover) yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+
+ytmusic-top-result-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="playing"] yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+ytmusic-top-result-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="paused"] yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+ytmusic-card-shelf-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="playing"] yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img,
+ytmusic-card-shelf-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))[play-button-state="paused"] yt-img-shadow:not(ytmusic-responsive-list-item-renderer yt-img-shadow) img {
+  filter: brightness(0.4) !important;
 }
 
 /* Carousel Buttons (Play All, Arrows) */
@@ -926,7 +976,7 @@ ytmusic-player-page #player.ytmusic-player-page,
 ytmusic-player-page #side-panel.ytmusic-player-page {
   transition: max-width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
               max-height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              min-width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), /* THE FIX: Animates the min-width to prevent snapping */
+              min-width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
               width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
               height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
               padding 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), 
@@ -1347,7 +1397,6 @@ tp-yt-paper-toast yt-formatted-string {
   font-weight: 500 !important;
 }
 
-/* THE FIX: Strip styling from the parent wrappers to prevent double-layering */
 tp-yt-paper-toast .action-button,
 tp-yt-paper-toast yt-button-renderer,
 tp-yt-paper-toast yt-button-shape {
@@ -1400,7 +1449,6 @@ tp-yt-paper-dialog:has(yt-confirm-dialog-renderer),
 tp-yt-paper-dialog:has(yt-dialog-view-model),
 tp-yt-paper-dialog:has(ytmusic-dismissable-dialog-renderer), /* <-- View Song Credits */
 tp-yt-paper-dialog:has(yt-report-form-modal-renderer)        /* <-- Report UI */ {
-  /* THE FIX: Nuke the internal Polymer dialog background */
   --paper-dialog-background-color: transparent !important;
   background: rgba(30, 30, 30, 0.4) !important;
   
@@ -1642,3 +1690,140 @@ ytmusic-player-queue-item:hover ytmusic-play-button-renderer,
 ytmusic-player-queue-item[selected] ytmusic-play-button-renderer { 
   opacity: 1 !important; 
 }
+
+/* =========================================
+   LUCID THEME: SEAMLESS SEARCH DROPDOWN
+   ========================================= */
+
+/* Z-index fix for navbar */
+ytmusic-app-layout:not([player-ui-state="PLAYER_PAGE_OPEN"]) #nav-bar-background {
+  z-index: 4 !important;
+}
+
+/* STEP 1: Make the original dropdown transparent and set it as an Anchor */
+ytmusic-search-box[is-bauhaus-sidenav-enabled] {
+  --ytmusic-search-background: transparent !important;
+}
+
+ytmusic-search-box[is-bauhaus-sidenav-enabled] #suggestion-list.ytmusic-search-box {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  anchor-name: --search-dropdown; 
+}
+
+/* STEP 2: The Lucid Frosted Glass Layer */
+ytmusic-app-layout::after {
+  content: "";
+  position: fixed; 
+  position-anchor: --search-dropdown;      
+  top: calc(anchor(top) - 40px) !important;              
+  left: anchor(left) !important;            
+  width: calc(anchor-size(width) - 2px) !important;    
+  height: calc(anchor-size(height) + 38px) !important;  
+  
+  /* --- LUCID GLASS STYLING (NOW VARIABLE-BOUND) --- */
+  backdrop-filter: blur(var(--lucid-glass-blur));
+  -webkit-backdrop-filter: blur(var(--lucid-glass-blur));
+  background: var(--lucid-menu-dark-bg);  
+  border-radius: 12px; 
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); 
+  /* --------------------------- */
+  
+  z-index: 4 !important;
+  pointer-events: none; 
+
+  /* Smooth fade-out transition */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.25s !important;
+}
+
+/* STEP 3: Active State Trigger */
+ytmusic-app-layout:has(ytmusic-search-box:focus-within)::after,
+ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
+  opacity: 1;
+  visibility: visible;
+  /* Instant, snappy appear */
+  transition: opacity 0.1s ease-out, visibility 0.1s !important; 
+}
+
+/* =========================================
+   LUCID GLOBAL POLISH: VIDEOS & MAIN BUTTONS
+   ========================================= */
+
+/* 1. Force 16:9 Video Thumbnails to have rounded corners */
+ytmusic-top-result-item-renderer yt-img-shadow,
+ytmusic-responsive-list-item-renderer yt-img-shadow,
+ytmusic-card-shelf-renderer yt-img-shadow {
+    border-radius: 1px !important;
+    overflow: hidden !important;
+    -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
+}
+
+ytmusic-top-result-item-renderer yt-img-shadow img,
+ytmusic-responsive-list-item-renderer yt-img-shadow img,
+ytmusic-card-shelf-renderer yt-img-shadow img {
+    border-radius: 1px !important;
+    height: auto !important; 
+    max-height: 100% !important; 
+}
+
+/* 2. OVERRIDE: Protect Playlists and Albums from the 16:9 shrink */
+ytmusic-responsive-list-item-renderer[music-item-style="MUSIC_ITEM_STYLE_PLAYLIST"] yt-img-shadow img,
+ytmusic-responsive-list-item-renderer[music-item-style="MUSIC_ITEM_STYLE_ALBUM"] yt-img-shadow img {
+    height: 100% !important; /* Forces 1:1 square items to stay square */
+}
+
+/* 3. OVERRIDE: Protect Artists (Restore Perfect Circles across all pages) */
+[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow,
+[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow img,
+ytmusic-responsive-list-item-renderer:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]) yt-img-shadow,
+ytmusic-responsive-list-item-renderer:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]) yt-img-shadow img {
+    border-radius: 50% !important;
+    -webkit-mask-image: none !important;
+    height: 100% !important; /* Reverts the height auto */
+}
+
+/* 4. Style the Main "Play" and "Save" Action Buttons on Top Results (Your Exact Code) */
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--filled,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--filled {
+    background: rgba(255, 255, 255, 0.15) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.25) !important; 
+    border-radius: 24px !important;
+    transition: all 0.2s ease !important;
+}
+
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--outline,
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--tonal,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--outline,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.1) !important; 
+    border-radius: 24px !important;
+    transition: all 0.2s ease !important;
+}
+
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--filled *,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--filled * {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+}
+
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--filled:hover,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--filled:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--outline:hover,
+ytmusic-top-result-item-renderer .yt-spec-button-shape-next--tonal:hover,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--outline:hover,
+ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+

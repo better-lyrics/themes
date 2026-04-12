@@ -89,14 +89,14 @@
       "version": "1.0.1"
     },
     {
-      "commit": "519af04e7b5107674acca04a0caa1001cef598e8",
+      "commit": "2558a0717e82979ac310cfd51663b39119463ad2",
       "id": "lucid",
-      "integrity": "sha256-2a59389d4655d79d462b729cb878df95e18f15a91a7abf19b123679e983d034a",
-      "locked": "2026-04-06T08:19:53Z",
+      "integrity": "sha256-4434ce8e1e18b6d7df3b9be8a4d57a10b6e69a07eca2dd60d11b58a5d3967510",
+      "locked": "2026-04-12T09:56:32Z",
       "repo": "drago-oo/lucid-theme",
-      "version": "1.0.1"
+      "version": "1.1.0"
     }
   ],
-  "updated": "2026-04-10T01:28:20Z",
+  "updated": "2026-04-12T09:56:32Z",
   "version": 1
 }

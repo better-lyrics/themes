@@ -1,5 +1,9 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
+## v1.1.0 Update
+
+- **Search Bar Blur:** Credits to zortas on Discord for finding an implementation to blur the background of search results.
+- **Search Results Page:** Subtle refinements to the overall page.
 
 ## Features
 
@@ -14,10 +18,10 @@ A minimal theme that adds numerous improvements whilst keeping the original YTM 
 
 
 ![Theme Preview](https://raw.githubusercontent.com/drago-oo/lucid-theme/refs/heads/main/images/preview.webp)
-![Home Page & Artist View](https://github.com/drago-oo/lucid-theme/blob/main/images/2.png?raw=true)
-![No Lyrics Display & Footer](https://github.com/drago-oo/lucid-theme/blob/main/images/3.png?raw=true)
-![MV Preview](https://github.com/drago-oo/lucid-theme/blob/main/images/4.png?raw=true)
-![Frosted Glass](https://github.com/drago-oo/lucid-theme/blob/main/images/5.png?raw=true)
+![Home Page & Artist View](https://raw.githubusercontent.com/drago-oo/lucid-theme/refs/heads/main/images/2.png)
+![No Lyrics Display & Footer](https://raw.githubusercontent.com/drago-oo/lucid-theme/refs/heads/main/images/3.png)
+![MV Preview](https://raw.githubusercontent.com/drago-oo/lucid-theme/refs/heads/main/images/4.png)
+![Frosted Glass](https://raw.githubusercontent.com/drago-oo/lucid-theme/refs/heads/main/images/5.png)
 
 ## Installation Notes
 
