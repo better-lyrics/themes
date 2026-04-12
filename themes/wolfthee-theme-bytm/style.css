@@ -33,7 +33,8 @@ blyrics-long-word-threshold = 1000;
   --alt-color: #f03;
 
 
-  --popup-background: rgba(255,255,255,0.15);
+  --popup-background: rgba(5,5,5,0.4);
+  --popup-border: rgba(255,255,255,0.15);
 
 
 
@@ -278,7 +279,7 @@ ytmusic-player[is-mweb-player-page-modernization-enabled]:not([video-mode]) {bor
 /* =========== Sidebar of the album ==================*/
 
 ytmusic-player-queue-item, ytmusic-responsive-list-item-renderer[height-style=MUSIC_RESPONSIVE_LIST_ITEM_HEIGHT_MEDIUM_COMPACT], ytmusic-responsive-list-item-renderer[is-playlist-detail-page], ytmusic-responsive-list-item-renderer[is-album-detail-page] {
-  transition: background-color 0.2s ease-out; /* Hover effect for songs */
+  transition: background-color 0.15s ease-out; /* Hover effect for songs */
   border-radius: var(--radius);
   padding: 4px 8px;
 
@@ -421,25 +422,33 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .center-content.ytmusic-nav-bar { /*
 
 ytmusic-search-box[opened]:has(ytmusic-search-suggestion) .search-box, ytmusic-search-box[opened]:has(ytmusic-responsive-list-item-renderer) .search-box, ytmusic-search-box[is-bauhaus-sidenav-enabled][opened] .search-box.ytmusic-search-box {
   border-radius: var(--radius) var(--radius) 0 0 !important;  /* Make sure search bar follows border radius */
-  border: 1px solid rgba(255,255,255,0.15);
+  border: none;
+  background-color: transparent !important;
+  box-shadow: none;
   &:hover {
-    background-color: black !important;
+    background-color: transparent !important;
     color: white !important;
   }
 }
 
+
+
 /* Search Dropdown List Container - Credit goes to Drago and his Lucid theme */
 ytmusic-search-box #suggestion-list {
+  z-index: 4;
   border-radius: 0 0 var(--radius) var(--radius) !important; 
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+  box-shadow: none;
+  background-color: transparent !important;
+  border: none !important;
   padding: 0 !important; 
   margin-top: 0 !important;
   opacity: 0 !important; 
   visibility: hidden !important;
-  transform: scaleY(0.25) !important; 
+  transform: scaleY(0) !important; 
   transform-origin: top !important; 
   pointer-events: none !important; 
   display: block !important;
+  overflow: hidden;
   transition: opacity 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.2s !important;
 }
 
@@ -503,6 +512,50 @@ ytmusic-tabs.stuck { /* fix tab bar when searching on ytm */
     transform: translateY(10px);
     backdrop-filter: blur(15px) brightness(0.7);
 }
+
+
+
+ytmusic-search-box[has-query] .search-container.ytmusic-search-box, ytmusic-search-box[opened] .search-container.ytmusic-search-box {
+    box-shadow: none;
+}
+
+
+/* Blur background of search dropdown, thank you Zortas!*/
+
+ytmusic-app-layout:not([player-ui-state="PLAYER_PAGE_OPEN"]) #nav-bar-background {
+  z-index: 4 !important;
+}
+
+ytmusic-search-box[is-bauhaus-sidenav-enabled] #suggestion-list.ytmusic-search-box {
+  anchor-name: --search-dropdown;  /* Add an achor for the background */
+}
+
+ytmusic-app-layout::after {
+  z-index: 4 !important;
+  content: "";
+  position: fixed;  /* Add the blurring */
+  position-anchor: --search-dropdown;      
+  top: calc(anchor(top) - 40px) !important;              
+  left: anchor(left) !important;           
+  width: calc(anchor-size(width) - 2px) !important;    
+  height: calc(anchor-size(height) + 38px) !important;  
+  backdrop-filter: blur(21px);
+  border-radius: var(--radius);
+  background: var(--popup-background);
+  border: 1px solid var(--popup-border);
+  box-shadow: none !important;
+
+  /*opacity: 0; */
+}
+
+
+ytmusic-app-layout:has(ytmusic-search-box:focus-within)::after,
+ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
+  /*opacity: 1;*/
+  visibility: visible;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7) !important;
+}
+
 /* =============== PlayerBar ================== */
 #player-bar-background.ytmusic-app-layout { /* Makes the PlayerBar transparent */
   background: rgba(15, 15, 15, 0.15);
@@ -668,11 +721,12 @@ ytmusic-subscribe-button-renderer .yt-spec-button-shape-next--size-m.yt-spec-but
 tp-yt-paper-listbox.ytmusic-menu-popup-renderer *:not(yt-formatted-string, yt-icon.ytmusic-menu-service-item-download-renderer > .ytSpecIconShapeHost > div > svg > rect) {height: 36px !important; /* fix the P symbol for broke people like me :( */}
 tp-yt-paper-item.ytmusic-menu-service-item-download-renderer {--paper-item-min-height: 32px;} /* Make each item in the context menu shorter */
 
-tp-yt-paper-listbox.ytmusic-menu-popup-renderer {
-  padding: 16px 6px;
+tp-yt-paper-listbox.ytmusic-menu-popup-renderer, .ytmusicMultiPageMenuRendererMenuContainer {
+  padding-left: 6px;
+  padding-right: 6px;
 }
 
-ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer {
+ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytmusic-menu-service-item-download-renderer, ytd-compact-link-renderer, .category-menu-item.ytmusic-settings-page {
   border-radius: var(--radius);
 
   &:hover {
@@ -685,11 +739,11 @@ ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmus
 }
 
 
-#contentWrapper.tp-yt-iron-dropdown:not(.ytmusicMultiPageMenuRendererHostAccountMenu){ /* Make the account dropdown consitent with the context menu */
-  background: rgba(20, 20, 20, 0.6) !important;
+#contentWrapper.tp-yt-iron-dropdown:not(.ytmusicMultiPageMenuRendererHostAccountMenu){ /* Make the context menu background diffrent */
+  background: var(--popup-background) !important;
   backdrop-filter: blur(10px);
   color: white;
-  border: 1px solid rgba(255,255,255,0.15) !important;
+  border: 1px solid var(--popup-border) !important;
   border-radius: 8px;
   box-shadow: 3px 3px 15px rgba(0,0,0,0.5);
 }
@@ -708,6 +762,24 @@ ytmusic-browse-response[has-background]:not([disable-gradient]) .background-grad
 
 ytmusic-search-box[has-query] input.ytmusic-search-box, ytmusic-search-box[opened] input.ytmusic-search-box {
     color: unset; /* fixes some visual bugs */
+}
+
+tp-yt-paper-dialog, ytmusic-dialog {
+  background: var(--popup-background) !important;
+  backdrop-filter: blur(10px);
+  color: white;
+  border: 1px solid var(--popup-border) !important;
+  border-radius: 8px;
+  box-shadow: 3px 3px 15px rgba(0,0,0,0.5);
+}
+
+.category-menu.ytmusic-settings-page {
+  padding: 16px 8px;
+}
+
+ytmusic-add-to-playlist-renderer {
+  background: transparent;
+  border: none;
 }
 
 /* ================================= */
