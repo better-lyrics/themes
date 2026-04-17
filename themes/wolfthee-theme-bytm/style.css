@@ -1,4 +1,4 @@
-/* Better YTM, A theme by WolftheE ^w^ */
+/* Better-YTM by WolftheE ^w^*/
 
 /* Hey there, feel free to edit this or use this theme as a base
 If you have any sugestions, tell me on discord. Just ping @wolfthee on the blyrics discord server!
@@ -64,11 +64,11 @@ blyrics-long-word-threshold = 1000;
     display: none;
   }
 
-  /* Custom Welcome Message */
+  /* Custom Welcome Message *//* 
   .strapline.ytmusic-carousel-shelf-basic-header-renderer::before {
     content: "Hello, ";
     text-transform: none;
-  }
+  }*/
 
 }
 /* ================================= */
@@ -183,6 +183,12 @@ blyrics-long-word-threshold = 1000;
 /* ================================= */
 /* Main Player layout */
 /* ================================= */
+
+
+* { /* Scroll bar, make it look cleaner */
+  scrollbar-color: white transparent !important;
+  scrollbar-width: thin;
+}
 
   
 ytmusic-player-page:not([is-mweb-modernization-enabled]) .content.ytmusic-player-page { /* Use full space */ padding: 0 var(--ytmusic-player-page-horizontal-padding) 0;}
@@ -363,6 +369,8 @@ ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
   transition: width 0.5s ease-out;
   overflow: hidden;
 }
+
+
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #guide-wrapper{ /* ensure sidebar stays transparent with media player open */ backdrop-filter: none;}
 ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-renderer {box-shadow: 0px 4px 6px rgba(0,0,0,0.3);}
 #items.ytmusic-guide-section-renderer {padding: 6px !important;}
@@ -371,7 +379,7 @@ ytmusic-guide-section-renderer {padding: 0;}
 
 tp-yt-paper-item.ytmusic-guide-entry-renderer {
   border-radius: var(--radius);
-  transition: background-color 0.3s ease-out, scale 0.6s ease-out, color 0.3s ease-out, box-shadow 0.4s ease-in-out, scale 0.2s ease-out;
+  transition: background-color 0.3s ease-out, scale 0.6s ease-out, color 0.3s ease-out, box-shadow 0.4s ease-in-out, scale 0.25s cubic-bezier(0.34, 2.1, 0.64, 1);
 }
 
 tp-yt-paper-item.ytmusic-guide-entry-renderer:active {
@@ -444,7 +452,7 @@ ytmusic-search-box #suggestion-list {
   margin-top: 0 !important;
   opacity: 0 !important; 
   visibility: hidden !important;
-  transform: scaleY(0) !important; 
+  transform: scaleY(0.25) !important; 
   transform-origin: top !important; 
   pointer-events: none !important; 
   display: block !important;
@@ -545,13 +553,14 @@ ytmusic-app-layout::after {
   border: 1px solid var(--popup-border);
   box-shadow: none !important;
 
-  /*opacity: 0; */
+  transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  opacity: 0; 
 }
 
 
 ytmusic-app-layout:has(ytmusic-search-box:focus-within)::after,
 ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
-  /*opacity: 1;*/
+  opacity: 1;
   visibility: visible;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7) !important;
 }
@@ -696,14 +705,13 @@ ytmusic-chip-cloud-chip-renderer[chip-style=STYLE_LARGE_TRANSLUCENT_AND_SELECTED
   border-radius: var(--radius) !important;
   background-color: rgba(255, 255, 255, 0.1);
   border: none;
-  transition: background-color 0.5s ease-out, color 0.5s ease-out, scale 0.3s ease-out;
+  transition: background-color 0.23s ease-in-out, color 0.23s ease-out, scale 0.3s cubic-bezier(0.34, 2.1, 0.64, 1);
   overflow: visible !important;
   box-shadow: 3px 3px 5px rgba(0,0,0,0.2);
   will-change: background-color, scale, color;
   &:hover {
     background-color: var(--hover-color) !important;
     color: var(--hover-font-color) !important;
-    transition: background-color 0.2s ease-out, color 0.2s ease-out, scale 0.2s ease-out;
   }
   &:active {scale: 0.95;}
 }
@@ -728,6 +736,7 @@ tp-yt-paper-listbox.ytmusic-menu-popup-renderer, .ytmusicMultiPageMenuRendererMe
 
 ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytmusic-menu-service-item-download-renderer, ytd-compact-link-renderer, .category-menu-item.ytmusic-settings-page {
   border-radius: var(--radius);
+  transition: background-color 0.2s ease-out, color 0.25s ease-out;
 
   &:hover {
     background: var(--hover-color) !important;
@@ -738,15 +747,40 @@ ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmus
   }
 }
 
+tp-yt-iron-dropdown {
+  z-index: 4;
+  display: block !important;
+  visibility: visible;
+  transition: visibility 0.5s !important;
+}
 
-#contentWrapper.tp-yt-iron-dropdown:not(.ytmusicMultiPageMenuRendererHostAccountMenu){ /* Make the context menu background diffrent */
+tp-yt-iron-dropdown[aria-hidden="true"] {
+  visibility: hidden;
+}
+
+
+tp-yt-iron-dropdown > div { /* Make the context menu background diffrent */
   background: var(--popup-background) !important;
   backdrop-filter: blur(10px);
   color: white;
   border: 1px solid var(--popup-border) !important;
-  border-radius: 8px;
+  border-radius: var(--radius);
   box-shadow: 3px 3px 15px rgba(0,0,0,0.5);
+
+  transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+  opacity: 0;
+  transform: scale(0.85) !important; 
 }
+
+tp-yt-iron-dropdown:not(tp-yt-iron-dropdown[aria-hidden="true"]) > div{
+  opacity: 1 !important;
+  transform: scale(1) !important; 
+}
+
+
+
+
+
 
 #container.ytmusic-multi-select-menu-renderer, #items.ytmusic-multi-select-menu-renderer, tp-yt-paper-listbox {
   min-width: 305px;
@@ -769,12 +803,12 @@ tp-yt-paper-dialog, ytmusic-dialog {
   backdrop-filter: blur(10px);
   color: white;
   border: 1px solid var(--popup-border) !important;
-  border-radius: 8px;
+  border-radius: var(--radius);
   box-shadow: 3px 3px 15px rgba(0,0,0,0.5);
 }
 
 .category-menu.ytmusic-settings-page {
-  padding: 16px 8px;
+  padding: 8px;
 }
 
 ytmusic-add-to-playlist-renderer {
