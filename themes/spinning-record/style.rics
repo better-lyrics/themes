@@ -1,0 +1,100 @@
+/* Spinning Record, a custom theme for BetterLyrics */
+
+:root {
+  /* Reduced the layout width so it stops crushing the lyrics box */
+  --yt-album-size: 65vh; 
+  --blyrics-lyric-active-color: color(display-p3 1 1 1 /1);
+  --blyrics-lyric-inactive-color: color(display-p3 1 1 1 /0.2);
+}
+
+/* THE SPINNING ANIMATION */
+@keyframes spinRecord {
+  from {
+    /* Added scale(1.5) to make it massive visually without breaking the layout */
+    transform: translateY(-5vh) translateX(-10vh) scale(1.5) rotate(0deg);
+  }
+  to {
+    transform: translateY(-5vh) translateX(-10vh) scale(1.5) rotate(360deg);
+  }
+}
+
+/* 2. SHAPE, ANIMATE, AND DARKEN THE ALBUM ART */
+ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not([blyrics-dfs]):not([player-ui-state="MINIPLAYER"]) #player.ytmusic-player-page {
+  width: var(--yt-album-size) !important;
+  max-width: var(--yt-album-size) !important;
+  aspect-ratio: 1 / 1; 
+  border-radius: 50%; 
+  overflow: hidden;
+  will-change: transform;
+  animation: spinRecord 60s linear infinite !important; 
+  filter: brightness(.6) !important; 
+  /* THE GLOW EFFECT */
+  /* Syntax: [X-offset] [Y-offset] [Blur] [Spread] [Color] */
+  box-shadow: 0 0 35px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 3. ADD THE DARK FADE TO THE LEFT SIDE */
+ytmusic-player-page::after {
+  content: "";
+  /* Changed to fixed so it anchors to the literal window, not the YT container */
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 50vw; 
+  height: 100vh; /* Changed to vh to cover the whole vertical window */
+  /*background: linear-gradient(to right, rgba(0, 0, 0, .9) 0%, rgba(0,0,0,0) 50%);*/
+  pointer-events: none; 
+  z-index: 100; 
+}
+
+/* HIDE THE SONG/VIDEO TOGGLE SWITCH */
+ytmusic-av-toggle {
+  display: none !important;
+}
+
+/* 4. CUSTOMIZE THE SLIDER COLOR */
+tp-yt-paper-slider {
+  --paper-slider-active-color: #C4C4C4 !important; 
+  --paper-slider-knob-color: #00976 !important; 
+}
+
+tp-yt-paper-progress {
+  --paper-progress-active-color: #C4C4C4 !important; 
+}
+
+tp-yt-paper-toast,
+tp-yt-paper-toast.yt-notification-action-renderer,
+#toast.ytmusic-notification-text-renderer {
+  /* Overriding the theme's layout color for a truer glass look */
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+}
+
+ytmusic-search-box .search-box,
+.search-container.ytmusic-search-box {
+  border: none !important;
+  outline: none !important;
+}
+
+/* --- BetterLyrics Rules --- */
+
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--line:has(~ .blyrics--active):not(.blyrics--active) {
+  opacity: 0.5;
+  filter: blur(1.5px);
+  transition: filter 0.5s 0.35s, opacity 0.5s 0.35s, transform 0.166s var(--blyrics-anim-delay, 0s) !important;
+}
+
+.blyrics-container > div.blyrics--active {
+  opacity: 1;
+  filter: blur(0px);
+}
+
+.blyrics-container > div {
+  transition: filter 0.5s 0s, opacity 0.5s 0s, transform 0.166s var(--blyrics-anim-delay, 0s) !important;
+}
+
+/* 2. HIDE THE BETTERLYRICS FOOTER INFO */
+.blyrics-footer {
+  display: none !important;
+}

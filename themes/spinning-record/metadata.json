@@ -1,0 +1,17 @@
+{
+  "id": "spinning-record",
+  "title": "Spinning Record",
+  "creators": [
+    "Xtremerspro"
+  ],
+  "minVersion": "2.0.5.6",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": ["animated", "minimal"],
+  "images": [
+    "1.png",
+    "2.png",
+    "3.png"
+  ],
+  "description": "A custom theme for Better Lyrics that makes the boring square album cover into a spinning record"
+}
