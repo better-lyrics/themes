@@ -1,5 +1,5 @@
 
-/* 2026-03-13T18-11-18 v1.6.13.1                    */
+/* 2026-04-21T12-28-14 v1.6.15                      */
 
 /* Install from Theme Marketplace to always have    */ 
 /* the latest version!                              */
@@ -32,10 +32,8 @@
 
 /* ## SECTION-2 - WEBSITE-WIDE FONT SETTINGS ###### */
 * {
-  --whole-website-font-family:  "Roboto Flex", "Roboto",
-                                var(--noto-sans-universal),
-                                sans-serif,
-                                system-ui ;
+  --whole-website-font-family: "Roboto Flex",
+                                var(--noto-sans-universal), Roboto, sans-serif, system-ui;
   /* Font for everthing, delete above line if you   */
   /* want to use YT default                         */
   font-family: var(--whole-website-font-family) !important;
@@ -96,16 +94,18 @@
   brightness(var(--background-brightness)) contrast(var(--background-contrast))
   blur(var(--blyrics-background-blur));
   
-  
   /*# SECTION-3.4 Custom Variables ################ */
   --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
-  --white-1: oklch(1 0 0 / 1);
-  --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-1:      oklch(1 0 0 / 1);
   --white-dot-87: oklch(1 0 0 / 0.87);
+  --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-dot-15: oklch(1 0 0 / 0.15);
   --white-dot-10: oklch(1 0 0 / 0.10);
   --black-dot-87: oklch(0 0 0 / 0.87);
+  --black-dot-60: oklch(0 0 0 / 0.60);
   
-  /* ## End of SECTION-3 ########################## */
+  
+  /* ## End of SECTION-3.4 ######################## */
   
   
   /* Do not delete the following bracket            */
@@ -397,8 +397,8 @@ ytmusic-player-page[player-fullscreened]::before {
 
 /* ## SECTION-9 - Album Art Effects ############### */
 #player.ytmusic-player-page {
-  border-radius: 8px !important;
-  box-shadow: 0 4px 18px oklch(0.18 0 0/0.1) !important;
+  border-radius: 1.5em !important;
+  box-shadow: none !important; 
 }
 
 /* ## SECTION-10 - Portrait Window Lyrics Screen ## */
@@ -522,9 +522,8 @@ tp-yt-paper-toast #close-button {
   background: oklch(0.63 0.19 257.14 / 0.13);
 }
 
-/* Only target toasts inside the action renderer */
 yt-notification-action-renderer #toast:not(:hover) {
-  animation: idontwannaseeyouanymore-billie 2.5s ease 2.5s forwards;
+  animation: idontwannaseeyouanymore-billie 2.5s ease 2.5s forwards !important;
 }
 
 yt-notification-action-renderer #toast:hover {
@@ -538,6 +537,8 @@ yt-notification-action-renderer #toast:hover {
 
 @keyframes idontwannaseeyouanymore-billie {
   0% {
+    opacity: 1;
+    transform: translateY(0);
     animation-timing-function: ease-in;
   }
   87% {
@@ -1200,3 +1201,65 @@ ytmusic-player-bar[is-mweb-player-bar-modernization-enabled] #progress-bar.ytmus
   color: var(--white-dot-87) !important;
   font-weight: 200 !important;
 } 
+
+/* ### Section 33 - Audio-Video toggle ############ */
+
+#av-id .av-toggle.ytmusic-av-toggle {
+    background-color: var(--white-dot-10);
+    border: 1px solid var(--white-dot-10);
+    display: inline-flex;
+    overflow: hidden;
+
+    ytmusic-app-layout[player-ui-state="FULLSCREEN"] & {
+        background-color: var(--black-dot-87);
+        border-color: var(--black-dot-60);
+    }
+}
+
+#av-id ytmusic-av-toggle {
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+#av-id ytmusic-av-toggle:hover {
+    opacity: 0.87;
+}
+
+#av-id :is(.song-button, .video-button).ytmusic-av-toggle {
+    background-color: transparent;
+    color: var(--white-dot-60);
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: all 0.2s ease; /* remove if it causes issues */
+}
+
+#av-id ytmusic-av-toggle :is(.song-button, .video-button)[aria-pressed="true"] {
+    background-color: var(--white-dot-15);
+    color: var(--white-1);
+    box-shadow: inset 0 0 0 1px var(--white-dot-10);
+}
+
+#av-id ytmusic-av-toggle[toggle-disabled] {
+    opacity: 0.1;
+}
+
+#av-id ytmusic-av-toggle[toggle-disabled]:hover {
+    opacity: 0.4;
+}
+
+#av-id ytmusic-av-toggle[toggle-disabled] button.ytmusic-av-toggle {
+    cursor: default;
+}
+
+#av-id ytmusic-av-toggle[toggle-disabled] button.ytmusic-av-toggle[aria-pressed="false"] {
+    color: var(--white-dot-15);
+} 
+
+@media (min-width: 1364px) and (max-width: 1577px) {
+    ytmusic-player-page { 
+        --ytmusic-player-page-vertical-padding: calc(40px * 0.4); 
+    } 
+}
+
