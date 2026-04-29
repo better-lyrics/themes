@@ -36,6 +36,8 @@ blyrics-long-word-threshold = 1000;
   --popup-background: rgba(5,5,5,0.4);
   --popup-border: rgba(255,255,255,0.15);
 
+  --background-blur: blur(21px);
+
 
 
   /* blyrics config, feel free to edit this */
@@ -51,9 +53,11 @@ blyrics-long-word-threshold = 1000;
   --blyrics-fullscreen-panel-size: 55%;
 
 
-  --blur-amount: blur(60px);
+  --blur-amount: blur(55px);
   --music-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 24 24'%3E%3Cpath d='M10 21q-1.65 0-2.825-1.175T6 17t1.175-2.825T10 13q.575 0 1.063.138t.937.412V4q0-.425.288-.712T13 3h4q.425 0 .713.288T18 4v2q0 .425-.288.713T17 7h-3v10q0 1.65-1.175 2.825T10 21'/%3E%3C/svg%3E%0A");
 
+
+  --bezier-hover: cubic-bezier(.2, 0, .6, 1);
 
   /* remove these if you want these buttons back */
   .dislike { /* Dislike button */
@@ -229,12 +233,14 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])[player-fullscreened]:not
 ytmusic-player-page:before { /* Cool blured background with Blyrics! */
   background-size: cover;
   transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
-  filter: brightness(45%) var(--blur-amount) saturate(200%);
+  filter: brightness(45%) var(--blur-amount) saturate(115%);
   /*animation: movebackground 20s infinite ease-out; */
   object-fit: cover;
   object-position: center;
-  scale: 1.2;
+  scale: 1;
   transition: background 4s ease-out !important;
+  inset: calc(0px - var(--ytmusic-nav-bar-height)) 0 0 calc(0px - var(--ytmusic-guide-width));
+  height: 100vh;
 }
 
 /* =========== The Main part, the Album art ==================*/
@@ -264,8 +270,16 @@ ytmusic-player[is-mweb-player-page-modernization-enabled]:not([video-mode]) {bor
 .song-media-controls.ytmusic-player {background: none;}
 
 .top-row-buttons.ytmusic-player > * {
-  box-shadow: 0 0 15px 5px rgba(0,0,0,0.5); 
-  background: rgba(0,0,0,0.5); 
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
+    transition: scale 0.3s var(--bezier-hover);
+
+    &:hover {
+      scale: 1.2;
+    }
 }
 
 /* video toggle for the pay to win users - PS I can't fully test as I'm a broke user :( */
@@ -365,7 +379,7 @@ ytmusic-app-layout[is-bauhaus-sidenav-enabled] #mini-guide-background.ytmusic-ap
 
 ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
   background: rgba(0,0,0,0.3); 
-  backdrop-filter: blur(20px) brightness(110%);
+  backdrop-filter: var(--background-blur) brightness(110%);
   transition: width 0.5s ease-out;
   overflow: hidden;
 }
@@ -494,7 +508,6 @@ ytmusic-search-box #suggestion-list ytmusic-responsive-list-item-renderer:hover 
 ytmusic-nav-bar[is-bauhaus-sidenav-enabled][is-search-page] .center-content.ytmusic-nav-bar { /* Center Search bar */ 
     position: absolute;
     width: 100% !important;
-    left: 50% !important;
     margin-left: 0 !important;
     transform: none !important;
     padding-left: 0 !important;
@@ -568,7 +581,7 @@ ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
 /* =============== PlayerBar ================== */
 #player-bar-background.ytmusic-app-layout { /* Makes the PlayerBar transparent */
   background: rgba(15, 15, 15, 0.15);
-  backdrop-filter: blur(10px) brightness(110%);
+  backdrop-filter: var(--background-blur);
 }
 ytmusic-player-bar { /* Makes it transparent when in Media View */
   background-color: transparent;
@@ -778,7 +791,7 @@ tp-yt-iron-dropdown[aria-hidden="true"] {
 
 tp-yt-iron-dropdown > div { /* Make the context menu background diffrent */
   background: var(--popup-background) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--background-blur);
   color: white;
   border: 1px solid var(--popup-border) !important;
   border-radius: var(--radius);
@@ -815,9 +828,9 @@ ytmusic-search-box[has-query] input.ytmusic-search-box, ytmusic-search-box[opene
     color: unset; /* fixes some visual bugs */
 }
 
-tp-yt-paper-dialog, ytmusic-dialog {
+tp-yt-paper-dialog, ytmusic-dialog {  /* Dialogs */
   background: var(--popup-background) !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: var(--background-blur);
   color: white;
   border: 1px solid var(--popup-border) !important;
   border-radius: var(--radius);
@@ -828,9 +841,10 @@ tp-yt-paper-dialog, ytmusic-dialog {
   padding: 8px;
 }
 
-ytmusic-add-to-playlist-renderer {
+ytmusic-add-to-playlist-renderer, ytmusic-playlist-form { /* hide the background on these dialogs */
   background: transparent;
   border: none;
+  caret-color: var(--hover-color);
 }
 
 /* ================================= */
@@ -864,7 +878,7 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   background-repeat: no-repeat;
   transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
   filter: brightness(15%) var(--blur-amount) saturate(200%);
-  scale: 1.2;
+  scale: 1;
 }
 
 /* ================================= */

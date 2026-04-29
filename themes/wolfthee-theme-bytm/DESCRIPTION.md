@@ -17,7 +17,10 @@
 This theme works best with the album art background enabled.
 If using a laptop, disable Show stylized animations to save power.
 
-## This version changelog - ver 2.5.1
+## This version changelog - ver 2.6.0
 - Bug fixes
-- Made some changes that allows this theme to work on non blyrics css loaders
-- Fix buttons with a update ytm did?
+- More bug fixes
+- Optimizations
+- More bug fixes
+- and more bug fixes
+- Oh and made the UI that has blurry backgrounds more readable
