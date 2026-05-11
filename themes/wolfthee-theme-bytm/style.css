@@ -36,7 +36,7 @@ blyrics-long-word-threshold = 1000;
   --popup-background: rgba(5,5,5,0.4);
   --popup-border: rgba(255,255,255,0.15);
 
-  --background-blur: blur(21px);
+  --background-blur: blur(32px);
 
 
 
@@ -53,7 +53,7 @@ blyrics-long-word-threshold = 1000;
   --blyrics-fullscreen-panel-size: 55%;
 
 
-  --blur-amount: blur(55px);
+  --album-art-blur: blur(55px);
   --music-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 24 24'%3E%3Cpath d='M10 21q-1.65 0-2.825-1.175T6 17t1.175-2.825T10 13q.575 0 1.063.138t.937.412V4q0-.425.288-.712T13 3h4q.425 0 .713.288T18 4v2q0 .425-.288.713T17 7h-3v10q0 1.65-1.175 2.825T10 21'/%3E%3C/svg%3E%0A");
 
 
@@ -99,10 +99,10 @@ blyrics-long-word-threshold = 1000;
 
 @keyframes blyrics-glow { /* Changed glow on lyrics a bit*/
   0% {
-    filter: drop-shadow(0 0 0.8rem var(--blyrics-glow-color));
+    filter: drop-shadow(0 0 1rem var(--blyrics-glow-color));
   }
   67% {
-    filter: drop-shadow(0 0 0.2rem var(--blyrics-glow-color));
+    filter: drop-shadow(0 0 0.1rem var(--blyrics-glow-color));
   }
   to {
     filter: drop-shadow(0 0 0rem var(--blyrics-glow-color));
@@ -233,7 +233,8 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])[player-fullscreened]:not
 ytmusic-player-page:before { /* Cool blured background with Blyrics! */
   background-size: cover;
   transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
-  filter: brightness(45%) var(--blur-amount) saturate(115%);
+  filter: brightness(45%) var(--album-art-blur) saturate(125%);
+  mask-image: linear-gradient(#000, transparent);
   /*animation: movebackground 20s infinite ease-out; */
   object-fit: cover;
   object-position: center;
@@ -308,6 +309,10 @@ ytmusic-player-queue-item, ytmusic-responsive-list-item-renderer[height-style=MU
   }
 }
 
+ytmusic-app[is-bauhaus-sidenav-enabled] tp-yt-app-drawer.ytmusic-app {
+    top: 0;
+    z-index: 3;
+}
 
 ytmusic-responsive-list-item-renderer[play-button-state=paused], ytmusic-player-queue-item[play-button-state=loading], ytmusic-player-queue-item[play-button-state=playing], ytmusic-player-queue-item[play-button-state=paused] {
   box-shadow: 3px 3px 8px rgba(0,0,0,0.2); /* Adds fancy selected song in the song tab*/
@@ -375,11 +380,11 @@ tp-yt-paper-tab:nth-child(4).ytmusic-player-page[aria-selected="true"] {opacity:
 ytmusic-app-layout[is-bauhaus-sidenav-enabled] #mini-guide-background.ytmusic-app-layout, .image.ytmusic-immersive-header-renderer~.content-container-wrapper.ytmusic-immersive-header-renderer .gradient-container.ytmusic-immersive-header-renderer, ytmusic-immersive-header-renderer, .image.ytmusic-immersive-header-renderer~.content-container-wrapper.ytmusic-immersive-header-renderer   {
     background: none;
     border-right: none;
+    z-index: 2;
 }
 
 ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
   background: rgba(0,0,0,0.3); 
-  backdrop-filter: var(--background-blur) brightness(110%);
   transition: width 0.5s ease-out;
   overflow: hidden;
 }
@@ -417,15 +422,16 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
 .search-container.ytmusic-search-box { /* Fixes some visual bugs with the search bar */ overflow: visible;}
 
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background, #nav-bar-background.ytmusic-app-layout {
-  background-image: linear-gradient(var(--titlebar-color) 1%, rgba(0,0,0,0.2) 100%) !important;
+  background-color: var(--titlebar-color) !important;
   border-bottom: none;
-  backdrop-filter: blur(10px) brightness(110%);
 }
-#nav-bar-background.ytmusic-app-layout { /* Remove duplicated background */background: none;}
+#nav-bar-background.ytmusic-app-layout { /* Remove duplicated background */ 
+  background: none;
+}
 
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background { /* ensure navbar stays transparent with media player open */ 
   backdrop-filter: none;
-  background-image: linear-gradient(var(--titlebar-color) 0%, transparent 70%) !important;
+  background-color: rgba(0,0,0,0) !important;
 }
 
 ytmusic-app-layout[is-bauhaus-sidenav-enabled] #nav-bar-divider.ytmusic-app-layout { border-top: none;}
@@ -518,6 +524,7 @@ ytmusic-search-box #suggestion-list ytmusic-responsive-list-item-renderer {
   background: transparent !important; 
   border-radius: 8px !important; 
   margin: 0 8px !important; 
+  backdrop-filter: var(--background-blur);
   transition: background-color 0.2s ease !important;
 }
 
@@ -531,7 +538,7 @@ ytmusic-tabs.stuck { /* fix tab bar when searching on ytm */
     border-radius: 8px;
     margin: 0 32px;
     transform: translateY(10px);
-    backdrop-filter: blur(15px) brightness(0.7);
+    backdrop-filter: var(--background-blur) brightness(0.7);
 }
 
 
@@ -541,7 +548,9 @@ ytmusic-search-box[has-query] .search-container.ytmusic-search-box, ytmusic-sear
 }
 
 
-/* Blur background of search dropdown, thank you Zortas!*/
+
+
+/* Blur background of search dropdown, thank you Zortas! */
 
 ytmusic-app-layout:not([player-ui-state="PLAYER_PAGE_OPEN"]) #nav-bar-background {
   z-index: 4 !important;
@@ -560,7 +569,7 @@ ytmusic-app-layout::after {
   left: anchor(left) !important;           
   width: calc(anchor-size(width) - 2px) !important;    
   height: calc(anchor-size(height) + 38px) !important;  
-  backdrop-filter: blur(21px);
+  backdrop-filter: var(--background-blur);
   border-radius: var(--radius);
   background: var(--popup-background);
   border: 1px solid var(--popup-border);
@@ -591,7 +600,7 @@ ytmusic-player-bar { /* Makes it transparent when in Media View */
 ytmusic-player-bar { /* Rearange elements of the bar around */
   grid-template-columns: 1fr 0.5fr 1fr !important;
   grid-template-areas: "start middle end" !important;
-  display: grid !important;
+  display: grid;
 }
 
 .left-controls.ytmusic-player-bar { /* Make the player controls center */
@@ -658,16 +667,13 @@ ytmusic-player-bar[is-web-delhi-icons-enabled] yt-icon-button.ytmusic-player-bar
 }
 
 /* media player progression bar */
-.tp-yt-paper-slider {
-  marign: 0px !important;
-  overflow: visible;
-}
+
 #progress-bar.ytmusic-player-bar {left: -12px !important; }  /* Move it a bit for spacing */
 ytmusic-player-bar[player-fullscreened] #progress-bar.ytmusic-player-bar {left: calc(-16px + var(--ytmusic-player-bar-fullscreen-progress-bar-inset)) !important;}  /* Remove the spacing in fullscreen as there already is */
 ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padding-right: 8px !important; } 
 
 #primaryProgress.tp-yt-paper-progress {
-  filter: drop-shadow( 0 0 5px var(--glow));
+  /*filter: drop-shadow( 0 0 5px var(--glow));*/
   transition: transform 0.3s;
   border-radius: 100px;
 }  /* Glow effect on bar*/
@@ -707,8 +713,11 @@ ytmusic-nav-bar[is-bauhaus-sidenav-enabled] .right-content.ytmusic-nav-bar {padd
   background-color: white;
 }
 /* The like buttons */
-#like-button-renderer[like-status="INDIFFERENT"] > .like > button > div > span { content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjRkZGRkZGIj48cGF0aCBkPSJtNDc5Ljc2LTExMS41OC01MS4yMS00Ni4wNnEtMTA0Ljk4LTk1LjgtMTczLjQ5LTE2NS4zMi02OC41Mi02OS41Mi0xMDkuMDUtMTI0LjU0LTQwLjUzLTU1LjAxLTU2Ljc0LTEwMC4zMi0xNi4yLTQ1LjMtMTYuMi05Mi4yIDAtOTQuMzkgNjMuMjUtMTU3LjY1IDYzLjI1LTYzLjI2IDE1Ni43Ny02My4yNiA1NS4xNCAwIDEwMi45NiAyNC41MyA0Ny44MiAyNC41NCA4My43MSA3MC44MyAzOS44OS00OC4yOSA4Ni42Ni03MS44MyA0Ni43Ny0yMy41MyAxMDAuMDEtMjMuNTMgOTMuODYgMCAxNTcuMTggNjMuMjZRODg2LjkzLTczNC40IDg4Ni45My02NDBxMCA0Ni43OS0xNi4xNiA5Mi4wMi0xNi4xNyA0NS4yMy01Ni43NCAxMDAuMi00MC41NyA1NC45OC0xMDkuMTkgMTI0LjY0LTY4LjYxIDY5LjY1LTE3My43MSAxNjUuNWwtNTEuMzcgNDYuMDZabS0uMDgtMTAwLjdxOTkuMjUtOTAuNjcgMTYzLjIzLTE1NS4wNiA2My45Ny02NC40IDEwMS4zNi0xMTIuNTR0NTIuMTUtODUuNjZxMTQuNzYtMzcuNTIgMTQuNzYtNzQuMzYgMC02My4xNC00MC43NS0xMDQuMjEtNDAuNzYtNDEuMDctMTAzLjc0LTQxLjA3LTQ5LjMzIDAtOTEuNSAyOS45MXQtNjUuMTcgODEuNDJoLTYwLjk1cS0yMi4yNS01MS02NC42MS04MS4xNi00Mi4zNi0zMC4xNy05MS40Ny0zMC4xNy02Mi42OSAwLTEwMy4zMSA0MC45Ni00MC42MiA0MC45Ny00MC42MiAxMDQuNDMgMCAzNy4yMSAxNC44NiA3NS4xMyAxNC44NyAzNy45MiA1Mi4yNyA4Ni4zNyAzNy40IDQ4LjQ0IDEwMS40NyAxMTIuNDYgNjQuMDcgNjQuMDMgMTYyLjAyIDE1My41NVptLjU2LTI4Ni41M1oiLz48L3N2Zz4=);}
-#like-button-renderer[like-status="LIKE"] > .like > button > div > span { content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjRkZGRkZGIj48cGF0aCBkPSJtNDc5Ljc2LTExMS41OC01MS4yMS00Ni4wNnEtMTA1LjEzLTk1LjcyLTE3My41Ny0xNjUuMjhUMTQ2LjAxLTQ0Ny41cS00MC41My01NS4wMS01Ni43NC0xMDAuMzItMTYuMi00NS4zLTE2LjItOTIuMTggMC05NC4yOCA2My4yLTE1Ny42MSA2My4yMS02My4zMiAxNTYuODItNjMuMzIgNTUuMSAwIDEwMi45NCAyNC41MyA0Ny44NCAyNC41NCA4My43MyA3MC44MyAzOS44OS00OC4yOSA4Ni42NS03MS44MyA0Ni43Ni0yMy41MyAxMDAuMDItMjMuNTMgOTMuNzcgMCAxNTcuMTQgNjMuMzIgNjMuMzYgNjMuMzMgNjMuMzYgMTU3LjYxIDAgNDYuOC0xNi4xNiA5Mi4wMi0xNi4xNyA0NS4yMy01Ni43NCAxMDAuMi00MC41NyA1NC45OC0xMDkuMTMgMTI0LjY2VDUzMS4xMy0xNTcuNjRsLTUxLjM3IDQ2LjA2WiIvPjwvc3ZnPg==);}
+ytmusic-like-button-renderer[like-status="INDIFFERENT"] > .like > button > div > span { 
+  content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjRkZGRkZGIj48cGF0aCBkPSJtNDc5Ljc2LTExMS41OC01MS4yMS00Ni4wNnEtMTA0Ljk4LTk1LjgtMTczLjQ5LTE2NS4zMi02OC41Mi02OS41Mi0xMDkuMDUtMTI0LjU0LTQwLjUzLTU1LjAxLTU2Ljc0LTEwMC4zMi0xNi4yLTQ1LjMtMTYuMi05Mi4yIDAtOTQuMzkgNjMuMjUtMTU3LjY1IDYzLjI1LTYzLjI2IDE1Ni43Ny02My4yNiA1NS4xNCAwIDEwMi45NiAyNC41MyA0Ny44MiAyNC41NCA4My43MSA3MC44MyAzOS44OS00OC4yOSA4Ni42Ni03MS44MyA0Ni43Ny0yMy41MyAxMDAuMDEtMjMuNTMgOTMuODYgMCAxNTcuMTggNjMuMjZRODg2LjkzLTczNC40IDg4Ni45My02NDBxMCA0Ni43OS0xNi4xNiA5Mi4wMi0xNi4xNyA0NS4yMy01Ni43NCAxMDAuMi00MC41NyA1NC45OC0xMDkuMTkgMTI0LjY0LTY4LjYxIDY5LjY1LTE3My43MSAxNjUuNWwtNTEuMzcgNDYuMDZabS0uMDgtMTAwLjdxOTkuMjUtOTAuNjcgMTYzLjIzLTE1NS4wNiA2My45Ny02NC40IDEwMS4zNi0xMTIuNTR0NTIuMTUtODUuNjZxMTQuNzYtMzcuNTIgMTQuNzYtNzQuMzYgMC02My4xNC00MC43NS0xMDQuMjEtNDAuNzYtNDEuMDctMTAzLjc0LTQxLjA3LTQ5LjMzIDAtOTEuNSAyOS45MXQtNjUuMTcgODEuNDJoLTYwLjk1cS0yMi4yNS01MS02NC42MS04MS4xNi00Mi4zNi0zMC4xNy05MS40Ny0zMC4xNy02Mi42OSAwLTEwMy4zMSA0MC45Ni00MC42MiA0MC45Ny00MC42MiAxMDQuNDMgMCAzNy4yMSAxNC44NiA3NS4xMyAxNC44NyAzNy45MiA1Mi4yNyA4Ni4zNyAzNy40IDQ4LjQ0IDEwMS40NyAxMTIuNDYgNjQuMDcgNjQuMDMgMTYyLjAyIDE1My41NVptLjU2LTI4Ni41M1oiLz48L3N2Zz4=);}
+
+ytmusic-like-button-renderer[like-status="LIKE"] > .like > button > div > span { 
+  content: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDBweCIgdmlld0JveD0iMCAtOTYwIDk2MCA5NjAiIHdpZHRoPSI0MHB4IiBmaWxsPSIjRkZGRkZGIj48cGF0aCBkPSJtNDc5Ljc2LTExMS41OC01MS4yMS00Ni4wNnEtMTA1LjEzLTk1LjcyLTE3My41Ny0xNjUuMjhUMTQ2LjAxLTQ0Ny41cS00MC41My01NS4wMS01Ni43NC0xMDAuMzItMTYuMi00NS4zLTE2LjItOTIuMTggMC05NC4yOCA2My4yLTE1Ny42MSA2My4yMS02My4zMiAxNTYuODItNjMuMzIgNTUuMSAwIDEwMi45NCAyNC41MyA0Ny44NCAyNC41NCA4My43MyA3MC44MyAzOS44OS00OC4yOSA4Ni42NS03MS44MyA0Ni43Ni0yMy41MyAxMDAuMDItMjMuNTMgOTMuNzcgMCAxNTcuMTQgNjMuMzIgNjMuMzYgNjMuMzMgNjMuMzYgMTU3LjYxIDAgNDYuOC0xNi4xNiA5Mi4wMi0xNi4xNyA0NS4yMy01Ni43NCAxMDAuMi00MC41NyA1NC45OC0xMDkuMTMgMTI0LjY2VDUzMS4xMy0xNTcuNjRsLTUxLjM3IDQ2LjA2WiIvPjwvc3ZnPg==);}
 
 /* ================================= */
 /* Buttons and Context Menus */
@@ -859,6 +868,12 @@ ytmusic-two-row-item-renderer[aspect-ratio=MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_R
     border-radius: var(--radius); /* Fix overlapping issues, also easily change the corner rounding */
 }
 
+#items.ytmusic-carousel { /* add fading for the scrolling items */
+    mask-image: linear-gradient(90deg, transparent, #000 32px, #000 calc(100% - 32px), transparent);
+    max-width: calc(var(--ytmusic-content-width) + 32px);
+    padding: 0 32px;
+}
+
 ytmusic-browse-response[has-background]:not([disable-gradient]) .background-gradient.ytmusic-browse-response {background-image: none; /* Removes repeating images on background*/}
 
 .immersive-background.ytmusic-browse-response ytmusic-fullbleed-thumbnail-renderer.ytmusic-browse-response, ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-immersive-header-renderer, .image.ytmusic-visual-header-renderer{
@@ -877,8 +892,9 @@ ytmusic-immersive-header-renderer[is-bauhaus-sidenav-enabled] .image.ytmusic-imm
   background-position: center;
   background-repeat: no-repeat;
   transform: translate3d(0, 0, 0); /*Attemp to force gpu usage for blur */
-  filter: brightness(15%) var(--blur-amount) saturate(200%);
+  filter: brightness(15%) var(--album-art-blur) saturate(200%);
   scale: 1;
+  will-change: filter;
 }
 
 /* ================================= */

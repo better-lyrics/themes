@@ -1,5 +1,6 @@
 ## The way YouTube Music should have been
 
+## 3.0 is out - New overall look & feel
 
 ## What this themes Adds/Changes
 - Better Scaling
@@ -17,10 +18,9 @@
 This theme works best with the album art background enabled.
 If using a laptop, disable Show stylized animations to save power.
 
-## This version changelog - ver 2.6.0
-- Bug fixes
-- More bug fixes
-- Optimizations
-- More bug fixes
-- and more bug fixes
-- Oh and made the UI that has blurry backgrounds more readable
+## This version changelog - ver 3.0.0
+- Re-designed how I wanted the UI to be done, Remove lots of blured elements and added gradients to background
+- Increased Blur radius
+- Fixed some z-index problems
+- Fix the like icon
+- Bug fixed
