@@ -34,7 +34,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
         }
 
         /* Adjust the layout of the lyric line based on the placement */
-        .blyrics--line {
+        .blyrics--line:not([data-agent="v1000"]) {
             justify-content: if($placement == left, flex-start, if($placement == right, flex-end, flex-start));
             text-align: $placement;
             transform-origin: if($placement == left, left center, if($placement == right, right center, left center)) !important;
