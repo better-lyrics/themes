@@ -1,6 +1,4 @@
-/* Lucid, a marketplace theme by drago-oo */
-
-/* Lucid V1.0.0, a custom theme for BetterLyrics */
+/* Lucid v1.1.1, a custom theme for BetterLyrics */
 
 @font-face {
   font-family: "MySanFrancisco";
@@ -1827,3 +1825,82 @@ ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
     background: rgba(255, 255, 255, 0.15) !important;
 }
 
+/* =========================================
+   CANARY PATCH: FIX "NO LYRICS" OVERFLOW & FOOTER ALIGNMENT
+   ========================================= */
+
+/* 1. Strip the massive dynamic padding and center the "No Lyrics" text */
+.blyrics-container[data-no-lyrics="true"] {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important; /* Keeps the text centered horizontally */
+    height: 100% !important;
+    padding-bottom: 2rem !important;
+    position: relative !important; /* Creates an anchor point for the footer */
+}
+
+/* 2. Break the footer out of the center and pin it to the bottom */
+.blyrics-container[data-no-lyrics="true"] .blyrics-footer,
+.blyrics-container[data-no-lyrics="true"] .blyrics-footer__container {
+    position: absolute !important;
+    bottom: 2rem !important; /* Pushes it near the bottom edge */
+    left: 50% !important;
+    transform: translateX(-50%) !important; /* Centers the buttons horizontally */
+    width: max-content !important;
+}
+
+/* =========================================
+   CANARY PATCH V4: FINAL UNISON & DISCORD FIXES
+   ========================================= */
+
+/* 1. Force the Submitter Card to perfectly center itself below the buttons */
+.blyrics-footer__unison {
+    width: 100% !important; 
+    flex-basis: 100% !important; 
+    display: flex !important;
+    justify-content: center !important; 
+    margin-top: 4px !important; 
+}
+
+/* 2. Apply the premium Lucid Glass specifically to the Unison Cards */
+.blyrics-footer__unison-card,
+.blyrics-unison-dock__inner {
+    background: rgba(255, 255, 255, 0.05) !important; 
+    backdrop-filter: blur(16px) !important; 
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important; 
+    border-radius: 20px !important; 
+}
+
+/* 3. Fix the Off-Centered Vote Buttons Hover State */
+.blyrics-footer__vote {
+    background: rgba(255, 255, 255, 0.08) !important; 
+    border: 1px solid rgba(255, 255, 255, 0.05) !important; 
+    border-radius: 10px !important; 
+    transition: all 0.2s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.blyrics-footer__vote:hover {
+    background: rgba(255, 255, 255, 0.15) !important; 
+    transform: translateY(-2px) !important;
+}
+
+.blyrics-footer__vote svg {
+    transform: none !important;
+    margin: 0 !important;
+}
+
+/* 4. The Discord Icon Fix */
+/* Aggressively forces the grey icon to bright white without breaking its transparency */
+.blyrics-footer__discord svg,
+.blyrics-footer__discord img {
+    filter: brightness(200%) contrast(200%) grayscale(100%) !important;
+    opacity: 1 !important;
+}
