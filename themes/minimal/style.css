@@ -1,5 +1,5 @@
 
-/* 2026-06-02T04-17-36 v1.7.1                       */
+/* 2026-06-09T12-13-38 v1.7.2                       */
 
 /* Install from Theme Marketplace to always have    */ 
 /*   the latest version!                            */
@@ -434,9 +434,23 @@ ytmusic-player-page[player-fullscreened]::before {
 /* ## SECTION-9 - Album Art Effects ############### */
 #player.ytmusic-player-page,
 .image.ytmusic-player-bar {
-  border-radius: 8.7% !important;
+  border-radius: 8% !important;
   corner-shape: superellipse(2);
-  box-shadow: none !important; 
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+#player.ytmusic-player-page {
+  background: transparent;
+}
+
+#song-image,
+#thumbnail,
+#thumbnail img,
+#blyrics-img {
+  border-radius: 8%;
+  corner-shape: superellipse(2);
+  overflow: hidden;
 }
 
 /* ## SECTION-10 - Portrait Window Lyrics Screen ## */
@@ -1697,3 +1711,4 @@ ytmusic-responsive-header-renderer
 ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   color: inherit;
 }
+

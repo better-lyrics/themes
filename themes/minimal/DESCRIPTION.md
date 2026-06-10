@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.6.17)
+# Better Lyrics – Minimal Immersive Theme (v1.7.2)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -10,7 +10,7 @@ This theme removes most lyric swipe and word animations, replacing them with a s
 
 — *Boidu (probably)*
 
-![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.png)
+![Minimal](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.png)
 
 ## 📖 Table of Contents
 - [✨ Who Is This Theme For?](#-who-is-this-theme-for)
@@ -24,6 +24,7 @@ This theme removes most lyric swipe and word animations, replacing them with a s
 - [🎨 UI Enhancements](#-ui-enhancements)
 - [⚙ Performance Notes](#-performance-notes)
 - [🛠 Customization Guide](#-customization-guide)
+- [🎛 Album & Playlist Header Buttons](#-album--playlist-header-buttons)
 - [🔌 Standalone Plugins](#-standalone-plugins)
  
 [`Plugin codeblock for replacing karaoke with opacity based animation at the end`](#-standalone-plugins)
@@ -67,7 +68,7 @@ To revert to default YouTube font:
 
 ### Visibility Model (Section 3.1)
 
-![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.png)
+![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.png)
 
 The theme uses opacity instead of animation emphasis. You can adjust the focus intensity by modifying these variables in `:root` (Section 3.1):
 
@@ -86,6 +87,8 @@ This makes it very easy to:
 
 ### Translations & Romanization
 * **Smooth Reveal:** Translated and romanized lines ease into view beautifully without jarring the layout, when enabled.
+
+![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.png)
 
 ---
 
@@ -186,13 +189,14 @@ Custom loader system:
 
 Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
-![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.png)
 * **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll linked background.
 
-![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.png)
+![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.png)
+
 * **Immersive Album Pages:** Album Pages feature the album cover spanned over the background with black tint.
 
-![Miscellaneous Touches - QoL](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.png)
+ ![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.png)
+
 * **Player Queue:** Sticky headers, custom transparent chip designs, and fixed dragging-state backgrounds.
 * **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
 * **Search & Navigation:** Darker search box backgrounds and customized tab headings with pill-style active indicator.
@@ -203,7 +207,7 @@ Includes refined styling and layout fixes to match the immersive dark aesthetic:
 * **Sidebar Navigation:** Guide items styled with subtle opacity and hover highlight for a cleaner sidebar feel.
 * **Audio/Video Toggle (Section 33):** Restyled A/V toggle with transparent background, opacity-based visibility, and contextual fullscreen variant.
 * **Player Controls (Section 34):** Play/pause button has a subtle filled background. Skip, seek, shuffle, repeat, and icon buttons are opacity-dimmed by default with a highlight ring on hover.
-
+* **Album & Playlist Header Buttons (Section 35):** Action buttons on album and playlist detail pages use transparent backgrounds with a subtle inset ring outline, matching the overall ghost-button aesthetic. The primary play button gets a softened filled treatment; secondary buttons fade in on hover.
 ---
 
 ## ⚙ Performance Notes
@@ -236,7 +240,7 @@ If you want:
 
 ## 🔖 Version
 
-**v1.6.17** — Last updated: 2026-05-21
+**v1.7.2** — Last updated: 2026-06-09
 
 Please report bugs or suggestions on the Better Lyrics Discord.
 
@@ -258,7 +262,7 @@ If you prefer using the default Better Lyrics theme but just want to cherry-pick
   /* 1 would mean 100%   */
   --previous-lyrics-visibility: 0.35;
   /* 0.35 would mean 35% */
-  --next-lyrics-visibility: 0.35;
+  --next-lyrics-visibility: 0.02;
   /* 0.02 would mean 2%  */
   --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
   --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
@@ -270,31 +274,30 @@ If you prefer using the default Better Lyrics theme but just want to cherry-pick
   --blyrics-line-height: 1.5;
   --blyrics-padding: 0.45em;
 
-  --base-white: oklch(1 0 0/1);
-  /* Lyrics Color */
-
-  --base-white-half: oklch(1 0 0 / 0.6);
-  /* Translations etc */
+  --white-1:      oklch(1 0 0 / 1);   /* Lyrics Color      */
+  --white-dot-60: oklch(1 0 0 / 0.60);/* Translations etc  */
 
   --blyrics-lyric-inactive-color: oklch(1 0 0/0.35);
-  --blyrics-lyric-active-color: var(--base-white);
+  --blyrics-lyric-active-color: var(--white-1);
   --blyrics-error-color: oklch(0.75 0.25 20);
   --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
-  --blyrics-translated-color: var(--base-white-half);
+  --blyrics-translated-color: var(--white-dot-60);
 
-  --blyrics-lyric-scroll-duration: 0.5s;
-  /* dont change without blyrics-queue-scroll-ms */
-
-  --blyrics-lyric-scroll-timing-function: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
   /* scroll animation curve */
 
-  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 0.8) var(--blyrics-lyric-scroll-timing-function);
-  /* opacity transition time and curve. Opacity changes twice as fast as it scrolls */
+  --blyrics-lyric-scroll-duration: 0.7s;
+  /* dont change without blyrics-queue-scroll-ms */
+
+  --blyrics-lyric-scroll-timing-function: var(--transition-curve);
+
+  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 0.75) var(--blyrics-lyric-scroll-timing-function);
+  /* opacity transition time and curve */
 
   --blyrics-scale-transition-duration: var(--blyrics-lyric-scroll-duration);
   --blyrics-lyric-highlight-fade-in-duration: var(--blyrics-lyric-scroll-duration);
   --blyrics-lyric-highlight-fade-out-duration: var(--blyrics-lyric-scroll-duration);
-  --blyrics-scroll-timing-offset: 0.5s;
+  --blyrics-scroll-timing-offset: var(--blyrics-lyric-scroll-duration);
   --blyrics-wobble-duration: 0s;
   --blyrics-timing-offset: 0s;
   --blyrics-richsync-timing-offset: 0s;
@@ -308,7 +311,7 @@ blyrics-disable-richsync = true;
 blyrics-line-synced-animation-delay = 0;
 blyrics-lyric-ending-threshold-s = 0;
 blyrics-early-scroll-consider-s = 0;
-blyrics-queue-scroll-ms = 520;
+blyrics-queue-scroll-ms = 720;
 blyrics-debug-renderer = false;
 blyrics-target-scroll-pos-ratio = 0.4;
 blyrics-add-extra-top-padding = true;
@@ -377,14 +380,14 @@ blyrics-add-extra-top-padding = true;
 
 /* Text Colors */
 #blyrics-wrapper .blyrics-container>div>span {
-  color: var(--base-white);
+  color: var(--white-1);
 }
 
 /* Translations and Romanization */
 #blyrics-wrapper :is(.blyrics--romanized, .blyrics--translated),
 #blyrics-wrapper .blyrics--romanized,
 #blyrics-wrapper .blyrics--translated {
-  color: var(--base-white);
+  color: var(--white-1);
   font-size: var(--blyrics-translated-font-size);
   line-height: 1.5;
   opacity: var(--translated-lyric-visibility);
