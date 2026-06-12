@@ -3,10 +3,10 @@
         "pos": 0,
         "type": "dropdown",
         "label": "Which side the album cover should be placed on",
-        "options": {
-            "Left": "left",
-            "Right": "right"
-        },
+        "options": [
+            { "label": "Left", "value": "left" },
+            { "label": "Right", "value": "right" }
+        ],
         "attribute": "placement",
         "attrType": "rics",
         "default": 0
