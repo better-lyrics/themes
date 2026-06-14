@@ -1,0 +1,532 @@
+/* ==========================================
+   APPLE MUSIC V3 
+   ========================================== */
+
+:root {
+  --art-size: 480px;
+  --lyrics-offset: 80px;
+
+  --blyrics-font-family: "SF Pro Display", Inter, -apple-system, sans-serif;
+  --blyrics-font-size: 3.8rem;
+  --blyrics-font-weight: 600;
+  --blyrics-line-height: 1.15;
+
+  --blyrics-lyric-active-color: rgba(255,255,255,5);
+  --blyrics-lyric-inactive-color: rgba(255,255,255,.20);
+}
+
+/* ==========================================
+   BACKGROUND (DEEP GLOW FIX)
+   ========================================== */
+
+ytmusic-player-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--blyrics-background-img);
+  background-size: cover !important;
+  background-position: center !important;
+
+  /* Apple Music massive blur & vibrant glow */
+  filter: blur(100px) saturate(300%) brightness(0.65) contrast(1.1);
+  
+  transform: scale(1.5);
+  opacity: 1;
+  z-index: -1;
+  will-change: filter, transform;
+}
+
+/* Dark Overlay */
+ytmusic-player-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+      to right,
+      rgba(0,0,0,0.2),
+      rgba(0,0,0,0.5)
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ==========================================
+   ARTWORK 
+   ========================================== */
+ytmusic-player-page:not([player-fullscreened]) #player:not([player-ui-state="MINIPLAYER"]):not([player-ui-state="PLAYER_BAR_ONLY"]),
+ytmusic-player-page[player-fullscreened] #player {
+  width: var(--art-size) !important;
+  height: var(--art-size) !important;
+  min-width: var(--art-size) !important;
+  border-radius: 33px !important;
+  overflow: hidden !important;
+  left: 5% !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,.55) !important;
+}
+
+#player:not([player-ui-state="MINIPLAYER"]) img {
+  border-radius: 32px !important;
+  transition: transform 2s ease !important;
+}
+
+#player:not([player-ui-state="MINIPLAYER"]) img:hover {
+  transform: scale(1.02) !important;
+}
+
+/* ==========================================
+   SONG INFO
+   ========================================== */
+
+#blyrics-title {
+  font-size: 2.2rem !important;
+  font-weight: 700 !important;
+  text-align: center;
+}
+
+#blyrics-artist {
+  text-align: center;
+  opacity: .7;
+}
+
+/* ==========================================
+   LYRICS AREA
+   ========================================== */
+
+.blyrics-container {
+  max-width: 900px !important;
+  margin-left: var(--lyrics-offset) !important;
+  padding-right: 70px !important;
+}
+
+/* ==========================================
+   LYRIC LINES 
+   ========================================== */
+
+.blyrics--line {
+  color: white !important;
+  opacity: 0.50 !important;
+  text-align: right !important; /* Right aligned like the image */
+  
+  /* Out-of-focus blur for inactive lines */
+  filter: blur(2.8px) !important; 
+  
+  transform: scale(0.9);
+  transform-origin: right center !important;
+  
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  margin-bottom: 24px !important;
+  line-height: 1.25 !important;
+}
+
+/* Active Line */
+.blyrics--line.blyrics--animating {
+  opacity: 1 !important;
+  font-weight: 700 !important;
+  
+  transform: scale(1.05);
+  
+  filter: blur(0px) !important; /* Sharp and clear */
+  
+  /* Dark shadow instead of glowing white shadow */
+  text-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5) !important; 
+}
+
+/* ==========================================
+   URDU / ARABIC FIX
+   ========================================== */
+
+[lang="ur"],
+[lang="ar"],
+.blyrics--line[dir="rtl"] {
+  direction: rtl !important;
+  text-align: center !important;
+  margin: auto !important;
+}
+
+/* ==========================================
+   TRANSLITERATION
+   ========================================== */
+
+.blyrics--subline {
+  opacity: .55;
+  font-size: .45em;
+}
+
+/* ==========================================
+   FOOTER
+   ========================================== */
+
+.blyrics-footer__container {
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+/* ==========================================
+   SCROLLBAR
+   ========================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.15);
+  border-radius: 999px;
+}
+
+/* ==========================================
+   FULLSCREEN
+   ========================================== */
+
+#layout[player-fullscreened]
+.blyrics-container {
+  margin-left: 320px !important;
+}
+
+/* ==========================================
+   SMALL SCREENS
+   ========================================== */
+
+@media (max-width:1400px) {
+  :root {
+    --art-size: 350px;
+    --lyrics-offset: 220px;
+  }
+}
+
+/* ==========================================
+   FLOATING PILL PLAYER BAR (Minimalist)
+   ========================================== */
+
+ytmusic-app-layout > [slot=player-bar] {
+  background: transparent !important;
+}
+
+/* 1. The Floating Pill Container */
+ytmusic-player-bar {
+  position: fixed !important;
+  bottom: 20px !important; 
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 92% !important;
+  max-width: 1200px !important;
+  height: 60px !important;
+  border-radius: 50px !important; /* Perfect Pill Shape */
+  
+  /* Dark gray glass background, like in the image. */
+  background: rgba(30, 30, 30, 0.85) !important;
+  backdrop-filter: blur(25px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+  
+  display: flex !important;
+  padding: 0 24px !important;
+  box-sizing: border-box !important;
+}
+
+/* Hide YouTube's default full-width background */
+ytmusic-player-bar .background-gradient {
+  display: none !important;
+}
+
+/* 2. Reorder Containers */
+/* Left: Playback Controls */
+.left-controls.ytmusic-player-bar {
+  order: 1 !important;
+  flex: 1 !important;
+  justify-content: flex-start !important;
+}
+
+/* Center: Song Info (Thumbnail, Title, Artist) - Exact like image */
+.middle-controls.ytmusic-player-bar {
+  order: 2 !important;
+  flex: 2 !important;
+  justify-content: center !important;
+}
+
+/* Right: Volume & Menus */
+.right-controls.ytmusic-player-bar {
+  order: 3 !important;
+  flex: 1 !important;
+  justify-content: flex-end !important;
+}
+
+/* 3. Progress Bar (Sleek White line inside the pill) */
+#progress-bar.ytmusic-player-bar {
+  position: absolute !important;
+  bottom: 11px !important; 
+  top: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: calc(100% - 120px) !important; 
+  height: 3px !important;
+  
+  /* White color exactly like the image */
+  --paper-slider-active-color: #ffffff !important; 
+  --paper-slider-secondary-color: rgba(255, 255, 255, 0.15) !important;
+  --paper-slider-container-color: transparent !important;
+  --paper-slider-knob-color: transparent !important;
+}
+
+/* The scrubber dot will reappear on hover. */
+#progress-bar.ytmusic-player-bar:hover {
+  --paper-slider-knob-color: #ffffff !important;
+}
+
+/* 4. Thumbnail & Text Adjustments */
+ytmusic-player-bar .thumbnail-image-wrapper {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 10px !important; /* rounded */
+  margin-right: 15px !important;
+}
+
+ytmusic-player-bar .title {
+  font-family: var(--blyrics-font-family) !important;
+  font-weight: 700 !important;
+  font-size: 15px !important;
+  color: #ffffff !important;
+}
+
+ytmusic-player-bar .byline {
+  font-family: var(--blyrics-font-family) !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Remove circular background from play button (since the image doesn't have it) */
+#play-pause-button.ytmusic-player-bar {
+  background: transparent !important;
+  transform: scale(1.1);
+}
+
+/* ==========================================
+   CLEAN TOP CAPSULE
+   ========================================== */
+
+ytmusic-app-layout[player-fullscreened] ytmusic-nav-bar,
+ytmusic-app[player-fullscreened] ytmusic-nav-bar,
+#layout[player-fullscreened] ytmusic-nav-bar {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* 1. Main Navbar as a Floating Rounded Pill */
+ytmusic-nav-bar {
+  position: fixed !important;
+  top: 4px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 95% !important;
+  max-width: 1400px !important;
+  height: 54px !important;
+  border-radius: 50px !important; /* Perfect Capsule Shape */
+  
+  /* Glassmorphism Background */
+  background: rgba(30, 30, 30, 0.75) !important;
+  backdrop-filter: blur(10px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(10px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 10px !important;
+  z-index: 2000 !important;
+}
+
+/* Hide original background */
+#nav-bar-background.ytmusic-app-layout {
+  display: none !important;
+}
+
+/* 3. (Fully Rounded) */
+ytmusic-nav-bar .center-content {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+}
+
+ytmusic-search-box {
+  width: 100% !important;
+  max-width: 1000px !important; 
+  border-radius: 100px !important;
+}
+
+ytmusic-search-box .search-box {
+  border-radius: 100px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  width: 100% !important;
+  padding:1px !important;
+}
+
+/* 4. Cast & Profile with Right Padding */
+ytmusic-nav-bar .right-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important; 
+  padding-right: 3px !important;
+}
+
+/* Make Cast Button Soft & Premium */
+ytmusic-cast-button {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 100% !important;
+  padding: 8px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  transition: background 0.2s !important;
+}
+
+ytmusic-cast-button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* ==========================================
+   TABS TO APPLE ICONS (With Padding & Hover)
+   ========================================== */
+
+/* 1. Hide the original white underline */
+paper-tabs #selectionBar {
+  display: none !important; 
+}
+
+/* 2. Shape the individual tabs (Padding & Radius) */
+tp-yt-paper-tab {
+  min-width: 50px !important; 
+  height: 50px !important;
+  margin: 0 8px !important; 
+  padding: 0 14px !important; 
+  opacity: 0.05 !important;
+  background: transparent !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  transition: all 0.2s ease !important;
+}
+
+/* 3. Active & Hover States (Soft Background instead of underline) */
+tp-yt-paper-tab.iron-selected {
+  opacity: 1 !important;
+  background: rgba(255, 255, 255, 0.15) !important; 
+}
+
+tp-yt-paper-tab:hover {
+  opacity: 0.8 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 4. Magic: Hide Text & Show Apple Icons */
+tp-yt-paper-tab .tab-content {
+  font-size: 0 !important; 
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* UP NEXT Icon (List) */
+tp-yt-paper-tab:nth-of-type(1) .tab-content::before {
+  content: "\2261"; 
+  font-size: 50px !important; 
+  color: white !important;
+  display: block !important;
+}
+
+/* LYRICS Icon (Quote) */
+tp-yt-paper-tab:nth-of-type(2) .tab-content::before {
+  content: "\275E"; 
+  font-size: 50px !important; 
+  color: white !important;
+  display: block !important;
+}
+
+/* COMMENTS Icon (Chat Bubble) */
+tp-yt-paper-tab:nth-of-type(3) .tab-content::before {
+  content: "\1F5E8"; 
+  font-size: 42px !important; 
+  color: white !important;
+  display: block !important;
+}
+
+/* RELATED Icon (Infinity) */
+tp-yt-paper-tab:nth-of-type(4) .tab-content::before {
+  content: "\221E"; 
+  font-size: 41px !important; 
+  color: white !important;
+  display: block !important;
+}
+
+/* ==========================================
+   SEARCH SUGGESTIONS (Intense Liquid Glass)
+   ========================================== */
+
+/* 1. The Container (Heavy Blur, Low Opacity Base) */
+.sbdd_b, 
+.sbsb_a, 
+ytmusic-search-suggestions-section {
+  /* Base color ekdam patla (0.25 opacity) taaki blur faade */
+  background: rgba(10, 10, 10, 0.25) !important; 
+  
+  /* EXTREME BLUR & SATURATION */
+  backdrop-filter: blur(80px) saturate(300%) contrast(1.1) !important;
+  -webkit-backdrop-filter: blur(80px) saturate(300%) contrast(1.1) !important;
+  
+  /* Glass Edge Reflection */
+  border: 1px solid rgba(255, 255, 255, 0.15) !important; 
+  border-radius: 20px !important; 
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.7) !important; /* Deep floating shadow */
+  margin-top: 10px !important;
+}
+
+/* Hide original solid backgrounds completely */
+.sbdd_b {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+
+ytmusic-search-suggestion-renderer,
+.sbsb_c {
+  transition: background 0.3s cubic-bezier(0.25, 0.1, 0.25, 1) !important;
+  padding: 6px 16px !important;
+}
+
+ytmusic-search-suggestion-renderer:hover,
+.sbsb_c:hover,
+.sbsb_d {
+  
+  background: rgba(255, 255, 255, 0.15) !important; 
+  border-radius: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 3. Text & Icons (Pure & Crisp) */
+ytmusic-search-suggestion-renderer .text,
+.sbsb_a .sbqs_c {
+  font-family: var(--blyrics-font-family, system-ui, -apple-system, sans-serif) !important;
+  color: #ffffff !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.2px !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important; 
+}
+
+ytmusic-search-suggestion-renderer tp-yt-iron-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+ytmusic-search-suggestions-section .heading {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.5px !important;
+  padding-bottom: 10px !important;
+}
