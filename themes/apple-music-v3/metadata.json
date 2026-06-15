@@ -1,0 +1,17 @@
+{
+  "id": "apple-music-refine",
+  "title": "Apple Music refine",
+  "description": "A theme inspired by Apple Music for Better Lyrics.",
+  "creators": ["Ankit"],
+  "minVersion": "1.0.1",
+  "hasShaders": true,
+  "version": "1.0.1",
+  "tags": ["minimal", "colorful", "Blured"],
+  "images": [
+    "player1.png",
+    "Player2.jpg",
+    "Fullsreen1.jpg",
+    "Fullscreen2.jpg",
+    "Homescreen.jpg"
+  ]
+}
