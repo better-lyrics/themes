@@ -119,8 +119,16 @@
       "locked": "2026-06-16T01:31:57Z",
       "repo": "ankit008-mishra/apple-music-v3",
       "version": "1.1.3"
+    },
+    {
+      "commit": "dfcb3554de7365a1e22501729225baee4fafe003",
+      "id": "opacity-based-karaoke",
+      "integrity": "sha256-320b786a2ab72a2db44ea7dfb92be605dc01bcbd6bd170fc6f1dd76495f96c23",
+      "locked": "2026-06-18T20:04:40Z",
+      "repo": "ramansg/Max-Performance-BlyricsTheme",
+      "version": "0.0.21"
     }
   ],
-  "updated": "2026-06-18T18:34:37Z",
+  "updated": "2026-06-18T20:04:40Z",
   "version": 1
 }

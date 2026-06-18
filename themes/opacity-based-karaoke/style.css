@@ -1,0 +1,683 @@
+
+/*
+ *
+ * Max Performance - Opacity based karaoke
+ * v0.0.3
+ * 2026-06-18
+ * 
+ * _"Aye! I'm not saying I lie, but lying sure is fun!" — Boidu (hypothetically)_
+ *
+ */
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   GLOBAL SETUP
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap');
+
+* {
+  --whole-website-font-family: "Google Sans Flex", "Roboto Flex", Roboto, var(--noto-sans-universal), sans-serif, system-ui;
+  font-family: var(--whole-website-font-family) !important;
+  font-optical-sizing: auto;
+  scrollbar-width: thin;
+}
+
+:root {
+	/* hover and scroll opacities */
+  --opacity-non-hovered: .7;
+  --opacity-hovered: .95;
+  --opacity-scrolling: var(--opacity-non-hovered, 0.85);
+	
+	/* translation & romanization opacity multiplier */
+  --opacity-trans-ratio: .82;
+  --opacity-roman-ratio: .55;
+
+	/* karaoke or "richsync" opacities */
+  --opacity-words-past-line: 0;
+  --opacity-words-future-line: 0;
+  --opacity-past-word-current-line: 0;
+  --opacity-current-word-current-line: 1;
+  --opacity-future-word-current-line: 0;
+
+	/* line sync or "synced" opacities */
+  --opacity-line-past: 0;
+  --opacity-line-future: 0;
+  --opacity-line-current: 1;
+
+	/* without sync or "unsynced" opacities */
+  --opacity-unsynced: .87;
+
+	/* other variables */
+  --blyrics-scale: 1;
+  --blyrics-active-scale: 1;
+  --blyrics-lyric-scroll-duration: 750ms;
+  --blyrics-lyric-scroll-timing-function: ease-in-out;
+  --blyrics-font-weight: 700;
+  --transition-curve: ease-in-out;
+}
+
+@property --blyrics-richsync-line-base-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --blyrics-synced-line-base-opacity {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 1 — MAIN LINE TEXT
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+/* ─ A ─ [data-sync="richsync"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word::after {
+  display: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line {
+  opacity: 1;
+  transition-property: transform;
+  transition-duration: .6s;
+  transition-timing-function: ease-in-out;
+  --blyrics-richsync-line-base-opacity: var(--opacity-words-past-line);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--active ~ .blyrics--line,
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating ~ .blyrics--line {
+  --blyrics-richsync-line-base-opacity: var(--opacity-words-future-line);
+  transition-duration: .2s;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line:not(.blyrics--animating):has(~ .blyrics--line.blyrics--animating) {
+  --blyrics-richsync-line-base-opacity: var(--opacity-words-past-line);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating {
+  --blyrics-richsync-line-base-opacity: var(--opacity-future-word-current-line);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word {
+  opacity: var(--blyrics-richsync-line-base-opacity);
+  transition: opacity .3s ease;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word.blyrics--animating {
+  transition: none;
+  will-change: transform, opacity;
+  animation-name: blyrics-word-sung, karaoke-experiment;
+  animation-duration: calc(var(--blyrics-duration) + 200ms), calc(var(--blyrics-duration) + 200ms);
+  animation-fill-mode: forwards;
+  animation-timing-function: ease, ease-in-out;
+  animation-delay: calc(var(--blyrics-anim-delay) - 100ms), calc(var(--blyrics-anim-delay) - 100ms);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word.blyrics--paused,
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--paused {
+  animation-play-state: paused;
+}
+
+@keyframes blyrics-word-sung {
+  0% {
+    opacity: var(--opacity-future-word-current-line);
+    animation-timing-function: ease;
+  }
+  10%, 75% {
+    opacity: var(--opacity-current-word-current-line);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    opacity: var(--opacity-past-word-current-line);
+  }
+}
+
+@keyframes karaoke-experiment {
+  0% {
+    transform: translate(0) scale(1);
+    animation-timing-function: ease;
+  }
+  20% {
+    transform: translateY(-0.15em) translateX(0.1em) scale(1.03);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate(0) scale(1);
+  }
+}
+
+/* ─ B ─ [data-sync="synced"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--word::after {
+  display: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line {
+  opacity: var(--blyrics-synced-line-base-opacity);
+  transition-property: transform, opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  transition-delay: calc(var(--blyrics-synced-line-delay) + 300ms);
+  --blyrics-synced-line-base-opacity: var(--opacity-line-past);
+  --blyrics-synced-line-delay: 0s;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line.blyrics--active ~ .blyrics--line {
+  --blyrics-synced-line-base-opacity: var(--opacity-line-future);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line:not(.blyrics--active):has(~ .blyrics--line.blyrics--active) {
+  --blyrics-synced-line-base-opacity: var(--opacity-line-past);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line.blyrics--active {
+  --blyrics-synced-line-base-opacity: var(--opacity-line-current);
+  transition-duration: 0.3s;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--word {
+  opacity: 1;
+  transition: none;
+  transition-delay: var(--blyrics-synced-line-delay, 0s);
+  animation: none !important;
+}
+
+/* ─ C ─ [data-sync="none"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--word::after {
+  display: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line {
+  opacity: var(--opacity-unsynced);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line > span {
+  color: var(--blyrics-lyric-active-color) !important;
+  opacity: 1;
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 2 — TRANSLATED TEXT
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+/* ─ A ─ [data-sync="richsync"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated {
+  margin-top: .4em;
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: .7071em;
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated:has(.blyrics--word) {
+  opacity: var(--opacity-trans-ratio);
+  transition: none;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated:not(:has(.blyrics--word)) {
+  opacity: calc(var(--blyrics-richsync-line-base-opacity) * var(--opacity-trans-ratio));
+  transition: opacity .3s ease-out;
+  transition-delay: var(--blyrics-anim-delay);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--translated:not(:has(.blyrics--word)) {
+  --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
+  transition: opacity .2s ease-out;
+  transition-delay: var(--blyrics-anim-delay);
+}
+
+/* ─ B ─ [data-sync="synced"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--translated > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--translated {
+  margin-top: .4em;
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: .7071em;
+  color: var(--blyrics-lyric-active-color) !important;
+  opacity: calc(var(--blyrics-synced-line-base-opacity) * var(--opacity-trans-ratio));
+  transition: opacity .3s ease-in-out;
+  transition-delay: 300ms;
+}
+
+/* ─ C ─ [data-sync="none"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--translated > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--translated {
+  margin-top: .4em;
+  font-weight: 600;
+  line-height: 1.5;
+  font-size: .7071em;
+  color: var(--blyrics-lyric-active-color) !important;
+  opacity: var(--opacity-trans-ratio);
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 3 — ROMANIZED TEXT
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+/* ─ A ─ [data-sync="richsync"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: .2em;
+  font-size: .6429em;
+  margin-bottom: .2em;
+  font-weight: 350;
+  letter-spacing: .03em;
+  line-height: 1.5;
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized:has(.blyrics--word) {
+  opacity: var(--opacity-roman-ratio);
+  transition: none;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized:not(:has(.blyrics--word)) {
+  opacity: calc(var(--blyrics-richsync-line-base-opacity) * var(--opacity-roman-ratio));
+  transition: opacity .3s ease-out;
+  transition-delay: var(--blyrics-anim-delay);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--romanized:not(:has(.blyrics--word)) {
+  --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
+  transition: opacity .2s ease-out;
+  transition-delay: var(--blyrics-anim-delay);
+}
+
+/* ─ B ─ [data-sync="synced"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: .2em;
+  font-size: .6429em;
+  margin-bottom: .2em;
+  font-weight: 350;
+  letter-spacing: .03em;
+  line-height: 1.5;
+  color: var(--blyrics-lyric-active-color) !important;
+  opacity: calc(var(--blyrics-synced-line-base-opacity) * var(--opacity-roman-ratio));
+  transition: opacity .3s ease-in-out;
+  transition-delay: 300ms;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--romanized > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+/* ─ C ─ [data-sync="none"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: .2em;
+  font-size: .6429em;
+  margin-bottom: .2em;
+  font-weight: 350;
+  letter-spacing: .03em;
+  line-height: 1.5;
+  color: var(--blyrics-lyric-active-color) !important;
+  opacity: var(--opacity-roman-ratio);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--romanized > span {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 4 — HOVER
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+/* ─ A ─ [data-sync="richsync"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"]:hover .blyrics--line:not(:hover) {
+  transform: scale(1) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--line.blyrics--line:hover {
+  transform: scale(1.1) !important;
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line:hover .blyrics--word {
+  opacity: var(--opacity-hovered) !important;
+  transition: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"]:hover {
+  --opacity-words-past-line: var(--opacity-scrolling);
+  --opacity-words-future-line: var(--opacity-scrolling);
+  --opacity-past-word-current-line: var(--opacity-scrolling);
+  --opacity-future-word-current-line: var(--opacity-scrolling);
+  --opacity-current-word-current-line: 1;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"]:hover .blyrics--line {
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line:hover .blyrics--translated {
+  opacity: calc(var(--opacity-hovered) * var(--opacity-trans-ratio));
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line:hover .blyrics--romanized {
+  opacity: calc(var(--opacity-hovered) * var(--opacity-roman-ratio));
+}
+
+/* ─ B ─ [data-sync="synced"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"]:hover .blyrics--line:not(:hover) {
+  transform: scale(1) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line.blyrics--line.blyrics--line:hover {
+  transform: scale(1.1) !important;
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line:hover .blyrics--word {
+  opacity: var(--opacity-hovered) !important;
+  transition: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"]:hover {
+  --opacity-line-past: var(--opacity-scrolling);
+  --opacity-line-future: var(--opacity-scrolling);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"]:hover .blyrics--line {
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line:hover .blyrics--translated {
+  transition: none !important;
+  opacity: calc(var(--opacity-hovered) * var(--opacity-trans-ratio)) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line:hover .blyrics--romanized {
+  transition: none !important;
+  opacity: calc(var(--opacity-hovered) * var(--opacity-roman-ratio)) !important;
+}
+
+/* ─ C ─ [data-sync="none"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="none"]:hover .blyrics--line:not(:hover) {
+  transform: scale(1) !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line.blyrics--line.blyrics--line:hover {
+  transform: scale(1.1) !important;
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line:hover .blyrics--word {
+  opacity: var(--opacity-hovered) !important;
+  transition: none !important;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"]:hover .blyrics--line:not(.blyrics--active) {
+  opacity: var(--opacity-scrolling);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"]:hover .blyrics--line:not(.blyrics--active):hover {
+  opacity: var(--opacity-hovered);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line:hover .blyrics--translated {
+  opacity: calc(var(--opacity-hovered) * var(--opacity-trans-ratio));
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="none"] .blyrics--line:hover .blyrics--romanized {
+  opacity: calc(var(--opacity-hovered) * var(--opacity-roman-ratio));
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 5 — SCROLLING (.blyrics-user-scrolling)
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+/* ─ A ─ [data-sync="richsync"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"].blyrics-user-scrolling {
+  --opacity-words-past-line: var(--opacity-scrolling);
+  --opacity-words-future-line: var(--opacity-scrolling);
+  --opacity-past-word-current-line: var(--opacity-scrolling);
+  --opacity-future-word-current-line: var(--opacity-scrolling);
+  --opacity-current-word-current-line: 1;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"].blyrics-user-scrolling .blyrics--line {
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+/* ─ B ─ [data-sync="synced"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"].blyrics-user-scrolling {
+  --opacity-line-past: var(--opacity-scrolling);
+  --opacity-line-future: var(--opacity-scrolling);
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="synced"].blyrics-user-scrolling .blyrics--line {
+  transition-property: transform !important;
+  transition-duration: .2s !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}
+
+/* ─ C ─ [data-sync="none"] ───────────────────── */
+
+#blyrics-wrapper .blyrics-container[data-sync="none"].blyrics-user-scrolling .blyrics--line {
+  opacity: var(--opacity-unsynced);
+}
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   SECTION 6 - OTHER STUFF (non-sync-type specific)
+   ++++++++++++++++++++++++++++++++++++++++++++++++++ */
+
+.blyrics--instrumental-icon {
+  display: none;
+}
+
+ytmusic-player-page:before {
+  background: black;
+  filter: none;
+}
+
+@keyframes blyrics-shimmer {
+  0%   { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes blyrics-spin {
+  0%, 100% { transform: none; }
+}
+
+#blyrics-loader::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-loader::after {
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+}
+
+#blyrics-loader:not([state="showing-message"]):not([state="exiting-message"])::after {
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--blyrics-ui-text-color);
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: unset;
+}
+
+#blyrics-loader {
+  visibility: visible !important;
+	transition:
+    opacity var(--blyrics-loader-transition-duration, 0.6s) var(--transition-curve),
+    transform var(--blyrics-loader-transition-duration, 0.6s) var(--transition-curve),
+    display var(--blyrics-loader-transition-duration, 0.6s) allow-discrete !important;
+}
+
+#blyrics-loader[state="hidden"],
+#blyrics-loader:not([state]) {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+#blyrics-loader[state="full-loader"],
+#blyrics-loader[state="small-loader"],
+#blyrics-loader[state="showing-message"],
+#blyrics-loader[state="exiting"],
+#blyrics-loader[state="exiting-message"] {
+  display: flex !important;
+}
+
+@starting-style {
+  #blyrics-loader[state="full-loader"],
+  #blyrics-loader[state="small-loader"],
+  #blyrics-loader[state="showing-message"],
+  #blyrics-loader[state="exiting"],
+  #blyrics-loader[state="exiting-message"] {
+    opacity: 0;
+  }
+}
+
+#blyrics-ad-overlay {
+  display: none !important;
+  opacity: 0;
+	animation-play-state: paused;
+  transition:
+    opacity 0.4s var(--transition-curve),
+		animation-play-state 0.4s allow-discrete
+    display 0.4s allow-discrete !important;
+}
+
+#blyrics-ad-overlay[active],
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+  display: flex !important;
+  opacity: 1;
+}
+
+@starting-style {
+  #blyrics-ad-overlay[active],
+  :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+    opacity: 0;
+  }
+}
+
+#blyrics-ad-overlay::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-ad-overlay::after {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: opacity;
+}
+
+#blyrics-wrapper {
+  transition:
+    transform 0.2s var(--transition-curve),
+    opacity 0.2s var(--transition-curve),
+    display 0.2s allow-discrete !important;
+}
+
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-wrapper,
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
+  display: none !important;
+  opacity: 0 !important;
+}
+
+@starting-style {
+  #blyrics-wrapper {
+    opacity: 0;
+  }
+}
+
+.blyrics--romanized,
+.blyrics--translated {
+  animation: smoothReveal 0.3s var(--transition-curve) backwards;
+  overflow: hidden;
+  transform-origin: top;
+}
+.blyrics--translated {
+  animation-delay: 0.15s;
+}
+@keyframes smoothReveal {
+  from {
+    transform: translateY(-6px) scaleY(0.98);
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    max-height: 0;
+    padding-bottom: 0;
+  }
+  to {
+    transform: translateY(0) scaleY(1);
+    max-height: 500px;
+  }
+}
