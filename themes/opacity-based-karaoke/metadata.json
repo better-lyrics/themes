@@ -1,10 +1,11 @@
 {
   "id": "opacity-based-karaoke",
-  "title": "Max-Performance Opacity-Karaoke",
-  "description": "Replaced background image karaoke with opacity-based karaoke. Visibility level of all the text in the lyrics can be easily edited.",
+  "title": "Opacity Based Karaoke",
+  "description": "Replaced background image karaoke with opacity based karaoke. Visibility level of all the text in the lyrics can be easily edited via  the variables at the top.",
   "creators": ["semicolonhope"],
   "minVersion": "2.2.0.0",
   "hasShaders": false,
-  "version": "0.0.21",
+  "version": "0.0.68",
+  "tags": ["opacity-based"],
   "images": ["Screen_Recording-1.webp", "Screen_Recording-2.webp"]
 }
