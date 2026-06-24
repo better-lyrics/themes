@@ -124,11 +124,26 @@ jobs:
           VERSION="${{ steps.metadata.outputs.version }}"
           REPO="${{ steps.payload.outputs.repo }}"
           COMMIT="${{ steps.payload.outputs.commit }}"
+          MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-          # Remove old vendored files
+          # Stash the outgoing flat build (its files, excluding any existing v/
+          # snapshots) so we can preserve it as a snapshot if the new minVersion
+          # raised the floor. The builds script decides whether we keep it.
+          rm -rf .outgoing
+          if [ -d "themes/$THEME_ID" ]; then
+            mkdir -p .outgoing
+            cp -r "themes/$THEME_ID/." .outgoing/
+            rm -rf .outgoing/v
+          fi
+
+          # Replace the flat build with the new files. Preserve the existing v/
+          # snapshot directory across the swap (snapshots are pruned separately).
+          rm -rf .vsnapshots
+          [ -d "themes/$THEME_ID/v" ] && mv "themes/$THEME_ID/v" .vsnapshots
           rm -rf "themes/$THEME_ID"
           mkdir -p "themes/$THEME_ID"
+          [ -d .vsnapshots ] && mv .vsnapshots "themes/$THEME_ID/v"
 
           # Copy essential files
           cp theme-repo/metadata.json "themes/$THEME_ID/"
@@ -140,13 +155,40 @@ jobs:
           [ -f theme-repo/cover.png ] && cp theme-repo/cover.png "themes/$THEME_ID/"
           [ -d theme-repo/images ] && cp -r theme-repo/images "themes/$THEME_ID/"
 
-          # Calculate integrity hash
-          INTEGRITY=$(find "themes/$THEME_ID" -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+          # Latest integrity is computed over the flat build only, pruning v/ so
+          # the latest hash does not change when snapshots come and go.
+          INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -print -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
-          # Update lockfile
+          # Prior reachable builds[] for this theme (empty array if absent).
+          PRIOR_BUILDS=$(jq -c --arg repo "$REPO" '(.themes[] | select(.repo == $repo) | .builds) // []' index.lock.json)
+
+          # Compute the new builds[], whether to snapshot the outgoing build, and
+          # which old snapshot dirs to prune.
+          PLAN=$(node .github/scripts/builds.mjs "$THEME_ID" "$VERSION" "$MIN_VERSION" "sha256-$INTEGRITY" "$PRIOR_BUILDS")
+          echo "Build plan: $PLAN"
+
+          BUILDS=$(echo "$PLAN" | jq -c '.builds')
+
+          # Materialize the snapshot of the outgoing build, if any.
+          SNAP_PATH=$(echo "$PLAN" | jq -r '.snapshot.path // empty')
+          if [ -n "$SNAP_PATH" ] && [ -d .outgoing ]; then
+            mkdir -p "$SNAP_PATH"
+            cp -r .outgoing/. "$SNAP_PATH/"
+          fi
+
+          # Prune snapshot dirs that fell off the reachable staircase.
+          echo "$PLAN" | jq -r '.deletions[]' | while IFS= read -r dir; do
+            [ -n "$dir" ] && rm -rf "$dir"
+          done
+
+          rm -rf .outgoing
+
+          # Update lockfile: existing fields keep LATEST build values, plus the
+          # additive builds[] array.
           jq --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
              --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
-             '.themes = [.themes[] | if .repo == $repo then {repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t} else . end] | .updated = $t' \
+             --argjson b "$BUILDS" \
+             '.themes = [.themes[] | if .repo == $repo then {repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b} else . end] | .updated = $t' \
              index.lock.json > tmp.json && mv tmp.json index.lock.json
 
           # Format lockfile
@@ -293,6 +335,7 @@ jobs:
 
             THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
             VERSION=$(jq -r '.version' theme-repo/metadata.json)
+            MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
 
             # Validate theme
             OUTPUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
@@ -319,13 +362,20 @@ jobs:
             [ -f theme-repo/cover.png ] && cp theme-repo/cover.png "themes/$THEME_ID/"
             [ -d theme-repo/images ] && cp -r theme-repo/images "themes/$THEME_ID/"
 
-            # Calculate integrity hash
-            INTEGRITY=$(find "themes/$THEME_ID" -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+            # Latest integrity over the flat build, pruning v/ (a brand-new
+            # theme has none yet, but keep the rule consistent with updates).
+            INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -print -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+
+            # Initialize builds[] with the single new build (no prior builds, so
+            # no snapshot and nothing to prune).
+            PLAN=$(node .github/scripts/builds.mjs "$THEME_ID" "$VERSION" "$MIN_VERSION" "sha256-$INTEGRITY" "[]")
+            BUILDS=$(echo "$PLAN" | jq -c '.builds')
 
             # Add to lockfile
             jq --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
                --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
-               '.themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t}] | .updated = $t' \
+               --argjson b "$BUILDS" \
+               '.themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b}] | .updated = $t' \
                index.lock.json > tmp.json && mv tmp.json index.lock.json
 
             VENDORED="$VENDORED$THEME_ID (v$VERSION)\n"
