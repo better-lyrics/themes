@@ -124,6 +124,21 @@ Install the GitHub App to automatically publish updates when you push:
 
 Once installed, just bump the `version` in your `metadata.json` and push - your theme updates automatically!
 
+## Versioning & Compatibility
+
+You set two version fields in `metadata.json`. `version` is your theme's release number. `minVersion` is the lowest Better Lyrics version your theme needs to work.
+
+The store keeps your older builds, not just the newest one. When you raise `minVersion` in a release, the previous build stays available for people who are still on an older extension and can't run the new one yet. Anyone new enough gets your latest build.
+
+That makes raising `minVersion` safe. You can use newer extension features in your latest build without breaking people who haven't updated, because they keep the last build that worked for them instead of being handed one that won't run.
+
+You don't list builds or write any compatibility range. Bump `version`, set `minVersion`, push. The store figures out which build each user gets.
+
+For example, if you ship `1.7.6` needing `2.2.0.0`, then later ship `2.0.0` needing `2.5.0.0`:
+
+- Someone on extension `2.3` can't run `2.0.0`, so they keep getting `1.7.6`.
+- Someone on extension `2.6` gets `2.0.0`.
+
 ## Guidelines
 
 - Test your theme with the latest Better Lyrics version
@@ -147,7 +162,7 @@ You can customize the badge with [shields.io query parameters](https://shields.i
 
 ## Direct Install
 
-Users can also install themes directly from any GitHub repo URL via **Install from URL** in the extension — no submission required.
+Users can also install themes directly from any GitHub repo URL via **Install from URL** in the extension, no submission required.
 
 ## License
 
