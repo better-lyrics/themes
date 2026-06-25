@@ -157,7 +157,7 @@ jobs:
 
           # Latest integrity is computed over the flat build only, pruning v/ so
           # the latest hash does not change when snapshots come and go.
-          INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -print -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+          INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
           # Prior reachable builds[] for this theme (empty array if absent).
           PRIOR_BUILDS=$(jq -c --arg repo "$REPO" '(.themes[] | select(.repo == $repo) | .builds) // []' index.lock.json)
@@ -364,7 +364,7 @@ jobs:
 
             # Latest integrity over the flat build, pruning v/ (a brand-new
             # theme has none yet, but keep the rule consistent with updates).
-            INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -print -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
+            INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
             # Initialize builds[] with the single new build (no prior builds, so
             # no snapshot and nothing to prune).
