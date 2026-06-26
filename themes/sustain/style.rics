@@ -177,7 +177,7 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer:hover {
   overflow-y: auto;
   scroll-behavior: smooth;
   padding-top: 10px;
-  padding-inline: 20px 10px;
+  padding-inline: 20px;
 }
 
 .blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
@@ -362,7 +362,7 @@ ytmusic-player-bar {
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([blyrics-video-mode]):not([video-mode]) #player.ytmusic-player-page {
-  max-width: 800px;
+  max-width: 576px;
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-video-mode]):not([video-mode]) ytmusic-player:not([video-mode]) {
@@ -372,7 +372,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info {
   text-align: left;
-  max-width: 800px;
+  max-width: 576px;
   padding: 2rem;
   margin-bottom: 8rem;
   outline: 1px dashed rgb(255 255 255 / 15%);
@@ -392,10 +392,14 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 
 #blyrics-song-info > p#blyrics-title {
   font-size: 2.5rem;
+  color: color(display-p3 1 1 1);
 }
 
-
 #blyrics-song-info > p#blyrics-artist {
-  color: rgba(255, 255, 255, 0.5);
+  color: color(display-p3 1 1 1 / 0.5);
   opacity: 1;
+}
+
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) .content.ytmusic-player-page {
+  flex-direction: row-reverse;
 }
