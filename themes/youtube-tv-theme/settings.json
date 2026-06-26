@@ -1,0 +1,19 @@
+{
+    "layout": {
+        "pos": 0,
+        "type": "heading",
+        "label": "Layout"
+    },
+    "layout-placement": {
+        "pos": 1,
+        "type": "dropdown",
+        "label": "Which side the album cover should be placed on",
+        "options": [
+            { "label": "Right (default)", "value": "right" },
+            { "label": "Left", "value": "left" }
+        ],
+        "attribute": "placement",
+        "attrType": "rics",
+        "default": 0
+    }
+}

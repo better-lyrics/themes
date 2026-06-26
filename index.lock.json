@@ -127,8 +127,16 @@
       "locked": "2026-06-22T23:48:06Z",
       "repo": "ramansg/Max-Performance-BlyricsTheme",
       "version": "0.0.69"
+    },
+    {
+      "commit": "bd56d2b4bd27df1fdf9f0d30bcebae5e5e4bed78",
+      "id": "youtube-tv-theme",
+      "integrity": "sha256-d680cfb3294df5b71d39c4a6e22b41a9e677dfb0e5ae34fc195ce1b07005006a",
+      "locked": "2026-06-26T11:39:42Z",
+      "repo": "mukeenanyafiq/youtube-tv-theme",
+      "version": "1.0.1"
     }
   ],
-  "updated": "2026-06-22T23:48:06Z",
+  "updated": "2026-06-26T11:39:42Z",
   "version": 1
 }

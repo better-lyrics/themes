@@ -1,0 +1,12 @@
+{
+    "id": "youtube-tv-theme",
+    "title": "YouTube TV",
+    "description": "YouTube Music Full-screen with a style of YouTube TV and some extra features",
+    "creators": ["mukeenanyafiq"],
+    "minVersion": "2.0.5.6",
+    "hasShaders": false,
+    "hasSettings": true,
+    "version": "1.0.1",
+    "tags": ["yt", "ytm", "ytmtv", "youtube", "youtube-tv", "youtube-music", "youtube-music-tv", "fullscreen", "minimal", "shaders"],
+    "images": ["1.webp", "2.png", "3.png", "4.png"]
+}
