@@ -379,13 +379,14 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   z-index: -1;
   transform: translateY(-64px);
   background: rgba(255, 255, 255, 0.05);
+	backdrop-filter: blur(4px);
   width: 100%;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px 0px;
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page {
-  box-shadow: rgba(0, 0, 0, 0.05) 0px 54px 55px, rgba(0, 0, 0, 0.03) 0px -12px 30px, rgba(0, 0, 0, 0.03) 0px 4px 6px, rgba(0, 0, 0, 0.05) 0px 12px 13px, rgba(0, 0, 0, 0.02) 0px -3px 5px;
+	box-shadow: rgba(0, 0, 0, 0.1) 0px 54px 55px, rgba(0, 0, 0, 0.06) 0px -12px 30px, rgba(0, 0, 0, 0.06) 0px 4px 6px, rgba(0, 0, 0, 0.09) 0px 12px 13px, rgba(0, 0, 0, 0.04) 0px -3px 5px;
 }
 
 #blyrics-song-info > p#blyrics-title {
