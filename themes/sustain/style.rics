@@ -1,3 +1,5 @@
+/* Sustain, a marketplace theme by boidushya */
+
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 /*
@@ -400,6 +402,17 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   opacity: 1;
 }
 
+ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #blyrics-song-info{
+  max-width: 500px !important;
+  transition: max-width 0.5s ease-in-out;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay);
+}
+
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) .content.ytmusic-player-page {
+  flex-direction: row;
+}
+
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) .content.ytmusic-player-page {
   flex-direction: row-reverse;
 }
+
