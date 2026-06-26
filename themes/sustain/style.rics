@@ -396,5 +396,6 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 
 
 #blyrics-song-info > p#blyrics-artist {
-  color: rgba(255, 255, 255, 0.675);
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 1;
 }
