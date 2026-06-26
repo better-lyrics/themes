@@ -107,18 +107,18 @@
     {
       "builds": [
         {
-          "integrity": "sha256-fb44ac60a36ad0506d0681a7bf68219a8a345fa43a9f00de589cc616ac4afcc2",
+          "integrity": "sha256-097b492559a741488ff50a8f48c0afedb6a18d49e11c311c7544d53262404efe",
           "minVersion": "2.0.5.6",
           "path": "themes/sustain",
-          "version": "1.0.7"
+          "version": "1.0.8"
         }
       ],
-      "commit": "c13d0f602df13ba2db8cab228b4c8a57cae4ce13",
+      "commit": "64a5e0c2a1bb3fba8105b738c961539592e1a65f",
       "id": "sustain",
-      "integrity": "sha256-fb44ac60a36ad0506d0681a7bf68219a8a345fa43a9f00de589cc616ac4afcc2",
-      "locked": "2026-06-26T21:40:25Z",
+      "integrity": "sha256-097b492559a741488ff50a8f48c0afedb6a18d49e11c311c7544d53262404efe",
+      "locked": "2026-06-26T22:10:25Z",
       "repo": "better-lyrics/theme-sustain",
-      "version": "1.0.7"
+      "version": "1.0.8"
     },
     {
       "commit": "364430196e7dbe1b24d5c07966401d6d95621573",
@@ -145,6 +145,6 @@
       "version": "1.0.1"
     }
   ],
-  "updated": "2026-06-26T21:40:25Z",
+  "updated": "2026-06-26T22:10:25Z",
   "version": 1
 }

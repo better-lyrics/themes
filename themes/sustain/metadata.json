@@ -5,15 +5,15 @@
     "boidushya"
   ],
   "minVersion": "2.0.5.6",
-  "hasShaders": false,
-  "version": "1.0.7",
+  "hasShaders": true,
+  "version": "1.0.8",
   "tags": [
     "dark",
     "minimal",
     "animated"
   ],
   "images": [
-    "1.png",
+    "sustain.webp",
 		"2.png"
   ],
   "description": "A calm, minimal BetterLyrics theme built to disappear into the music."
