@@ -374,12 +374,13 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   text-align: left;
   max-width: 800px;
   padding: 2rem;
+  margin-bottom: 8rem;
   outline: 1px dashed rgb(255 255 255 / 15%);
   border-radius: 0 0 2rem 2rem;
   z-index: -1;
   transform: translateY(-64px);
   background: rgba(255, 255, 255, 0.05);
-	backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
   width: 100%;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px 0px;
