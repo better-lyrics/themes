@@ -137,14 +137,22 @@
       "version": "0.0.69"
     },
     {
-      "commit": "bd56d2b4bd27df1fdf9f0d30bcebae5e5e4bed78",
+      "builds": [
+        {
+          "integrity": "sha256-2bdc75073cdd390d2637a39db53a8d8ae7cf86b25553ee5d85adc245abeafebb",
+          "minVersion": "2.0.5.6",
+          "path": "themes/youtube-tv-theme",
+          "version": "1.0.4"
+        }
+      ],
+      "commit": "5ca9f80e0096d5308b391822ad34901c26016da2",
       "id": "youtube-tv-theme",
-      "integrity": "sha256-d680cfb3294df5b71d39c4a6e22b41a9e677dfb0e5ae34fc195ce1b07005006a",
-      "locked": "2026-06-26T11:39:42Z",
+      "integrity": "sha256-2bdc75073cdd390d2637a39db53a8d8ae7cf86b25553ee5d85adc245abeafebb",
+      "locked": "2026-06-27T01:23:15Z",
       "repo": "mukeenanyafiq/youtube-tv-theme",
-      "version": "1.0.1"
+      "version": "1.0.4"
     }
   ],
-  "updated": "2026-06-26T22:14:17Z",
+  "updated": "2026-06-27T01:23:15Z",
   "version": 1
 }

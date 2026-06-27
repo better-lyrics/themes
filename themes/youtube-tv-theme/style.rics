@@ -1,34 +1,38 @@
 $placement: right; // right | left
 
 :root {
-    // Non-fullscreen attributes to lyrics
-    --blyrics-line-height: 1.25;
+    // General lyrics attributes
     --blyrics-font-size: calc(3rem * 1.1);
     --blyrics-instrumental-icon-size: 4rem;
-    --blyrics-padding: calc(2rem * .9);
     --blyrics-fullscreen-video-panel-size: 30%;
-
-    // Fullscreen attributes to lyrics
-    --blyrics-fullscreen-font-size: 6rem;
-    --blyrics-fullscreen-line-height: 1.25;
-    --blyrics-fullscreen-padding: 3rem;
+    --blyrics-wobble-duration: 2.5s; // New animation engine attribute
 
     // Interchangable variables
     --ytm-tv-vertical-padding: 0;
-    --ytm-tv-horizontal-padding: calc(64px * 2.5);
+    --ytm-tv-horizontal-padding: calc(64px * 3);
     --ytm-tv-song-info-font-size: calc(2rem * 1.2);
 }
 
 // Player layout
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode]) {
+    // Non-full screen mode attributes
+    --blyrics-font-size: calc(3rem * 1.1);
+    --blyrics-line-height: 1.25;
+    --blyrics-padding: calc(2rem * .9);
+
     // Album art cover
     #player.ytmusic-player-page {
         border-radius: 2rem;
         overflow: hidden;
     }
 
-    // Fullscreen player layout
+    // Full screen player layout
     &[player-fullscreened]:not([blyrics-dfs]) {
+        // Full screen mode attributes
+        --blyrics-font-size: 6rem;
+        --blyrics-line-height: 1.25;
+        --blyrics-padding: 3rem;
+
         // No lyrics layout
         &:has(.blyrics-container[data-no-lyrics="true"]) {
             #side-panel {
@@ -55,6 +59,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode]) {
         #side-panel {
             height: 95vh;
             transform: translateY(-48px);
+            margin: 0 if($placement == right, var(--ytmusic-player-page-content-gap), 0) 0 if($placement == right, 0, var(--ytmusic-player-page-content-gap));
         }
         /// "Resume Autoscroll"
         .autoscroll-resume-wrapper {
@@ -68,35 +73,6 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]):not([video-mode]) {
         // Album art cover on fullscreen
         #player.ytmusic-player-page {
             max-width: 100%;
-        }
-    
-        // Lyrics
-        /// Instrumental breaks
-        .blyrics--instrumental-icon {
-            height: var(--blyrics-fullscreen-font-size);
-            width: calc(var(--blyrics-fullscreen-font-size) + var(--blyrics-fullscreen-font-size) / 3);
-            margin-left: calc(var(--blyrics-fullscreen-font-size) / -3);
-        }
-        
-        .blyrics-rtl.blyrics--instrumental .blyrics--instrumental-icon,
-        .blyrics--instrumental[data-agent="v2"] .blyrics--instrumental-icon,
-        .blyrics--instrumental[data-agent="v3"] .blyrics--instrumental-icon {
-            margin-right: calc(var(--blyrics-fullscreen-font-size) / -3);
-        }
-    
-        /// Lines
-        .blyrics-container {
-            font-size: var(--blyrics-fullscreen-font-size);
-            line-height: var(--blyrics-fullscreen-line-height);
-        }
-        
-        .blyrics-container > div {
-            padding-bottom: var(--blyrics-fullscreen-padding) !important;
-        }
-        
-        .blyrics-container > div,
-        .blyrics-container > div:first-child {
-            padding-top: var(--blyrics-fullscreen-padding) !important;
         }
     }
 }

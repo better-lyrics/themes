@@ -7,7 +7,7 @@
     "layout-placement": {
         "pos": 1,
         "type": "dropdown",
-        "label": "Which side the album cover should be placed on",
+        "label": "Which side the layout should be placed at",
         "options": [
             { "label": "Right (default)", "value": "right" },
             { "label": "Left", "value": "left" }
