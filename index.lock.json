@@ -139,20 +139,20 @@
     {
       "builds": [
         {
-          "integrity": "sha256-8fd27921021b4d328a94185186313c8d58f030975d6b31ce1907826c141df7ef",
+          "integrity": "sha256-633d517961663df6a71dc9d87955dfc019d0c3b897d5b83c869c14e9ef555645",
           "minVersion": "2.0.5.6",
           "path": "themes/youtube-tv-theme",
-          "version": "1.0.5"
+          "version": "1.0.6"
         }
       ],
-      "commit": "0dcb4d2ff62d6dd858556abd4461527f6e972e6a",
+      "commit": "e6221a5329580aa5aa8afab35289d89273657dba",
       "id": "youtube-tv-theme",
-      "integrity": "sha256-8fd27921021b4d328a94185186313c8d58f030975d6b31ce1907826c141df7ef",
-      "locked": "2026-06-27T02:01:33Z",
+      "integrity": "sha256-633d517961663df6a71dc9d87955dfc019d0c3b897d5b83c869c14e9ef555645",
+      "locked": "2026-06-27T02:10:14Z",
       "repo": "mukeenanyafiq/youtube-tv-theme",
-      "version": "1.0.5"
+      "version": "1.0.6"
     }
   ],
-  "updated": "2026-06-27T02:01:33Z",
+  "updated": "2026-06-27T02:10:14Z",
   "version": 1
 }
