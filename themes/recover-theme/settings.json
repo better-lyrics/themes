@@ -1,61 +1,113 @@
 {
-    "album-cover-placement": {
+    "layout": {
         "pos": 0,
+        "type": "heading",
+        "label": "Layout"
+    },
+    "album-cover-placement": {
+        "pos": 1,
         "type": "dropdown",
         "label": "Which side the album cover should be placed on",
         "options": [
-            { "label": "Left", "value": "left" },
+            { "label": "Left (Default)", "value": "left" },
             { "label": "Right", "value": "right" }
         ],
         "attribute": "placement",
         "attrType": "rics",
         "default": 0
     },
-    "opacity-after-lyrics": {
-        "pos": 1,
+    "lyrics": {
+        "pos": 2,
+        "type": "heading",
+        "label": "Lyrics"
+    },
+    "affect-lyric-direction": {
+        "pos": 3,
+        "type": "toggle",
+        "label": "Should the placement of the album cover affets the text direction of the lyrics",
+        "attribute": "affect-lyric-direction",
+        "attrType": "rics",
+        "default": false
+    },
+    "opacity-after-line": {
+        "pos": 4,
         "type": "range",
-        "label": "Opacity of the lyric line after it has been sung",
-        "attribute": "recover-opacity-after-line",
-        "attrType": "css",
+        "label": "Opacity of the lyric line after it has been sung, with autoscroll enabled",
+        "attribute": "opacity-after-line",
+        "attrType": "rics",
         "min": 0,
         "max": 1,
         "step": 0.01,
         "default": 0.1
     },
+    "blur-after-line": {
+        "pos": 5,
+        "type": "textfield",
+        "label": "Blur strength of the lyric line after it has been sung, with autoscroll enabled",
+        "attribute": "blur-after-line",
+        "attrType": "rics",
+        "default": ".5rem"
+    },
+    "track-info": {
+        "pos": 6,
+        "type": "heading",
+        "label": "Track Info"
+    },
     "visible-track-info": {
-        "pos": 2,
+        "pos": 7,
         "type": "toggle",
         "label": "Show floating track info",
-        "attribute": "recover-visible-track-info",
-        "attrType": "css",
+        "attribute": "visibility-track-info",
+        "attrType": "rics",
         "onValue": "visible",
         "offValue": "hidden",
         "default": true
     },
     "opacity-bg-track-info": {
-        "pos": 3,
+        "pos": 8,
         "type": "range",
         "label": "Opacity of the track info's background",
-        "attribute": "recover-opacity-bg-track-info",
-        "attrType": "css",
+        "attribute": "bg-opacity-track-info",
+        "attrType": "rics",
         "min": 0,
         "max": 1,
         "step": 0.01,
         "default": 0.5
     },
     "color-bg-track-info": {
-        "pos": 4,
+        "pos": 9,
         "type": "color",
         "label": "Color of the track info's background",
-        "attribute": "recover-color-bg-track-info",
-        "attrType": "css",
+        "attribute": "bg-color-track-info",
+        "attrType": "rics",
         "default": "#000"
     },
     "blur-backdrop-track-info": {
-        "pos": 5,
+        "pos": 10,
         "type": "textfield",
         "label": "Blur strength of the track info's backdrop",
-        "attribute": "recover-blur-backdrop-track-info",
+        "attribute": "backdrop-blur-track-info",
+        "attrType": "rics",
+        "default": "1rem"
+    },
+    "album-cover": {
+        "pos": 11,
+        "type": "heading",
+        "label": "Album Cover"
+    },
+    "size-album-cover": {
+        "pos": 12,
+        "type": "textfield",
+        "label": "Size of the album cover in non-fullscreen mode",
+        "attribute": "yt-album-size",
+        "attrType": "css",
+        "default": "80%"
+    },
+    "border-radius-album-cover": {
+        "pos": 13,
+        "type": "textfield",
+        "label": "Border radius size of the album cover in non-fullscreen mode",
+        "attribute": "yt-album-border-radius",
         "attrType": "css",
         "default": "1rem"
     }

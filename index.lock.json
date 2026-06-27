@@ -25,12 +25,20 @@
       "version": "1.0.2"
     },
     {
-      "commit": "44752048057f687b987a2e60b0a5c3178ff203c4",
+      "builds": [
+        {
+          "integrity": "sha256-1b0807befbc3a0003ddb243fe47b53db0ece531c2d026f3fd3ee0e9e2659069a",
+          "minVersion": "2.0.5.6",
+          "path": "themes/recover-theme",
+          "version": "1.3.0"
+        }
+      ],
+      "commit": "dc4194809e5fbad9ca431674ac709462e0546519",
       "id": "recover-theme",
-      "integrity": "sha256-c5be41282f19e49d5d9ecc68d96754e7c0927b1a720caeb909aa814a2eae794f",
-      "locked": "2026-06-12T16:01:43Z",
+      "integrity": "sha256-1b0807befbc3a0003ddb243fe47b53db0ece531c2d026f3fd3ee0e9e2659069a",
+      "locked": "2026-06-27T06:45:59Z",
       "repo": "mukeenanyafiq/recover-theme",
-      "version": "1.2.5"
+      "version": "1.3.0"
     },
     {
       "commit": "4d4a93a4960961b81f9d008783fb3e5ee673a5f7",
@@ -153,6 +161,6 @@
       "version": "1.0.6"
     }
   ],
-  "updated": "2026-06-27T02:10:14Z",
+  "updated": "2026-06-27T06:45:59Z",
   "version": 1
 }

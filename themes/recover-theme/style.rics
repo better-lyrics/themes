@@ -1,5 +1,12 @@
 /* Configurable variables */
-$placement: left; // Placement of the album cover; left | right
+$placement: right; // Placement of the album cover: left | right
+$affect-lyric-direction: true; // Should the placement of the album cover affets the text direction of the lyrics
+$opacity-after-line: .5; // The opacity of the already sung lyrics
+$blur-after-line: .5rem; // The blur strength of the already sung lyrics
+$visibility-track-info: visible; // The visibility type of the track info
+$bg-opacity-track-info: .5; // The opacity of the track info's background
+$bg-color-track-info: #000; // The color of the track info's background
+$backdrop-blur-track-info: 1rem; // The blur strength of the track info's backdrop
 
 :root {
     --blyrics-fullscreen-panel-size: 55%; // Looks too wide with the default value, so I shrink it a bit to make it look nicely
@@ -8,18 +15,12 @@ $placement: left; // Placement of the album cover; left | right
     --blyrics-instrumental-icon-size: 4rem; // Make the instrumental icon slightly bigger
     --blyrics-padding: calc(2rem * .9); // I just discovered this variable lolll i don't actually have to JUST adjust the line height of the lyrics
     --blyrics-hover-scale: 1; // Make the lyric line scale up a bit when on hover
+    --blyrics-wobble-duration: 2.5s; // Less wobbly yes (New animation engine attribute)
 
     /* Quick adjustments to the album cover display */
     --yt-album-fullscreen-size: 100vh;
     --yt-album-size: 80%;
     --yt-album-border-radius: 1rem;
-
-    /* reCover based variables */
-    --recover-opacity-after-line: .1; // The opacity of the already sung lyrics after the line
-    --recover-visible-track-info: visible; // The visibility type of the track info
-    --recover-opacity-bg-track-info: .5; // The opacity of the track info's background
-    --recover-color-bg-track-info: #000; // The color of the track info's background
-    --recover-blur-backdrop-track-info: 1rem; // The blur strength of the track info's backdrop
 }
 
 /* Core of the album art */
@@ -28,7 +29,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     &[player-fullscreened] {
         /* Flip the layout based on the placement */
         .content {
-            flex-direction: if($placement == left, row, if($placement == right, row-reverse, row));
+            flex-direction: if($placement == left, row, row-reverse);
         }
         
         /* Show the track info */
@@ -37,18 +38,36 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
             padding: 1rem 1.25rem;
         }
 
-        /* Adjust the layout of the lyric line based on the placement */
-        .blyrics--line:not([data-agent="v1000"]) {
-            justify-content: if($placement == left, flex-start, if($placement == right, flex-end, flex-start));
-            text-align: $placement;
-            transform-origin: if($placement == left, left center, if($placement == right, right center, left center)) !important;
+        /* Place margin on respectable side */
+        #side-panel {
+            margin: 0 if($placement == right, var(--ytmusic-player-page-content-gap), 0) 0 if($placement == right, 0, var(--ytmusic-player-page-content-gap));
         }
 
-        .blyrics--line[data-agent="v2"],
-        .blyrics--line[data-agent="v3"] {
-            justify-content: if($placement == left, flex-end, if($placement == right, flex-start, flex-end));
-            text-align: $placement;
-            transform-origin: if($placement == left, right center, if($placement == right, left center, right center)) !important;
+        @if $affect-lyric-direction == true {
+            /* Adjust the layout of the lyric line based on the placement */
+            .blyrics--line:not([data-agent="v1000"]) {
+                justify-content: if($placement == left, flex-start, flex-end);
+                text-align: $placement;
+                transform-origin: if($placement == left, left center, right center) !important;
+            }
+    
+            .blyrics--line[data-agent="v2"],
+            .blyrics--line[data-agent="v3"],
+            .blyrics--line[data-direction="rtl"] {
+                justify-content: if($placement == left, flex-end, flex-start);
+                text-align: if($placement == left, right, left);
+                transform-origin: if($placement == left, right center, left center) !important;
+            }
+
+            .blyrics--line[data-agent="v2"] .blyrics--romanized,
+            .blyrics--line[data-agent="v3"] .blyrics--romanized,
+            .blyrics--line[data-direction="rtl"] .blyrics--romanized {
+                @if $placement == left {
+                  	margin-left: auto;
+                } @else {
+                    margin-right: auto;
+                }
+            }
         }
     }
 
@@ -78,16 +97,22 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
             
             /* Makes the image of the album art fills the entire element and with a nice opacity gradient */
             #thumbnail {
-                mask-image: linear-gradient(
-                    to left, 
-                    if($placement == right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
-                    if($placement == left, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0))
-                );
+                $thumbnail-mask-image: if($placement == left, to right, to left);
+                mask-image: linear-gradient($thumbnail-mask-image, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
             }
 
             /* So that there won't be this black gradient from the top showing up whenever you paused the track on fullscreen */
             .song-media-controls.ytmusic-player {
                 background: transparent;
+            }
+
+            /* Audio/Video switcher */
+            .av.ytmusic-player-page {
+                position: fixed;
+                transform: unset;
+                transition: opacity .1s;
+                left: unset;
+                top: 5rem;
             }
 
             /* DISABLE THE ANIMATION THAT MAKES THE PANEL CENTERS IF THERES NO LYRICS */
@@ -110,21 +135,20 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
         display: none;
         flex-direction: column;
         position: fixed;
-        visibility: var(--recover-visible-track-info);
-        background-color: rgb(var(--recover-color-bg-track-info) / var(--recover-opacity-bg-track-info));
-        backdrop-filter: blur(var(--recover-blur-backdrop-track-info));
+        visibility: $visibility-track-info;
+        background-color: rgba($bg-color-track-info, $bg-opacity-track-info);
+        backdrop-filter: blur($backdrop-blur-track-info);
         left: if($placement == left, 2rem, unset);
         right: if($placement == right, 2rem, unset);
         top: 2rem;
         border-radius: .5rem;
         justify-content: flex-end;
-        align-items: if($placement == left, flex-start, if($placement == right, flex-end, flex-start));
+        align-items: if($placement == left, flex-start, flex-end);
     }
         
     /* Basically make the text aligns with the current placement and change the text font to the one being used for the lyrics */
     #blyrics-song-info > p {
         text-align: $placement;
-        font-family: var(--blyrics-translated-font-family);
         font-weight: 500;
         line-height: 1.2;
         text-shadow: 0 0 1rem hsl(0, 0%, 0%, .5);
@@ -148,18 +172,9 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active) {
         // Already sung lyrics
         &:not(.blyrics--active ~ .blyrics--line) {
-            opacity: var(--recover-opacity-after-line);
-            transition: 0.5s 0.3s, transform 0.15s var(--blyrics-anim-delay, 0s) !important;
+            opacity: $opacity-after-line;
+            filter: blur($blur-after-line);
+            transition: opacity .5s .3s, filter .5s .3s;
         }
-
-        // Upcoming lyrics
-        :not(.blyrics--active ~ .blyrics--line) {
-            transition: 0.5s 0.3s, transform 0.15s var(--blyrics-anim-delay, 0s) !important;
-        }
-    }
-    
-    & > .blyrics--line:hover {
-        transform: scale(var(--blyrics-hover-scale));
-        transition: all 0.3s ease;
     }
 }
