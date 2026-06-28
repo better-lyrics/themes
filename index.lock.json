@@ -2,6 +2,7 @@
   "themes": [
     {
       "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
+      "discussion": 10,
       "id": "colorful-vocals",
       "integrity": "sha256-7bbf7d41c322695997e71b538a7b61a6c2645ed1a437e0b081f80c687aaab836",
       "locked": "2025-12-05T23:02:05Z",
@@ -10,6 +11,7 @@
     },
     {
       "commit": "374a36692a5a891d34b7d63a078f3180636d73ed",
+      "discussion": 5,
       "id": "minimal",
       "integrity": "sha256-4094657971c89fea1a1e57fc5ee7c700120f8006ec251370a949acd28f1f011f",
       "locked": "2026-06-20T22:10:31Z",
@@ -18,6 +20,7 @@
     },
     {
       "commit": "d4d7ccb1e543c7ab7242d355b7fa689e320dd989",
+      "discussion": 7,
       "id": "apple-music",
       "integrity": "sha256-f80b96a1823d50b6e9d29198573f0ee2c431d3483d2f1369debd64d814656d73",
       "locked": "2026-04-03T00:05:43Z",
@@ -34,6 +37,7 @@
         }
       ],
       "commit": "dc4194809e5fbad9ca431674ac709462e0546519",
+      "discussion": 18,
       "id": "recover-theme",
       "integrity": "sha256-1b0807befbc3a0003ddb243fe47b53db0ece531c2d026f3fd3ee0e9e2659069a",
       "locked": "2026-06-27T06:45:59Z",
@@ -42,6 +46,7 @@
     },
     {
       "commit": "4d4a93a4960961b81f9d008783fb3e5ee673a5f7",
+      "discussion": 20,
       "id": "dynamic-background",
       "integrity": "sha256-65c2dffa32648a66547a0a505301ab2ff5662d050d20d27d22299caef742dd5d",
       "locked": "2026-06-14T06:24:07Z",
@@ -50,6 +55,7 @@
     },
     {
       "commit": "00124e88fdbcc6c6a3cc01fe96da20dafb3fd0f2",
+      "discussion": 22,
       "id": "spotifont",
       "integrity": "sha256-106824142506941c478fb89def4c6490677be3f31a3a727c41d2cefd16f26785",
       "locked": "2026-02-23T13:43:36Z",
@@ -58,6 +64,7 @@
     },
     {
       "commit": "4adc5c318f0e8eac9afb3af0e96eb133fe700497",
+      "discussion": 24,
       "id": "expressive",
       "integrity": "sha256-5a4e0c67437601c51b9824c912908dee650e5afd769ac5062f429df1c99d5ec9",
       "locked": "2026-03-12T23:15:36Z",
@@ -74,6 +81,7 @@
     },
     {
       "commit": "b218cf98c6dbe7e1015b2316bb7fe30e52f962af",
+      "discussion": 27,
       "id": "eblp",
       "integrity": "sha256-1ec30156f936e1e5ad5f050402c5bc5c92ade3053caf71b694ece73d9314bf9b",
       "locked": "2026-06-09T19:11:18Z",
@@ -82,6 +90,7 @@
     },
     {
       "commit": "5ba22d84039aba95d00426114fea8077a63eaf03",
+      "discussion": 29,
       "id": "spotlight",
       "integrity": "sha256-00e67c7bbf5a98681011de777c7f4b66658178a16959d14ebbd60e2e5d933fbe",
       "locked": "2026-03-18T18:27:03Z",
@@ -90,6 +99,7 @@
     },
     {
       "commit": "98cfaab13a28f394f674a3159cd59a03c0c76009",
+      "discussion": 31,
       "id": "modern-player",
       "integrity": "sha256-8a37bdf803e8542552a5c7ebb76244af46b98e2a48b7315927af07f91e190400",
       "locked": "2026-03-23T00:51:41Z",
@@ -98,6 +108,7 @@
     },
     {
       "commit": "3b874fce80627a36c33079ce012c53b86bc87d87",
+      "discussion": 33,
       "id": "lucid",
       "integrity": "sha256-6296ea933a997e3338ffa35e37ae340fe1de0ca244f1ec2239273dc736fb5ad9",
       "locked": "2026-05-15T08:58:11Z",
@@ -106,6 +117,7 @@
     },
     {
       "commit": "2b3ac598ef80c33a4620fce826950ccae474a304",
+      "discussion": 35,
       "id": "spinning-record",
       "integrity": "sha256-8ea9b2ff3f872b986d45b533bae81d527b9d1a1c4f21364b3bffbdc347467a37",
       "locked": "2026-04-21T09:27:13Z",
@@ -122,6 +134,7 @@
         }
       ],
       "commit": "90d44bac0e50ba3e0caf7672f6b5284883d7deed",
+      "discussion": 38,
       "id": "sustain",
       "integrity": "sha256-b29feebcc165431679016f5a57278b83f8fef5e1d8d18ca566dfd3c8c3fc56e6",
       "locked": "2026-06-28T10:47:19Z",
@@ -130,6 +143,7 @@
     },
     {
       "commit": "364430196e7dbe1b24d5c07966401d6d95621573",
+      "discussion": 42,
       "id": "apple-music-v3",
       "integrity": "sha256-886eaf04f11f564815c42cc4ac8af681fc678f4a550326af48f5bddb1f5ab3fb",
       "locked": "2026-06-16T01:31:57Z",
@@ -138,6 +152,7 @@
     },
     {
       "commit": "0973c223086dadebf1326de3f7973683931b4c7a",
+      "discussion": 44,
       "id": "opacity-based-karaoke",
       "integrity": "sha256-c48f702b072063f718c2496ed3077f80e51b8030c29a6a0fc67c4826b200afb1",
       "locked": "2026-06-22T23:48:06Z",
@@ -154,6 +169,7 @@
         }
       ],
       "commit": "e6221a5329580aa5aa8afab35289d89273657dba",
+      "discussion": 47,
       "id": "youtube-tv-theme",
       "integrity": "sha256-633d517961663df6a71dc9d87955dfc019d0c3b897d5b83c869c14e9ef555645",
       "locked": "2026-06-27T02:10:14Z",
