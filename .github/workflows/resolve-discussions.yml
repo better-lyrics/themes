@@ -1,0 +1,85 @@
+name: Resolve Discussion Links
+
+# Backfills each theme's discussion number into index.lock.json by matching the
+# source repo embedded in each discussion body to the lockfile's repos. Runs
+# when discussions change, on a daily schedule (to re-heal after vendoring
+# commits, which use [skip ci]), and on demand.
+
+on:
+  discussion:
+    types: [created, edited, deleted, transferred]
+  schedule:
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+# Share the vendoring lock so discussion writes and theme-update writes to
+# index.lock.json never race.
+concurrency:
+  group: theme-vendoring
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      discussions: read
+
+    steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Fetch discussions
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          REPO="${{ github.repository }}"
+          OWNER="${REPO%/*}"
+          NAME="${REPO#*/}"
+          # first:100 covers the registry comfortably; paginate if the repo ever
+          # exceeds 100 discussions.
+          gh api graphql -F owner="$OWNER" -F name="$NAME" -f query='
+            query($owner: String!, $name: String!) {
+              repository(owner: $owner, name: $name) {
+                discussions(first: 100) {
+                  nodes { number body }
+                }
+              }
+            }' --jq '.data.repository.discussions.nodes' > discussions.json
+
+      - name: Resolve into lockfile
+        run: |
+          node .github/scripts/resolve-discussions.mjs "$(cat discussions.json)"
+          jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+      # https://github.com/planetscale/ghcommit-action/issues/43#issuecomment-2313129696
+      - name: Stage changes
+        id: stage
+        run: |
+          rm -f discussions.json tmp.json
+          git add index.lock.json
+          git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.stage.outputs.has_changes == 'true'
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "chore: resolve discussion links [skip ci]"
+          repo: ${{ github.repository }}
+          branch: master
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

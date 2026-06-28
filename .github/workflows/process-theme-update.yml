@@ -184,11 +184,12 @@ jobs:
           rm -rf .outgoing
 
           # Update lockfile: existing fields keep LATEST build values, plus the
-          # additive builds[] array.
+          # additive builds[] array. The resolved discussion number (if any) is
+          # carried over so a version bump does not drop it.
           jq --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
              --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
              --argjson b "$BUILDS" \
-             '.themes = [.themes[] | if .repo == $repo then {repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b} else . end] | .updated = $t' \
+             '.themes = [.themes[] | if .repo == $repo then ({repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b} + (if .discussion then {discussion: .discussion} else {} end)) else . end] | .updated = $t' \
              index.lock.json > tmp.json && mv tmp.json index.lock.json
 
           # Format lockfile
