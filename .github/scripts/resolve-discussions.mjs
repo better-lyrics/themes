@@ -9,15 +9,14 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 
-// Pull a theme's source repo ("owner/repo") out of a discussion body. Prefers
-// the labeled Repository line; falls back to the first github.com/owner/repo
-// link. Returns null when neither is present.
+// Pull a theme's source repo ("owner/repo") out of a discussion body, from the
+// labeled Repository line the creation template writes. Returns null when that
+// line is absent. We deliberately do NOT fall back to any github.com link in the
+// body: a body can mention another theme's repo (e.g. an "inspired by" link), so
+// a loose match could tie a theme to the wrong discussion. No label, no match.
 export function repoFromBody(body) {
-  const text = String(body ?? "");
-  const labeled = text.match(/\*\*Repository\*\*:\s*\[([\w.-]+\/[\w.-]+)\]/i);
-  if (labeled) return labeled[1];
-  const link = text.match(/github\.com\/([\w.-]+\/[\w.-]+)/i);
-  return link ? link[1] : null;
+  const labeled = String(body ?? "").match(/\*\*Repository\*\*:\s*\[([\w.-]+\/[\w.-]+)\]/i);
+  return labeled ? labeled[1] : null;
 }
 
 // Given the parsed lockfile and a list of { number, body } discussions, return

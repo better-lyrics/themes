@@ -12,8 +12,17 @@ test("repoFromBody: labeled Repository line", () => {
   );
 });
 
-test("repoFromBody: falls back to a github link", () => {
-  assert.equal(repoFromBody("see https://github.com/owner/repo/tree/main"), "owner/repo");
+test("repoFromBody: a bare github link is NOT a match (label required)", () => {
+  assert.equal(repoFromBody("see https://github.com/owner/repo/tree/main"), null);
+});
+
+test("repoFromBody: prefers the labeled repo over a foreign link in the body", () => {
+  // Real case: discussion #20 links another theme's repo in its description,
+  // then carries its own repo on the labeled line.
+  const body =
+    "Inspired by [modern](https://github.com/walm-git/modern-youtube-music-theme).\n" +
+    "- **Repository**: [chengggit/youtube-music-dynamic-theme](https://github.com/chengggit/youtube-music-dynamic-theme)";
+  assert.equal(repoFromBody(body), "chengggit/youtube-music-dynamic-theme");
 });
 
 test("repoFromBody: none present", () => {
