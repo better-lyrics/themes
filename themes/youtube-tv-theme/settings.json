@@ -15,5 +15,18 @@
         "attribute": "placement",
         "attrType": "rics",
         "default": 0
+    },
+    "album-cover": {
+        "pos": 2,
+        "type": "heading",
+        "label": "Album Cover"
+    },
+    "album-cover-border-radius": {
+        "pos": 3,
+        "type": "textfield",
+        "label": "Border radius of the album cover",
+        "attribute": "album-cover-border-radius",
+        "attrType": "rics",
+        "default": "2rem"
     }
 }
