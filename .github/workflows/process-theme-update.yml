@@ -236,8 +236,13 @@ jobs:
         if: steps.commit.outcome == 'failure'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          RETRY_RAW: ${{ github.event.client_payload.retry || 0 }}
         run: |
-          RETRY=${{ github.event.client_payload.retry || 0 }}
+          # RETRY_RAW comes from the dispatch payload; read it via env (not inline
+          # interpolation) so a malformed value cannot inject a command, and run it
+          # through the sanitizer so the comparison/increment below always gets a
+          # clean non-negative integer.
+          RETRY="$(node .github/scripts/retry-redispatch.mjs)"
           REPO="${{ steps.payload.outputs.repo }}"
           COMMIT="${{ steps.payload.outputs.commit }}"
           INSTALL_ID="${{ github.event.client_payload.installationId }}"
