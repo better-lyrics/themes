@@ -1,10 +1,21 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import {
+  mkdtempSync,
+  mkdirSync,
+  writeFileSync,
+  readFileSync,
+  existsSync,
+  rmSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import {
   repoFromBody,
   discussionNumberByRepo,
   resolveDiscussions,
+  applyResolvedDiscussions,
 } from "./resolve-discussions.mjs";
 
 test("repoFromBody: labeled Repository line", () => {
@@ -151,4 +162,129 @@ test("resolveDiscussions: a discussion for an unregistered repo is ignored", () 
 
 test("resolveDiscussions: empty themes -> empty result", () => {
   assert.deepEqual(resolveDiscussions([], []), []);
+});
+
+// --- applyResolvedDiscussions (CLI side effects) ---
+
+// Build a temp themes/ dir, run cb(themesDir), and always clean it up.
+function withThemesDir(cb) {
+  const themesDir = mkdtempSync(join(tmpdir(), "resolve-discussions-"));
+  try {
+    cb(themesDir);
+  } finally {
+    rmSync(themesDir, { recursive: true, force: true });
+  }
+}
+
+// Write a themes/<dir>/build.json. Defaults the id to the dir name, matching
+// the vendor invariant, but lets a test decouple them when needed.
+function writeBuild(themesDir, dir, repo, id = dir) {
+  const themeDir = join(themesDir, dir);
+  mkdirSync(themeDir, { recursive: true });
+  writeFileSync(join(themeDir, "build.json"), JSON.stringify({ id, repo, builds: [] }));
+  return join(themeDir, "discussion.json");
+}
+
+test("applyResolvedDiscussions: writes discussion.json for a matching theme", () => {
+  withThemesDir((themesDir) => {
+    const discussionPath = writeBuild(themesDir, "alpha", "owner/alpha");
+    const result = applyResolvedDiscussions(themesDir, [
+      { number: 7, body: "**Repository**: [owner/alpha]" },
+    ]);
+
+    assert.deepEqual(result, { written: 1, deleted: 0 });
+    assert.equal(readFileSync(discussionPath, "utf8"), '{\n  "discussion": 7\n}\n');
+  });
+});
+
+test("applyResolvedDiscussions: discussion 0 is written, not skipped", () => {
+  withThemesDir((themesDir) => {
+    const discussionPath = writeBuild(themesDir, "alpha", "owner/alpha");
+    const result = applyResolvedDiscussions(themesDir, [
+      { number: 0, body: "**Repository**: [owner/alpha]" },
+    ]);
+
+    assert.deepEqual(result, { written: 1, deleted: 0 });
+    assert.equal(readFileSync(discussionPath, "utf8"), '{\n  "discussion": 0\n}\n');
+  });
+});
+
+test("applyResolvedDiscussions: no-op guard leaves the file byte-identical, zero writes on second run", () => {
+  withThemesDir((themesDir) => {
+    const discussionPath = writeBuild(themesDir, "alpha", "owner/alpha");
+    const discussions = [{ number: 7, body: "**Repository**: [owner/alpha]" }];
+
+    const first = applyResolvedDiscussions(themesDir, discussions);
+    assert.deepEqual(first, { written: 1, deleted: 0 });
+    const afterFirst = readFileSync(discussionPath);
+
+    const second = applyResolvedDiscussions(themesDir, discussions);
+    assert.deepEqual(second, { written: 0, deleted: 0 });
+    const afterSecond = readFileSync(discussionPath);
+
+    assert.ok(afterFirst.equals(afterSecond), "discussion.json must be byte-identical across runs");
+  });
+});
+
+test("applyResolvedDiscussions: deletes discussion.json when no discussion matches", () => {
+  withThemesDir((themesDir) => {
+    const discussionPath = writeBuild(themesDir, "alpha", "owner/alpha");
+    writeFileSync(discussionPath, '{\n  "discussion": 7\n}\n');
+
+    // The theme's discussion disappeared upstream: empty discussion list.
+    const result = applyResolvedDiscussions(themesDir, []);
+
+    assert.deepEqual(result, { written: 0, deleted: 1 });
+    assert.equal(existsSync(discussionPath), false);
+  });
+});
+
+test("applyResolvedDiscussions: a directory without build.json is skipped", () => {
+  withThemesDir((themesDir) => {
+    // A stray directory with only a discussion.json and no build.json is not a
+    // theme; it must be left untouched.
+    const strayDir = join(themesDir, "not-a-theme");
+    mkdirSync(strayDir, { recursive: true });
+    const strayPath = join(strayDir, "discussion.json");
+    writeFileSync(strayPath, '{\n  "discussion": 99\n}\n');
+
+    const result = applyResolvedDiscussions(themesDir, [
+      { number: 99, body: "**Repository**: [owner/whatever]" },
+    ]);
+
+    assert.deepEqual(result, { written: 0, deleted: 0 });
+    assert.equal(readFileSync(strayPath, "utf8"), '{\n  "discussion": 99\n}\n');
+  });
+});
+
+test("applyResolvedDiscussions: writes into the scanned dir even when it differs from build.id", () => {
+  withThemesDir((themesDir) => {
+    // Decouple the directory name from build.id: the write must target the
+    // scanned directory ("scanned-dir"), not a directory named after the id.
+    const discussionPath = writeBuild(themesDir, "scanned-dir", "owner/alpha", "drifted-id");
+
+    const result = applyResolvedDiscussions(themesDir, [
+      { number: 7, body: "**Repository**: [owner/alpha]" },
+    ]);
+
+    assert.deepEqual(result, { written: 1, deleted: 0 });
+    assert.equal(readFileSync(discussionPath, "utf8"), '{\n  "discussion": 7\n}\n');
+    assert.equal(existsSync(join(themesDir, "drifted-id", "discussion.json")), false);
+  });
+});
+
+test("applyResolvedDiscussions: malformed build.json throws naming the file path", () => {
+  withThemesDir((themesDir) => {
+    const dir = join(themesDir, "broken");
+    mkdirSync(dir, { recursive: true });
+    const buildPath = join(dir, "build.json");
+    writeFileSync(buildPath, "{ not valid json");
+
+    assert.throws(
+      () => applyResolvedDiscussions(themesDir, []),
+      (err) =>
+        err instanceof Error &&
+        err.message.startsWith(`invalid JSON in ${buildPath}:`),
+    );
+  });
 });

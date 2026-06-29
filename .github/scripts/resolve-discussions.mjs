@@ -49,39 +49,53 @@ export function resolveDiscussions(themes, discussions) {
   });
 }
 
-// Read every themes/<id>/build.json under themesDir and return [{ id, repo }].
+// Read every themes/<id>/build.json under themesDir and return
+// [{ dir, id, repo }], where dir is the scanned directory name (dirent.name).
 // Mirrors the directory scan in assemble-index.mjs: a directory without a
-// build.json is not a theme and is skipped.
-function readThemes(themesDir) {
+// build.json is not a theme and is skipped. We carry dir so writes provably
+// target the same directory the build.json was read from, rather than
+// re-deriving the directory from build.id (which would couple correctness to a
+// dirname === build.id invariant).
+export function readThemes(themesDir) {
   const dirents = readdirSync(themesDir, { withFileTypes: true });
   const themes = [];
   for (const dirent of dirents) {
     if (!dirent.isDirectory()) continue;
     const buildPath = join(themesDir, dirent.name, "build.json");
     if (!existsSync(buildPath)) continue;
-    const build = JSON.parse(readFileSync(buildPath, "utf8"));
-    themes.push({ id: build.id, repo: build.repo });
+    let build;
+    try {
+      build = JSON.parse(readFileSync(buildPath, "utf8"));
+    } catch (err) {
+      throw new Error(`invalid JSON in ${buildPath}: ${err.message}`);
+    }
+    themes.push({ dir: dirent.name, id: build.id, repo: build.repo });
   }
   return themes;
 }
 
-// CLI entrypoint for the workflow. Usage:
-//
-//   node resolve-discussions.mjs '<discussionsJson>'
-//
-// discussionsJson is a JSON array of { number, body }. Scans themes/*/build.json
-// for the theme list, then writes or deletes each themes/<id>/discussion.json to
-// match the resolved discussion. Never touches the aggregate lockfile.
-function main(argv) {
-  const discussions = JSON.parse((argv[0] ?? "[]").trim() || "[]");
-  const themesDir = "themes";
+// Apply the resolved discussions to disk: scan themesDir for themes, match each
+// against discussions by repo, then write or delete each
+// themes/<dir>/discussion.json so it matches the resolved discussion. Writes
+// happen into the SAME directory the theme was scanned from (theme.dir), not a
+// directory re-derived from build.id. A theme whose discussion resolves to null
+// has its discussion.json removed (if any); discussion: 0 is a real value and is
+// written. Returns { written, deleted } counts; an unchanged file is left
+// byte-identical and not counted. Never touches the aggregate lockfile.
+export function applyResolvedDiscussions(themesDir, discussions) {
   const themes = readThemes(themesDir);
   const resolved = resolveDiscussions(themes, discussions);
 
+  // themes and resolved are parallel arrays (resolveDiscussions maps 1:1 in
+  // order), so theme.dir at index i is the directory resolved[i] came from. This
+  // pairing is exact even if two themes share a build.id, which an id->dir map
+  // would silently collapse.
   let written = 0;
   let deleted = 0;
-  for (const { id, discussion } of resolved) {
-    const path = join(themesDir, id, "discussion.json");
+  for (let i = 0; i < resolved.length; i++) {
+    const { dir } = themes[i];
+    const { discussion } = resolved[i];
+    const path = join(themesDir, dir, "discussion.json");
     if (discussion != null) {
       const next = `${JSON.stringify({ discussion }, null, 2)}\n`;
       const current = existsSync(path) ? readFileSync(path, "utf8") : null;
@@ -95,6 +109,19 @@ function main(argv) {
     }
   }
 
+  return { written, deleted };
+}
+
+// CLI entrypoint for the workflow. Usage:
+//
+//   node resolve-discussions.mjs '<discussionsJson>'
+//
+// discussionsJson is a JSON array of { number, body }. Scans themes/*/build.json
+// for the theme list, then writes or deletes each themes/<dir>/discussion.json to
+// match the resolved discussion. Never touches the aggregate lockfile.
+function main(argv) {
+  const discussions = JSON.parse((argv[0] ?? "[]").trim() || "[]");
+  const { written, deleted } = applyResolvedDiscussions("themes", discussions);
   process.stderr.write(`resolve-discussions: wrote ${written}, deleted ${deleted}\n`);
 }
 
