@@ -168,7 +168,9 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):not(.blyrics--active ~ .blyrics--line) {
         opacity: $opacity-after-line;
         filter: blur($blur-after-line);
-        transition: opacity .5s .3s, filter .5s .3s;
+        transition: transform var(--blyrics-lyric-scroll-duration) var(--blyrics-lyric-scroll-timing-function),
+        opacity .5s .3s,
+        filter .5s .2s;
     }
 
     /* Add a shadow to each lyric line so it's more readable */
