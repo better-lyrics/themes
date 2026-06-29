@@ -1,5 +1,5 @@
 /* Configurable variables */
-$placement: right; // Placement of the album cover: left | right
+$placement: left; // Placement of the album cover: left | right
 $affect-lyric-direction: true; // Should the placement of the album cover affets the text direction of the lyrics
 $opacity-after-line: .5; // The opacity of the already sung lyrics
 $blur-after-line: .5rem; // The blur strength of the already sung lyrics
