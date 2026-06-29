@@ -111,7 +111,8 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
         // Already sung lyrics in a synced lyrics (not unsynced)
         &:not([data-sync="none"]) .blyrics--line:not(.blyrics--active):not(.blyrics--active ~ .blyrics--line) {
             opacity: 0;
-            transition: opacity .2s .4s;
+            transition: transform var(--blyrics-lyric-scroll-duration) var(--blyrics-lyric-scroll-timing-function),
+            opacity .2s .4s;
         }
     }
 }
