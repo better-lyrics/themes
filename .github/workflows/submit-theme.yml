@@ -110,28 +110,40 @@ jobs:
           jq --arg r "$REPO" '.themes += [{repo: $r}]' index.json > tmp.json && mv tmp.json index.json
           jq -S '.' index.json > tmp.json && mv tmp.json index.json
 
+      - name: Create submission branch
+        if: steps.validate.outputs.valid == 'true'
+        run: git push origin "HEAD:refs/heads/submit/issue-${{ github.event.issue.number }}" --force
+
+      - name: Commit to the branch (verified)
+        if: steps.validate.outputs.valid == 'true'
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
+          repo: ${{ github.repository }}
+          branch: submit/issue-${{ github.event.issue.number }}
+          file_pattern: index.json
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
       - name: Open PR
         id: cpr
         if: steps.validate.outputs.valid == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          base: master
-          branch: submit/issue-${{ github.event.issue.number }}
-          delete-branch: true
-          add-paths: index.json
-          commit-message: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
-          title: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
-          body: |
-            Closes #${{ github.event.issue.number }}
-
-            Submitted by @${{ github.event.issue.user.login }} via the theme form.
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ steps.validate.outputs.repo }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          printf 'Closes #%s\n\nSubmitted by @%s via the theme form.\n' "$ISSUE" "$AUTHOR" > pr-body.md
+          URL=$(gh pr create --base master --head "submit/issue-$ISSUE" \
+            --title "feat: add $REPO to the registry" --body-file pr-body.md)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
 
       - name: Comment and close (accepted)
         if: steps.validate.outputs.valid == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          PR_URL: ${{ steps.cpr.outputs.url }}
           ISSUE: ${{ github.event.issue.number }}
         run: |
           gh issue comment "$ISSUE" --body "Thanks! Opened $PR_URL for review. Your theme publishes once a maintainer merges it."

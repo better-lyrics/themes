@@ -1,0 +1,28 @@
+name: PR Guard
+
+# Public repos can't disable forking, so this closes pull requests from anyone
+# who isn't a collaborator or the harmonizer bot. Theme changes go through the
+# submission form instead. It reads only event metadata (no fork checkout).
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  guard:
+    if: >-
+      github.event.pull_request.user.login != 'better-lyrics-harmonizer[bot]' &&
+      !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close outside PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          gh pr comment "$PR" --body "Thanks, but theme changes go through the submission form: https://github.com/better-lyrics/themes/issues/new?template=submit-theme.yml . Closing this."
+          gh pr close "$PR"

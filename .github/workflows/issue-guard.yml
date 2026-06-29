@@ -1,0 +1,26 @@
+name: Issue Guard
+
+# This repo only accepts theme submissions through the issue form. Anything else
+# is redirected and closed: platform/API reports go to store-api, theme-specific
+# questions go to that theme's discussion.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  guard:
+    if: ${{ !startsWith(github.event.issue.title, 'Submit theme:') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Redirect and close
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --body "This repo only takes theme submissions, through the form: https://github.com/better-lyrics/themes/issues/new?template=submit-theme.yml . Anything else: platform or API bugs go to store-api (https://github.com/better-lyrics/store-api/issues), questions about a specific theme go to that theme's discussion (https://github.com/better-lyrics/themes/discussions) or its repo, and general chat is on Discord (https://discord.gg/UsHE3d5fWF). Closing this one."
+          gh issue close "$ISSUE" --reason "not planned"
