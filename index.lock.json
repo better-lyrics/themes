@@ -38,19 +38,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-31b979535a842fe18077341f1570256a4da54e5a09151e88a92a3a272830c039",
+          "integrity": "sha256-4f56820813e8b3c9ac11f2fe2af3eea7ca96f763bb2c3bcac1ac5a06714b071b",
           "minVersion": "2.0.5.6",
           "path": "themes/recover-theme",
-          "version": "1.3.1"
+          "version": "1.3.2"
         }
       ],
-      "commit": "12887172447e4dddfd5e968d4f49b99224fb5f35",
+      "commit": "e0598b233d0d2529053ed32297cc807ccf6c7c41",
       "discussion": 18,
       "id": "recover-theme",
-      "integrity": "sha256-31b979535a842fe18077341f1570256a4da54e5a09151e88a92a3a272830c039",
-      "locked": "2026-06-29T08:02:33Z",
+      "integrity": "sha256-4f56820813e8b3c9ac11f2fe2af3eea7ca96f763bb2c3bcac1ac5a06714b071b",
+      "locked": "2026-06-29T08:05:05Z",
       "repo": "mukeenanyafiq/recover-theme",
-      "version": "1.3.1"
+      "version": "1.3.2"
     },
     {
       "commit": "4d4a93a4960961b81f9d008783fb3e5ee673a5f7",
@@ -194,6 +194,6 @@
       "version": "1.1.0"
     }
   ],
-  "updated": "2026-06-29T08:02:33Z",
+  "updated": "2026-06-29T08:05:05Z",
   "version": 1
 }

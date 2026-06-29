@@ -155,11 +155,6 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     }
 }
 
-/* Add a shadow to each lyric line so it's more readable */
-.blyrics--word {
-    text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .15);
-}
-
 /* Rescale the instrumental icon */
 .blyrics--instrumental-icon {
     height: var(--blyrics-instrumental-icon-size);
@@ -167,14 +162,20 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     margin-left: calc(var(--blyrics-instrumental-icon-size) / -3);
 }
 
-/* Add blur to lyrics and hovering */
+/* Lyrics container */
 .blyrics-container:has(.blyrics--active) {
-    &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active) {
-        // Already sung lyrics
-        &:not(.blyrics--active ~ .blyrics--line) {
-            opacity: $opacity-after-line;
-            filter: blur($blur-after-line);
-            transition: opacity .5s .3s, filter .5s .3s;
-        }
+    /* Add blur and opacity on an already sung lyrics with auto-scroll enabled */
+    &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):not(.blyrics--active ~ .blyrics--line) {
+        opacity: $opacity-after-line;
+        filter: blur($blur-after-line);
+        transition: opacity .5s .3s, filter .5s .3s;
+    }
+
+    /* Add a shadow to each lyric line so it's more readable */
+    .blyrics--word {
+        text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .15);
+    }
+    .blyrics--word:after {
+        text-shadow: none;
     }
 }
