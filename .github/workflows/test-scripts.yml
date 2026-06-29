@@ -1,0 +1,16 @@
+name: Test Scripts
+on:
+  pull_request:
+    paths: ['.github/scripts/**', '.github/workflows/test-scripts.yml']
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      # Unquoted so the shell expands the glob to real file paths; node --test
+      # only globs patterns itself on Node 21+, so this stays version-agnostic.
+      - run: node --test .github/scripts/*.test.mjs

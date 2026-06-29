@@ -1,0 +1,16 @@
+{
+  "repo": "ramansg/Max-Performance-BlyricsTheme",
+  "id": "opacity-based-karaoke",
+  "version": "0.0.80",
+  "commit": "cd78c57fdc11be44bcc3c43c0ad6bac7eb2cd154",
+  "integrity": "sha256-f4b95b284583110c24b6053f66f07e2aee2d41c57a1694e1246fae52e68919e5",
+  "locked": "2026-06-29T00:01:02Z",
+  "builds": [
+    {
+      "integrity": "sha256-f4b95b284583110c24b6053f66f07e2aee2d41c57a1694e1246fae52e68919e5",
+      "minVersion": "2.2.0.0",
+      "path": "themes/opacity-based-karaoke",
+      "version": "0.0.80"
+    }
+  ]
+}

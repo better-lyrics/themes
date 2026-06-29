@@ -1,0 +1,71 @@
+name: Regenerate Index
+
+on:
+  push:
+    branches: [master]
+    paths: ['themes/**']
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: regen-index
+  cancel-in-progress: true
+
+jobs:
+  regen:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Assemble index.lock.json
+        run: node .github/scripts/assemble-index.mjs
+
+      - name: Format
+        run: jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
+
+      - name: Stage
+        id: stage
+        run: |
+          git add index.lock.json
+          if git diff --staged --quiet; then
+            echo "index.lock.json byte-identical; nothing to do"
+          elif diff <(git show HEAD:index.lock.json | jq -S '{version, themes}') \
+                    <(jq -S '{version, themes}' index.lock.json) >/dev/null; then
+            # Only the 'updated' timestamp moved (no theme content change).
+            # Discard to avoid committing timestamp-only churn.
+            git checkout index.lock.json
+            echo "themes unchanged; skipping timestamp-only commit"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit
+        if: steps.stage.outputs.changed == 'true'
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "chore: regenerate index.lock.json [skip ci]"
+          repo: ${{ github.repository }}
+          branch: master
+          file_pattern: index.lock.json
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}

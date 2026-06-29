@@ -1,0 +1,16 @@
+{
+  "repo": "better-lyrics/theme-sustain",
+  "id": "sustain",
+  "version": "1.0.10",
+  "commit": "90d44bac0e50ba3e0caf7672f6b5284883d7deed",
+  "integrity": "sha256-b29feebcc165431679016f5a57278b83f8fef5e1d8d18ca566dfd3c8c3fc56e6",
+  "locked": "2026-06-28T10:47:19Z",
+  "builds": [
+    {
+      "integrity": "sha256-b29feebcc165431679016f5a57278b83f8fef5e1d8d18ca566dfd3c8c3fc56e6",
+      "minVersion": "2.0.5.6",
+      "path": "themes/sustain",
+      "version": "1.0.10"
+    }
+  ]
+}
