@@ -37,7 +37,7 @@ export function splitEntry(entry) {
 // data is silently dropped.
 const BUILD_KEY_ORDER = ["repo", "id", "version", "commit", "integrity", "locked", "builds"];
 
-function orderBuild(build) {
+export function orderBuild(build) {
   const ordered = {};
   for (const key of BUILD_KEY_ORDER) {
     if (key in build) ordered[key] = build[key];
@@ -50,6 +50,21 @@ function orderBuild(build) {
 
 function writeJson(path, value) {
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+// Write the per-theme source-of-truth files for a single split entry under
+// themesDir: always themes/<build.id>/build.json (fixed key order), and
+// themes/<build.id>/discussion.json only when discussion != null (so the valid
+// id 0 still produces a file). The directory is created if missing.
+export function writeThemeFiles(themesDir, build, discussion) {
+  const dir = join(themesDir, build.id);
+  mkdirSync(dir, { recursive: true });
+
+  writeJson(join(dir, "build.json"), orderBuild(build));
+
+  if (discussion != null) {
+    writeJson(join(dir, "discussion.json"), { discussion });
+  }
 }
 
 // CLI entrypoint. Reads index.lock.json at the repo root and, for each theme,
@@ -69,20 +84,17 @@ function main() {
   const indexPath = join(repoRoot, "index.lock.json");
   const themesDir = join(repoRoot, "themes");
 
-  const index = JSON.parse(readFileSync(indexPath, "utf8"));
+  let index;
+  try {
+    index = JSON.parse(readFileSync(indexPath, "utf8"));
+  } catch (err) {
+    throw new Error(`invalid JSON in ${indexPath}: ${err.message}`);
+  }
   const themes = Array.isArray(index.themes) ? index.themes : [];
 
   for (const entry of themes) {
     const { build, discussion } = splitEntry(entry);
-
-    const dir = join(themesDir, build.id);
-    mkdirSync(dir, { recursive: true });
-
-    writeJson(join(dir, "build.json"), orderBuild(build));
-
-    if (discussion != null) {
-      writeJson(join(dir, "discussion.json"), { discussion });
-    }
+    writeThemeFiles(themesDir, build, discussion);
   }
 }
 
