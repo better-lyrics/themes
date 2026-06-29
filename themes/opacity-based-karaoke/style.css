@@ -2,10 +2,10 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v0.0.7
- * 2026-06-22
+ * v0.0.8
+ * 2026-06-28
  *
- * This contains a lot of experiments, please be careful removing something.
+ * Please be careful removing something.
  *
  * _"Aye! I'm not saying I lie, but lying sure is fun!" — Boidu (hypothetically)_
  *
@@ -44,7 +44,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
   /* karaoke or "richsync" opacities */
   --opacity-words-past-line: 0;
   --opacity-words-future-line: 0;
-  --opacity-past-word-current-line: 0.87;
+  --opacity-past-word-current-line: 0.7;
   --opacity-current-word-current-line: 1;
   --opacity-future-word-current-line: 0;
 
@@ -75,11 +75,6 @@ blyrics-target-scroll-pos-ratio = 0.4;
   /* controls earliness/lateness of lines being sung for line-sync */
   --highlight-timing-offset-synced: 0s;
 
-
-  /* um... experiment thingy */
-  --variable-b-safe: max(var(--opacity-future-word-current-line), 0.000001);
-  --variable-x: clamp(0, var(--opacity-words-future-line) / var(--variable-b-safe), 1);
-
 }
 
 /* in vain effort to improve efficiency on low-end devices */
@@ -103,13 +98,6 @@ blyrics-target-scroll-pos-ratio = 0.4;
 }
 
 @property --blyrics-synced-line-base-opacity {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 1;
-}
- 
- /* like i said, experiments were done */
-@property --opacity-future-line-ratio {
   syntax: "<number>";
   inherits: true;
   initial-value: 1;
@@ -147,6 +135,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
   transition-duration: .6s;
   transition-timing-function: ease-in-out;
   --blyrics-richsync-line-base-opacity: var(--opacity-words-future-line);
+  --blyrics-synced-line-base-opacity: var(--opacity-words-future-line);
 
   & > span {
     opacity: var(--blyrics-richsync-line-base-opacity);
@@ -157,34 +146,40 @@ blyrics-target-scroll-pos-ratio = 0.4;
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--active ~ .blyrics--line:not(.blyrics--animating),
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating ~ .blyrics--line:not(.blyrics--animating) {
   --blyrics-richsync-line-base-opacity: var(--opacity-words-future-line);
+  --blyrics-synced-line-base-opacity: var(--opacity-words-future-line);
   
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line:not(.blyrics--animating):has(~ .blyrics--line.blyrics--animating) {
   --blyrics-richsync-line-base-opacity: var(--opacity-words-past-line);
+  --blyrics-synced-line-base-opacity: var(--opacity-words-past-line);
   
   & .blyrics--word {
-  transition: opacity 0.2s ease-in-out
+  transition: opacity 0.2 ease;
   }
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word {
   opacity: 1;
-  transition: opacity 0.2s ease-in-out;
+  transition: opacity 0.2 ease;
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating > span {
-  --opacity-future-line-ratio: clamp(0, var(--opacity-words-future-line) / max(var(--opacity-future-word-current-line), 0.000001), 1);
+  will-change: opacity;
+  transition: none;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating {
   animation-name: main-line-things;
   animation-duration: calc( calc( var(--blyrics-duration) * 0.98 ) - var(--highlight-timing-offset-richsync, 0s));
   animation-delay: calc(var(--blyrics-anim-delay) - 300ms + var(--highlight-timing-offset-richsync, 0s));
   animation-timing-function: linear;
   animation-fill-mode: both;
-  will-change: opacity;
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word.blyrics--animating {
   will-change: unset;
+  transition: opacity 0.2 ease;
   animation-name: sing-and-rise;
   animation-duration: calc(var(--blyrics-duration) + 200ms );
   animation-fill-mode: both;
@@ -193,6 +188,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
 }
 
 #blyrics-wrapper .blyrics-container .blyrics--word.blyrics--paused,
+#blyrics-wrapper .blyrics-container .blyrics--line.blyrics--paused .blyrics--word,
 #blyrics-wrapper .blyrics-container .blyrics--line.blyrics--paused,
 #blyrics-wrapper .blyrics-container .blyrics--line.blyrics--paused > span,
 #blyrics-wrapper .blyrics-container .blyrics--line.blyrics--paused :is(.blyrics--translated, .blyrics--romanized)
@@ -209,7 +205,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
   10% {
     opacity: var(--opacity-current-word-current-line);
   }
-  20% {
+  15% {
     transform: translateY(-0.15em) translateX(0.1em) scale(1.03);
     animation-timing-function: ease-in;
   }
@@ -226,18 +222,17 @@ blyrics-target-scroll-pos-ratio = 0.4;
 @keyframes main-line-things {
   0% {
     --blyrics-richsync-line-base-opacity: calc( var(--opacity-words-future-line) / var(--opacity-future-word-current-line) );
+    --blyrics-synced-line-base-opacity: var(--opacity-words-future-line);
     animation-timing-function: ease;
   }
-  10% {
+  10%, 96% {
     --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
-    animation-timing-function: linear;
-  }
-  96% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
+    --blyrics-synced-line-base-opacity: var(--opacity-current-word-current-line);
     animation-timing-function: ease-in;
   }
   100% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-words-past-line);
+    --blyrics-richsync-line-base-opacity: calc( var(--opacity-words-past-line) / var(--opacity-past-word-current-line) );
+    --blyrics-synced-line-base-opacity: var(--opacity-words-past-line);
   }
 }
 
@@ -332,37 +327,19 @@ blyrics-target-scroll-pos-ratio = 0.4;
   color: var(--blyrics-lyric-active-color) !important;
 }
 
-#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated {
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated:has(.blyrics--word) {
   opacity: calc(var(--blyrics-richsync-line-base-opacity) * var(--opacity-trans-ratio));
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.2 ease;
+}
+
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--translated:not(:has(.blyrics--word)) {
+  opacity: calc(var(--blyrics-synced-line-base-opacity) * var(--opacity-trans-ratio));
+  transition: opacity 0.2 ease;
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--translated {
-  transition: none;
-  animation-name: smoothReveal, main-line-things;
-  animation-duration: 0.3s, calc( calc( var(--blyrics-duration) * 0.98) - var(--highlight-timing-offset-richsync, 0s));
-  animation-delay: 0.15s, calc(var(--blyrics-anim-delay) - 300ms + var(--highlight-timing-offset-richsync, 0s));
-  animation-timing-function: var(--transition-curve), linear;
-  animation-fill-mode: backwards, both;
+  transition: opacity 0.2 ease;
   will-change: opacity;
-}
-
-@keyframes richsync-text-lifecycle {
-  0% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-words-future-line);
-    animation-timing-function: ease;
-  }
-  6% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
-    animation-timing-function: linear;
-  }
-  96% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
-    animation-timing-function: ease-in;
-  }
-  100% {
-    --blyrics-richsync-line-base-opacity: var(--opacity-words-past-line);
-  }
 }
 
 @keyframes smoothReveal {
@@ -438,18 +415,18 @@ blyrics-target-scroll-pos-ratio = 0.4;
   color: var(--blyrics-lyric-active-color) !important;
 }
 
-#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized {
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized:has(.blyrics--word) {
   opacity: calc(var(--blyrics-richsync-line-base-opacity) * var(--opacity-roman-ratio));
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.2 ease;
 }
 
+#blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--romanized:not(:has(.blyrics--word)) {
+  opacity: calc(var(--blyrics-synced-line-base-opacity) * var(--opacity-roman-ratio));
+  transition: opacity 0.2 ease;
+}
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--romanized {
-  animation-name: smoothReveal, main-line-things;
-  animation-duration: 0.3s, calc( calc( var(--blyrics-duration) * 0.98) - var(--highlight-timing-offset-richsync, 0s));
-  animation-delay: 0s, calc(var(--blyrics-anim-delay) - 300ms + var(--highlight-timing-offset-richsync, 0s));
-  animation-timing-function: var(--transition-curve), linear;
-  animation-fill-mode: backwards, both;
   will-change: opacity;
+  transition: opacity 0.2 ease;
 }
 
 /* ─ B ─ [data-sync="synced"] ───────────────────── */
@@ -805,9 +782,4 @@ ytmusic-player-page:before {
   animation: smoothReveal 0.3s 0.15s var(--transition-curve) backwards;
   overflow: hidden;
   transform-origin: top;
-}
-
-#blyrics-wrapper .blyrics-container .blyrics--line:not(.blyrics--animating):has(~ .blyrics--line.blyrics--animating) .blyrics--translated,
-#blyrics-wrapper .blyrics-container .blyrics--line:not(.blyrics--animating):has(~ .blyrics--line.blyrics--animating) .blyrics--romanized {
-  animation: none !important;
 }
