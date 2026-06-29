@@ -190,7 +190,7 @@ jobs:
 
           rm -rf .outgoing
 
-          # Write this theme's own build.json. The aggregate index.lock.json is
+          # Write this theme's own build.json. The aggregate lockfile is
           # regenerated from these per-theme files by a separate workflow.
           jq -n --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
             --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
@@ -281,12 +281,9 @@ jobs:
           # Get repos from index.json
           jq -r '.themes[].repo' index.json | sort > index_repos.txt
 
-          # Get repos from lockfile
-          if [ -f index.lock.json ] && jq empty index.lock.json 2>/dev/null; then
-            jq -r '.themes[].repo' index.lock.json | sort > lock_repos.txt
-          else
-            touch lock_repos.txt
-          fi
+          # Get already-vendored repos from the per-theme build.json files (the
+          # vendored source of truth). Empty when the registry has no themes yet.
+          find themes -mindepth 2 -maxdepth 2 -name build.json -exec jq -r '.repo' {} + 2>/dev/null | sort > lock_repos.txt
 
           # Find new themes (in index.json but not in lockfile)
           NEW_THEMES=$(comm -23 index_repos.txt lock_repos.txt)
@@ -373,7 +370,7 @@ jobs:
             BUILDS=$(echo "$PLAN" | jq -c '.builds')
 
             # Write this theme's own build.json (a brand-new theme has no prior
-            # builds). The aggregate index.lock.json is regenerated from these
+            # builds). The aggregate lockfile is regenerated from these
             # per-theme files by a separate workflow.
             jq -n --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
               --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
@@ -410,8 +407,10 @@ jobs:
             [ -z "$repo" ] && continue
             echo "Removing: $repo"
 
-            # Find theme ID from lockfile
-            THEME_ID=$(jq -r --arg repo "$repo" '.themes[] | select(.repo == $repo) | .id' index.lock.json)
+            # Find the theme ID by scanning the per-theme build.json files for
+            # the one whose .repo matches the removed repo (robust to zero
+            # matches: THEME_ID stays empty).
+            THEME_ID=$(find themes -mindepth 2 -maxdepth 2 -name build.json -exec sh -c 'jq -e --arg r "$1" ".repo == \$r" "$2" >/dev/null 2>&1 && jq -r .id "$2"' _ "$repo" {} \;)
 
             if [ -n "$THEME_ID" ] && [ "$THEME_ID" != "null" ]; then
               # Remove vendored files (this drops the theme's build.json and
