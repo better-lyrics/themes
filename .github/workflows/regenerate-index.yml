@@ -47,7 +47,17 @@ jobs:
         id: stage
         run: |
           git add index.lock.json
-          git diff --staged --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+          if git diff --staged --quiet; then
+            echo "index.lock.json byte-identical; nothing to do"
+          elif diff <(git show HEAD:index.lock.json | jq -S '{version, themes}') \
+                    <(jq -S '{version, themes}' index.lock.json) >/dev/null; then
+            # Only the 'updated' timestamp moved (no theme content change).
+            # Discard to avoid committing timestamp-only churn.
+            git checkout index.lock.json
+            echo "themes unchanged; skipping timestamp-only commit"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Commit
         if: steps.stage.outputs.changed == 'true'

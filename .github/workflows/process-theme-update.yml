@@ -222,7 +222,7 @@ jobs:
         with:
           commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
           repo: ${{ github.repository }}
-          branch: ${{ github.ref_name }}
+          branch: master
           file_pattern: themes/${{ steps.metadata.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
