@@ -10,5 +10,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-      - run: node --test '.github/scripts/*.test.mjs'
+          node-version: "22"
+      # Unquoted so the shell expands the glob to real file paths; node --test
+      # only globs patterns itself on Node 21+, so this stays version-agnostic.
+      - run: node --test .github/scripts/*.test.mjs
