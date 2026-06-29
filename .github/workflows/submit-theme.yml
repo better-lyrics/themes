@@ -36,6 +36,15 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
           ref: master
 
+      - name: Acknowledge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          printf "On it: validating your submission now. This usually takes a minute or two, I'll update this comment with the result.\n" \
+            | bash .github/scripts/upsert-status.sh
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
