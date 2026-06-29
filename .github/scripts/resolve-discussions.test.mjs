@@ -1,7 +1,11 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { repoFromBody, resolveDiscussions } from "./resolve-discussions.mjs";
+import {
+  repoFromBody,
+  discussionNumberByRepo,
+  resolveDiscussions,
+} from "./resolve-discussions.mjs";
 
 test("repoFromBody: labeled Repository line", () => {
   assert.equal(
@@ -28,19 +32,49 @@ test("repoFromBody: prefers the labeled repo over a foreign link in the body", (
 test("repoFromBody: none present", () => {
   assert.equal(repoFromBody("no repository mentioned here"), null);
   assert.equal(repoFromBody(undefined), null);
+  assert.equal(repoFromBody(null), null);
 });
 
-const sampleLock = () => ({
-  version: 1,
-  updated: "2026-06-28T10:47:19Z",
-  themes: [
-    { repo: "adaliea/blyrics-colorful-vocals", id: "colorful-vocals", version: "1.0.0" },
-    { repo: "ankit008-mishra/apple-music-v3", id: "apple-music-v3", version: "1.0.0" },
-    { repo: "WolftheE/better-ytm", id: "wolfthee-theme-bytm", version: "1.0.0" },
-  ],
+test("discussionNumberByRepo: maps lowercased repo to number", () => {
+  const map = discussionNumberByRepo([
+    { number: 10, body: "**Repository**: [adaliea/blyrics-colorful-vocals]" },
+    { number: 42, body: "**Repository**: [ankit008-mishra/apple-music-v3]" },
+  ]);
+  assert.equal(map.get("adaliea/blyrics-colorful-vocals"), 10);
+  assert.equal(map.get("ankit008-mishra/apple-music-v3"), 42);
+  assert.equal(map.size, 2);
 });
 
-test("matches by repo even when the discussion title drifted", () => {
+test("discussionNumberByRepo: first-wins on duplicate repos", () => {
+  const map = discussionNumberByRepo([
+    { number: 1, body: "**Repository**: [Owner/Repo]" },
+    { number: 2, body: "**Repository**: [owner/repo]" },
+  ]);
+  assert.equal(map.get("owner/repo"), 1);
+  assert.equal(map.size, 1);
+});
+
+test("discussionNumberByRepo: ignores bodies with no repo", () => {
+  const map = discussionNumberByRepo([
+    { number: 1, body: "nothing labeled here" },
+    { number: 2, body: "**Repository**: [foo/bar]" },
+  ]);
+  assert.equal(map.get("foo/bar"), 2);
+  assert.equal(map.size, 1);
+});
+
+test("discussionNumberByRepo: tolerates an empty/undefined list", () => {
+  assert.equal(discussionNumberByRepo([]).size, 0);
+  assert.equal(discussionNumberByRepo(undefined).size, 0);
+});
+
+const sampleThemes = () => [
+  { id: "colorful-vocals", repo: "adaliea/blyrics-colorful-vocals" },
+  { id: "apple-music-v3", repo: "ankit008-mishra/apple-music-v3" },
+  { id: "wolfthee-theme-bytm", repo: "WolftheE/better-ytm" },
+];
+
+test("resolveDiscussions: matches by repo even when the discussion title drifted", () => {
   const discussions = [
     {
       number: 10,
@@ -52,52 +86,69 @@ test("matches by repo even when the discussion title drifted", () => {
       body: "## Apple Music Refine\n- **Repository**: [ankit008-mishra/apple-music-v3](https://github.com/ankit008-mishra/apple-music-v3)",
     },
   ];
-  const { lockfile, changed } = resolveDiscussions(sampleLock(), discussions);
-  assert.equal(changed, 2);
-  assert.equal(lockfile.themes[0].discussion, 10);
-  assert.equal(lockfile.themes[1].discussion, 42);
-  // wolfthee has no discussion: stays without the field
-  assert.equal(lockfile.themes[2].discussion, undefined);
-});
-
-test("repo match is case-insensitive", () => {
-  const { lockfile, changed } = resolveDiscussions(sampleLock(), [
-    { number: 99, body: "**Repository**: [ADALIEA/Blyrics-Colorful-Vocals](https://github.com/ADALIEA/Blyrics-Colorful-Vocals)" },
+  assert.deepEqual(resolveDiscussions(sampleThemes(), discussions), [
+    { id: "colorful-vocals", discussion: 10 },
+    { id: "apple-music-v3", discussion: 42 },
+    // wolfthee has no discussion: null, meaning no discussion.json
+    { id: "wolfthee-theme-bytm", discussion: null },
   ]);
-  assert.equal(changed, 1);
-  assert.equal(lockfile.themes[0].discussion, 99);
 });
 
-test("idempotent: no change when the number is already set", () => {
-  const base = sampleLock();
-  base.themes[0].discussion = 10;
-  const { changed } = resolveDiscussions(base, [
-    { number: 10, body: "**Repository**: [adaliea/blyrics-colorful-vocals]" },
+test("resolveDiscussions: theme with a matching discussion -> { id, discussion: n }", () => {
+  assert.deepEqual(
+    resolveDiscussions([{ id: "minimal", repo: "owner/repo" }], [
+      { number: 7, body: "**Repository**: [owner/repo]" },
+    ]),
+    [{ id: "minimal", discussion: 7 }]
+  );
+});
+
+test("resolveDiscussions: theme with no match -> discussion: null", () => {
+  assert.deepEqual(
+    resolveDiscussions([{ id: "minimal", repo: "owner/repo" }], [
+      { number: 7, body: "**Repository**: [other/repo]" },
+    ]),
+    [{ id: "minimal", discussion: null }]
+  );
+});
+
+test("resolveDiscussions: repo match is case-insensitive", () => {
+  assert.deepEqual(
+    resolveDiscussions(
+      [{ id: "colorful-vocals", repo: "adaliea/blyrics-colorful-vocals" }],
+      [
+        {
+          number: 99,
+          body: "**Repository**: [ADALIEA/Blyrics-Colorful-Vocals](https://github.com/ADALIEA/Blyrics-Colorful-Vocals)",
+        },
+      ]
+    ),
+    [{ id: "colorful-vocals", discussion: 99 }]
+  );
+});
+
+test("resolveDiscussions: a theme whose discussion disappeared -> null (removal signal)", () => {
+  const themes = [
+    { id: "alpha", repo: "owner/alpha" },
+    { id: "beta", repo: "owner/beta" },
+  ];
+  // beta's discussion was removed/transferred: only alpha's remains.
+  const discussions = [{ number: 1, body: "**Repository**: [owner/alpha]" }];
+  assert.deepEqual(resolveDiscussions(themes, discussions), [
+    { id: "alpha", discussion: 1 },
+    { id: "beta", discussion: null },
   ]);
-  assert.equal(changed, 0);
 });
 
-test("preserves existing fields", () => {
-  const { lockfile } = resolveDiscussions(sampleLock(), [
-    { number: 10, body: "**Repository**: [adaliea/blyrics-colorful-vocals]" },
-  ]);
-  assert.deepEqual(lockfile.themes[0], {
-    repo: "adaliea/blyrics-colorful-vocals",
-    id: "colorful-vocals",
-    version: "1.0.0",
-    discussion: 10,
-  });
+test("resolveDiscussions: a discussion for an unregistered repo is ignored", () => {
+  assert.deepEqual(
+    resolveDiscussions([{ id: "minimal", repo: "owner/repo" }], [
+      { number: 5, body: "**Repository**: [some/unrelated-repo]" },
+    ]),
+    [{ id: "minimal", discussion: null }]
+  );
 });
 
-test("discussion for an unregistered repo is ignored", () => {
-  const { changed } = resolveDiscussions(sampleLock(), [
-    { number: 5, body: "**Repository**: [some/unrelated-repo]" },
-  ]);
-  assert.equal(changed, 0);
-});
-
-test("does not mutate the input lockfile", () => {
-  const base = sampleLock();
-  resolveDiscussions(base, [{ number: 10, body: "**Repository**: [adaliea/blyrics-colorful-vocals]" }]);
-  assert.equal(base.themes[0].discussion, undefined);
+test("resolveDiscussions: empty themes -> empty result", () => {
+  assert.deepEqual(resolveDiscussions([], []), []);
 });
