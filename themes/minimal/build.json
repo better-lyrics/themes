@@ -1,0 +1,16 @@
+{
+  "repo": "ramansg/Minimal",
+  "id": "minimal",
+  "version": "1.7.7",
+  "commit": "f96778c0646e74c57230c2d4b27b1c6e43e7344b",
+  "integrity": "sha256-499b63631911b8e9c19fb221e4365659666bfaea56b569e91633d912afd1210f",
+  "locked": "2026-06-29T02:16:01Z",
+  "builds": [
+    {
+      "integrity": "sha256-499b63631911b8e9c19fb221e4365659666bfaea56b569e91633d912afd1210f",
+      "minVersion": "2.2.0.0",
+      "path": "themes/minimal",
+      "version": "1.7.7"
+    }
+  ]
+}
