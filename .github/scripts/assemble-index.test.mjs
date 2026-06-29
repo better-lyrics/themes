@@ -1,7 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
-import { assembleIndex } from "./assemble-index.mjs";
+import { assembleIndex, collectEntries } from "./assemble-index.mjs";
 
 test("assembleIndex: merges discussion, sorts themes by id, fixed header", () => {
   const entries = [
@@ -89,4 +92,59 @@ test("assembleIndex: sorts a larger set by id ascending", () => {
     out.themes.map((t) => t.id),
     ["alpha", "beta", "gamma", "mid", "zeta"],
   );
+});
+
+// Build a temp themes/ dir, run cb(themesDir), and always clean it up.
+function withThemesDir(cb) {
+  const themesDir = mkdtempSync(join(tmpdir(), "assemble-index-"));
+  try {
+    cb(themesDir);
+  } finally {
+    rmSync(themesDir, { recursive: true, force: true });
+  }
+}
+
+test("collectEntries: malformed build.json throws naming the file path", () => {
+  withThemesDir((themesDir) => {
+    const dir = join(themesDir, "broken");
+    mkdirSync(dir);
+    const buildPath = join(dir, "build.json");
+    writeFileSync(buildPath, "{ not valid json");
+
+    assert.throws(
+      () => collectEntries(themesDir),
+      (err) =>
+        err instanceof Error &&
+        err.message.startsWith(`invalid JSON in ${buildPath}:`),
+    );
+  });
+});
+
+test("collectEntries: malformed discussion.json throws naming the file path", () => {
+  withThemesDir((themesDir) => {
+    const dir = join(themesDir, "theme");
+    mkdirSync(dir);
+    writeFileSync(join(dir, "build.json"), JSON.stringify({ id: "theme", builds: [] }));
+    const discussionPath = join(dir, "discussion.json");
+    writeFileSync(discussionPath, "{ not valid json");
+
+    assert.throws(
+      () => collectEntries(themesDir),
+      (err) =>
+        err instanceof Error &&
+        err.message.startsWith(`invalid JSON in ${discussionPath}:`),
+    );
+  });
+});
+
+test("collectEntries: missing discussion.json is treated as no discussion", () => {
+  withThemesDir((themesDir) => {
+    const dir = join(themesDir, "theme");
+    mkdirSync(dir);
+    writeFileSync(join(dir, "build.json"), JSON.stringify({ id: "theme", builds: [] }));
+
+    const entries = collectEntries(themesDir);
+    assert.equal(entries.length, 1);
+    assert.equal(entries[0].discussion, null);
+  });
 });

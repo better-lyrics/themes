@@ -47,7 +47,7 @@ function nowSeconds() {
 // and return the entries[] for assembleIndex. A theme exists only if it has a
 // build.json; a discussion.json without a sibling build.json is ignored (with a
 // warning to stderr).
-function collectEntries(themesDir) {
+export function collectEntries(themesDir) {
   const dirents = readdirSync(themesDir, { withFileTypes: true });
   const entries = [];
 
@@ -75,14 +75,28 @@ function collectEntries(themesDir) {
       continue;
     }
 
-    const build = JSON.parse(buildRaw);
+    let build;
+    try {
+      build = JSON.parse(buildRaw);
+    } catch (err) {
+      throw new Error(`invalid JSON in ${buildPath}: ${err.message}`);
+    }
 
     let discussion = null;
+    let discussionRaw;
     try {
-      const discussionRaw = readFileSync(discussionPath, "utf8");
-      discussion = JSON.parse(discussionRaw).discussion;
-    } catch {
-      // No discussion.json for this theme; leave discussion null.
+      discussionRaw = readFileSync(discussionPath, "utf8");
+    } catch (err) {
+      // Only a missing discussion.json means "no discussion". Any other read
+      // error (permissions, etc.) is a real problem and must surface.
+      if (err.code !== "ENOENT") throw err;
+    }
+    if (discussionRaw !== undefined) {
+      try {
+        discussion = JSON.parse(discussionRaw).discussion;
+      } catch (err) {
+        throw new Error(`invalid JSON in ${discussionPath}: ${err.message}`);
+      }
     }
 
     entries.push({ build, discussion });
