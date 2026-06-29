@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.7.2)
+# Better Lyrics – Minimal Immersive Theme (v1.7.7)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -52,7 +52,7 @@ Animations are intentionally disabled or simplified for a stable and readable ex
 
 ## 🔤 Typography
 
-- Uses **Roboto Flex** via Google Fonts, backed by native system fonts and Noto Sans for universal language and character support.
+- Uses **Google Sans Flex** as the primary typeface via Google Fonts, with **Roboto Flex** as a fallback, backed by native system fonts and Noto Sans for universal language and character support.
 - Applies globally across the page (can be removed in Section 2 if you prefer YouTube defaults).
 - Heavy emphasis on:
   - High contrast white text
@@ -122,19 +122,25 @@ Then control animations via Better Lyrics settings instead.
 
 The default Dynamic album art background with:
 
-* Blur: `30px` _(aesthetical and yet recognizable)_
-* Brightness: `0.35` _(lowered brightness for legibility)_
-* Contrast: `0.90` _(lowered contrast for black color differentiation)_
+* Blur: **Off by default** for best performance _(toggle back on in Section 3.3)_
+* Brightness: `0.20` _(lowered for legibility)_
+* Contrast: `0.85` _(lowered contrast for black color differentiation)_
 * Saturation: `1.0` _(neutral — no artificial boost)_
 * Smooth transition delay
 
 You can change the values in accordance to your preference
 
 Performance Tip:
-Lower this value for better performance:
+Blur is disabled by default. To turn it back on, set:
 
 ```css
---blyrics-background-blur
+--apply-blur-toggle: initial;
+```
+
+The blur strength itself is controlled separately via:
+
+```css
+--blur-amount: 30px;
 ```
 
 You can also:
@@ -151,6 +157,7 @@ This theme includes:
 * Dedicated fullscreen lyric scaling
 * Portrait window layout fixes
 * Artist page dynamic backgrounds
+* Smooth slide-up/down animation when opening or collapsing the full player page on mobile web layouts
 * Smooth transition between player states
 * No-lyrics slide animation
 * Sidebar entry smoothing
@@ -180,6 +187,8 @@ No harsh error screens. Just a calm fallback.
 Custom loader system:
 
 * Opacity animation instead of complex shimmer
+* Smooth, bouncy enter/exit transitions for the loader and ad overlay
+* Loader and lyrics wrapper cleanly hide during ad playback
 * No animations when not in use
 * No logo spinning
 
@@ -197,7 +206,7 @@ Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
  ![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.png)
 
-* **Player Queue:** Sticky headers, custom transparent chip designs, and fixed dragging-state backgrounds.
+* **Player Queue:** Sticky headers, custom transparent chip designs, hover highlighting on queue items, and fixed dragging-state backgrounds.
 * **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
 * **Search & Navigation:** Darker search box backgrounds and customized tab headings with pill-style active indicator.
 * **Notifications:** Auto-dismissing toast notifications that sweep away smoothly.
@@ -205,16 +214,17 @@ Includes refined styling and layout fixes to match the immersive dark aesthetic:
 * **Progress Bar & Controls:** Added smooth movement to the progress bar. Improved aesthetic of floating timestamps-tooltip.
 * **Superellipse Corner Shaping:** All UI surfaces — album art, queue items, menus, toasts, volume popup, progress knob, and tabs — now use `corner-shape: superellipse` for a consistent squircle aesthetic.
 * **Sidebar Navigation:** Guide items styled with subtle opacity and hover highlight for a cleaner sidebar feel.
-* **Audio/Video Toggle (Section 33):** Restyled A/V toggle with transparent background, opacity-based visibility, and contextual fullscreen variant.
+* **Audio/Video Toggle (Section 33):** Restyled A/V toggle with transparent background, superellipse corner shaping, opacity-based visibility, and contextual fullscreen variant.
 * **Player Controls (Section 34):** Play/pause button has a subtle filled background. Skip, seek, shuffle, repeat, and icon buttons are opacity-dimmed by default with a highlight ring on hover.
 * **Album & Playlist Header Buttons (Section 35):** Action buttons on album and playlist detail pages use transparent backgrounds with a subtle inset ring outline, matching the overall ghost-button aesthetic. The primary play button gets a softened filled treatment; secondary buttons fade in on hover.
+* **Track Lists (Section 36):** Track list rows get rounded squircle corners, a subtle hover highlight, and a lighter font weight on secondary columns for better visual hierarchy.
 ---
 
 ## ⚙ Performance Notes
 
 For best performance:
 
-1. Lower blur value.
+1. Keep background blur disabled (default) or lower the blur amount if you enable it.
 2. Disable background effects in Better Lyrics settings.
 3. Keep animations disabled (as designed).
 
@@ -227,20 +237,20 @@ This theme is built to be visually rich without relying on heavy animation logic
 Most quick edits are inside **Section 3**:
 
 * **Section 3.1 & 3.2:** Tweak font sizes, weights, scroll timing, and lyric opacity levels.
-* **Section 3.3:** Adjust background blur, saturation, brightness, and contrast.
+* **Section 3.3:** Background blur is off by default — set `--apply-blur-toggle: initial;` to enable it, then adjust blur amount, saturation, brightness, and contrast.
 * **Section 3.4:** The whole theme relies on the custom variables of oklch colors. Altering these may break parts of the theme configuration.
 
 If you want:
 
 * More animation → Use default Better Lyrics theme
-* More immersion → Increase blur & brightness
-* More performance → Reduce blur and/or disable background
+* More immersion → Enable blur (Section 3.3) and increase brightness
+* More performance → Keep blur off (default) and/or disable background
 
 ---
 
 ## 🔖 Version
 
-**v1.7.2** — Last updated: 2026-06-09
+**v1.7.7** — Last updated: 2026-06-28
 
 Please report bugs or suggestions on the Better Lyrics Discord.
 

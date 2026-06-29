@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## */
-/* 2026-06-20 v1.7.6                                */
+/* 2026-06-28 v1.7.7                                */
 
 /* Blur is off by default. Go to Section-3.3 for    */
 /*   turning it back on.                            */
@@ -39,8 +39,8 @@
 
 /* ## SECTION-2 - WEBSITE-WIDE FONT SETTINGS ###### */
 * {
-  --whole-website-font-family:	"Google Sans Flex",
-																"Roboto Flex", Roboto,
+  --whole-website-font-family:  "Google Sans Flex",
+                                "Roboto Flex", Roboto,
                                 var(--noto-sans-universal), sans-serif, system-ui;
   /* Font for everthing, delete above line if you   */
   /*   want to use YT default                       */
@@ -94,24 +94,24 @@
   /*# SECTION-3.3 Background Effects ############## */
   --blyrics-gradient-stops: none;
   --background-image-transition: background 2.5s ease-in-out 5s;
-	
-			/* BLUR- to turn on blur, change --apply-blur */
-			--blyrics-background-blur: var(--apply-blur-toggle, blur(var(--blur-amount)));
+  
+      /* BLUR- to turn on blur, change --apply-blur */
+      --blyrics-background-blur: var(--apply-blur-toggle, blur(var(--blur-amount)));
 
-			/* change blur amount here. but it only turns on from changing --apply-blur */	
-			--blur-amount: 30px; 
-	
-			/* "--apply-blur-toggle: ;" means it's OFF.             *
-			 * Write "--apply-blur-toggle: initial;" to turn it ON. */
-			--apply-blur-toggle: ; 
-	
+      /* change blur amount here. but it only turns on from changing --apply-blur */  
+      --blur-amount: 30px; 
+  
+      /* "--apply-blur-toggle: ;" means it's OFF.             *
+       * Write "--apply-blur-toggle: initial;" to turn it ON. */
+      --apply-blur-toggle: ; 
+  
   --blyrics-background-saturate: 1;
   --background-brightness: 0.20;
   --background-contrast: 0.85;
   --background-image-filter: saturate(var(--blyrics-background-saturate))
   brightness(var(--background-brightness)) contrast(var(--background-contrast))
   var(--blyrics-background-blur);
-	--filter-replacement-backgroundcolor: oklch(18.67% 0.0000 0 / 0.80);
+  --filter-replacement-backgroundcolor: oklch(18.67% 0.0000 0 / 0.80);
   
   /*# SECTION-3.4 Custom Variables ################ */
   --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
@@ -122,7 +122,7 @@
   --white-dot-10: oklch(1 0 0 / 0.10);
   --black-dot-87: oklch(0 0 0 / 0.87);
   --black-dot-60: oklch(0 0 0 / 0.60);
-	--blyrics-loader-transition-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --blyrics-loader-transition-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
   
   
   /* ## End of SECTION-3.4 ######################## */
@@ -370,7 +370,7 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
 
 #blyrics-loader {
   visibility: visible !important;
-	transition:
+  transition:
     opacity var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
     transform var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
     display var(--blyrics-loader-transition-duration, 0.6s) allow-discrete !important;
@@ -380,7 +380,7 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
 #blyrics-loader:not([state]) {
   display: none !important;
   opacity: 0 !important;
-	transform: translateY(0) scale(0.85) !important;
+  transform: translateY(0) scale(0.85) !important;
 }
 
 #blyrics-loader[state="full-loader"],
@@ -398,7 +398,7 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   #blyrics-loader[state="exiting"],
   #blyrics-loader[state="exiting-message"] {
     opacity: 0;
-		transform: translateY(0) scale(0.85);
+    transform: translateY(0) scale(0.85);
   }
 }
 
@@ -407,11 +407,11 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
 #blyrics-ad-overlay {
   display: none !important;
   opacity: 0;
-	animation-play-state: paused;
+  animation-play-state: paused;
   transition:
     opacity 0.4s var(--blyrics-loader-transition-easing),
-		transform 0.4s var(--blyrics-loader-transition-easing),
-		animation-play-state 0.4s allow-discrete
+    transform 0.4s var(--blyrics-loader-transition-easing),
+    animation-play-state 0.4s allow-discrete
     display 0.4s allow-discrete !important;
 }
 
@@ -425,7 +425,7 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   #blyrics-ad-overlay[active],
   :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
     opacity: 0;
-		transform: translateY(0) scale(0.85);
+    transform: translateY(0) scale(0.85);
   }
 }
 
@@ -454,13 +454,13 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
 :has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
   display: none !important;
   opacity: 0 !important;
-	transform: translateY(0) scale(0.85) !important;
+  transform: translateY(0) scale(0.85) !important;
 }
 
 @starting-style {
   #blyrics-wrapper {
     opacity: 0;
-		transform: translateY(0) scale(0.85);
+    transform: translateY(0) scale(0.85);
   }
 }
 
@@ -724,7 +724,7 @@ ytmusic-fullbleed-thumbnail-renderer {
   bottom: 0;
   background-color: var(--filter-replacement-backgroundcolor);
   pointer-events: none;
-	backdrop-filter: var(--blyrics-background-blur);
+  backdrop-filter: var(--blyrics-background-blur);
 }
 
 ytmusic-browse-response[has-background][page-type="MUSIC_PAGE_TYPE_NON_MUSIC_AUDIO_TRACK_PAGE"]
@@ -881,7 +881,7 @@ ytmusic-popup-container #contentWrapper {
   flex-direction: column !important;
   justify-content: flex-start !important;
   width: max-content !important;
-	max-height: 65dvh !important;
+  max-height: 65dvh !important;
   pointer-events: auto !important;
 }
 
@@ -1007,8 +1007,15 @@ ytmusic-player-queue-item[play-button-state="playing"] {
 /* ## SECTION-21 - Player Queue Items ############# */
 ytmusic-player-queue-item {
   border: none;
-	border-radius: 13.92px;
+  border-radius: 13.92px;
   corner-shape: superellipse(2);
+}
+
+#contents ytmusic-player-queue-item {
+&:hover {
+    background: var(--white-dot-10);
+    box-shadow: inset 0 0 0px 1px var(--white-dot-15);
+  }
 }
 
 /* ## SECTION-22 - Player Queue- dragging item #### */
@@ -1016,7 +1023,7 @@ ytmusic-player-queue-item:is(
     [style*="z-index: 9"],
     [style*="cursor: move"]
   ):hover {
-	border-radius: 13.92px !important;
+  border-radius: 13.92px !important;
   corner-shape: superellipse(2);
   background: var(--ytmusic-brand-background-solid, #030303) !important;
   box-sizing: border-box !important;
@@ -1087,7 +1094,7 @@ ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
   -webkit-mask-image: var(--mask-gradient);
   mask-image: var(--mask-gradient);
   background-color: var(--filter-replacement-backgroundcolor);
-	backdrop-filter: var(--blyrics-background-blur);
+  backdrop-filter: var(--blyrics-background-blur);
   z-index: 1;
   pointer-events: none;
   animation: slide-dimmer-up linear both;
@@ -1562,7 +1569,7 @@ ytmusic-player-page#player-page {
 }
 
 tp-yt-paper-item.ytmusic-guide-entry-renderer {
-	opacity:0.7;
+  opacity:0.7;
   transition: none;
     
     &:hover{
@@ -1666,7 +1673,7 @@ ytmusic-player-bar[is-mweb-player-bar-modernization-enabled]
   width: calc(100% - 10px) !important;
   height: calc(100% - 20px) !important;
   border-radius: 999rem !important;
-	corner-shape: superellipse(1.2) !important;
+  corner-shape: superellipse(1.2) !important;
   position: absolute !important;
   top: 0;
   bottom: 0;
@@ -1782,7 +1789,7 @@ ytmusic-player-bar[is-mweb-player-bar-modernization-enabled]
 .yt-icon:where(.ytIconWrapperHost),
 yt-icon {
   color: var(--white-1);
-	
+  
   &:hover {
     opacity: 1;
   }
@@ -1817,7 +1824,7 @@ ytmusic-menu-renderer:not(ytmusic-responsive-header-renderer ytmusic-menu-render
   transition: none;
   border-radius: 50%;
 
-	&:hover {
+  &:hover {
     background-color: var(--white-dot-10);
     box-shadow: inset 0 0 0px 1px var(--white-dot-10);
     border-radius: 50%;
@@ -1878,8 +1885,8 @@ ytmusic-responsive-header-renderer
   opacity: 0.87;
 
   &:hover {
-		opacity: 1;
-	}
+    opacity: 1;
+  }
 
   & yt-icon > span {
     opacity: inherit !important;
@@ -1894,6 +1901,24 @@ ytmusic-responsive-header-renderer
 
 ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   color: inherit;
+}
+
+/* ## SECTION-36 - Track Lists #################### */
+
+#contents > ytmusic-responsive-list-item-renderer {
+  box-shadow: none;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  border: none !important;
+
+  &:hover {
+    background: var(--white-dot-10);
+    box-shadow: inset 0 0 0px 1px var(--white-dot-15);
+  }
+
+  & .secondary-flex-columns.ytmusic-responsive-list-item-renderer .flex-column.ytmusic-responsive-list-item-renderer {
+    font-weight: 200;
+  }
 }
 
 /* ################################################ */
