@@ -227,6 +227,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
+      # The commit step uses continue-on-error, so ALL commit failures (not just
+      # CAS races) flow into this bounded retry. ghcommit exposes no
+      # machine-readable way to tell a race from a real error, so we treat every
+      # failure as a possible race; the 5-retry cap bounds the blast radius.
       - name: Re-dispatch on commit race
         id: redispatch
         if: steps.commit.outcome == 'failure'
@@ -239,12 +243,16 @@ jobs:
           INSTALL_ID="${{ github.event.client_payload.installationId }}"
           if [ "$RETRY" -lt 5 ]; then
             sleep $((RANDOM % 20 + 5))   # jitter so the colliding window clears
-            curl -sS -X POST "https://api.github.com/repos/${{ github.repository }}/dispatches" \
-              -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
-              -H "Accept: application/vnd.github+json" \
-              -d "{\"event_type\":\"theme-update\",\"client_payload\":{\"repo\":\"$REPO\",\"commit\":\"$COMMIT\",\"installationId\":$INSTALL_ID,\"retry\":$((RETRY+1))}}"
-            echo "requeued=true" >> $GITHUB_OUTPUT
-            echo "Commit raced; re-dispatched as retry $((RETRY+1))/5"
+            if curl -sS --fail-with-body -X POST "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+                 -H "Authorization: Bearer $GH_TOKEN" \
+                 -H "Accept: application/vnd.github+json" \
+                 -d "{\"event_type\":\"theme-update\",\"client_payload\":{\"repo\":\"$REPO\",\"commit\":\"$COMMIT\",\"installationId\":$INSTALL_ID,\"retry\":$((RETRY+1))}}"; then
+              echo "requeued=true" >> "$GITHUB_OUTPUT"
+              echo "Commit raced; re-dispatched as retry $((RETRY+1))/5"
+            else
+              echo "Re-dispatch POST failed; not requeued"
+              exit 1
+            fi
           else
             echo "Commit raced and retries exhausted ($RETRY)"
             exit 1
@@ -266,7 +274,7 @@ jobs:
             }'
 
       - name: Report failure status
-        if: failure()
+        if: failure() && steps.redispatch.outputs.requeued != 'true'
         run: |
           curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
