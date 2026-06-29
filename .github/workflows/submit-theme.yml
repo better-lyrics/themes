@@ -1,0 +1,185 @@
+name: Submit Theme
+
+# Turns a "Submit theme" issue into a pull request that adds the repo to
+# index.json, so contributors never have to fork. Valid submissions open a PR
+# (which validate-theme.yml then checks); invalid ones get a comment and close.
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: submit-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    if: startsWith(github.event.issue.title, 'Submit theme:')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Parse submission
+        id: parser
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/submit-theme.yml
+
+      - name: Validate
+        id: validate
+        env:
+          RAW_REPO: ${{ steps.parser.outputs.issueparser_repo }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          REPO=$(node .github/scripts/submission.mjs normalize) && FMT=ok || FMT=bad
+          ERR=""
+          # Default next step. The two checks on the submitted value (format and
+          # duplicate repo) override it: reopening re-reads the same value, so
+          # there is nothing a reopen can fix.
+          NEXT="Fixed it? Reopen this issue to run the check again."
+
+          if [ "$FMT" != ok ]; then
+            ERR="The repository must be in \`owner/name\` form. Got: \`$RAW_REPO\`"
+            NEXT="Open a new submission with the repository written as \`owner/name\`."
+          fi
+
+          if [ -z "$ERR" ] && jq -e --arg r "$REPO" '.themes[] | select((.repo|ascii_downcase) == ($r|ascii_downcase))' index.json >/dev/null; then
+            ERR="\`$REPO\` is already in the registry."
+            NEXT="Nothing to add: it's already listed. If you meant a different repo, open a new submission."
+          fi
+
+          if [ -z "$ERR" ]; then
+            VIS=$(gh api "repos/$REPO" --jq '.visibility' 2>/dev/null || echo "")
+            [ "$VIS" = "public" ] || ERR="Couldn't find a public repo at \`$REPO\`. Make sure it exists and is public."
+          fi
+
+          if [ -z "$ERR" ]; then
+            if git clone --depth 1 "https://github.com/$REPO.git" theme-repo 2>/dev/null; then
+              if [ ! -f theme-repo/metadata.json ]; then
+                ERR="No \`metadata.json\` found in the repo root."
+              else
+                THEME_ID=$(jq -r '.id // empty' theme-repo/metadata.json)
+                if [ -z "$THEME_ID" ]; then
+                  ERR="\`metadata.json\` is missing an \`id\`."
+                elif find themes -mindepth 2 -maxdepth 2 -name build.json -exec jq -r '.id' {} + 2>/dev/null | node .github/scripts/submission.mjs id-taken "$THEME_ID"; then
+                  ERR="The theme id \`$THEME_ID\` is already taken by another theme."
+                fi
+              fi
+              if [ -z "$ERR" ]; then
+                OUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1) && RC=0 || RC=$?
+                if [ "$RC" -ne 0 ]; then
+                  printf '%s\n' "$OUT" > valout.txt
+                  ERR="Your theme didn't pass validation:"
+                fi
+              fi
+            else
+              ERR="Couldn't clone \`$REPO\`."
+            fi
+            rm -rf theme-repo
+          fi
+
+          if [ -z "$ERR" ]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            echo "repo=$REPO" >> "$GITHUB_OUTPUT"
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            {
+              printf '%s\n' "$ERR"
+              if [ -f valout.txt ]; then
+                printf '\n```\n%s\n```\n' "$(cat valout.txt)"
+                printf '\nCheck it yourself first: `npx create-bl-theme@latest validate .` in your theme repo.\n'
+              fi
+              printf '\n%s\n' "$NEXT"
+            } > comment.md
+          fi
+
+      - name: Add to index.json
+        if: steps.validate.outputs.valid == 'true'
+        env:
+          REPO: ${{ steps.validate.outputs.repo }}
+        run: |
+          jq --arg r "$REPO" '.themes += [{repo: $r}]' index.json > tmp.json && mv tmp.json index.json
+          jq -S '.' index.json > tmp.json && mv tmp.json index.json
+
+      - name: Create submission branch
+        if: steps.validate.outputs.valid == 'true'
+        run: git push origin "HEAD:refs/heads/submit/issue-${{ github.event.issue.number }}" --force
+
+      - name: Commit to the branch (verified)
+        if: steps.validate.outputs.valid == 'true'
+        uses: planetscale/ghcommit-action@v0.2.19
+        with:
+          commit_message: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
+          repo: ${{ github.repository }}
+          branch: submit/issue-${{ github.event.issue.number }}
+          file_pattern: index.json
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Open PR
+        id: cpr
+        if: steps.validate.outputs.valid == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE: ${{ github.event.issue.number }}
+          REPO: ${{ steps.validate.outputs.repo }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+        run: |
+          printf 'Closes #%s\n\nSubmitted by @%s via the theme form.\n' "$ISSUE" "$AUTHOR" > pr-body.md
+          URL=$(gh pr create --base master --head "submit/issue-$ISSUE" \
+            --title "feat: add $REPO to the registry" --body-file pr-body.md)
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
+
+      - name: Comment and close (accepted)
+        if: steps.validate.outputs.valid == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          PR_URL: ${{ steps.cpr.outputs.url }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          printf 'Thanks! Opened %s for review. Your theme publishes once a maintainer merges it.\n' "$PR_URL" \
+            | bash .github/scripts/upsert-status.sh
+          gh issue close "$ISSUE" --reason completed
+
+      - name: Comment and close (rejected)
+        if: steps.validate.outputs.valid != 'true' && steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          bash .github/scripts/upsert-status.sh < comment.md
+          gh issue close "$ISSUE" --reason "not planned"
+
+      - name: Comment on unexpected failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          printf 'Something went wrong handling this submission. A maintainer will take a look.\n' \
+            | bash .github/scripts/upsert-status.sh || true
