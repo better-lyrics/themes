@@ -1,5 +1,3 @@
-/* Sustain, a marketplace theme by boidushya */
-
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 /*
@@ -25,6 +23,7 @@ blyrics-target-scroll-pos-ratio = 0.5;
   --blyrics-fullscreen-video-panel-size: 55%;
   --yt-img-border-radius: 2rem;
   --ytmusic-nav-bar: transparent;
+  --blyrics-img-max-width: 576px;
 }
 
 * {
@@ -364,7 +363,7 @@ ytmusic-player-bar {
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled]):not([blyrics-video-mode]):not([video-mode]) #player.ytmusic-player-page {
-  max-width: 576px;
+  max-width: var(--blyrics-img-max-width);
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-video-mode]):not([video-mode]) ytmusic-player:not([video-mode]) {
@@ -374,7 +373,8 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info {
   text-align: left;
-  max-width: 576px;
+  width: 100%;
+  max-width: var(--blyrics-img-max-width);
   padding: 2rem;
   margin-bottom: 8rem;
   outline: 1px dashed rgb(255 255 255 / 15%);
@@ -383,9 +383,14 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   transform: translateY(-64px);
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(4px);
-  width: 100%;
   box-sizing: border-box;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px 0px;
+  transition: max-width 0.5s ease-in-out;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay);
+}
+
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened][video-mode]:not([blyrics-dfs]) #blyrics-song-info {
+  max-width: unset;
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page {
@@ -404,8 +409,6 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #blyrics-song-info{
   max-width: 500px !important;
-  transition: max-width 0.5s ease-in-out;
-  transition-delay: var(--blyrics-no-lyrics-slide-delay);
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) .content.ytmusic-player-page {
@@ -415,4 +418,3 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) .content.ytmusic-player-page {
   flex-direction: row-reverse;
 }
-
