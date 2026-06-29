@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: theme-vendoring
+  group: vendor-${{ github.event.client_payload.repo || github.event_name }}
   cancel-in-progress: false
 
 jobs:
@@ -32,6 +32,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
+          ref: master
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -90,10 +91,11 @@ jobs:
         id: version-check
         run: |
           REPO="${{ steps.payload.outputs.repo }}"
+          THEME_ID="${{ steps.metadata.outputs.id }}"
           NEW_VERSION="${{ steps.metadata.outputs.version }}"
 
-          # Get current version from lockfile
-          CURRENT_VERSION=$(jq -r --arg repo "$REPO" '.themes[] | select(.repo == $repo) | .version // "0.0.0"' index.lock.json)
+          # Get current version from the theme's own build.json
+          CURRENT_VERSION=$(jq -r '.version // "0.0.0"' "themes/$THEME_ID/build.json" 2>/dev/null || echo "0.0.0")
 
           echo "Current version: $CURRENT_VERSION"
           echo "New version: $NEW_VERSION"
@@ -138,12 +140,16 @@ jobs:
           fi
 
           # Replace the flat build with the new files. Preserve the existing v/
-          # snapshot directory across the swap (snapshots are pruned separately).
-          rm -rf .vsnapshots
+          # snapshot directory and the discussion resolver's data across the swap
+          # (snapshots are pruned separately; discussion.json is owned by another
+          # workflow and must never be dropped by vendoring).
+          rm -rf .vsnapshots .discussion.json
           [ -d "themes/$THEME_ID/v" ] && mv "themes/$THEME_ID/v" .vsnapshots
+          [ -f "themes/$THEME_ID/discussion.json" ] && mv "themes/$THEME_ID/discussion.json" .discussion.json
           rm -rf "themes/$THEME_ID"
           mkdir -p "themes/$THEME_ID"
           [ -d .vsnapshots ] && mv .vsnapshots "themes/$THEME_ID/v"
+          [ -f .discussion.json ] && mv .discussion.json "themes/$THEME_ID/discussion.json"
 
           # Copy essential files
           cp theme-repo/metadata.json "themes/$THEME_ID/"
@@ -159,8 +165,9 @@ jobs:
           # the latest hash does not change when snapshots come and go.
           INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
-          # Prior reachable builds[] for this theme (empty array if absent).
-          PRIOR_BUILDS=$(jq -c --arg repo "$REPO" '(.themes[] | select(.repo == $repo) | .builds) // []' index.lock.json)
+          # Prior reachable builds[] for this theme, read from its OLD build.json
+          # (stashed in .outgoing/ above). Empty array if absent.
+          PRIOR_BUILDS=$(jq -c '.builds // []' .outgoing/build.json 2>/dev/null || echo '[]')
 
           # Compute the new builds[], whether to snapshot the outgoing build, and
           # which old snapshot dirs to prune.
@@ -183,17 +190,13 @@ jobs:
 
           rm -rf .outgoing
 
-          # Update lockfile: existing fields keep LATEST build values, plus the
-          # additive builds[] array. The resolved discussion number (if any) is
-          # carried over so a version bump does not drop it.
-          jq --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
-             --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
-             --argjson b "$BUILDS" \
-             '.themes = [.themes[] | if .repo == $repo then ({repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b} + (if .discussion then {discussion: .discussion} else {} end)) else . end] | .updated = $t' \
-             index.lock.json > tmp.json && mv tmp.json index.lock.json
-
-          # Format lockfile
-          jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
+          # Write this theme's own build.json. The aggregate index.lock.json is
+          # regenerated from these per-theme files by a separate workflow.
+          jq -n --arg repo "$REPO" --arg id "$THEME_ID" --arg v "$VERSION" \
+            --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
+            --argjson b "$BUILDS" \
+            '{repo:$repo,id:$id,version:$v,commit:$c,integrity:$i,locked:$t,builds:$b}' \
+            > "themes/$THEME_ID/build.json"
 
           echo "Vendored $THEME_ID v$VERSION"
 
@@ -209,9 +212,10 @@ jobs:
         if: steps.stage.outputs.has_changes == 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
-          commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }} [skip ci]"
+          commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
           repo: ${{ github.repository }}
           branch: ${{ github.ref_name }}
+          file_pattern: themes/${{ steps.metadata.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
@@ -264,6 +268,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ steps.app-token.outputs.token }}
+          ref: master
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -314,11 +319,6 @@ jobs:
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           VENDORED=""
           FAILED=""
-
-          # Initialize lockfile if it doesn't exist
-          if [ ! -f index.lock.json ]; then
-            echo '{"version":1,"updated":"'"$TIMESTAMP"'","themes":[]}' > index.lock.json
-          fi
 
           while IFS= read -r repo; do
             [ -z "$repo" ] && continue
@@ -372,20 +372,19 @@ jobs:
             PLAN=$(node .github/scripts/builds.mjs "$THEME_ID" "$VERSION" "$MIN_VERSION" "sha256-$INTEGRITY" "[]")
             BUILDS=$(echo "$PLAN" | jq -c '.builds')
 
-            # Add to lockfile
-            jq --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
-               --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
-               --argjson b "$BUILDS" \
-               '.themes += [{repo: $repo, id: $id, version: $v, commit: $c, integrity: $i, locked: $t, builds: $b}] | .updated = $t' \
-               index.lock.json > tmp.json && mv tmp.json index.lock.json
+            # Write this theme's own build.json (a brand-new theme has no prior
+            # builds). The aggregate index.lock.json is regenerated from these
+            # per-theme files by a separate workflow.
+            jq -n --arg repo "$repo" --arg id "$THEME_ID" --arg v "$VERSION" \
+              --arg c "$COMMIT" --arg i "sha256-$INTEGRITY" --arg t "$TIMESTAMP" \
+              --argjson b "$BUILDS" \
+              '{repo:$repo,id:$id,version:$v,commit:$c,integrity:$i,locked:$t,builds:$b}' \
+              > "themes/$THEME_ID/build.json"
 
             VENDORED="$VENDORED$THEME_ID (v$VERSION)\n"
 
             rm -rf theme-repo
           done <<< "${{ steps.changes.outputs.new }}"
-
-          # Format lockfile
-          jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
 
           echo "vendored<<EOF" >> $GITHUB_OUTPUT
           echo -e "$VENDORED" >> $GITHUB_OUTPUT
@@ -415,21 +414,16 @@ jobs:
             THEME_ID=$(jq -r --arg repo "$repo" '.themes[] | select(.repo == $repo) | .id' index.lock.json)
 
             if [ -n "$THEME_ID" ] && [ "$THEME_ID" != "null" ]; then
-              # Remove vendored files
+              # Remove vendored files (this drops the theme's build.json and
+              # discussion.json along with the rest of its directory).
               if [ -d "themes/$THEME_ID" ]; then
                 rm -rf "themes/$THEME_ID"
                 echo "Removed themes/$THEME_ID"
               fi
 
-              # Remove from lockfile
-              jq --arg repo "$repo" '.themes = [.themes[] | select(.repo != $repo)]' index.lock.json > tmp.json && mv tmp.json index.lock.json
-
               REMOVED="$REMOVED$THEME_ID\n"
             fi
           done <<< "${{ steps.changes.outputs.removed }}"
-
-          # Format lockfile
-          jq -S '.' index.lock.json > tmp.json && mv tmp.json index.lock.json
 
           echo "removed<<EOF" >> $GITHUB_OUTPUT
           echo -e "$REMOVED" >> $GITHUB_OUTPUT
@@ -449,7 +443,7 @@ jobs:
         if: steps.stage.outputs.has_changes == 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
-          commit_message: "chore: vendor themes [skip ci]"
+          commit_message: "chore: vendor themes"
           repo: ${{ github.repository }}
           branch: master
         env:
