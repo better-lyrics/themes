@@ -6,12 +6,16 @@ name: Submit Theme
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened]
 
 permissions:
   contents: write
   pull-requests: write
   issues: write
+
+concurrency:
+  group: submit-${{ github.event.issue.number }}
+  cancel-in-progress: true
 
 jobs:
   submit:
@@ -49,15 +53,21 @@ jobs:
           RAW_REPO: ${{ steps.parser.outputs.issueparser_repo }}
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          REPO=$(printf '%s' "$RAW_REPO" | sed -E 's#https?://github.com/##I; s#\.git$##; s#/+$##' | tr -d '[:space:]')
+          REPO=$(node .github/scripts/submission.mjs normalize) && FMT=ok || FMT=bad
           ERR=""
+          # Default next step. The two checks on the submitted value (format and
+          # duplicate repo) override it: reopening re-reads the same value, so
+          # there is nothing a reopen can fix.
+          NEXT="Fixed it? Reopen this issue to run the check again."
 
-          if ! printf '%s' "$REPO" | grep -qE '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'; then
+          if [ "$FMT" != ok ]; then
             ERR="The repository must be in \`owner/name\` form. Got: \`$RAW_REPO\`"
+            NEXT="Open a new submission with the repository written as \`owner/name\`."
           fi
 
           if [ -z "$ERR" ] && jq -e --arg r "$REPO" '.themes[] | select((.repo|ascii_downcase) == ($r|ascii_downcase))' index.json >/dev/null; then
             ERR="\`$REPO\` is already in the registry."
+            NEXT="Nothing to add: it's already listed. If you meant a different repo, open a new submission."
           fi
 
           if [ -z "$ERR" ]; then
@@ -73,13 +83,13 @@ jobs:
                 THEME_ID=$(jq -r '.id // empty' theme-repo/metadata.json)
                 if [ -z "$THEME_ID" ]; then
                   ERR="\`metadata.json\` is missing an \`id\`."
-                elif find themes -mindepth 2 -maxdepth 2 -name build.json -exec jq -r '.id' {} + 2>/dev/null | grep -qx "$THEME_ID"; then
+                elif find themes -mindepth 2 -maxdepth 2 -name build.json -exec jq -r '.id' {} + 2>/dev/null | node .github/scripts/submission.mjs id-taken "$THEME_ID"; then
                   ERR="The theme id \`$THEME_ID\` is already taken by another theme."
                 fi
               fi
               if [ -z "$ERR" ]; then
-                OUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
-                if printf '%s' "$OUT" | grep -qiE 'error|failed'; then
+                OUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1) && RC=0 || RC=$?
+                if [ "$RC" -ne 0 ]; then
                   printf '%s\n' "$OUT" > valout.txt
                   ERR="Your theme didn't pass validation:"
                 fi
@@ -96,9 +106,12 @@ jobs:
           else
             echo "valid=false" >> "$GITHUB_OUTPUT"
             {
-              printf "Couldn't add your theme:\n\n%s\n" "$ERR"
-              [ -f valout.txt ] && printf '\n```\n%s\n```\n' "$(cat valout.txt)"
-              printf '\nFix the issue above and open a new submission.\n'
+              printf '%s\n' "$ERR"
+              if [ -f valout.txt ]; then
+                printf '\n```\n%s\n```\n' "$(cat valout.txt)"
+                printf '\nCheck it yourself first: `npx create-bl-theme@latest validate .` in your theme repo.\n'
+              fi
+              printf '\n%s\n' "$NEXT"
             } > comment.md
           fi
 
@@ -143,25 +156,30 @@ jobs:
         if: steps.validate.outputs.valid == 'true'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
           PR_URL: ${{ steps.cpr.outputs.url }}
           ISSUE: ${{ github.event.issue.number }}
         run: |
-          gh issue comment "$ISSUE" --body "Thanks! Opened $PR_URL for review. Your theme publishes once a maintainer merges it."
+          printf 'Thanks! Opened %s for review. Your theme publishes once a maintainer merges it.\n' "$PR_URL" \
+            | bash .github/scripts/upsert-status.sh
           gh issue close "$ISSUE" --reason completed
 
       - name: Comment and close (rejected)
         if: steps.validate.outputs.valid != 'true' && steps.validate.outcome == 'success'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number }}
         run: |
-          gh issue comment "$ISSUE" --body-file comment.md
+          bash .github/scripts/upsert-status.sh < comment.md
           gh issue close "$ISSUE" --reason "not planned"
 
       - name: Comment on unexpected failure
         if: failure()
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_REPO: ${{ github.repository }}
           ISSUE: ${{ github.event.issue.number }}
         run: |
-          gh issue comment "$ISSUE" --body "Something went wrong handling this submission. A maintainer will take a look." || true
+          printf 'Something went wrong handling this submission. A maintainer will take a look.\n' \
+            | bash .github/scripts/upsert-status.sh || true
