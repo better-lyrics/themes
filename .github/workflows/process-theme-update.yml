@@ -215,6 +215,8 @@ jobs:
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
       - name: Commit and push changes
+        id: commit
+        continue-on-error: true
         if: steps.stage.outputs.has_changes == 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
@@ -225,8 +227,31 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
+      - name: Re-dispatch on commit race
+        id: redispatch
+        if: steps.commit.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          RETRY=${{ github.event.client_payload.retry || 0 }}
+          REPO="${{ steps.payload.outputs.repo }}"
+          COMMIT="${{ steps.payload.outputs.commit }}"
+          INSTALL_ID="${{ github.event.client_payload.installationId }}"
+          if [ "$RETRY" -lt 5 ]; then
+            sleep $((RANDOM % 20 + 5))   # jitter so the colliding window clears
+            curl -sS -X POST "https://api.github.com/repos/${{ github.repository }}/dispatches" \
+              -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+              -H "Accept: application/vnd.github+json" \
+              -d "{\"event_type\":\"theme-update\",\"client_payload\":{\"repo\":\"$REPO\",\"commit\":\"$COMMIT\",\"installationId\":$INSTALL_ID,\"retry\":$((RETRY+1))}}"
+            echo "requeued=true" >> $GITHUB_OUTPUT
+            echo "Commit raced; re-dispatched as retry $((RETRY+1))/5"
+          else
+            echo "Commit raced and retries exhausted ($RETRY)"
+            exit 1
+          fi
+
       - name: Report success status
-        if: success()
+        if: steps.commit.outcome == 'success'
         run: |
           curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
