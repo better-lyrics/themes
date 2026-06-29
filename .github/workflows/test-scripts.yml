@@ -1,7 +1,7 @@
 name: Test Scripts
 on:
   pull_request:
-    paths: ['.github/scripts/**']
+    paths: ['.github/scripts/**', '.github/workflows/test-scripts.yml']
   workflow_dispatch:
 jobs:
   test:
