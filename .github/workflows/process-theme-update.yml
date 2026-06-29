@@ -166,8 +166,14 @@ jobs:
           INTEGRITY=$(find "themes/$THEME_ID" -path "themes/$THEME_ID/v" -prune -o -type f -exec sha256sum {} \; | sort | sha256sum | cut -d' ' -f1)
 
           # Prior reachable builds[] for this theme, read from its OLD build.json
-          # (stashed in .outgoing/ above). Empty array if absent.
+          # (stashed in .outgoing/ above). Empty array if absent. NOTE: .outgoing
+          # must stay populated until this read; clearing it earlier would silently
+          # reset the build staircase to [].
           PRIOR_BUILDS=$(jq -c '.builds // []' .outgoing/build.json 2>/dev/null || echo '[]')
+
+          # The stash is theme content only; build.json/discussion.json are registry
+          # metadata, not part of a version snapshot.
+          rm -f .outgoing/build.json .outgoing/discussion.json
 
           # Compute the new builds[], whether to snapshot the outgoing build, and
           # which old snapshot dirs to prune.
