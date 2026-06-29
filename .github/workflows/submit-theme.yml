@@ -1,0 +1,155 @@
+name: Submit Theme
+
+# Turns a "Submit theme" issue into a pull request that adds the repo to
+# index.json, so contributors never have to fork. Valid submissions open a PR
+# (which validate-theme.yml then checks); invalid ones get a comment and close.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  submit:
+    if: startsWith(github.event.issue.title, 'Submit theme:')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          ref: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Parse submission
+        id: parser
+        uses: stefanbuck/github-issue-parser@v3
+        with:
+          template-path: .github/ISSUE_TEMPLATE/submit-theme.yml
+
+      - name: Validate
+        id: validate
+        env:
+          RAW_REPO: ${{ steps.parser.outputs.issueparser_repo }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          REPO=$(printf '%s' "$RAW_REPO" | sed -E 's#https?://github.com/##I; s#\.git$##; s#/+$##' | tr -d '[:space:]')
+          ERR=""
+
+          if ! printf '%s' "$REPO" | grep -qE '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$'; then
+            ERR="The repository must be in \`owner/name\` form. Got: \`$RAW_REPO\`"
+          fi
+
+          if [ -z "$ERR" ] && jq -e --arg r "$REPO" '.themes[] | select((.repo|ascii_downcase) == ($r|ascii_downcase))' index.json >/dev/null; then
+            ERR="\`$REPO\` is already in the registry."
+          fi
+
+          if [ -z "$ERR" ]; then
+            VIS=$(gh api "repos/$REPO" --jq '.visibility' 2>/dev/null || echo "")
+            [ "$VIS" = "public" ] || ERR="Couldn't find a public repo at \`$REPO\`. Make sure it exists and is public."
+          fi
+
+          if [ -z "$ERR" ]; then
+            if git clone --depth 1 "https://github.com/$REPO.git" theme-repo 2>/dev/null; then
+              if [ ! -f theme-repo/metadata.json ]; then
+                ERR="No \`metadata.json\` found in the repo root."
+              else
+                THEME_ID=$(jq -r '.id // empty' theme-repo/metadata.json)
+                if [ -z "$THEME_ID" ]; then
+                  ERR="\`metadata.json\` is missing an \`id\`."
+                elif find themes -mindepth 2 -maxdepth 2 -name build.json -exec jq -r '.id' {} + 2>/dev/null | grep -qx "$THEME_ID"; then
+                  ERR="The theme id \`$THEME_ID\` is already taken by another theme."
+                fi
+              fi
+              if [ -z "$ERR" ]; then
+                OUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
+                if printf '%s' "$OUT" | grep -qiE 'error|failed'; then
+                  printf '%s\n' "$OUT" > valout.txt
+                  ERR="Your theme didn't pass validation:"
+                fi
+              fi
+            else
+              ERR="Couldn't clone \`$REPO\`."
+            fi
+            rm -rf theme-repo
+          fi
+
+          if [ -z "$ERR" ]; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+            echo "repo=$REPO" >> "$GITHUB_OUTPUT"
+          else
+            echo "valid=false" >> "$GITHUB_OUTPUT"
+            {
+              printf "Couldn't add your theme:\n\n%s\n" "$ERR"
+              [ -f valout.txt ] && printf '\n```\n%s\n```\n' "$(cat valout.txt)"
+              printf '\nFix the issue above and open a new submission.\n'
+            } > comment.md
+          fi
+
+      - name: Add to index.json
+        if: steps.validate.outputs.valid == 'true'
+        env:
+          REPO: ${{ steps.validate.outputs.repo }}
+        run: |
+          jq --arg r "$REPO" '.themes += [{repo: $r}]' index.json > tmp.json && mv tmp.json index.json
+          jq -S '.' index.json > tmp.json && mv tmp.json index.json
+
+      - name: Open PR
+        id: cpr
+        if: steps.validate.outputs.valid == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          base: master
+          branch: submit/issue-${{ github.event.issue.number }}
+          delete-branch: true
+          add-paths: index.json
+          commit-message: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
+          title: "feat: add ${{ steps.validate.outputs.repo }} to the registry"
+          body: |
+            Closes #${{ github.event.issue.number }}
+
+            Submitted by @${{ github.event.issue.user.login }} via the theme form.
+
+      - name: Comment and close (accepted)
+        if: steps.validate.outputs.valid == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_URL: ${{ steps.cpr.outputs.pull-request-url }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --body "Thanks! Opened $PR_URL for review. Your theme publishes once a maintainer merges it."
+          gh issue close "$ISSUE" --reason completed
+
+      - name: Comment and close (rejected)
+        if: steps.validate.outputs.valid != 'true' && steps.validate.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --body-file comment.md
+          gh issue close "$ISSUE" --reason "not planned"
+
+      - name: Comment on unexpected failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          ISSUE: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE" --body "Something went wrong handling this submission. A maintainer will take a look." || true

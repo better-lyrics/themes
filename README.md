@@ -100,21 +100,9 @@ This theme works best with the album art background enabled.
 
 **Note:** If both `DESCRIPTION.md` and the `description` field in `metadata.json` exist, `DESCRIPTION.md` takes precedence.
 
-### 4. Submit a Pull Request
+### 4. Submit It
 
-1. Fork this repository
-2. Add your theme to `index.json`:
-
-```json
-{
-  "themes": [
-    { "repo": "existing/theme" },
-    { "repo": "your-username/your-theme-repo" }
-  ]
-}
-```
-
-3. Open a pull request
+Open a [Submit theme issue](https://github.com/better-lyrics/themes/issues/new?template=submit-theme.yml), enter your repo, and submit. A pull request gets opened and checked for you. Once a maintainer merges it, your theme is live.
 
 ### 5. Enable Auto-Updates (Recommended)
 

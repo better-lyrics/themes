@@ -1,0 +1,17 @@
+name: Submit a theme
+description: Submit your theme to the Better Lyrics registry.
+title: "Submit theme: "
+labels: ["theme-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Enter your theme's repo below and a pull request gets opened for you.
+  - type: input
+    id: repo
+    attributes:
+      label: Theme repository
+      description: Your theme's GitHub repo, as owner/name.
+      placeholder: yourname/your-theme
+    validations:
+      required: true
