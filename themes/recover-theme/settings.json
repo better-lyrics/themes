@@ -25,6 +25,8 @@
         "pos": 3,
         "type": "toggle",
         "label": "Should the placement of the album cover affets the text direction of the lyrics",
+        "onValue": "true",
+        "offValue": "false",
         "attribute": "affect-lyric-direction",
         "attrType": "rics",
         "default": false
