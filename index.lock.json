@@ -12,19 +12,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-5a2a66d590545fc81ed57b59f4af969d503c165c4dabcbc5da7a4e1d736d4039",
+          "integrity": "sha256-8ece22ee02132187fdd422ac5ee9f965aaa6fd7c8c36c24891f40aaa1f2c6192",
           "minVersion": "2.0.5.6",
           "path": "themes/apple-music-v3",
-          "version": "1.1.6"
+          "version": "1.1.7"
         }
       ],
-      "commit": "a3ecffffadc708926c32381dd190d3054859b299",
+      "commit": "373b19cc5932ee92ec4235af411939b7acbbf767",
       "discussion": 42,
       "id": "apple-music-v3",
-      "integrity": "sha256-5a2a66d590545fc81ed57b59f4af969d503c165c4dabcbc5da7a4e1d736d4039",
-      "locked": "2026-06-30T13:14:24Z",
+      "integrity": "sha256-8ece22ee02132187fdd422ac5ee9f965aaa6fd7c8c36c24891f40aaa1f2c6192",
+      "locked": "2026-06-30T13:38:49Z",
       "repo": "ankit008-mishra/apple-music-v3",
-      "version": "1.1.6"
+      "version": "1.1.7"
     },
     {
       "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
@@ -202,6 +202,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-06-30T13:14:53Z",
+  "updated": "2026-06-30T13:39:10Z",
   "version": 1
 }
