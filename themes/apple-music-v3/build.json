@@ -1,16 +1,16 @@
 {
   "repo": "ankit008-mishra/apple-music-v3",
   "id": "apple-music-v3",
-  "version": "1.1.7",
-  "commit": "373b19cc5932ee92ec4235af411939b7acbbf767",
-  "integrity": "sha256-8ece22ee02132187fdd422ac5ee9f965aaa6fd7c8c36c24891f40aaa1f2c6192",
-  "locked": "2026-06-30T13:38:49Z",
+  "version": "1.1.8",
+  "commit": "b14dfcc0249d9a177c519f604f5fb97c64ec62f9",
+  "integrity": "sha256-898438b98a6961e29508b844b59d285ec9fb49583f8e629dcef166d2fe96d133",
+  "locked": "2026-06-30T13:53:28Z",
   "builds": [
     {
-      "version": "1.1.7",
+      "version": "1.1.8",
       "minVersion": "2.0.5.6",
       "path": "themes/apple-music-v3",
-      "integrity": "sha256-8ece22ee02132187fdd422ac5ee9f965aaa6fd7c8c36c24891f40aaa1f2c6192"
+      "integrity": "sha256-898438b98a6961e29508b844b59d285ec9fb49583f8e629dcef166d2fe96d133"
     }
   ]
 }
