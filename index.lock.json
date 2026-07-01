@@ -36,13 +36,21 @@
       "version": "1.0.0"
     },
     {
-      "commit": "4d4a93a4960961b81f9d008783fb3e5ee673a5f7",
+      "builds": [
+        {
+          "integrity": "sha256-689153df59529a540d9d3a7cc9334a90baf7799cda5c6bf7459571bc64c5b4f1",
+          "minVersion": "2.2.0",
+          "path": "themes/dynamic-background",
+          "version": "3.2.2"
+        }
+      ],
+      "commit": "9b05d56e7febc7f3c37d974a77a0585f2b64e242",
       "discussion": 20,
       "id": "dynamic-background",
-      "integrity": "sha256-65c2dffa32648a66547a0a505301ab2ff5662d050d20d27d22299caef742dd5d",
-      "locked": "2026-06-14T06:24:07Z",
+      "integrity": "sha256-689153df59529a540d9d3a7cc9334a90baf7799cda5c6bf7459571bc64c5b4f1",
+      "locked": "2026-07-01T14:50:51Z",
       "repo": "chengggit/YouTube-Music-Dynamic-Theme",
-      "version": "3.2.1"
+      "version": "3.2.2"
     },
     {
       "commit": "b218cf98c6dbe7e1015b2316bb7fe30e52f962af",
@@ -202,6 +210,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-06-30T15:10:18Z",
+  "updated": "2026-07-01T14:51:16Z",
   "version": 1
 }
