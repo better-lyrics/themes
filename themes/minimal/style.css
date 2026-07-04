@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## */
-/* 2026-06-28 v1.7.7                                */
+/* 2026-07-04 v1.7.8                                */
 
 /* Blur is off by default. Go to Section-3.3 for    */
 /*   turning it back on.                            */
@@ -162,6 +162,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* ## SECTION-6 - Style and animation of lyrics ### */
 
+  /* ## SECTION-6.1 - Lyrics and wrapper ########## */
 /* Eroding Animations */
 @keyframes blyrics-wobble {
   from,
@@ -223,11 +224,19 @@ ytmusic-app-layout > [slot="player-bar"] {
   opacity: var(--current-lyric-visibility);
 }
 
-/* Next Lines (Lines strictly after the LAST active line) */
+/* Next Lines (Lines strictly after the LAST active line) */ /*
 #blyrics-wrapper
   .blyrics-container
   > div.blyrics--active
   ~ div:where(:not(.blyrics--active):not(:has(~ .blyrics--active))) {
+  opacity: var(--next-lyrics-visibility);
+}
+*/
+/* Next Lines (any line after an active one) */
+#blyrics-wrapper
+  .blyrics-container
+  > div.blyrics--active
+  ~ div:not(.blyrics--active) {
   opacity: var(--next-lyrics-visibility);
 }
 
@@ -297,13 +306,17 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   font-size: 4.5rem;
 }
 
-/* Final Overrides */
+/* Final Overrides */ /*
 #blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active,
 #blyrics-wrapper .blyrics-container > div.blyrics--animating {
   opacity: var(--current-lyric-visibility);
 }
+*/
+#blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active {
+  opacity: var(--current-lyric-visibility);
+}
 
-/* Previous Lines Enforcer */
+/* Previous Lines Enforcer */ /*
 #blyrics-wrapper
   .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling):not(
     :hover
@@ -313,30 +326,48 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   ) {
   opacity: var(--previous-lyrics-visibility);
 }
-
-/* Footer's opacity */
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
-  opacity: 1;
-}
-
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer > * {
-  opacity: 0.3;
-  transition: opacity 0.1s var(--transition-curve);
-}
-
-#blyrics-wrapper#blyrics-wrapper
-  > .blyrics-container
-  .blyrics-footer
-  > *:hover {
-  opacity: 1;
-}
-
+*/
 /* Hardcoding system lyric stylization disabling */
 .blyrics-container > div > span > span.blyrics--animating::after,
 .blyrics-container > div > span > span.blyrics--animating,
 .blyrics-container > div > div > span > span.blyrics--animating::after,
 .blyrics-container > div > div > span > span.blyrics--animating {
   animation: none;
+}
+
+  /*# SECTION-6.2 - Footer #########################*/
+
+.blyrics-footer__container.blyrics-footer__shaders {
+    animation: none;
+    background: var(--blyrics-footer-bg-color);
+    box-shadow: none;
+    border: 1px solid var(--blyrics-footer-border-color);
+    padding: 0.5rem 1.25rem;
+    font-weight: unset; 
+
+    & > span {
+        animation: none;
+        background: none;
+        -webkit-background-clip: unset;
+        color: var(--blyrics-footer-link-color);
+    }
+
+    &:hover > span {
+        text-decoration: underline;
+    }
+}
+
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
+    opacity: 1;
+
+    & > * {
+        opacity: 0.3;
+        transition: opacity 0.1s var(--transition-curve, ease); 
+
+        &:hover {
+            opacity: 1;
+        }
+    }
 }
 
 /* ## SECTION-7 - Before Lyrics are Loaded ######## */

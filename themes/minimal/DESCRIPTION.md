@@ -1,4 +1,4 @@
-# Better Lyrics – Minimal Immersive Theme (v1.7.7)
+# Better Lyrics – Minimal Immersive Theme (v1.7.8)
 
 A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
 
@@ -10,7 +10,7 @@ This theme removes most lyric swipe and word animations, replacing them with a s
 
 — *Boidu (probably)*
 
-![Minimal](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.png)
+![Minimal](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.webp)
 
 ## 📖 Table of Contents
 - [✨ Who Is This Theme For?](#-who-is-this-theme-for)
@@ -68,7 +68,7 @@ To revert to default YouTube font:
 
 ### Visibility Model (Section 3.1)
 
-![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.png)
+![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.webp)
 
 The theme uses opacity instead of animation emphasis. You can adjust the focus intensity by modifying these variables in `:root` (Section 3.1):
 
@@ -88,7 +88,7 @@ This makes it very easy to:
 ### Translations & Romanization
 * **Smooth Reveal:** Translated and romanized lines ease into view beautifully without jarring the layout, when enabled.
 
-![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.png)
+![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.webp)
 
 ---
 
@@ -200,11 +200,11 @@ Includes refined styling and layout fixes to match the immersive dark aesthetic:
 
 * **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll linked background.
 
-![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.png)
+![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.webp)
 
 * **Immersive Album Pages:** Album Pages feature the album cover spanned over the background with black tint.
 
- ![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.png)
+ ![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.webp)
 
 * **Player Queue:** Sticky headers, custom transparent chip designs, hover highlighting on queue items, and fixed dragging-state backgrounds.
 * **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
@@ -250,7 +250,7 @@ If you want:
 
 ## 🔖 Version
 
-**v1.7.7** — Last updated: 2026-06-28
+**v1.7.8** — Last updated: 2026-07-04
 
 Please report bugs or suggestions on the Better Lyrics Discord.
 
