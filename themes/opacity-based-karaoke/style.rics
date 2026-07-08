@@ -2,14 +2,80 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v0.0.8
- * 2026-06-28
+ * v1.0.0
+ * 2026-07-06
  *
  * Please be careful removing something.
  *
  * _"Aye! I'm not saying I lie, but lying sure is fun!" — Boidu (hypothetically)_
  *
  */
+
+/* ++++++++++++++++++++++++++++++++++++++++++++++++++
+   KARAOKE STYLE PRESETS  (richsync only)
+   ++++++++++++++++++++++++++++++++++++++++++++++++++
+ *
+ *   reveal    : words settle to a dimmer opacity once sung, then
+ *                 the whole line disappears when it's finished. (default)
+ *   flash     : each word flashes only once and then disappears.
+ *   trail     : sung words fade out slowly to nothing, like a
+ *                 soft trailing streak of light dimming away.
+ *   spotlight : the whole line is visible at once, 
+ *                 with the current word standing out.
+ *
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ * 
+ * How to use it?
+ *   Just write the name of the style you want to use in
+ *     " $karaoke-style: flash; " below, for example writing flash
+ *     would activate the flash style
+ *
+ * ------------------------------------------------------- */
+
+$karaoke-style: reveal;
+/* reveal / flash / trail / spotlight */
+
+$karaoke-style-presets: (
+  reveal: (
+    past-word-opacity: 0.7,
+    future-word-opacity: 0,
+    word-extra-duration: 200ms,
+    fade-start: 75,
+    rise-duration: 300ms
+  ),
+  flash: (
+    past-word-opacity: 0,
+    future-word-opacity: 0,
+    word-extra-duration: 100ms,
+    fade-start: 85,
+    rise-duration: 0ms
+  ),
+  trail: (
+    past-word-opacity: 0,        
+    future-word-opacity: 0,
+    word-extra-duration: 650ms,  
+    fade-start: 50,
+    rise-duration: 700ms
+  ),
+  spotlight: (
+    past-word-opacity: 0.6,
+    future-word-opacity: 0.45,
+    word-extra-duration: 200ms,
+    fade-start: 75,
+    rise-duration: 220ms
+  )
+);
+
+$effect-map: map-get($karaoke-style-presets, $karaoke-style);
+
+/* trail effect gets different animation */
+$word-rise-keyframe: word-rise;
+@if $karaoke-style == trail {
+  $word-rise-keyframe: word-rise-trail;
+}
+@if $karaoke-style == flash {
+  $word-rise-keyframe: word-rise-flash;
+}
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++
    GLOBAL SETUP
@@ -44,9 +110,11 @@ blyrics-target-scroll-pos-ratio = 0.4;
   /* karaoke or "richsync" opacities */
   --opacity-words-past-line: 0;
   --opacity-words-future-line: 0;
-  --opacity-past-word-current-line: 0.7;
+  --opacity-past-word-current-line: #{map-get($effect-map, past-word-opacity)};
   --opacity-current-word-current-line: 1;
-  --opacity-future-word-current-line: 0;
+  --opacity-future-word-current-line: #{map-get($effect-map, future-word-opacity)};
+
+  --word-rise-duration: #{map-get($effect-map, rise-duration)};
 
   /* line sync or "synced" opacities */
   --opacity-line-past: 0;
@@ -180,11 +248,12 @@ blyrics-target-scroll-pos-ratio = 0.4;
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word.blyrics--animating {
   will-change: unset;
   transition: opacity 0.2 ease;
-  animation-name: sing-and-rise;
-  animation-duration: calc(var(--blyrics-duration) + 200ms );
+  animation-name: #{$word-rise-keyframe}, word-sing;
+  animation-duration: calc(var(--blyrics-duration) + var(--word-rise-duration) ), calc(var(--blyrics-duration) + #{map-get($effect-map, word-extra-duration)});
   animation-fill-mode: both;
   animation-timing-function: ease-out;
-  animation-delay: calc(var(--blyrics-anim-delay) + var(--highlight-timing-offset-richsync, 0s));  will-change: opacity;
+  animation-delay: calc(var(--blyrics-anim-delay) + var(--highlight-timing-offset-richsync, 0s));
+  will-change: opacity;
 }
 
 #blyrics-wrapper .blyrics-container .blyrics--word.blyrics--paused,
@@ -196,26 +265,70 @@ blyrics-target-scroll-pos-ratio = 0.4;
   animation-play-state: paused;
 }
 
-@keyframes sing-and-rise {
+@keyframes word-sing {
   0% {
     opacity: var(--opacity-future-word-current-line);
-    transform: translate(0) scale(1);
     animation-timing-function: ease;
   }
   10% {
     opacity: var(--opacity-current-word-current-line);
   }
-  15% {
-    transform: translateY(-0.15em) translateX(0.1em) scale(1.03);
-    animation-timing-function: ease-in;
-  }
-  75% {
+  #{map-get($effect-map, fade-start)}% {
     opacity: var(--opacity-current-word-current-line);
-    animation-timing-function: ease-in;
+    animation-timing-function: ease-in-out;
   }
   100% {
     opacity: var(--opacity-past-word-current-line);
+  }
+}
+
+@keyframes word-rise {
+  0% {
     transform: translate(0) scale(1);
+    animation-timing-function: ease;
+  }
+  30% {
+    transform: translateY(-0.15em) translateX(0.15em) scale(1.035);
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate(0) scale(1);
+  }
+}
+
+/* trail-only variant */
+@keyframes word-rise-trail {
+  0% {
+    transform: translateY(0em) translateX(0.2em) scale(1.05);
+    animation-timing-function: ease;
+    transform-origin: right ;
+  }
+  30%, 60% {
+    transform: translate(0em) scale(1);
+    animation-timing-function: ease-in-out;
+    transform-origin: right;
+  }
+  100% {
+    transform: translateY(0em) translateX(-0.15em) scaleY(1) scaleX(1.3) skewX(-8deg);
+    transform-origin: right;
+    animation-timing-function:cubic-bezier(.4,0,1,1);
+  }
+}
+
+@keyframes word-rise-flash {
+  0% {
+    transform: translate(0) scale(1);
+    animation-timing-function: ease;
+    transform-origin: bottom;
+  }
+  30% {
+    transform: translateX(0em) translateY(-0.15em) scale(1.035);
+    animation-timing-function: ease-in-out;
+    transform-origin: bottom;
+  }
+  100% {
+    transform: translate(0) scale(1);
+    transform-origin: bottom;
   }
 }
 
@@ -783,3 +896,40 @@ ytmusic-player-page:before {
   overflow: hidden;
   transform-origin: top;
 }
+
+  /*# SECTION-6.2 - Footer #########################*/
+
+.blyrics-footer__container.blyrics-footer__shaders {
+    animation: none;
+    background: var(--blyrics-footer-bg-color);
+    box-shadow: none;
+    border: 1px solid var(--blyrics-footer-border-color);
+    padding: 0.5rem 1.25rem;
+    font-weight: unset; 
+
+    & > span {
+        animation: none;
+        background: none;
+        -webkit-background-clip: unset;
+        color: var(--blyrics-footer-link-color);
+    }
+
+    &:hover > span {
+        text-decoration: underline;
+    }
+}
+
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
+    opacity: 1;
+
+    & > * {
+        opacity: 0.3;
+        transition: opacity 0.1s var(--transition-curve, ease); 
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
+#sliderKnob {display: none;}

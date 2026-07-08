@@ -5,7 +5,7 @@
   "creators": ["semicolonhope"],
   "minVersion": "2.2.0.0",
   "hasShaders": false,
-  "version": "0.0.80",
+  "version": "1.0.0",
   "tags": ["opacity-based"],
-  "images": ["Screen_Recording-1.webp", "Screen_Recording-2.webp"]
+  "images": ["hero-image.webp", "Screen_Recording-1.webp", "Screen_Recording-2.webp"]
 }

@@ -2,12 +2,8 @@
 
 Replaced background image karaoke with opacity-based karaoke. Visibility level of all the text in the lyrics can be easily edited.
 
-### Spotlight Style
+### Four Distinct Richsync Styles
 
-![webp of Spotlight Style](https://raw.githubusercontent.com/ramansg/Max-Performance-BlyricsTheme/refs/heads/main/images/Screen_Recording-1.webp)
+The style can easily be changed using a single word.
 
-![webp of Spotlight Style](https://raw.githubusercontent.com/ramansg/Max-Performance-BlyricsTheme/refs/heads/main/images/Screen_Recording-3.webp)
-
-### Trailing Light Style
-
-![webp of Trailing Light Style](https://raw.githubusercontent.com/ramansg/Max-Performance-BlyricsTheme/refs/heads/main/images/Screen_Recording-2.webp)
+![webp of Spotlight Style](https://raw.githubusercontent.com/ramansg/Max-Performance-BlyricsTheme/refs/heads/main/images/hero-image.webp)
