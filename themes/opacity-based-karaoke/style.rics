@@ -2,8 +2,8 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v1.0.0
- * 2026-07-06
+ * v1.0.1
+ * 2026-07-10
  *
  * Please be careful removing something.
  *
@@ -143,6 +143,12 @@ blyrics-target-scroll-pos-ratio = 0.4;
   /* controls earliness/lateness of lines being sung for line-sync */
   --highlight-timing-offset-synced: 0s;
 
+  /* duration of entry/exit animation of lines */
+  --richsync-entry-duration: 150ms;
+  --richsync-exit-duration: 200ms;
+  --synced-entry-duration: 250ms;
+  --synced-exit-duration: 250ms;
+
 }
 
 /* in vain effort to improve efficiency on low-end devices */
@@ -238,11 +244,16 @@ blyrics-target-scroll-pos-ratio = 0.4;
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating {
-  animation-name: main-line-things;
-  animation-duration: calc( calc( var(--blyrics-duration) * 0.98 ) - var(--highlight-timing-offset-richsync, 0s));
-  animation-delay: calc(var(--blyrics-anim-delay) - 300ms + var(--highlight-timing-offset-richsync, 0s));
+  animation-name: main-line-entry, main-line-exit;
+  animation-duration: var(--richsync-entry-duration), var(--richsync-exit-duration);
+  animation-delay:
+    calc(var(--blyrics-anim-delay) - var(--richsync-entry-duration) + var(--highlight-timing-offset-richsync, 0s)),
+    max(
+      calc(var(--blyrics-anim-delay) + var(--highlight-timing-offset-richsync, 0s)),
+      calc(var(--blyrics-anim-delay) + var(--blyrics-duration) - var(--richsync-exit-duration) + var(--highlight-timing-offset-richsync, 0s))
+    );
   animation-timing-function: linear;
-  animation-fill-mode: both;
+  animation-fill-mode: both, forwards;
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="richsync"] .blyrics--word.blyrics--animating {
@@ -332,19 +343,26 @@ blyrics-target-scroll-pos-ratio = 0.4;
   }
 }
 
-@keyframes main-line-things {
+@keyframes main-line-entry {
   0% {
-    --blyrics-richsync-line-base-opacity: calc( var(--opacity-words-future-line) / var(--opacity-future-word-current-line) );
+    --blyrics-richsync-line-base-opacity: calc(var(--opacity-words-future-line) / var(--opacity-future-word-current-line));
     --blyrics-synced-line-base-opacity: var(--opacity-words-future-line);
     animation-timing-function: ease;
   }
-  10%, 96% {
+  100% {
+    --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
+    --blyrics-synced-line-base-opacity: var(--opacity-current-word-current-line);
+  }
+}
+
+@keyframes main-line-exit {
+  0% {
     --blyrics-richsync-line-base-opacity: var(--opacity-current-word-current-line);
     --blyrics-synced-line-base-opacity: var(--opacity-current-word-current-line);
     animation-timing-function: ease-in;
   }
   100% {
-    --blyrics-richsync-line-base-opacity: calc( var(--opacity-words-past-line) / var(--opacity-past-word-current-line) );
+    --blyrics-richsync-line-base-opacity: calc(var(--opacity-words-past-line) / var(--opacity-past-word-current-line));
     --blyrics-synced-line-base-opacity: var(--opacity-words-past-line);
   }
 }
@@ -367,7 +385,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
 #blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line {
   opacity: var(--blyrics-synced-line-base-opacity);
   transition-property: transform;
-  transition-duration: .3s;
+  transition-duration: .25s;
   transition-timing-function: ease-in-out;
   transition-delay: 0s;
   --blyrics-synced-line-base-opacity: var(--opacity-line-future);
@@ -383,22 +401,26 @@ blyrics-target-scroll-pos-ratio = 0.4;
 
 #blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--line.blyrics--animating {
   --blyrics-synced-line-base-opacity: var(--opacity-line-future);
-    animation-name: synced-combined;
-    animation-duration: calc( var(--blyrics-duration) + 150ms - var(--highlight-timing-offset-synced, 0s) );
-    animation-delay: calc(var(--blyrics-anim-delay) - 200ms + var(--highlight-timing-offset-synced, 0s));
-    animation-timing-function: ease-out;
-    animation-fill-mode: forwards;
+  animation-name: line-entry, line-exit;
+  animation-duration: var(--synced-entry-duration), var(--synced-exit-duration);
+  animation-delay:
+    calc(var(--blyrics-anim-delay) - var(--synced-entry-duration) + var(--highlight-timing-offset-synced, 0s)),
+    max(
+      calc(var(--blyrics-anim-delay) + var(--highlight-timing-offset-synced, 0s)),
+      calc(var(--blyrics-anim-delay) + var(--blyrics-duration) - var(--synced-exit-duration) + var(--highlight-timing-offset-synced, 0s))
+    );
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both, forwards;
 }
 
-@keyframes synced-combined {
-  0% {
-    --blyrics-synced-line-base-opacity: var(--opacity-line-future);
-    animation-timing-function: ease;
-    }
-  10%, 90% { --blyrics-synced-line-base-opacity: var(--opacity-line-current);
-    animation-timing-function: ease-out;
-  }
-  100%   { --blyrics-synced-line-base-opacity: var(--opacity-line-past); }
+@keyframes line-entry {
+  0%   { --blyrics-synced-line-base-opacity: var(--opacity-line-future); animation-timing-function: ease; }
+  100% { --blyrics-synced-line-base-opacity: var(--opacity-line-current); }
+}
+
+@keyframes line-exit {
+  0%   { --blyrics-synced-line-base-opacity: var(--opacity-line-current); animation-timing-function: ease-out; }
+  100% { --blyrics-synced-line-base-opacity: var(--opacity-line-past); }
 }
 
 #blyrics-wrapper .blyrics-container[data-sync="synced"] .blyrics--word {
