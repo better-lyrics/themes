@@ -1,11 +1,12 @@
 {
   "id": "wolfthee-theme-bytm",
   "title": "Better-YTM",
-  "description": "A theme that adds a more dynamic animations and UI modification.",
+  "description": "A theme that adds more dynamic animations and UI improvements.",
   "creators": ["WolftheE"],
   "minVersion": "2.0.5.6",
   "hasShaders": true,
-  "version": "3.1.1",
+  "hasSettings": true,
+  "version": "4.0.0",
   "tags": ["dark", "animations", "dynamic"],
   "images": ["1.png", "2.png", "3.png", "4.png"]
 }

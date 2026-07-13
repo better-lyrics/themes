@@ -1,0 +1,160 @@
+{
+    "help": {
+        "pos": 0,
+        "type": "toggle",
+        "label": "Test value",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "help",
+        "attrType": "rics",
+        "default": false
+    },
+    "title-bar-color": {
+        "pos": 1,
+        "type": "color",
+        "label": "Color of the header, best to match titlebar if using PWA",
+        "attribute": "title-bar-color",
+        "attrType": "rics",
+        "default": "#000000"
+    },
+    "background-color": {
+        "pos": 2,
+        "type": "color",
+        "label": "Color of background, effect popups and other UI backgrounds",
+        "attribute": "background-color",
+        "attrType": "rics",
+        "default": "#000000"
+    },
+    "font-color": {
+        "pos": 3,
+        "type": "color",
+        "label": "Font color, also slightly affects the border color",
+        "attribute": "font-color",
+        "attrType": "rics",
+        "default": "#ffffff"
+    },
+    "highlight-background-color": {
+        "pos": 4,
+        "type": "color",
+        "label": "Hightlight color, the color used when hovering over some elements",
+        "attribute": "highlight-background-color",
+        "attrType": "rics",
+        "default": "#ffffff"
+    },
+    "highlight-font-color": {
+        "pos": 5,
+        "type": "color",
+        "label": "Hightlight font color, the color used for the font, when hovering over some elements",
+        "attribute": "highlight-font-color",
+        "attrType": "rics",
+        "default": "#000000"
+    },
+    "accent-color": {
+        "pos": 6,
+        "type": "color",
+        "label": "The Accent Color for some elements like the progress bar",
+        "attribute": "accent-color",
+        "attrType": "rics",
+        "default": "#FF0033"
+    },
+    "player-linear-gradient": {
+        "pos": 7,
+        "type": "toggle",
+        "label": "Fade blured player background into a darker color",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "player-linear-gradient",
+        "attrType": "rics",
+        "default": true
+    },
+    "use-custom-icons": {
+        "pos": 8,
+        "type": "toggle",
+        "label": "Use custom Icons for some elements like the like button",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "use-custom-icons",
+        "attrType": "rics",
+        "default": true
+    },
+    "border-radius": {
+        "pos": 9,
+        "type": "textfield",
+        "label": "How rounded elements are",
+        "attribute": "border-radius",
+        "attrType": "rics",
+        "default": "8px"
+    },
+    "background-blur": {
+        "pos": 10,
+        "type": "textfield",
+        "label": "How much blur should be used for background",
+        "attribute": "background-blur",
+        "attrType": "rics",
+        "default": "8px"
+    },
+    "new-lyric-style": {
+        "pos": 11,
+        "type": "toggle",
+        "label": "Use custom Icons for some elements like the like button",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "new-lyric-style",
+        "attrType": "rics",
+        "default": true
+    },
+    "custom-lyric-note": {
+        "pos": 12,
+        "type": "toggle",
+        "label": "Use custom Icons for some elements like the like button",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "custom-lyric-note",
+        "attrType": "rics",
+        "default": true
+    },
+    "album-glow": {
+        "pos": 13,
+        "type": "toggle",
+        "label": "Use a glowing effect behind the album art",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "album-glow",
+        "attrType": "rics",
+        "default": "true"
+    },
+    "background-album-brightness": {
+        "pos": 14,
+        "type": "textfield",
+        "label": "How bright should the blured album background be",
+        "attribute": "background-album-brightness",
+        "attrType": "rics",
+        "default": "40%"
+    },
+    "background-album-saturation": {
+        "pos": 15,
+        "type": "textfield",
+        "label": "How saturated should the album background be",
+        "attribute": "background-album-saturation",
+        "attrType": "rics",
+        "default": "125%"
+    },
+    "background-album-blur": {
+        "pos": 16,
+        "type": "textfield",
+        "label": "How much blur should be used for album background",
+        "attribute": "background-album-blur",
+        "attrType": "rics",
+        "default": "128px"
+    },
+    "uwu-mode": {
+        "pos": 17,
+        "type": "toggle",
+        "label": ":3",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "uwu-mode",
+        "attrType": "rics",
+        "default": false
+    }
+}
