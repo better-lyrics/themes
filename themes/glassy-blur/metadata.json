@@ -1,0 +1,11 @@
+{
+  "id": "glassy-blur",
+  "title": "Glassy Blur",
+  "description": "Premium YouTube Music skin featuring a intense liquid glass search dropdown, and custom blurred UI tabs. Includes smart fullscreen.",
+  "creators": ["ankit008-mishra"],
+  "minVersion": "2.0.5.6",
+  "hasShaders": true,
+  "version": "1.1.2",
+  "tags": ["apple", "minimal", "glassmorphism"],
+  "images": ["1.png"]
+}

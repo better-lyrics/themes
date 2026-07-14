@@ -1,0 +1,16 @@
+{
+  "repo": "ankit008-mishra/Glassyblur",
+  "id": "glassy-blur",
+  "version": "1.1.2",
+  "commit": "549c650e862373800610cc4955b44ee7e1033b93",
+  "integrity": "sha256-560ea38b0be8aaad28890cec887f5a39baf91356d2ee0a3b36001ab4501971dc",
+  "locked": "2026-07-14T11:19:11Z",
+  "builds": [
+    {
+      "version": "1.1.2",
+      "minVersion": "2.0.5.6",
+      "path": "themes/glassy-blur",
+      "integrity": "sha256-560ea38b0be8aaad28890cec887f5a39baf91356d2ee0a3b36001ab4501971dc"
+    }
+  ]
+}
