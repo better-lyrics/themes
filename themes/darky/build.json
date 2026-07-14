@@ -1,0 +1,16 @@
+{
+  "repo": "ankit008-mishra/Darky",
+  "id": "darky",
+  "version": "1.1.2",
+  "commit": "78084ecdd82f8825865f8f931c79678e028da448",
+  "integrity": "sha256-e4ce91d1fcf714f3caa04325093a1ee0814e9a4509ce4374049099f9e713122f",
+  "locked": "2026-07-14T07:29:20Z",
+  "builds": [
+    {
+      "version": "1.1.2",
+      "minVersion": "2.0.5.6",
+      "path": "themes/darky",
+      "integrity": "sha256-e4ce91d1fcf714f3caa04325093a1ee0814e9a4509ce4374049099f9e713122f"
+    }
+  ]
+}
