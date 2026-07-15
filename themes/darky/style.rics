@@ -1,3 +1,173 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   ANIMATION SYSTEM — Injected for Darky Theme
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── GLOBAL ANIMATION KEYFRAMES ──────────────────────────────────────── */
+@keyframes animFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes animFadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes animFadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes animFadeInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes animFadeInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes animScaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes animScaleBounce {
+  0% { opacity: 0; transform: scale(0.5); }
+  60% { transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes animSlideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes animSlideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes animBlurIn {
+  from { opacity: 0; filter: blur(10px); }
+  to { opacity: 1; filter: blur(0); }
+}
+
+@keyframes animBounceIn {
+  0% { opacity: 0; transform: scale(0.3); }
+  50% { transform: scale(1.05); }
+  70% { transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes animElasticIn {
+  0% { opacity: 0; transform: translateY(50px) scale(0.8); }
+  60% { opacity: 1; transform: translateY(-10px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes animFlipIn {
+  from { opacity: 0; transform: perspective(400px) rotateY(90deg); }
+  to { opacity: 1; transform: perspective(400px) rotateY(0); }
+}
+
+@keyframes animPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes animGlow {
+  0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.1); }
+  50% { box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+}
+
+@keyframes animFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes animRotateIn {
+  from { opacity: 0; transform: rotate(-10deg) scale(0.9); }
+  to { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+@keyframes animShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes animHeartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.1); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+
+@keyframes animSwing {
+  0%, 100% { transform: rotate(0deg); }
+  20% { transform: rotate(5deg); }
+  40% { transform: rotate(-3deg); }
+  60% { transform: rotate(2deg); }
+  80% { transform: rotate(-1deg); }
+}
+
+@keyframes animWobble {
+  0% { transform: translateX(0); }
+  15% { transform: translateX(-5px) rotate(-2deg); }
+  30% { transform: translateX(4px) rotate(1deg); }
+  45% { transform: translateX(-3px) rotate(-1deg); }
+  60% { transform: translateX(2px) rotate(0.5deg); }
+  75% { transform: translateX(-1px) rotate(-0.5deg); }
+  100% { transform: translateX(0); }
+}
+
+@keyframes animSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes animNeonPulse {
+  0%, 100% { text-shadow: 0 0 5px rgba(255,255,255,0.3); }
+  50% { text-shadow: 0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(255,255,255,0.3); }
+}
+
+@keyframes animBgPulse {
+  0% { transform: scale(1.2) translate(0, 0); }
+  50% { transform: scale(1.25) translate(-5px, -5px); }
+  100% { transform: scale(1.2) translate(0, 0); }
+}
+
+/* ── GLOBAL TRANSITIONS ─────────────────────────────────────────────── */
+* {
+  transition: background-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              transform 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              filter 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── ANIMATION VARIABLES ────────────────────────────────────────────── */
+:root {
+  --anim-fast: 0.15s cubic-bezier(0.25, 1, 0.5, 1);
+  --anim-normal: 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  --anim-slow: 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+  --anim-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --anim-elastic: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   END ANIMATION SYSTEM
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Darky, a marketplace theme by ankit008-mishra */
+
 
 
 @font-face {
@@ -541,7 +711,7 @@ ytmusic-player-page:before {
   background-size: cover;
   bottom: 0; 
   content: ""; 
-  filter: saturate(var(--blyrics-background-saturate)) blur(var(--blyrics-background-blur));
+  filter: saturate(1.8) blur(120px) brightness(0.85) contrast(1.1) !important;
   left: 0; 
   position: absolute; 
   right: 0; 
@@ -1882,3 +2052,456 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer::before{
 
   background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBhcmlhLWhpZGRlbj0idHJ1ZSI+PHBhdGggZD0iTTEzLjA3OSAxOS43MTJjMS4wNzYgMCAyLjY4OC0uNzkgMi42ODgtMi45MjJ2LTYuNzAyYzAtLjM4OC4wNzMtLjQ2OC40MTctLjU0MmwzLjM0Ny0uNzMyYS40OC40OCAwIDAgMCAuNDAzLS40ODNWNS41NzdjMC0uMzg4LS4zMTUtLjYzNy0uNjg4LS41NjRsLTMuNzY1LjgyYy0uNDY5LjEwMy0uNzI1LjM1OS0uNzI1Ljc3bC4wMTUgOC4xNDRjLjAzNi4zNTktLjEzMi41OTMtLjQ1NS42NTlsLTEuMTY0LjI0MmMtMS40NjUuMzA3LTIuMTUzIDEuMDU0LTIuMTUzIDIuMTYgMCAxLjEyLjg2NCAxLjkwNCAyLjA4IDEuOTA0ek0xMi4wNDYgOC42NzVhLjUwMy41MDMgMCAwIDAgLjQ5OC0uNDk4LjQ5Ny40OTcgMCAwIDAtLjQ5OC0uNDlINS40OThhLjQ5Mi40OTIgMCAwIDAtLjQ5OC40OS41LjUgMCAwIDAgLjQ5OC40OThoNi41NDh6bTAgMi42MDdhLjUuNSAwIDAgMCAuNDk4LS41MDUuNDkuNDkgMCAwIDAtLjQ5OC0uNDgzSDUuNDk4YS40ODYuNDg2IDAgMCAwLS40OTguNDgzYzAgLjI3OC4yMTIuNTA1LjQ5OC41MDVoNi41NDh6bTAgMi42MDhhLjQ5NC40OTQgMCAxIDAgMC0uOTg5SDUuNDk4YS40OTIuNDkyIDAgMCAwLS40OTguNDkuNDkuNDkgMCAwIDAgLjQ5OC40OTloNi41NDh6IiBmaWxsPSIjZmZmIj48L3BhdGg+PC9zdmc+');
 }
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ANIMATION ENHANCEMENTS — Appended to Darky Theme
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. NAVIGATION BAR ANIMATIONS ───────────────────────────────────── */
+ytmusic-app-layout > #nav-bar-background {
+  animation: animFadeInDown 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+ytmusic-nav-bar {
+  animation: animFadeInDown 0.5s 0.1s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+ytmusic-search-box {
+  animation: animFadeIn 0.4s 0.2s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Search box focus animation */
+ytmusic-search-box[opened] {
+  animation: animScaleIn 0.3s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ── 2. SIDEBAR ANIMATIONS ──────────────────────────────────────────── */
+#guide-wrapper {
+  animation: animFadeInLeft 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Stagger animation for sidebar items */
+ytmusic-guide-entry-renderer tp-yt-paper-item {
+  animation: animFadeInLeft 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+ytmusic-guide-entry-renderer:nth-child(1) tp-yt-paper-item { animation-delay: 0.05s; }
+ytmusic-guide-entry-renderer:nth-child(2) tp-yt-paper-item { animation-delay: 0.1s; }
+ytmusic-guide-entry-renderer:nth-child(3) tp-yt-paper-item { animation-delay: 0.15s; }
+ytmusic-guide-entry-renderer:nth-child(4) tp-yt-paper-item { animation-delay: 0.2s; }
+ytmusic-guide-entry-renderer:nth-child(5) tp-yt-paper-item { animation-delay: 0.25s; }
+ytmusic-guide-entry-renderer:nth-child(6) tp-yt-paper-item { animation-delay: 0.3s; }
+ytmusic-guide-entry-renderer:nth-child(7) tp-yt-paper-item { animation-delay: 0.35s; }
+ytmusic-guide-entry-renderer:nth-child(8) tp-yt-paper-item { animation-delay: 0.4s; }
+
+/* Sidebar item hover enhancement */
+ytmusic-guide-entry-renderer tp-yt-paper-item:hover {
+  transform: translateX(8px) scale(1.02) !important;
+}
+
+/* Active sidebar item pulse */
+ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
+  animation: animFadeInLeft 0.4s cubic-bezier(0.25, 1, 0.5, 1) both, animPulse 2s ease-in-out infinite 0.5s;
+}
+
+/* ── 3. SEARCH DROPDOWN ANIMATIONS ──────────────────────────────────── */
+ytmusic-search-box #suggestion-list {
+  transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              visibility 0.3s !important;
+}
+
+ytmusic-search-box[opened]:has(ytmusic-search-suggestion) #suggestion-list,
+ytmusic-search-box[opened]:has(ytmusic-responsive-list-item-renderer) #suggestion-list {
+  animation: animSlideDown 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Search suggestion hover */
+ytmusic-search-suggestion:hover, 
+ytmusic-search-box #suggestion-list ytmusic-responsive-list-item-renderer:hover {
+  transform: translateX(6px) !important;
+}
+
+/* ── 4. CONTENT CARDS ANIMATIONS ──────────────────────────────────── */
+ytmusic-responsive-list-item-renderer,
+ytmusic-two-row-item-renderer,
+ytmusic-carousel-item-renderer {
+  animation: animFadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Stagger for grid items */
+ytmusic-two-row-item-renderer:nth-child(1) { animation-delay: 0.05s; }
+ytmusic-two-row-item-renderer:nth-child(2) { animation-delay: 0.1s; }
+ytmusic-two-row-item-renderer:nth-child(3) { animation-delay: 0.15s; }
+ytmusic-two-row-item-renderer:nth-child(4) { animation-delay: 0.2s; }
+ytmusic-two-row-item-renderer:nth-child(5) { animation-delay: 0.25s; }
+ytmusic-two-row-item-renderer:nth-child(6) { animation-delay: 0.3s; }
+
+/* Card hover lift */
+ytmusic-two-row-item-renderer:hover,
+ytmusic-responsive-list-item-renderer:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* Thumbnail hover */
+ytmusic-two-row-item-renderer yt-img-shadow img,
+ytmusic-responsive-list-item-renderer yt-img-shadow img {
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.4s ease !important;
+}
+
+ytmusic-two-row-item-renderer:hover yt-img-shadow img,
+ytmusic-responsive-list-item-renderer:hover yt-img-shadow img {
+  transform: scale(1.05) !important;
+}
+
+/* ── 5. TOP RESULTS ANIMATIONS ──────────────────────────────────────── */
+ytmusic-top-result-item-renderer,
+ytmusic-card-shelf-renderer {
+  animation: animScaleIn 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Top result hover scale */
+ytmusic-top-result-item-renderer:hover yt-img-shadow img,
+ytmusic-card-shelf-renderer:hover yt-img-shadow img {
+  transform: scale(1.15) !important;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* ── 6. CAROUSEL BUTTONS ANIMATIONS ───────────────────────────────── */
+ytmusic-carousel-shelf-basic-header-renderer .yt-spec-button-shape-next--outline {
+  animation: animFadeInUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+ytmusic-carousel-shelf-basic-header-renderer .yt-spec-button-shape-next--outline:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+ytmusic-carousel-shelf-renderer yt-icon-button {
+  animation: animFadeIn 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+ytmusic-carousel-shelf-renderer yt-icon-button:hover {
+  transform: scale(1.15) rotate(5deg) !important;
+}
+
+/* ── 7. TABS ANIMATIONS ─────────────────────────────────────────────── */
+ytmusic-tabs,
+ytmusic-tabs #tabs.tab-container,
+ytmusic-tabbed-search-results-renderer #tabs {
+  animation: animFadeInUp 0.5s 0.2s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* ── 8. ARTIST PAGE ANIMATIONS ──────────────────────────────────────── */
+ytmusic-immersive-header-renderer,
+ytmusic-data-bound-header-renderer,
+ytmusic-visual-header-renderer {
+  animation: animFadeIn 0.6s ease forwards;
+}
+
+ytmusic-immersive-header-renderer .image,
+.image.ytmusic-immersive-header-renderer,
+ytmusic-data-bound-header-renderer #background,
+ytmusic-visual-header-renderer .image {
+  animation: animScaleIn 0.8s ease forwards;
+}
+
+/* Header buttons */
+ytmusic-immersive-header-renderer .yt-spec-button-shape-next--filled,
+ytmusic-subscribe-button-renderer .yt-spec-button-shape-next--outline,
+ytmusic-shelf-renderer .yt-spec-button-shape-next--outline,
+ytmusic-music-shelf-renderer .yt-spec-button-shape-next--outline {
+  animation: animFadeInUp 0.5s 0.3s cubic-bezier(0.25, 1, 0.5, 1) both;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+ytmusic-immersive-header-renderer .yt-spec-button-shape-next--filled:hover,
+ytmusic-subscribe-button-renderer .yt-spec-button-shape-next--outline:hover,
+ytmusic-shelf-renderer .yt-spec-button-shape-next--outline:hover,
+ytmusic-music-shelf-renderer .yt-spec-button-shape-next--outline:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ── 9. LYRICS ENGINE ANIMATIONS ────────────────────────────────────── */
+/* Background pulse */
+ytmusic-player-page:before {
+  animation: animBgPulse 8s ease-in-out infinite alternate, animBlurIn 1s ease forwards;
+}
+
+/* Lyric line active animation */
+.blyrics-container>.blyrics--line.blyrics--active,
+.blyrics-container>.blyrics--line.blyrics--animating {
+  animation: lyricActive 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes lyricActive {
+  from { transform: scale(0.95) translateX(10px); filter: blur(5px); }
+  to { transform: scale(1) translateX(0); filter: blur(0); }
+}
+
+/* Word bounce */
+.blyrics--line.blyrics--active .blyrics--word.blyrics--animating,
+.blyrics--line.blyrics--animating .blyrics--word.blyrics--animating {
+  animation: wordBounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+@keyframes wordBounce {
+  0% { transform: translateY(3px) scale(0.95); opacity: 0.5; }
+  60% { transform: translateY(-2px) scale(1.02); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Romanized/Translated reveal */
+.blyrics--line>.blyrics--romanized,
+.blyrics--line>.blyrics--translated {
+  animation: smoothReveal 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+/* Footer animations */
+.blyrics-footer__container,
+.blyrics-footer__discord {
+  animation: animFadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+.blyrics-footer__container:hover,
+.blyrics-footer__discord:hover {
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ── 10. PLAYER BAR ANIMATIONS ──────────────────────────────────────── */
+ytmusic-app-layout > [slot="player-bar"] {
+  animation: animSlideUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+ytmusic-player-bar {
+  animation: animSlideUp 0.5s 0.1s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Player bar buttons */
+ytmusic-player-bar tp-yt-paper-icon-button {
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s ease, opacity 0.2s ease !important;
+}
+
+ytmusic-player-bar tp-yt-paper-icon-button:hover {
+  transform: scale(1.15) !important;
+}
+
+ytmusic-player-bar tp-yt-paper-icon-button:active {
+  transform: scale(0.85) !important;
+  transition: transform 0.1s cubic-bezier(0.45, 0, 0.15, 1) !important;
+}
+
+/* Progress bar hover */
+ytmusic-player-bar #progress-bar {
+  transition: all 0.3s ease !important;
+}
+
+ytmusic-player-bar #progress-bar:hover {
+  transform: translateX(-50%) scaleY(1.5) !important;
+}
+
+/* ── 11. MENU & DROPDOWN ANIMATIONS ─────────────────────────────────── */
+/* 3-dot menu */
+tp-yt-iron-dropdown:has(ytmusic-menu-popup-renderer),
+tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer) {
+  animation: animScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+/* Menu items */
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-navigation-item-renderer,
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-service-item-renderer {
+  transition: all 0.2s ease !important;
+}
+
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-navigation-item-renderer:hover,
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-service-item-renderer:hover {
+  transform: translateX(4px) !important;
+}
+
+/* Settings modal */
+ytmusic-dialog {
+  animation: animScaleIn 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+/* Add to playlist */
+tp-yt-paper-dialog:has(ytmusic-add-to-playlist-renderer),
+tp-yt-paper-dialog:has(ytmusic-unified-share-panel-renderer) {
+  animation: animScaleBounce 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards !important;
+}
+
+/* Playlist items hover */
+ytmusic-playlist-add-to-option-renderer {
+  transition: all 0.2s ease !important;
+}
+
+ytmusic-playlist-add-to-option-renderer:hover {
+  transform: translateX(6px) !important;
+}
+
+/* ── 12. QUEUE ANIMATIONS ───────────────────────────────────────────── */
+ytmusic-player-queue-item {
+  transition: background-color 0.4s ease, transform 0.2s cubic-bezier(0.45, 0, 0.15, 1) !important;
+  animation: animFadeInRight 0.4s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* Stagger queue items */
+ytmusic-player-queue-item:nth-child(1) { animation-delay: 0.02s; }
+ytmusic-player-queue-item:nth-child(2) { animation-delay: 0.04s; }
+ytmusic-player-queue-item:nth-child(3) { animation-delay: 0.06s; }
+ytmusic-player-queue-item:nth-child(4) { animation-delay: 0.08s; }
+ytmusic-player-queue-item:nth-child(5) { animation-delay: 0.1s; }
+
+ytmusic-player-queue-item:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  transform: translateX(4px) !important;
+}
+
+ytmusic-player-queue-item:active {
+  transform: scale(0.98) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+ytmusic-player-queue-item yt-img-shadow img {
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.4s ease !important;
+}
+
+ytmusic-player-queue-item:hover yt-img-shadow img {
+  transform: scale(1.15) !important;
+  filter: brightness(0.65) !important;
+}
+
+/* Queue chips */
+ytmusic-player-queue ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint,
+ytmusic-queue-header-renderer ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
+  transition: all 0.3s ease !important;
+}
+
+ytmusic-player-queue ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:hover,
+ytmusic-queue-header-renderer ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+}
+
+ytmusic-player-queue ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:active,
+ytmusic-queue-header-renderer ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:active {
+  transform: scale(0.95) !important;
+}
+
+/* ── 13. CHIP CLOUD ANIMATIONS ──────────────────────────────────────── */
+ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint {
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ── 14. PLAYER PAGE ANIMATIONS ─────────────────────────────────────── */
+/* Miniplayer animations */
+ytmusic-player-page[mini-player-enabled][player-page-open] #player.ytmusic-player-page {
+  animation: mp-grow 0.75s cubic-bezier(0.3, 0.6, 0.5, 1) !important;
+}
+
+ytmusic-player-page[mini-player-enabled]:not([player-page-open]) #player.ytmusic-player-page {
+  animation: mp-shrink 1s cubic-bezier(0.5, 0.6, 0.5, 1) !important;
+}
+
+@keyframes mp-grow {
+  0% { transform: translate3d(60%, 0, 0) scale(0.2); opacity: 0; }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+
+@keyframes mp-shrink {
+  0% { transform: scale(1.7); opacity: 0; }
+  50% { opacity: 0; }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+
+/* Player panel transitions */
+ytmusic-player-page #main-panel.ytmusic-player-page,
+ytmusic-player-page #player.ytmusic-player-page,
+ytmusic-player-page #side-panel.ytmusic-player-page {
+  transition: max-width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              max-height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              min-width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              width 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              padding 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              margin 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+              left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ── 15. SKELETON/LOADING ANIMATIONS ──────────────────────────────── */
+ytmusic-skeleton,
+.ytmusic-skeleton {
+  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%) !important;
+  background-size: 200% 100% !important;
+  animation: animShimmer 1.5s infinite !important;
+}
+
+/* ── 16. TOAST NOTIFICATIONS ────────────────────────────────────────── */
+tp-yt-paper-toast,
+.yt-notification-action-response-overlay {
+  animation: animSlideUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+/* ── 17. PLAY BUTTON ANIMATIONS ─────────────────────────────────────── */
+ytmusic-play-button-renderer {
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}
+
+ytmusic-play-button-renderer:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+ytmusic-play-button-renderer:active {
+  transform: scale(0.95) !important;
+}
+
+/* ── 18. THUMBNAIL OVERLAY ANIMATIONS ───────────────────────────────── */
+ytmusic-item-thumbnail-overlay-renderer {
+  transition: all 0.3s ease !important;
+}
+
+ytmusic-item-thumbnail-overlay-renderer:hover {
+  transform: scale(1.02) !important;
+}
+
+/* ── 19. VOLUME SLIDER ANIMATION ────────────────────────────────────── */
+#volume-slider.ytmusic-player-bar {
+  transition: all 0.3s ease !important;
+}
+
+#volume-slider.ytmusic-player-bar:hover {
+  transform: scaleX(1.05) !important;
+}
+
+/* ── 20. LIKE/DISLIKE BUTTON ANIMATIONS ─────────────────────────────── */
+#like-button.ytmusic-player-bar,
+#dislike-button.ytmusic-player-bar {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+#like-button.ytmusic-player-bar:hover,
+#dislike-button.ytmusic-player-bar:hover {
+  transform: scale(1.2) rotate(-5deg) !important;
+}
+
+/* Like button heartbeat when active */
+#like-button.ytmusic-player-bar[aria-pressed="true"] {
+  animation: animHeartbeat 1.3s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   END ANIMATION ENHANCEMENTS
+   ═══════════════════════════════════════════════════════════════════════ */
+
+code jaisa hai waisa hi formatting rhe tum bs esmain 2 kaam kroge 1 bacground ko tum primium blure doge 2 lyrics jaisa hai waisa hi rhe bs tum scroll ko smooth kroge
