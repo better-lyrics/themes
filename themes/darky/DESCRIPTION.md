@@ -6,9 +6,8 @@
 
 ## 📸 Screenshots
 
-![Darky Theme Preview](images/1.png)
-
-![Darky Glass Details](images/1.webp)
+![Darky Theme Preview](https://raw.githubusercontent.com/ankit008-mishra/Darky/refs/heads/main/images/1.webp)
+![Darky Glass Details](https://raw.githubusercontent.com/ankit008-mishra/Darky/refs/heads/main/images/1.png)
 
 ---
 
