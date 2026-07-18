@@ -38,19 +38,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-af5dd0911c5e26b8961fc27cd55a973caa4478350a38ac33907fc378f1c1a38a",
+          "integrity": "sha256-707e06cb3010667e45509916eef7fa66e5ca871cadf71c2bd377bd4ba1998542",
           "minVersion": "2.0.5.6",
           "path": "themes/darky",
-          "version": "1.1.4"
+          "version": "1.1.5"
         }
       ],
-      "commit": "f4a5cb1db7df1383b4e887cb227d971def7db1ad",
+      "commit": "1198146bb7c89702396dd7a50b826cef31e32d85",
       "discussion": 65,
       "id": "darky",
-      "integrity": "sha256-af5dd0911c5e26b8961fc27cd55a973caa4478350a38ac33907fc378f1c1a38a",
-      "locked": "2026-07-16T01:28:44Z",
+      "integrity": "sha256-707e06cb3010667e45509916eef7fa66e5ca871cadf71c2bd377bd4ba1998542",
+      "locked": "2026-07-18T03:18:12Z",
       "repo": "ankit008-mishra/Darky",
-      "version": "1.1.4"
+      "version": "1.1.5"
     },
     {
       "builds": [
@@ -252,6 +252,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-07-16T01:29:08Z",
+  "updated": "2026-07-18T03:18:39Z",
   "version": 1
 }
