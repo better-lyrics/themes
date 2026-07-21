@@ -72,6 +72,10 @@ ytmusic-player:not([video-mode]) {
   overflow: hidden;
 }
 
+ytmusic-player[is-music-web-player-page-layout-fixes-enabled]:not([is-mweb-modernization-enabled]):not([video-mode])[player-page-open] {
+  border-radius: 2rem;
+}
+
 img.yt-img-shadow:not(#song-image img){
   border: 1px solid rgb(175 175 175 / 15%);
   box-sizing: border-box;
