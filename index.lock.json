@@ -70,6 +70,14 @@
       "version": "3.2.2"
     },
     {
+      "builds": [
+        {
+          "integrity": "sha256-1ec30156f936e1e5ad5f050402c5bc5c92ade3053caf71b694ece73d9314bf9b",
+          "minVersion": "2.0.5.6",
+          "path": "themes/eblp",
+          "version": "1.0.4"
+        }
+      ],
       "commit": "b218cf98c6dbe7e1015b2316bb7fe30e52f962af",
       "discussion": 27,
       "id": "eblp",
@@ -252,6 +260,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-07-21T08:32:42Z",
+  "updated": "2026-07-26T13:31:28Z",
   "version": 1
 }
