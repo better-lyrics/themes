@@ -323,16 +323,13 @@ ytmusic-player {
     }
 }
 
-/* The tab bar */
-tp-yt-paper-tabs.ytmusic-player-page { /* The tab bar above the lyrics*/
-  backdrop-filter: blur(calc($background-blur / 2));
+/* The tab bar 
+tp-yt-paper-tabs.ytmusic-player-page { /* The tab bar above the lyrics*/ /*
   height: 32px;
   background-color: transparent;
   z-index: 100;
   left: 50%;
   transform: translateX(-50%);
-  top: -16px;
-  position: absolute;
   box-shadow: 0 .05em .15em rgba(0, 0, 0, .1);
   padding-left: 16px;
   padding-right: 16px;
@@ -344,8 +341,8 @@ tp-yt-paper-tab.ytmusic-player-page::hover {
 }
 
 @if $use-custom-icons == true {
-  /* custom icons */
-  tp-yt-paper-tab:nth-child(2).ytmusic-player-page { /* Add custom icons and yeah, this is the css way of it :/ */
+  /* custom icons *//*
+  tp-yt-paper-tab:nth-child(2).ytmusic-player-page { /* Add custom icons and yeah, this is the css way of it :/ *//*
     opacity: 0.5;
     width: 23px;
     height: 23px;
@@ -368,7 +365,7 @@ tp-yt-paper-tab.ytmusic-player-page::hover {
   }
   tp-yt-paper-tab:nth-child(4).ytmusic-player-page[aria-selected="true"] {opacity: 1;}
 
-}
+} */
 
 
 
