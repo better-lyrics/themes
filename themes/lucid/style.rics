@@ -58,6 +58,7 @@ blyrics-queue-scroll-ms = 150;
   --blyrics-fullscreen-video-panel-size: 36%;
   --blyrics-font-size: 3rem;
   --yt-album-size: 500px;
+  
 }
 
 @media (min-width: 1279px) {
@@ -807,18 +808,29 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
   font-family: "MySanFrancisco", "SF Pro", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; 
 }
 
-/* Footer Elements */
-.blyrics-footer { 
+/* Footer Elements (Global High-Specificity Override) */
+html body .blyrics-container .blyrics-footer { 
   display: flex !important; 
+  width: 100% !important; 
+  max-width: 100% !important;
   justify-content: center !important; 
   align-items: center !important; 
+  align-self: center !important; /* Forces centering if parent is a flex column */
   flex-wrap: wrap !important; 
   gap: 12px !important; 
-  margin-bottom: 30px !important; 
+  margin: 0 auto 30px auto !important; 
   background: transparent !important; 
   border: none !important; 
   opacity: 0.4 !important; 
-  transition: opacity 0.4s ease !important; 
+  transition: opacity 0.4s ease, transform 0.4s ease !important; 
+  transform: translateZ(0) !important; /* Keeps the hover jitter fix */
+  will-change: opacity, transform !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+html body .blyrics-container .blyrics-footer:hover { 
+  opacity: 1 !important; 
 }
 
 .blyrics-footer:hover { 
@@ -905,7 +917,7 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
 }
 
 /* Empty State / No Lyrics Formatting */
-.blyrics-container[data-no-lyrics="true"] .blyrics--line > span { 
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main { 
   display: none !important; 
 }
 
@@ -920,7 +932,7 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
 
 .blyrics-container[data-no-lyrics="true"] .blyrics--line::before { 
   content: "♫"; 
-  font-size: 6rem; 
+  font-size: 7rem; 
   color: var(--blyrics-lyric-inactive-color); 
   line-height: 1; 
   margin-bottom: 0.5rem; 
@@ -928,7 +940,7 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
 
 .blyrics-container[data-no-lyrics="true"] .blyrics--line::after { 
   content: "No lyrics found"; 
-  font-size: 2rem; 
+  font-size: 3rem; 
   font-weight: 600; 
   color: var(--blyrics-lyric-inactive-color); 
   letter-spacing: -0.5px; 
@@ -1840,14 +1852,11 @@ ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
     position: relative !important; /* Creates an anchor point for the footer */
 }
 
-/* 2. Break the footer out of the center and pin it to the bottom */
-.blyrics-container[data-no-lyrics="true"] .blyrics-footer,
-.blyrics-container[data-no-lyrics="true"] .blyrics-footer__container {
-    position: absolute !important;
-    bottom: 2rem !important; /* Pushes it near the bottom edge */
-    left: 50% !important;
-    transform: translateX(-50%) !important; /* Centers the buttons horizontally */
-    width: max-content !important;
+/* 2. Footer Empty State Cleanup */
+.blyrics-container[data-no-lyrics="true"] .blyrics-footer {
+    position: static !important;
+    margin-top: 2rem !important;
+    transform: translateZ(0) !important; 
 }
 
 /* =========================================
@@ -1863,14 +1872,12 @@ ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
     margin-top: 4px !important; 
 }
 
-/* 2. Apply the premium Lucid Glass specifically to the Unison Cards */
-.blyrics-footer__unison-card,
-.blyrics-unison-dock__inner {
-    background: rgba(255, 255, 255, 0.05) !important; 
-    backdrop-filter: blur(16px) !important; 
-    -webkit-backdrop-filter: blur(16px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important; 
-    border-radius: 20px !important; 
+/* 2. Footer Empty State Cleanup (High-Specificity) */
+html body .blyrics-container[data-no-lyrics="true"] .blyrics-footer {
+    position: absolute !important;
+    bottom: 2rem !important;
+    margin: 0 !important;
+    /* Because width is 100% and justify is center, this perfectly centers it globally */
 }
 
 /* 3. Fix the Off-Centered Vote Buttons Hover State */

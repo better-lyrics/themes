@@ -1,8 +1,16 @@
 {
   "repo": "drago-oo/lucid-theme",
   "id": "lucid",
-  "version": "1.1.1",
-  "commit": "3b874fce80627a36c33079ce012c53b86bc87d87",
-  "integrity": "sha256-6296ea933a997e3338ffa35e37ae340fe1de0ca244f1ec2239273dc736fb5ad9",
-  "locked": "2026-05-15T08:58:11Z"
+  "version": "1.2.0",
+  "commit": "fc18926b06ccd05d94daf4eedb2bf2f6696783a1",
+  "integrity": "sha256-74c8f4b4920ee41da83c8ca00583e03970d030db9ca24d297240744a0c8fe878",
+  "locked": "2026-07-29T18:24:53Z",
+  "builds": [
+    {
+      "version": "1.2.0",
+      "minVersion": "2.4.0.1",
+      "path": "themes/lucid",
+      "integrity": "sha256-74c8f4b4920ee41da83c8ca00583e03970d030db9ca24d297240744a0c8fe878"
+    }
+  ]
 }

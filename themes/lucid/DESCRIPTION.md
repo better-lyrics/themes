@@ -1,8 +1,8 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
-## v1.1.1 Update
+## v1.2.0 Update
 
-- **Support for Unison**: Unison footer bar styling fixed
+- **Support for Better Lyrics v2.4.0 added**
 
 ## Features
 
