@@ -1,0 +1,13 @@
+{
+  "id": "ad-nextgen",
+  "title": "AppleTify",
+  "description": "An ultra-minimalist and seamless YouTube Music theme that combines the aesthetics of Apple Music and Spotify.",
+  "creators": ["a-dogann"],
+  "minVersion": "1.0.0",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "cover": "cover.png",
+  "preview": "cover.png",
+  "tags": ["dark", "minimalist", "apple-music", "spotify"],
+  "images": ["1.png", "YTM.png"]
+}
