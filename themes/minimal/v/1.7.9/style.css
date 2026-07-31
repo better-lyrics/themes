@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## */
-/* 2026-07-31 v1.8.0 (BetterLyrics v2.4.0+ only)    */
+/* 2026-07-31 v1.7.9 (BetterLyrics < v2.4.0 only)   */
 
 /* Blur is off by default. Go to Section-3.3 for    */
 /*   turning it back on.                            */
@@ -90,11 +90,6 @@
   --blyrics-wobble-duration: 0s;
   --blyrics-timing-offset: 0s;
   --blyrics-richsync-timing-offset: 0s;
-
-  --blyrics-animate-line-scale: 0;
-  --blyrics-animate-word-wobble: 0;
-  --blyrics-animate-highlight-swipe: 0;
-  --blyrics-animate-highlight-glow: 0;
 
   /*# SECTION-3.3 Background Effects ############## */
   --blyrics-gradient-stops: none;
@@ -187,7 +182,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 #blyrics-wrapper .blyrics--word::before,
 #blyrics-wrapper .blyrics-container::after,
 #blyrics-wrapper .blyrics-container::before,
-#blyrics-wrapper .blyrics-container div .blyrics-word-highlight {
+#blyrics-wrapper .blyrics-container > div > span::after {
   content: "";
   display: none;
   animation: none;
@@ -198,7 +193,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 }
 
 /* Disabling active animations */
-#blyrics-wrapper .blyrics-container div .blyrics--word.blyrics--animating,
+#blyrics-wrapper .blyrics-container > div > span.blyrics--animating,
 #blyrics-wrapper .blyrics--word.blyrics--animating {
   animation: none;
   transform: none;
@@ -246,7 +241,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 }
 
 /* Text Colors */
-#blyrics-wrapper .blyrics-container div .blyrics--word {
+#blyrics-wrapper .blyrics-container > div > span {
   color: var(--white-1);
 }
 
@@ -333,8 +328,10 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
 }
 */
 /* Hardcoding system lyric stylization disabling */
-.blyrics-container div span.blyrics--animating::after,
-.blyrics-container div span.blyrics--animating {
+.blyrics-container > div > span > span.blyrics--animating::after,
+.blyrics-container > div > span > span.blyrics--animating,
+.blyrics-container > div > div > span > span.blyrics--animating::after,
+.blyrics-container > div > div > span > span.blyrics--animating {
   animation: none;
 }
 
