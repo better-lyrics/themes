@@ -1,8 +1,16 @@
 {
   "repo": "tposejank/blyrics-am-theme",
   "id": "apple-music",
-  "version": "1.0.2",
-  "commit": "d4d7ccb1e543c7ab7242d355b7fa689e320dd989",
-  "integrity": "sha256-f80b96a1823d50b6e9d29198573f0ee2c431d3483d2f1369debd64d814656d73",
-  "locked": "2026-04-03T00:05:43Z"
+  "version": "1.0.3",
+  "commit": "64191f7f096cc5e05e19b36de5c69780ff536c30",
+  "integrity": "sha256-b2089d39c404c5dc889ca4a04e551e8f4829c739bdf11d11ee219ed431d3a104",
+  "locked": "2026-07-31T22:53:51Z",
+  "builds": [
+    {
+      "version": "1.0.3",
+      "minVersion": "2.3.3",
+      "path": "themes/apple-music",
+      "integrity": "sha256-b2089d39c404c5dc889ca4a04e551e8f4829c739bdf11d11ee219ed431d3a104"
+    }
+  ]
 }
