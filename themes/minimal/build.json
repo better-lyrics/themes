@@ -1,16 +1,16 @@
 {
   "repo": "ramansg/Minimal",
   "id": "minimal",
-  "version": "1.8.0",
-  "commit": "390ad3a3e1950965b6f6042592ef2112fbc2f6f5",
-  "integrity": "sha256-886799725817928babb9b125fa6112e023000b60b4eb6f3a319c1e2a9f8de732",
-  "locked": "2026-07-31T18:36:48Z",
+  "version": "1.8.1",
+  "commit": "2de98820ab7d7fa58bae2a236f8192cc108ca41c",
+  "integrity": "sha256-f9bbb160f3f382a5f8eed48b20effa122eca99d4a9ad27fbfcc081c711d0419f",
+  "locked": "2026-08-04T07:35:44Z",
   "builds": [
     {
-      "version": "1.8.0",
+      "version": "1.8.1",
       "minVersion": "2.4.0.0",
       "path": "themes/minimal",
-      "integrity": "sha256-886799725817928babb9b125fa6112e023000b60b4eb6f3a319c1e2a9f8de732"
+      "integrity": "sha256-f9bbb160f3f382a5f8eed48b20effa122eca99d4a9ad27fbfcc081c711d0419f"
     },
     {
       "version": "1.7.9",

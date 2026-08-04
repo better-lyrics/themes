@@ -1,19 +1,16 @@
-# Better Lyrics – Minimal Immersive Theme (v1.7.8)
+# Better Lyrics – Minimal Immersive Theme (v1.8.1)
 
-A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**.
+A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**. Removes most lyric swipe/word animations in favor of a smooth, opacity-based focus system, paired with a calm, blurred album-art background.
 
-Optimized for portrait view with minimal resource usage, and packed with quality-of-life refinements.
-
-This theme removes most lyric swipe and word animations, replacing them with a smooth, opacity-based focus system. The result is a calm, immersive, distraction-free lyrics experience with dynamic blurred album art backgrounds.
+Requires **Better Lyrics v2.4.0+** — that release changed how word-level lyric highlighting renders, and this theme's lyric-animation sections target that newer markup.
 
 > "Time, Tide, & I wait for nothing."
-
-— *Boidu (probably)*
+> — *Boidu (probably)*
 
 ![Minimal](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/1.webp)
 
 ## 📖 Table of Contents
-- [✨ Who Is This Theme For?](#-who-is-this-theme-for)
+- [🛠 Quick Customization](#-quick-customization)
 - [🔤 Typography](#-typography)
 - [🎯 Lyrics Behavior](#-lyrics-behavior)
 - [🚫 Animation Changes](#-animation-changes)
@@ -22,45 +19,28 @@ This theme removes most lyric swipe and word animations, replacing them with a s
 - [🎵 'No Lyrics Found' Experience](#-no-lyrics-found-experience)
 - [📦 Loader & Ad Overlay](#-loader--ad-overlay)
 - [🎨 UI Enhancements](#-ui-enhancements)
-- [⚙ Performance Notes](#-performance-notes)
-- [🛠 Customization Guide](#-customization-guide)
-- [🎛 Album & Playlist Header Buttons](#-album--playlist-header-buttons)
 - [🔌 Standalone Plugins](#-standalone-plugins)
- 
-[`Plugin codeblock for replacing karaoke with opacity based animation at the end`](#-standalone-plugins)
 
 ---
 
-## ✨ Who Is This Theme For?
+## 🛠 Quick Customization
 
-- Users who dislike flashy lyric animations
-- Users who want a cinematic album-art background
-- Users who prefer readability over motion
-- Users with low-range systems who want better performance
-- Minimalist aesthetic lovers
+Most tweaks live in **Section 3** at the top of the file:
 
-**Design principles:**
-- Minimal motion
-- Strong focus on current lyric
-- Soft, immersive blurred background
-- Consistent typography
-- Performance-aware design
+* **Section 3.1 & 3.2** — lyric opacity levels, font size/weight, scroll timing.
+* **Section 3.3** — background blur (off by default: `--apply-blur-toggle: initial;` to turn on), plus brightness/contrast/saturation.
+* **Section 3.4** — shared OKLCH color/easing variables the rest of the theme depends on; edit with care.
+* **Section-2** — delete the `font-family` line to fall back to YouTube's default font.
 
-Animations are intentionally disabled or simplified for a stable and readable experience.
+Want more animation? Switch back to the default Better Lyrics theme, or delete Sections 3.1, 3.2, 4, 6, and 25 to restore default lyric animation while keeping the rest of this theme.
 
 ---
 
 ## 🔤 Typography
 
-- Uses **Google Sans Flex** as the primary typeface via Google Fonts, with **Roboto Flex** as a fallback, backed by native system fonts and Noto Sans for universal language and character support.
-- Applies globally across the page (can be removed in Section 2 if you prefer YouTube defaults).
-- Heavy emphasis on:
-  - High contrast white text
-  - Clean scaling
-  - Balanced line height
+Uses **Google Sans Flex** (via Google Fonts) with **Roboto Flex**, system fonts, and Noto Sans as fallbacks, applied site-wide. High-contrast white text, clean scaling, balanced line height.
 
-To revert to default YouTube font:
-- Delete the `font-family` override in **Section-2**.
+Delete the `font-family` override in **Section-2** to revert to YouTube's default font.
 
 ---
 
@@ -70,7 +50,7 @@ To revert to default YouTube font:
 
 ![Edit lyrics' transparency levels](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/2.webp)
 
-The theme uses opacity instead of animation emphasis. You can adjust the focus intensity by modifying these variables in `:root` (Section 3.1):
+Instead of animating emphasis, the theme fades lines by opacity. Tune it in `:root`:
 
 ```css
 --current-lyric-visibility: 1;      /* 100% opacity for active line */
@@ -78,15 +58,10 @@ The theme uses opacity instead of animation emphasis. You can adjust the focus i
 --next-lyrics-visibility: 0.02;     /* 2% opacity for upcoming lines */
 ```
 
-This makes it very easy to:
-
-* Increase focus intensity
-* Fade surrounding lines more
-* Create a “floating spotlight” effect
-* Prevent accidental reading of next lyrics
+Raise or lower these for more or less focus intensity, a tighter "spotlight" effect, or to hide upcoming lines completely.
 
 ### Translations & Romanization
-* **Smooth Reveal:** Translated and romanized lines ease into view beautifully without jarring the layout, when enabled.
+Translated and romanized lines ease into view without jarring the layout, when enabled.
 
 ![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.webp)
 
@@ -94,171 +69,85 @@ This makes it very easy to:
 
 ## 🚫 Animation Changes
 
-This theme explicitly:
+This theme disables rich-sync animations, word glow/wobble/swipe effects, and shimmer on active words.
 
-* Disables rich sync animations
-* Removes word glow/wobble effects
-* Removes swipe transitions
-* Removes shimmer on active words
-* Neutralizes pseudo-elements
+Word effects are switched off via Better Lyrics' own `--blyrics-animate-word-wobble`, `--blyrics-animate-highlight-swipe`, and `--blyrics-animate-highlight-glow` variables (set in Section 3.2), with some extra CSS resets in Section 6 as a fallback.
 
-If you want default Better Lyrics animations back:
-
-Delete:
-
-* **Section-2 font family line**
-* **Section 3.1**
-* **Section 3.2**
-* **Section 4**
-* **Section 6**
-* **Section 25**
-
-Then control animations via Better Lyrics settings instead.
+To get default animations back, delete **Section-2**'s font line, **Section 3.1**, **3.2**, **4**, **6**, and **25**, then use Better Lyrics' own animation settings instead.
 
 ---
 
 ## 🌌 Background System
 **(Section 3.3)**
 
-The default Dynamic album art background with:
+Dynamic album-art background, tuned for legibility over spectacle:
 
-* Blur: **Off by default** for best performance _(toggle back on in Section 3.3)_
-* Brightness: `0.20` _(lowered for legibility)_
-* Contrast: `0.85` _(lowered contrast for black color differentiation)_
-* Saturation: `1.0` _(neutral — no artificial boost)_
-* Smooth transition delay
+* Blur: **off by default** for performance — enable with `--apply-blur-toggle: initial;`, then adjust strength via `--blur-amount: 30px;`
+* Brightness: `0.20` (lowered for legibility)
+* Contrast: `0.85`
+* Saturation: `1.0` (unboosted)
 
-You can change the values in accordance to your preference
-
-Performance Tip:
-Blur is disabled by default. To turn it back on, set:
-
-```css
---apply-blur-toggle: initial;
-```
-
-The blur strength itself is controlled separately via:
-
-```css
---blur-amount: 30px;
-```
-
-You can also:
-
-* Disable background entirely in extension settings
-* Adjust brightness for darker or lighter moods
+You can also disable the background entirely in the extension's own settings.
 
 ---
 
 ## 📱 Fullscreen & Portrait Support
 
-This theme includes:
-
-* Dedicated fullscreen lyric scaling
-* Portrait window layout fixes
-* Artist page dynamic backgrounds
-* Smooth slide-up/down animation when opening or collapsing the full player page on mobile web layouts
-* Smooth transition between player states
-* No-lyrics slide animation
-* Sidebar entry smoothing
-
-Portrait mode:
-
-* Removes backdrop filters
-* Removes layered gradients
-* Ensures clarity and clean edges
+Dedicated fullscreen lyric scaling, portrait-window layout fixes, and dynamic artist-page backgrounds. Portrait mode drops backdrop filters and layered gradients for cleaner, cheaper rendering. Player-page open/close and no-lyrics states get a smooth slide transition on mobile web layouts.
 
 ---
 
 ## 🎵 'No Lyrics Found' Experience
 
-If synced lyrics aren’t found:
-
-* Text fades out
-* A subtle `♫` symbol appears
-* Hover reveals: `"No lyrics found"`
-
-No harsh error screens. Just a calm fallback.
+If synced lyrics aren't found, the text fades out and a subtle `♫` appears in its place; hovering reveals "No lyrics found." No harsh error screens.
 
 ---
 
 ## 📦 Loader & Ad Overlay
 
-Custom loader system:
-
-* Opacity animation instead of complex shimmer
-* Smooth, bouncy enter/exit transitions for the loader and ad overlay
-* Loader and lyrics wrapper cleanly hide during ad playback
-* No animations when not in use
-* No logo spinning
+The loading state uses a simple opacity shimmer instead of a spinning logo, with a smooth, slightly bouncy enter/exit transition. Both the loader and the lyrics wrapper cleanly hide during ad playback.
 
 ---
 
 ## 🎨 UI Enhancements
 
-Includes refined styling and layout fixes to match the immersive dark aesthetic:
-
-* **Immersive Artist Pages:** Full-bleed, dimmed backgrounds for artist pages with smooth scroll linked background.
+* **Immersive Artist Pages:** Full-bleed, dimmed backgrounds with a scroll-linked background.
 
 ![Dynamically Refined Artist Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/4.webp)
 
-* **Immersive Album Pages:** Album Pages feature the album cover spanned over the background with black tint.
+* **Immersive Album Pages:** Album cover spans the background with a black tint.
 
  ![Immersive Album Pages](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/5.webp)
 
-* **Player Queue:** Sticky headers, custom transparent chip designs, hover highlighting on queue items, and fixed dragging-state backgrounds.
-* **Menus & Popups:** Refined 3-dot menu scroll behavior and compact, rounded volume popups.
-* **Search & Navigation:** Darker search box backgrounds and customized tab headings with pill-style active indicator.
-* **Notifications:** Auto-dismissing toast notifications that sweep away smoothly.
-* **UI Cleanups:** Hidden scrollbars, transparent player bars, and removed gradient overlays.
-* **Progress Bar & Controls:** Added smooth movement to the progress bar. Improved aesthetic of floating timestamps-tooltip.
-* **Superellipse Corner Shaping:** All UI surfaces — album art, queue items, menus, toasts, volume popup, progress knob, and tabs — now use `corner-shape: superellipse` for a consistent squircle aesthetic.
-* **Sidebar Navigation:** Guide items styled with subtle opacity and hover highlight for a cleaner sidebar feel.
-* **Audio/Video Toggle (Section 33):** Restyled A/V toggle with transparent background, superellipse corner shaping, opacity-based visibility, and contextual fullscreen variant.
-* **Player Controls (Section 34):** Play/pause button has a subtle filled background. Skip, seek, shuffle, repeat, and icon buttons are opacity-dimmed by default with a highlight ring on hover.
-* **Album & Playlist Header Buttons (Section 35):** Action buttons on album and playlist detail pages use transparent backgrounds with a subtle inset ring outline, matching the overall ghost-button aesthetic. The primary play button gets a softened filled treatment; secondary buttons fade in on hover.
-* **Track Lists (Section 36):** Track list rows get rounded squircle corners, a subtle hover highlight, and a lighter font weight on secondary columns for better visual hierarchy.
----
-
-## ⚙ Performance Notes
-
-For best performance:
-
-1. Keep background blur disabled (default) or lower the blur amount if you enable it.
-2. Disable background effects in Better Lyrics settings.
-3. Keep animations disabled (as designed).
-
-This theme is built to be visually rich without relying on heavy animation logic.
-
----
-
-## 🛠 Customization Guide
-
-Most quick edits are inside **Section 3**:
-
-* **Section 3.1 & 3.2:** Tweak font sizes, weights, scroll timing, and lyric opacity levels.
-* **Section 3.3:** Background blur is off by default — set `--apply-blur-toggle: initial;` to enable it, then adjust blur amount, saturation, brightness, and contrast.
-* **Section 3.4:** The whole theme relies on the custom variables of oklch colors. Altering these may break parts of the theme configuration.
-
-If you want:
-
-* More animation → Use default Better Lyrics theme
-* More immersion → Enable blur (Section 3.3) and increase brightness
-* More performance → Keep blur off (default) and/or disable background
+* **Player Queue:** Sticky headers, transparent chip design, hover highlighting, fixed dragging-state background.
+* **Menus & Popups:** Refined 3-dot menu scroll behavior and a compact, rounded volume popup.
+* **Search & Navigation:** Darker search box background and pill-style active tab indicator.
+* **Notifications:** Toasts auto-dismiss and sweep away smoothly instead of sitting on screen.
+* **UI Cleanups:** Hidden scrollbars, transparent player bar, removed gradient overlays.
+* **Progress Bar & Controls:** Smoother progress movement and a cleaner floating timestamp tooltip.
+* **Superellipse Corner Shaping:** Squircle corners (`corner-shape: superellipse`) applied consistently across album art, queue items, menus, toasts, the volume popup, and tabs.
+* **Sidebar Navigation:** Guide items get subtle opacity and hover highlighting.
+* **Audio/Video Toggle:** Transparent background, superellipse corners, opacity-based visibility, and a fullscreen variant.
+* **Player Controls:** Play/pause gets a subtle filled background; skip, seek, shuffle, and repeat are dimmed by default with a hover highlight ring.
+* **Album & Playlist Header Buttons:** Transparent, inset-ring buttons matching the theme's ghost-button look; the primary play button is filled, secondary buttons fade in on hover.
+* **Track Lists:** Rounded row corners, subtle hover highlight, lighter font weight on secondary columns.
+* **Floating Lyrics Dock & Autoscroll Resume Button:** Both restyled to match the ghost-button look — flat translucent background, thin inset outline instead of a shadow, no backdrop blur.
 
 ---
 
 ## 🔖 Version
 
-**v1.7.8** — Last updated: 2026-07-04
+**v1.8.1** — Last updated: 2026-07-31 — Requires Better Lyrics **v2.4.0+**
 
 Please report bugs or suggestions on the Better Lyrics Discord.
+
+**Credits:** Thanks to chengg, mukeen, drago, boidu, noah, and tposejank for code help and testing.
 
 ---
 
 ## 🔌 Standalone Plugins
 
-If you prefer using the default Better Lyrics theme but just want to cherry-pick specific features from this Minimal theme, you can copy and paste the standalone code blocks below into your Custom CSS.
+Prefer the default Better Lyrics theme but want to cherry-pick a feature? Copy the blocks below into your Custom CSS. Like the main theme, these target Better Lyrics v2.4.0+.
 
 ### 1. Opacity-Scroll Lyric Animation
 *Replaces default karaoke styles, wobbles, and glows with smooth, opacity-based scrolling.*
@@ -296,7 +185,7 @@ If you prefer using the default Better Lyrics theme but just want to cherry-pick
   --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
   /* scroll animation curve */
 
-  --blyrics-lyric-scroll-duration: 0.7s;
+  --blyrics-lyric-scroll-duration: 0.6s;
   /* dont change without blyrics-queue-scroll-ms */
 
   --blyrics-lyric-scroll-timing-function: var(--transition-curve);
@@ -311,6 +200,12 @@ If you prefer using the default Better Lyrics theme but just want to cherry-pick
   --blyrics-wobble-duration: 0s;
   --blyrics-timing-offset: 0s;
   --blyrics-richsync-timing-offset: 0s;
+
+  /* v2.4.0+ animation-engine toggles — set to 0 to turn each effect off  */
+  --blyrics-animate-line-scale: 0;
+  --blyrics-animate-word-wobble: 0;
+  --blyrics-animate-highlight-swipe: 0;
+  --blyrics-animate-highlight-glow: 0;
 }
 
 /* Removing this block will affect lyric animation.
@@ -327,7 +222,8 @@ blyrics-target-scroll-pos-ratio = 0.4;
 blyrics-add-extra-top-padding = true;
 */
 
-/* Override Keyframes */
+/* Override Keyframes (kept as a fallback — word effects mainly run via the
+   animate-* flags above, not these) */
 @keyframes blyrics-wobble {
   from, to { transform: none; }
 }
@@ -336,12 +232,12 @@ blyrics-add-extra-top-padding = true;
   from, to { transform: none; }
 }
 
-/* Resetting Pseudo-elements and animations */
+/* Resetting the word-highlight gradient and any leftover pseudo-elements */
 #blyrics-wrapper .blyrics--word::after,
 #blyrics-wrapper .blyrics--word::before,
 #blyrics-wrapper .blyrics-container::after,
 #blyrics-wrapper .blyrics-container::before,
-#blyrics-wrapper .blyrics-container>div>span::after {
+#blyrics-wrapper .blyrics-container div .blyrics-word-highlight {
   content: "";
   display: none;
   animation: none;
@@ -351,8 +247,8 @@ blyrics-add-extra-top-padding = true;
   filter: none;
 }
 
-/* Disabling active animations */
-#blyrics-wrapper .blyrics-container>div>span.blyrics--animating,
+/* Disabling active animations (now only relevant to the instrumental note icon) */
+#blyrics-wrapper .blyrics-container div .blyrics--word.blyrics--animating,
 #blyrics-wrapper .blyrics--word.blyrics--animating {
   animation: none;
   transform: none;
@@ -372,24 +268,24 @@ blyrics-add-extra-top-padding = true;
 }
 
 /* Container Lines - Base State */
-#blyrics-wrapper .blyrics-container>div {
+#blyrics-wrapper .blyrics-container > div {
   opacity: var(--previous-lyrics-visibility);
   transform: none;
   transition: var(--lyrics-opacity-transition);
 }
 
 /* Active Line */
-#blyrics-wrapper .blyrics-container>div.blyrics--active {
+#blyrics-wrapper .blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 
-/* Next Lines (Lines strictly after the LAST active line) */
-#blyrics-wrapper .blyrics-container > div.blyrics--active ~ div:where(:not(.blyrics--active):not(:has(~ .blyrics--active))) {
+/* Next Lines (any line after an active one) */
+#blyrics-wrapper .blyrics-container > div.blyrics--active ~ div:not(.blyrics--active) {
   opacity: var(--next-lyrics-visibility);
 }
 
 /* Text Colors */
-#blyrics-wrapper .blyrics-container>div>span {
+#blyrics-wrapper .blyrics-container div .blyrics--word {
   color: var(--white-1);
 }
 
@@ -404,24 +300,24 @@ blyrics-add-extra-top-padding = true;
   transition: var(--lyrics-opacity-transition);
 }
 
-#blyrics-wrapper .blyrics-container>div.blyrics--active :is(.blyrics--romanized, .blyrics--translated) {
+#blyrics-wrapper .blyrics-container > div.blyrics--active :is(.blyrics--romanized, .blyrics--translated) {
   opacity: var(--translated-lyric-visibility);
 }
 
 /* User Scrolling or Hover */
 #blyrics-wrapper .blyrics-container:is(:hover, .blyrics-user-scrolling) > div:not(.blyrics--active):not(:hover) {
   opacity: var(--non-hovered-lines-visibility);
-  transition: opacity 0.3s ease-out;
+  transition: opacity 0.3s var(--transition-curve);
 }
 
 /* Specific Line Hover */
 #blyrics-wrapper .blyrics-container:is(:hover, .blyrics-user-scrolling) > div:not(.blyrics--active):hover {
   opacity: var(--hovered-line-visibility);
-  transition: opacity 0.1s ease-out;
+  transition: opacity 0.1s var(--transition-curve);
 }
 
 /* Unsynced Lyrics */
-#blyrics-wrapper .blyrics-container[data-sync="none"]>div {
+#blyrics-wrapper .blyrics-container[data-sync="none"] > div {
   opacity: var(--current-lyric-visibility);
   transform: none;
   transition: none;
@@ -446,37 +342,40 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 }
 
 /* Final Overrides */
-#blyrics-wrapper .blyrics-container>.blyrics--active.blyrics--active,
-#blyrics-wrapper .blyrics-container>div.blyrics--animating {
+#blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 
-/* Previous Lines Enforcer */
-#blyrics-wrapper .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling):not(:hover) > div:not(.blyrics--active):not(:where(.blyrics--active ~ div):not(:has(~ .blyrics--active))) {
-  opacity: var(--previous-lyrics-visibility);
-}
-
-/* Footer's opacity is affected by .blyrics container */
-/* Override for it along with hover implementation  */
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
-    opacity: 1; 
-}
-
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer > * { 
-    opacity: 0.3; 
-    transition: opacity 0.1s ease;
-}
-
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer > *:hover { 
-    opacity: 1;
-}
-
-/* Hardcoding system lyric stylization disabling */
-.blyrics-container>div>span>span.blyrics--animating::after,
-.blyrics-container>div>span>span.blyrics--animating,
-.blyrics-container>div>div>span>span.blyrics--animating::after,
-.blyrics-container>div>div>span>span.blyrics--animating {
+/* Hardcoding system lyric stylization disabling (instrumental icon only) */
+.blyrics-container div span.blyrics--animating::after,
+.blyrics-container div span.blyrics--animating {
   animation: none;
+}
+
+/* Footer (credit line) */
+.blyrics-footer__container.blyrics-footer__shaders {
+  animation: none;
+  box-shadow: none;
+
+  & > span {
+    animation: none;
+    background: none;
+    -webkit-background-clip: unset;
+    color: var(--blyrics-footer-link-color);
+  }
+}
+
+#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
+  opacity: 1;
+
+  & > * {
+    opacity: 0.3;
+    transition: opacity 0.1s var(--transition-curve, ease);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
 }
 ```
 
@@ -500,6 +399,8 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 </details>
 
 #### Replace all breaks with musical notes
+*Note: `.blyrics--break` isn't referenced anywhere in the extension's current stylesheets or its styling docs, unlike the classes above — worth a quick test before relying on it.*
+
 <details>
 <summary>Show CSS</summary>
 
