@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## */
-/* 2026-07-31 v1.8.1 (BetterLyrics v2.4.0+ only)    */
+/* 2026-07-31 v1.8.2 (BetterLyrics v2.4.0+ only)    */
 
 /* Blur is off by default. Go to Section-3.3 for    */
 /*   turning it back on.                            */
@@ -75,24 +75,16 @@
   --blyrics-translated-color: var(--white-dot-60);
 
   /*# SECTION-3.2 ################################# */
-  --blyrics-lyric-scroll-duration: 0.6s; 
+  --blyrics-lyric-scroll-duration: 1.5s; 
   --blyrics-lyric-scroll-timing-function: var(--transition-curve);
-  --lyrics-opacity-transition: opacity
-    calc(var(--blyrics-lyric-scroll-duration) * 0.75)
-    var(--blyrics-lyric-scroll-timing-function);
-  --blyrics-scale-transition-duration: var(
-    --blyrics-lyric-scroll-duration
-  );
-  --blyrics-lyric-highlight-fade-in-duration: var(
-    --blyrics-lyric-scroll-duration
-  );
-  --blyrics-lyric-highlight-fade-out-duration: var(
-    --blyrics-lyric-scroll-duration
-  ); 
-  --blyrics-scroll-timing-offset: var(--blyrics-lyric-scroll-duration); 
+  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 1) var(--blyrics-lyric-scroll-timing-function);
+  --blyrics-scale-transition-duration: 0.5s;
+  --blyrics-lyric-highlight-fade-in-duration: 0.4s;
+  --blyrics-lyric-highlight-fade-out-duration: 0.4s; 
+  --blyrics-scroll-timing-offset: 0s; 
   --blyrics-wobble-duration: 0s;
-  --blyrics-timing-offset: 0s;
-  --blyrics-richsync-timing-offset: 0s;
+  --blyrics-timing-offset: 0.4s;
+  --blyrics-richsync-timing-offset: 0.4s;
 
   --blyrics-animate-line-scale: 0;
   --blyrics-animate-word-wobble: 0;
@@ -122,7 +114,7 @@
   --filter-replacement-backgroundcolor: oklch(18.67% 0.0000 0 / 0.80);
   
   /*# SECTION-3.4 Custom Variables ################ */
-  --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
   --white-1:      oklch(1 0 0 / 1);
   --white-dot-87: oklch(1 0 0 / 0.87);
   --white-dot-60: oklch(1 0 0 / 0.60);
@@ -154,10 +146,15 @@ blyrics-disable-richsync = true;
 blyrics-line-synced-animation-delay = 0;
 blyrics-lyric-ending-threshold-s = 0;
 blyrics-early-scroll-consider-s = 0;
-blyrics-queue-scroll-ms = 720; 
+blyrics-queue-scroll-ms = 1520;
+
 blyrics-debug-renderer = false;
 blyrics-target-scroll-pos-ratio = 0.4;
 blyrics-add-extra-top-padding = true;
+blyrics-line-scroll-duration = var(--blyrics-lyric-scroll-duration);
+blyrics-line-scroll-above-duration = var(--blyrics-lyric-scroll-duration);
+blyrics-line-scroll-below-duration = var(--blyrics-lyric-scroll-duration);
+blyrics-line-scroll-active-duration = var(--blyrics-lyric-scroll-duration);
 */
 
 /* ## SECTION-5 - Hiding Scrollbar from homepage ## */
@@ -651,9 +648,31 @@ ytmusic-app-layout {
     z-index: 0;
   }
 
-  &:not([player-ui-state="PLAYER_BAR_ONLY"]) #player-bar-background::before {
-    background: transparent !important;
+  &[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background::before {
+    content: "";
+    position: absolute;
+    inset: -90px;
+    background: var(
+      --blyrics-background-img,
+      var(--ytmusic-brand-background-solid)
+    );
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.3s ease-in-out 0.3s;
+    filter: var(--background-image-filter);
+    z-index: 0;
+    opacity: 0;
   }
+
+  &:not([player-ui-state="PLAYER_BAR_ONLY"]) #player-bar-background::before {
+   /* background: transparent !important; */
+   
+  }
+}
+
+#layout[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background {
+    opacity: 1 !important;
 }
 
 ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
@@ -750,6 +769,14 @@ ytmusic-fullbleed-thumbnail-renderer {
   max-width: none !important;
   max-height: none !important;
   z-index: 0;
+}
+
+ytmusic-app-layout[is-bauhaus-sidenav-enabled].content-scrolled #mini-guide-background.ytmusic-app-layout {
+  opacity: 0;
+}
+
+#layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background {
+  transition: opacity 0.4s ease-in-out 0.2s;
 }
 
 #background > ytmusic-fullbleed-thumbnail-renderer > picture::after {
