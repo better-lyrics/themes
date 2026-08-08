@@ -157,18 +157,18 @@
     {
       "builds": [
         {
-          "integrity": "sha256-cb06fbcda22c2f42bbbda964801f9ea7dc9d423737af899e91d6673701b641fa",
+          "integrity": "sha256-9a08f9bd53255e62298080fdcd71963ff8dfede61584c658bfdafa106be6c507",
           "minVersion": "2.4.0.1",
           "path": "themes/lyric-glow",
-          "version": "1.3.1"
+          "version": "1.3.2"
         }
       ],
-      "commit": "3cb24d727df9080e799bd31498d5a94d25c66878",
+      "commit": "204ada66245b33cf1142abccec4495ea96c89623",
       "id": "lyric-glow",
-      "integrity": "sha256-cb06fbcda22c2f42bbbda964801f9ea7dc9d423737af899e91d6673701b641fa",
-      "locked": "2026-08-08T07:55:00Z",
+      "integrity": "sha256-9a08f9bd53255e62298080fdcd71963ff8dfede61584c658bfdafa106be6c507",
+      "locked": "2026-08-08T20:06:50Z",
       "repo": "LMatiuxXcd/lyric-glow",
-      "version": "1.3.1"
+      "version": "1.3.2"
     },
     {
       "builds": [
@@ -315,6 +315,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-08-08T07:55:27Z",
+  "updated": "2026-08-08T20:07:16Z",
   "version": 1
 }
