@@ -7,7 +7,7 @@
   ],
   "minVersion": "2.4.0.1",
   "hasShaders": true,
-  "version": "1.4.0",
+  "version": "1.4.1",
   "tags": [
     "dark",
     "minimal",
@@ -16,6 +16,7 @@
   ],
   "images": [
     "1.png",
-    "2.png"
+    "2.png",
+    "3.png"
   ]
 }
