@@ -1,16 +1,16 @@
 {
   "repo": "LMatiuxXcd/lyric-glow",
   "id": "lyric-glow",
-  "version": "1.3.2",
-  "commit": "204ada66245b33cf1142abccec4495ea96c89623",
-  "integrity": "sha256-9a08f9bd53255e62298080fdcd71963ff8dfede61584c658bfdafa106be6c507",
-  "locked": "2026-08-08T20:06:50Z",
+  "version": "1.4.0",
+  "commit": "37b01a87d5decd142c05cd5d1f839f7146a575ed",
+  "integrity": "sha256-93d07dc3ba118afa6c7600e557811ba398cdb1e9e72ec39335133f747f4e1fc1",
+  "locked": "2026-08-08T21:04:30Z",
   "builds": [
     {
-      "version": "1.3.2",
+      "version": "1.4.0",
       "minVersion": "2.4.0.1",
       "path": "themes/lyric-glow",
-      "integrity": "sha256-9a08f9bd53255e62298080fdcd71963ff8dfede61584c658bfdafa106be6c507"
+      "integrity": "sha256-93d07dc3ba118afa6c7600e557811ba398cdb1e9e72ec39335133f747f4e1fc1"
     }
   ]
 }

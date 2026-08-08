@@ -1,9 +1,9 @@
 /*
   ==========================================================================
-  LYRIC GLOW — Better Lyrics Theme
+  LYRIC GLOW â€” Better Lyrics Theme
   Creator: MatiuxXcd
   Marketplace ID: lyric-glow
-  Version: 1.3.1
+  Version: 1.4.0
   ==========================================================================
   An immersive dark theme for Better Lyrics + YouTube Music, focused on
   cinematic album-art ambience, highly readable lyrics and native rich-sync
@@ -47,13 +47,13 @@
     community-made, and is not affiliated with or endorsed by Apple.
 
   RELEASE POLICY
-  v1.3.1 intentionally preserves the visual design of v1.3. Changes are
-  documentation, cleanup and maintenance only.
+  v1.4.0 adds the Aurora Cinematic visual layer and optional Kawarp shader bridge while
+  preserving native lyric timing, rich-sync and all existing compatibility fallbacks.
   ==========================================================================
 */
 
 :root {
-  /* Better Lyrics engine — current documented API */
+  /* Better Lyrics engine â€” current documented API */
   --blyrics-font-family: "SF Pro Display", "SF Pro Text",
     "Segoe UI Variable Display", "Segoe UI Variable Text",
     Satoshi, var(--noto-sans-universal), -apple-system, BlinkMacSystemFont,
@@ -512,7 +512,7 @@ ytmusic-player-page[video-mode] video.html5-main-video {
 }
 
 /* =========================
-   LYRICS — APPLE MUSIC DYNAMIC PREVIEW
+   LYRICS â€” APPLE MUSIC DYNAMIC PREVIEW
    ========================= */
 
 .blyrics-container {
@@ -588,7 +588,7 @@ ytmusic-player-page[video-mode] video.html5-main-video {
   transform-origin: center center !important;
 }
 
-/* Base preview state — visible enough to read ahead. */
+/* Base preview state â€” visible enough to read ahead. */
 .blyrics-container:not(.blyrics-user-scrolling) > .blyrics--line {
   opacity: .34 !important;
   filter: blur(.20px) saturate(.94) !important;
@@ -779,7 +779,7 @@ ytmusic-player-page[video-mode] video.html5-main-video {
 }
 
 .blyrics-container[data-no-lyrics="true"] .blyrics--line::before {
-  content: "♪";
+  content: "â™ª";
   margin-bottom: 18px;
   color: rgba(255,255,255,.28);
   font-size: clamp(4rem, 8vw, 7rem);
@@ -1033,7 +1033,7 @@ tp-yt-paper-toast {
 
 
 /* =========================
-   PLAYER BAR — ROTATING DISC ART
+   PLAYER BAR â€” ROTATING DISC ART
    ========================= */
 
 /*
@@ -1160,11 +1160,11 @@ ytmusic-player-bar .image.ytmusic-player-bar::after {
 
 
 /* ==========================================================================
-   LYRIC GLOW — FINAL REFINEMENT LAYER
+   LYRIC GLOW â€” FINAL REFINEMENT LAYER
    ==========================================================================
    This single section replaces the historical v1.2 / v1.3 append-only
    patches. Keeping the refinement layer together makes maintenance easier
-   while preserving the v1.3 visual result.
+   while preserving the established visual result.
    ========================================================================== */
 
 :root {
@@ -1681,7 +1681,7 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
 
 /*
   These breakpoints intentionally remain after the base theme breakpoints:
-  this reproduces the final v1.3 cascade.
+  this preserves the final refinement cascade.
 */
 @media (max-width: 1450px) {
   :root {
@@ -1727,3 +1727,224 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
     animation: none !important;
   }
 }
+
+/* ==========================================================================
+   LYRIC GLOW 1.4 - AURORA CINEMATIC
+   ========================================================================== */
+
+:root {
+  /* Aurora palette: cool cyan for the primary voice, violet for the stage,
+     and a restrained rose accent for secondary voices. */
+  --am-aurora-cyan: #67d9ff;
+  --am-aurora-violet: #9b86ff;
+  --am-aurora-rose: #ff78ac;
+  --am-aurora-cyan-soft: rgba(103, 217, 255, .16);
+  --am-aurora-violet-soft: rgba(155, 134, 255, .14);
+  --am-aurora-rose-soft: rgba(255, 120, 172, .10);
+  --am-aurora-ink: #06070d;
+  --am-aurora-line: rgba(150, 205, 255, .18);
+}
+
+ytmusic-player-page:has(#better-lyrics-kawarp-player) {
+  background: var(--am-aurora-ink) !important;
+}
+
+ytmusic-player-page:has(#better-lyrics-kawarp-player)::before {
+  opacity: .12 !important;
+  filter:
+    blur(calc(var(--blyrics-background-blur, 30px) + 26px))
+    saturate(.72)
+    brightness(.30) !important;
+}
+
+ytmusic-player-page:has(#better-lyrics-kawarp-player)::after {
+  background:
+    radial-gradient(
+      ellipse at 18% 36%,
+      rgba(103, 217, 255, .075),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 82% 46%,
+      rgba(155, 134, 255, .065),
+      transparent 42%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(6, 7, 13, .06),
+      rgba(6, 7, 13, .26) 58%,
+      rgba(6, 7, 13, .58)
+    ) !important;
+}
+
+#player-page #better-lyrics-kawarp-player,
+#player-page #better-lyrics-kawarp-backdrop-player {
+  pointer-events: none !important;
+}
+
+#player-page #better-lyrics-kawarp-player canvas {
+  display: block !important;
+  pointer-events: none !important;
+  filter: saturate(1.02) contrast(1.02) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"]) {
+  background:
+    radial-gradient(
+      ellipse 72% 34% at 50% 44%,
+      rgba(103, 217, 255, .035),
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 52% 28% at 78% 62%,
+      rgba(155, 134, 255, .028),
+      transparent 74%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, .085) 0%,
+      rgba(0, 0, 0, .018) 28%,
+      transparent 58%,
+      rgba(103, 217, 255, .012) 100%
+    ) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active::before,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating::before {
+  background:
+    radial-gradient(
+      ellipse at 18% 50%,
+      rgba(103, 217, 255, .16) 0%,
+      rgba(103, 217, 255, .072) 27%,
+      transparent 66%
+    ),
+    radial-gradient(
+      ellipse at 62% 50%,
+      rgba(155, 134, 255, .105) 0%,
+      rgba(155, 134, 255, .038) 32%,
+      transparent 72%
+    ),
+    radial-gradient(
+      ellipse at 92% 50%,
+      rgba(255, 120, 172, .060) 0%,
+      transparent 60%
+    ) !important;
+  filter: blur(12px) saturate(1.12) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active::after,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating::after {
+  width: 3px !important;
+  background: linear-gradient(
+    to bottom,
+    var(--am-aurora-cyan),
+    var(--am-aurora-violet) 54%,
+    var(--am-aurora-rose)
+  ) !important;
+  box-shadow:
+    0 0 8px var(--am-aurora-cyan-soft),
+    0 0 18px var(--am-aurora-violet-soft) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active .blyrics-line-main,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating .blyrics-line-main {
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, .14),
+    0 7px 26px rgba(103, 217, 255, .055),
+    0 14px 36px rgba(155, 134, 255, .045) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v2"]::after,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v3"]::after {
+  background: linear-gradient(
+    to bottom,
+    var(--am-aurora-rose),
+    var(--am-aurora-violet)
+  ) !important;
+  box-shadow: 0 0 12px var(--am-aurora-rose-soft) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v1000"].blyrics--active .blyrics-line-main,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v1000"].blyrics--animating .blyrics-line-main {
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, .14),
+    0 8px 30px rgba(155, 134, 255, .075) !important;
+}
+
+ytmusic-player-bar {
+  background:
+    linear-gradient(90deg, rgba(103, 217, 255, .045), transparent 34%, rgba(155, 134, 255, .038)),
+    rgba(12, 12, 14, .78) !important;
+  border-top-color: var(--am-aurora-line) !important;
+  box-shadow:
+    0 -12px 34px rgba(0, 0, 0, .16),
+    0 -1px 24px rgba(103, 217, 255, .035) !important;
+}
+
+ytmusic-player-bar #progress-bar #sliderBar,
+ytmusic-player-bar #progress-bar #primaryProgress,
+ytmusic-player-bar #progress-bar #progressContainer {
+  background: linear-gradient(
+    90deg,
+    var(--am-aurora-cyan),
+    var(--am-aurora-violet) 58%,
+    var(--am-aurora-rose)
+  ) !important;
+}
+
+ytmusic-player-bar .thumbnail-image-wrapper,
+ytmusic-player-bar #song-image,
+ytmusic-player-bar .image.ytmusic-player-bar {
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, .28),
+    0 0 0 1px rgba(255, 255, 255, .10),
+    0 0 18px rgba(103, 217, 255, .055) !important;
+}
+
+ytmusic-search-box:focus-within .search-box {
+  border-color: rgba(103, 217, 255, .24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .045),
+    0 0 0 3px rgba(103, 217, 255, .045) !important;
+}
+
+ytmusic-player-page tp-yt-paper-tab[aria-selected="true"],
+ytmusic-player-page tp-yt-paper-tab.iron-selected {
+  color: var(--am-aurora-cyan) !important;
+  text-shadow: 0 0 18px rgba(103, 217, 255, .16) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page:has(#better-lyrics-kawarp-player)::before {
+    opacity: .44 !important;
+  }
+
+  #player-page #better-lyrics-kawarp-player,
+  #player-page #better-lyrics-kawarp-backdrop-player {
+    opacity: 0 !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --am-aurora-line: rgba(180, 225, 255, .28);
+  }
+
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line.blyrics--active::after,
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line.blyrics--animating::after {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, .55) !important;
+  }
+}
+

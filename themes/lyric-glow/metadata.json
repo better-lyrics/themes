@@ -1,17 +1,18 @@
 {
   "id": "lyric-glow",
   "title": "Lyric Glow",
-  "description": "An immersive dark Better Lyrics theme with cinematic album-art ambience, fluid native rich-sync motion, and a typography-first lyric experience.",
+  "description": "An Aurora Cinematic Better Lyrics theme with typography-first lyrics, album-art ambience and a restrained Kawarp shader preset.",
   "creators": [
     "MatiuxXcd"
   ],
   "minVersion": "2.4.0.1",
-  "hasShaders": false,
-  "version": "1.3.2",
+  "hasShaders": true,
+  "version": "1.4.0",
   "tags": [
     "dark",
     "minimal",
-    "colorful"
+    "colorful",
+    "animated"
   ],
   "images": [
     "1.png",
