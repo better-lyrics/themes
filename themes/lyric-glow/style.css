@@ -1,0 +1,1729 @@
+/*
+  ==========================================================================
+  LYRIC GLOW — Better Lyrics Theme
+  Creator: MatiuxXcd
+  Marketplace ID: lyric-glow
+  Version: 1.3.1
+  ==========================================================================
+  An immersive dark theme for Better Lyrics + YouTube Music, focused on
+  cinematic album-art ambience, highly readable lyrics and native rich-sync
+  motion.
+
+  DESIGN
+  - Lyric Glow reading stage with diffuse active-line illumination
+  - Forward-reading lyric hierarchy (active -> upcoming -> past)
+  - Direction-aware styling for secondary/tertiary vocals
+  - Centered treatment for shared vocals / chorus lines
+  - Native Better Lyrics rich-sync / WAAPI motion preserved
+  - Glass navigation, menus, queue and player controls
+  - Compact rotating now-playing artwork
+
+  COMPATIBILITY
+  - Better Lyrics custom themes / Marketplace
+  - Current Better Lyrics styling API and comment-based engine knobs
+  - YouTube Music desktop UI
+  - Chromium-based browsers; Firefox support depends on YouTube Music /
+    selector support available in the installed browser version
+  - Includes reduced-motion and increased-contrast fallbacks
+
+  INSTALLATION
+  Better Lyrics -> Settings -> Themes:
+  - Import this CSS as a custom theme, or
+  - Publish/install it through the Better Lyrics Theme Marketplace.
+
+  MAINTENANCE NOTES
+  - Better Lyrics owns lyric timing and motion through the Web Animations API.
+    This theme intentionally avoids forcing transforms on .blyrics--word.
+  - Values inside the "Better Lyrics engine knobs" comment are parsed by
+    Better Lyrics at runtime. They are comments on purpose; do not uncomment.
+  - YouTube Music uses internal custom elements. If Google changes those
+    elements, interface-only selectors may need maintenance.
+
+  ATTRIBUTION
+  - Better Lyrics: https://github.com/better-lyrics/better-lyrics
+  - Early selector/layout work was derived from "Lucid" by drago-oo and was
+    subsequently redesigned into Lyric Glow.
+  - Apple Music is a trademark of Apple Inc. This theme is unofficial,
+    community-made, and is not affiliated with or endorsed by Apple.
+
+  RELEASE POLICY
+  v1.3.1 intentionally preserves the visual design of v1.3. Changes are
+  documentation, cleanup and maintenance only.
+  ==========================================================================
+*/
+
+:root {
+  /* Better Lyrics engine — current documented API */
+  --blyrics-font-family: "SF Pro Display", "SF Pro Text",
+    "Segoe UI Variable Display", "Segoe UI Variable Text",
+    Satoshi, var(--noto-sans-universal), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+
+  --blyrics-text-color: rgba(255, 255, 255, 1);
+  --blyrics-highlight-color: rgba(255, 255, 255, .86);
+  --blyrics-active-opacity: .99;
+  --blyrics-inactive-opacity: .30;
+  --blyrics-translated-opacity: .50;
+
+  --blyrics-lyric-active-color: rgba(255, 255, 255, .99);
+  --blyrics-lyric-inactive-color: rgba(255, 255, 255, .30);
+
+  /* Typography */
+  --blyrics-font-size: clamp(2.00rem, 3.02vw, 4.35rem);
+  --blyrics-font-weight: 625;
+  --blyrics-line-height: 1.055;
+  --blyrics-translated-font-size: clamp(1rem, 1.22vw, 1.38rem);
+  --blyrics-translated-font-weight: 520;
+  --blyrics-translated-font-family: var(--blyrics-font-family);
+
+  /* Apple-like motion: visible, but never bouncy */
+  --blyrics-scale: .972;
+  --blyrics-active-scale: 1.018;
+  --blyrics-scale-transition-duration: 410ms;
+  --blyrics-line-enter-easing: cubic-bezier(.16, 1, .3, 1);
+  --blyrics-line-exit-easing: cubic-bezier(.22, .78, .22, 1);
+
+  --blyrics-animate-line-scale: 1;
+  --blyrics-animate-word-wobble: 1;
+  --blyrics-animate-highlight-swipe: 1;
+  --blyrics-animate-highlight-glow: 1;
+  --blyrics-animate-highlight-fade: 1;
+  --blyrics-animate-scroll: 1;
+  --blyrics-animate-instrumental: 1;
+
+  /* Word motion kept deliberately subtle */
+  --blyrics-wobble-duration: 690ms;
+  --blyrics-word-wobble-transform-from: scaleX(1);
+  --blyrics-word-wobble-transform-peak: translateY(-.040em) scale(1.020);
+  --blyrics-word-wobble-transform-settle: translateY(-.008em) scale(1.007);
+  --blyrics-word-wobble-transform-to: scaleX(1);
+  --blyrics-word-wobble-peak-offset: .16;
+  --blyrics-word-wobble-settle-offset: .72;
+  --blyrics-word-wobble-easing: cubic-bezier(.2, .8, .2, 1);
+  --blyrics-word-wobble-peak-easing: ease-out;
+  --blyrics-word-wobble-end-easing: ease-out;
+
+  /* Karaoke highlight */
+  --blyrics-lyric-highlight-fade-in-duration: 260ms;
+  --blyrics-lyric-highlight-fade-out-duration: 420ms;
+  --blyrics-lyric-highlight-fade-in-easing: ease-out;
+  --blyrics-lyric-highlight-fade-out-easing: ease;
+  --blyrics-highlight-swipe-easing: linear;
+  --blyrics-highlight-glow-radius-from: .62rem;
+  --blyrics-highlight-glow-radius-to: 0;
+  --blyrics-highlight-glow-duration-ratio: .84;
+  --blyrics-highlight-glow-min-duration: .52s;
+  --blyrics-highlight-glow-easing: ease-out;
+
+  /* Scroll */
+  --blyrics-lyric-scroll-duration: 690ms;
+  --blyrics-lyric-scroll-timing-function: cubic-bezier(.18, .82, .22, 1);
+  --blyrics-scroll-timing-offset: .50s;
+
+  /* Base layout (final desktop values are set in Lyric Glow refinement) */
+  --blyrics-panel-size: 52%;
+  --blyrics-video-panel-size: 41%;
+  --blyrics-fullscreen-panel-size: 56%;
+  --blyrics-fullscreen-video-panel-size: 40%;
+  --yt-album-size: min(34vw, 520px);
+
+  /* Theme palette */
+  --am-bg: #09090b;
+  --am-surface: rgba(24, 24, 27, .62);
+  --am-surface-strong: rgba(28, 28, 31, .82);
+  --am-surface-hover: rgba(255, 255, 255, .10);
+  --am-surface-selected: rgba(255, 255, 255, .15);
+  --am-border: rgba(255, 255, 255, .10);
+  --am-border-soft: rgba(255, 255, 255, .065);
+  --am-text: rgba(255, 255, 255, .96);
+  --am-text-2: rgba(255, 255, 255, .66);
+  --am-text-3: rgba(255, 255, 255, .38);
+  --am-accent: #fa2d48;
+  --am-accent-hover: #ff4961;
+  --am-blur: 30px;
+  --am-radius-sm: 10px;
+  --am-radius: 14px;
+  --am-radius-lg: 20px;
+  --am-shadow: 0 18px 60px rgba(0, 0, 0, .34);
+  --am-shadow-soft: 0 10px 30px rgba(0, 0, 0, .22);
+  --am-ease: cubic-bezier(.22, .78, .22, 1);
+}
+
+/*
+  Better Lyrics engine knobs
+  These are intentionally comments: Better Lyrics parses them at runtime.
+
+  blyrics-line-synced-animation-delay = 22;
+  blyrics-target-scroll-pos-ratio = 0.405;
+  blyrics-swipe-lead-ratio = 0.065;
+  blyrics-swipe-duration-ratio = 1.30;
+  blyrics-line-scroll-duration = 690ms;
+  blyrics-line-scroll-above-duration = calc(620ms + log(var(--blyrics-line-scroll-abs-relative-index) + 1) * 16ms);
+  blyrics-line-scroll-below-duration = calc(650ms + log(var(--blyrics-line-scroll-abs-relative-index) + 1, 2.71828) * 58ms + var(--blyrics-line-scroll-abs-relative-index) * 12ms);
+*/
+
+@supports (color: color(display-p3 1 0 0)) {
+  :root {
+    --am-accent: color(display-p3 .98 .12 .24);
+    --am-accent-hover: color(display-p3 1 .22 .32);
+  }
+}
+
+/* =========================
+   GLOBAL
+   ========================= */
+
+html,
+body,
+ytmusic-app {
+  background: var(--am-bg) !important;
+}
+
+* {
+  font-family: var(--blyrics-font-family) !important;
+  box-sizing: border-box;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--am-accent) 78%, white) !important;
+  outline-offset: 3px !important;
+}
+
+/* =========================
+   TOP BAR / SEARCH
+   ========================= */
+
+ytmusic-app-layout > #nav-bar-background {
+  height: 82px !important;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 10, 12, .78) 0%,
+    rgba(10, 10, 12, .54) 62%,
+    transparent 100%
+  ) !important;
+  backdrop-filter: blur(var(--am-blur)) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(var(--am-blur)) saturate(125%) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+ytmusic-app-layout #nav-bar-divider {
+  display: none !important;
+}
+
+ytmusic-nav-bar {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  min-height: 42px !important;
+  background: rgba(255, 255, 255, .075) !important;
+  border: 1px solid var(--am-border-soft) !important;
+  border-radius: 13px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+  transition:
+    background .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    width .42s var(--am-ease) !important;
+}
+
+ytmusic-search-box:hover .search-box,
+ytmusic-search-box:focus-within .search-box {
+  background: rgba(255, 255, 255, .105) !important;
+  border-color: rgba(255, 255, 255, .14) !important;
+}
+
+ytmusic-search-box #suggestion-list {
+  background: rgba(20, 20, 22, .92) !important;
+  backdrop-filter: blur(34px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(125%) !important;
+  border: 1px solid var(--am-border) !important;
+  border-radius: 0 0 16px 16px !important;
+  box-shadow: var(--am-shadow) !important;
+  overflow: hidden !important;
+}
+
+ytmusic-search-suggestion,
+ytmusic-search-box #suggestion-list ytmusic-responsive-list-item-renderer {
+  margin: 2px 6px !important;
+  border-radius: 9px !important;
+  background: transparent !important;
+}
+
+ytmusic-search-suggestion:hover,
+ytmusic-search-suggestion[selected],
+ytmusic-search-box #suggestion-list ytmusic-responsive-list-item-renderer:hover {
+  background: var(--am-surface-hover) !important;
+}
+
+/* =========================
+   SIDEBAR
+   ========================= */
+
+#mini-guide-background,
+ytmusic-app-layout #mini-guide-background {
+  display: none !important;
+}
+
+#guide-wrapper {
+  background: rgba(14, 14, 16, .48) !important;
+  backdrop-filter: blur(28px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(120%) !important;
+  border-right: 1px solid var(--am-border-soft) !important;
+}
+
+tp-yt-app-drawer,
+tp-yt-app-drawer #contentContainer,
+ytmusic-guide-renderer,
+#guide-content,
+#mini-guide,
+#mini-guide-spacer {
+  background: transparent !important;
+}
+
+ytmusic-guide-entry-renderer tp-yt-paper-item {
+  min-height: 44px !important;
+  margin: 2px 8px !important;
+  border-radius: 11px !important;
+  transition: background .18s ease, transform .12s ease !important;
+}
+
+ytmusic-guide-entry-renderer:hover tp-yt-paper-item {
+  background: rgba(255, 255, 255, .075) !important;
+}
+
+ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
+  background: rgba(255, 255, 255, .13) !important;
+}
+
+ytmusic-guide-entry-renderer tp-yt-paper-item:active {
+  transform: scale(.985) !important;
+}
+
+/* =========================
+   CHIPS / BUTTONS
+   ========================= */
+
+ytmusic-chip-cloud-renderer ytmusic-chip-cloud-chip-renderer {
+  background: transparent !important;
+}
+
+ytmusic-chip-cloud-renderer ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint,
+.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal,
+ytmusic-carousel-shelf-basic-header-renderer .yt-spec-button-shape-next--outline {
+  min-height: 36px !important;
+  background: rgba(255, 255, 255, .075) !important;
+  border: 1px solid var(--am-border-soft) !important;
+  border-radius: 999px !important;
+  color: var(--am-text) !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  transition:
+    background .18s ease,
+    transform .12s ease,
+    border-color .18s ease !important;
+}
+
+ytmusic-chip-cloud-renderer ytmusic-chip-cloud-chip-renderer a.yt-simple-endpoint:hover,
+.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--tonal:hover,
+ytmusic-carousel-shelf-basic-header-renderer .yt-spec-button-shape-next--outline:hover {
+  background: rgba(255, 255, 255, .13) !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+ytmusic-chip-cloud-renderer ytmusic-chip-cloud-chip-renderer[is-selected] a.yt-simple-endpoint {
+  background: rgba(255, 255, 255, .94) !important;
+  color: #111 !important;
+  font-weight: 650 !important;
+}
+
+tp-yt-paper-icon-button:active,
+yt-button-shape:active,
+ytmusic-play-button-renderer:active,
+.yt-spec-button-shape-next:active {
+  transform: scale(.92) !important;
+  transition-duration: 90ms !important;
+}
+
+/* =========================
+   HOME / LIBRARY CARDS
+   ========================= */
+
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"])
+  .image-wrapper,
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"])
+  yt-img-shadow,
+ytmusic-two-row-item-renderer:not([aspect-ratio="MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_CIRCLE"])
+  .thumbnail-overlay,
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))
+  yt-img-shadow,
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"]))
+  yt-img-shadow img {
+  border-radius: var(--am-radius) !important;
+  overflow: hidden !important;
+}
+
+[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow,
+[thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"] yt-img-shadow img {
+  border-radius: 50% !important;
+}
+
+ytmusic-two-row-item-renderer ytmusic-thumbnail-renderer img,
+ytmusic-responsive-list-item-renderer yt-img-shadow img {
+  transition:
+    transform .55s var(--am-ease),
+    filter .28s ease !important;
+}
+
+ytmusic-two-row-item-renderer:hover ytmusic-thumbnail-renderer img {
+  transform: scale(1.035) !important;
+}
+
+ytmusic-responsive-list-item-renderer:hover yt-img-shadow img {
+  transform: scale(1.06) !important;
+}
+
+ytmusic-responsive-list-item-renderer:not(:has([thumbnail-crop="MUSIC_THUMBNAIL_CROP_CIRCLE"])):hover yt-img-shadow img {
+  filter: brightness(.78) !important;
+}
+
+/* Remove harsh native image overlays */
+ytmusic-two-row-item-renderer ytmusic-item-thumbnail-overlay-renderer #background,
+ytmusic-two-row-item-renderer ytmusic-background-overlay-renderer,
+ytmusic-responsive-list-item-renderer ytmusic-item-thumbnail-overlay-renderer #background,
+ytmusic-responsive-list-item-renderer ytmusic-background-overlay-renderer {
+  background: transparent !important;
+  opacity: 0 !important;
+}
+
+/* =========================
+   ARTIST / ALBUM HEADERS
+   ========================= */
+
+ytmusic-immersive-header-renderer,
+ytmusic-immersive-header-renderer#header,
+ytmusic-data-bound-header-renderer,
+ytmusic-editable-profile-header-renderer,
+ytmusic-visual-header-renderer {
+  background: var(--ytmusic-app) !important;
+}
+
+.ytmusic-browse-response .content-container-wrapper,
+.content-container-wrapper .gradient-container,
+ytmusic-visual-header-renderer[has-banner-image] .gradient-container.ytmusic-visual-header-renderer {
+  background: transparent !important;
+}
+
+ytmusic-immersive-header-renderer .image,
+.image.ytmusic-immersive-header-renderer,
+ytmusic-data-bound-header-renderer #background,
+ytmusic-data-bound-header-renderer .background,
+ytmusic-data-bound-header-renderer yt-img-shadow,
+ytmusic-editable-profile-header-renderer #background,
+.image.ytmusic-visual-header-renderer {
+  opacity: .78 !important;
+  filter: saturate(.92) brightness(.82) !important;
+  -webkit-mask-image: linear-gradient(to bottom, black 35%, rgba(0,0,0,.88) 62%, transparent 100%) !important;
+  mask-image: linear-gradient(to bottom, black 35%, rgba(0,0,0,.88) 62%, transparent 100%) !important;
+}
+
+/* =========================
+   PLAYER BACKDROP
+   ========================= */
+
+ytmusic-player-page {
+  background: #08080a !important;
+}
+
+ytmusic-player-page::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: -8% !important;
+  z-index: -100 !important;
+  background: var(--blyrics-background-img) center / cover no-repeat !important;
+  filter:
+    blur(calc(var(--blyrics-background-blur, 30px) + 18px))
+    saturate(.92)
+    brightness(.48) !important;
+  transform: scale(1.14) !important;
+  opacity: .66 !important;
+  transition: opacity .45s ease !important;
+}
+
+ytmusic-player-page::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -90 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 24% 38%, rgba(255,255,255,.055), transparent 34%),
+    linear-gradient(to bottom, rgba(8,8,10,.06), rgba(8,8,10,.46) 70%, rgba(8,8,10,.70)) !important;
+}
+
+ytmusic-player-page[player-ui-state="MINIPLAYER"]::before,
+ytmusic-player-page[player-ui-state="INACTIVE"]::before {
+  opacity: 0 !important;
+}
+
+/* Album / video container */
+ytmusic-player-page #player.ytmusic-player-page,
+#song-media-window {
+  border-radius: 18px !important;
+  overflow: hidden !important;
+}
+
+ytmusic-player-page #player.ytmusic-player-page {
+  background: transparent !important;
+  box-shadow:
+    0 28px 80px rgba(0, 0, 0, .42),
+    0 0 0 1px rgba(255,255,255,.06) !important;
+}
+
+/* Audio mode */
+ytmusic-player-page:not([video-mode]):not([player-ui-state="MINIPLAYER"])
+#player.ytmusic-player-page {
+  width: min(42vw, 54vh) !important;
+  max-width: min(42vw, 54vh) !important;
+  aspect-ratio: 1 !important;
+  height: auto !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+}
+
+/* Video mode */
+ytmusic-player-page[video-mode] .html5-video-container,
+ytmusic-player-page[video-mode] video.html5-main-video {
+  width: 100% !important;
+  height: 100% !important;
+  inset: 0 !important;
+  object-fit: contain !important;
+}
+
+/* =========================
+   LYRICS — APPLE MUSIC DYNAMIC PREVIEW
+   ========================= */
+
+.blyrics-container {
+  padding-inline: clamp(20px, 2.55vw, 44px) !important;
+  scroll-padding-block: 24vh !important;
+  font-family: var(--blyrics-font-family) !important;
+  font-size: var(--blyrics-font-size) !important;
+  font-weight: var(--blyrics-font-weight) !important;
+  line-height: var(--blyrics-line-height) !important;
+
+  /* Soft viewport falloff, similar to Apple Music's lyrics canvas */
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,.72) 7%,
+    #000 15%,
+    #000 84%,
+    rgba(0,0,0,.74) 93%,
+    transparent 100%
+  ) !important;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0,0,0,.72) 7%,
+    #000 15%,
+    #000 84%,
+    rgba(0,0,0,.74) 93%,
+    transparent 100%
+  ) !important;
+}
+
+/* Give the engine room to animate scale/scroll itself. */
+.blyrics--line {
+  position: relative;
+  max-width: 100%;
+  padding-block: clamp(9px, 1.15vh, 15px) !important;
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-synthesis: none;
+  letter-spacing: -.034em !important;
+  text-wrap: balance;
+  transform-origin: left center !important;
+
+  transition:
+    opacity .30s ease,
+    filter .34s ease,
+    text-shadow .34s ease,
+    letter-spacing .34s var(--am-ease) !important;
+}
+
+/* Main text row gets the clean display typography. */
+.blyrics-line-main {
+  font-family: var(--blyrics-font-family) !important;
+  font-weight: 660 !important;
+  line-height: 1.085 !important;
+  font-optical-sizing: auto !important;
+  font-kerning: normal !important;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1 !important;
+}
+
+/* Secondary / tertiary vocals */
+.blyrics--line[data-agent="v2"],
+.blyrics--line[data-agent="v3"] {
+  justify-content: flex-end !important;
+  text-align: right !important;
+  transform-origin: right center !important;
+}
+
+/* Chorus / shared vocals */
+.blyrics--line[data-agent="v1000"] {
+  justify-content: center !important;
+  text-align: center !important;
+  transform-origin: center center !important;
+}
+
+/* Base preview state — visible enough to read ahead. */
+.blyrics-container:not(.blyrics-user-scrolling) > .blyrics--line {
+  opacity: .34 !important;
+  filter: blur(.20px) saturate(.94) !important;
+  text-shadow: none !important;
+}
+
+/* Already-sung lines fall away a little more. */
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--line:has(~ .blyrics--active):not(.blyrics--active):not(.blyrics--animating) {
+  opacity: .145 !important;
+  filter: blur(.55px) saturate(.88) !important;
+}
+
+/* Active line: crisp, slightly brighter and more dimensional. */
+.blyrics-container > .blyrics--line.blyrics--active,
+.blyrics-container > .blyrics--line.blyrics--animating {
+  opacity: 1 !important;
+  filter: none !important;
+  letter-spacing: -.030em !important;
+  text-shadow:
+    0 1px 1px rgba(0,0,0,.10),
+    0 8px 28px rgba(255,255,255,.055) !important;
+}
+
+.blyrics-container > .blyrics--line.blyrics--active .blyrics-line-main,
+.blyrics-container > .blyrics--line.blyrics--animating .blyrics-line-main {
+  font-weight: 700 !important;
+}
+
+/* Upcoming lines progressively recede, but don't disappear. */
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line {
+  opacity: .43 !important;
+  filter: blur(.10px) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line + .blyrics--line {
+  opacity: .33 !important;
+  filter: blur(.30px) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line + .blyrics--line + .blyrics--line {
+  opacity: .25 !important;
+  filter: blur(.55px) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line + .blyrics--line + .blyrics--line + .blyrics--line {
+  opacity: .20 !important;
+  filter: blur(.72px) !important;
+}
+
+/* Manual browsing: make every line readable and clickable. */
+.blyrics-container.blyrics-user-scrolling > .blyrics--line,
+.blyrics-container.blyrics-user-scrolling > .blyrics--line.blyrics--active,
+.blyrics-container.blyrics-user-scrolling > .blyrics--line.blyrics--animating {
+  opacity: .72 !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.blyrics-container.blyrics-user-scrolling > .blyrics--line:hover {
+  opacity: 1 !important;
+}
+
+/*
+  Important: don't force transform/animation on .blyrics--word here.
+  Better Lyrics drives rich-sync swipe, wobble and timing with WAAPI.
+*/
+.blyrics--word {
+  font-family: inherit !important;
+  font-weight: inherit;
+  font-optical-sizing: auto;
+}
+
+/* Background vocals become a lighter secondary layer. */
+.blyrics-background-line {
+  margin-top: .16em !important;
+  opacity: .72 !important;
+  font-size: .56em !important;
+  line-height: 1.16 !important;
+  letter-spacing: -.018em !important;
+}
+
+.blyrics-background-lyric {
+  font-weight: 590 !important;
+}
+
+/* Translation / romanization */
+.blyrics--line > .blyrics--romanized,
+.blyrics--line > .blyrics--translated {
+  margin-top: .38em !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  color: rgba(255,255,255,.48) !important;
+  font-family: var(--blyrics-translated-font-family) !important;
+  font-size: var(--blyrics-translated-font-size) !important;
+  font-weight: var(--blyrics-translated-font-weight) !important;
+  line-height: 1.24 !important;
+  letter-spacing: -.012em !important;
+}
+
+.blyrics--line[data-romanized="true"] > .blyrics--translated {
+  color: rgba(255,255,255,.34) !important;
+  font-size: calc(var(--blyrics-translated-font-size) * .86) !important;
+}
+
+.blyrics--romanized .blyrics-background-lyric,
+.blyrics--translated .blyrics-background-lyric {
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+  font-size: 1em !important;
+}
+
+/* Instrumental break icon follows the visual rhythm without becoming huge. */
+.blyrics--instrumental-icon {
+  width: .98em !important;
+  height: .98em !important;
+  overflow: visible !important;
+  filter: drop-shadow(0 7px 22px rgba(255,255,255,.06)) !important;
+}
+
+/* Title / artist metadata */
+#blyrics-title {
+  color: var(--am-text) !important;
+  font-weight: 710 !important;
+  letter-spacing: -.025em !important;
+}
+
+#blyrics-artist {
+  color: var(--am-text-2) !important;
+  font-weight: 520 !important;
+  letter-spacing: -.01em !important;
+}
+
+/* Resume autoscroll */
+.autoscroll-resume-button {
+  background: rgba(30,30,33,.82) !important;
+  color: var(--am-text) !important;
+  border: 1px solid var(--am-border) !important;
+  border-radius: 999px !important;
+  box-shadow: var(--am-shadow-soft) !important;
+  backdrop-filter: blur(22px) !important;
+  -webkit-backdrop-filter: blur(22px) !important;
+  transform: translate(-50%, 1.4em) !important;
+  transition:
+    opacity .2s linear,
+    transform .55s var(--am-ease),
+    background .2s ease !important;
+}
+
+.autoscroll-resume-button:hover {
+  background: rgba(255,255,255,.14) !important;
+}
+
+.autoscroll-resume-button[autoscroll-hidden="true"] {
+  transform: translate(-50%, 0) !important;
+}
+
+/* No lyrics */
+.blyrics-container[data-no-lyrics="true"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 52vh !important;
+  padding-bottom: 5rem !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main {
+  display: none !important;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-align: center !important;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line::before {
+  content: "♪";
+  margin-bottom: 18px;
+  color: rgba(255,255,255,.28);
+  font-size: clamp(4rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line::after {
+  content: "Lyrics unavailable";
+  color: rgba(255,255,255,.54);
+  font-size: clamp(1.35rem, 2.5vw, 2.15rem);
+  font-weight: 650;
+  letter-spacing: -.025em;
+}
+
+/* =========================
+   BETTER LYRICS FOOTER
+   ========================= */
+
+html body .blyrics-container .blyrics-footer {
+  display: flex !important;
+  width: 100% !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 18px auto 30px !important;
+  opacity: .50 !important;
+  transition: opacity .25s ease !important;
+}
+
+html body .blyrics-container .blyrics-footer:hover {
+  opacity: .96 !important;
+}
+
+.blyrics-footer__container,
+.blyrics-footer__discord {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 34px !important;
+  gap: 7px !important;
+  padding: 8px 12px !important;
+  color: rgba(255,255,255,.72) !important;
+  background: rgba(255,255,255,.055) !important;
+  border: 1px solid var(--am-border-soft) !important;
+  border-radius: 999px !important;
+  backdrop-filter: blur(18px) !important;
+  -webkit-backdrop-filter: blur(18px) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  transition:
+    background .18s ease,
+    color .18s ease,
+    transform .16s ease !important;
+}
+
+.blyrics-footer__container:hover,
+.blyrics-footer__discord:hover {
+  background: rgba(255,255,255,.105) !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+}
+
+.blyrics-footer__unison {
+  width: 100% !important;
+  flex-basis: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.blyrics-footer__vote {
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(255,255,255,.055) !important;
+  border: 1px solid var(--am-border-soft) !important;
+  border-radius: 10px !important;
+  transition: background .18s ease, transform .14s ease !important;
+}
+
+.blyrics-footer__vote:hover {
+  background: rgba(255,255,255,.12) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* =========================
+   BOTTOM PLAYER BAR
+   ========================= */
+
+ytmusic-app-layout > [slot="player-bar"] {
+  background: transparent !important;
+}
+
+ytmusic-player-bar {
+  background: rgba(16, 16, 18, .72) !important;
+  backdrop-filter: blur(30px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(120%) !important;
+  border-top: 1px solid rgba(255,255,255,.07) !important;
+  box-shadow: 0 -12px 40px rgba(0,0,0,.12) !important;
+}
+
+#player-bar-background,
+ytmusic-player-bar .background-gradient {
+  display: none !important;
+}
+
+/* Apple Music-like progress line */
+ytmusic-player-bar #progress-bar {
+  position: absolute !important;
+  top: -3px !important;
+  left: 50% !important;
+  width: calc(100% - 24px) !important;
+  height: 4px !important;
+  padding: 0 !important;
+  transform: translateX(-50%) !important;
+  z-index: 10 !important;
+}
+
+ytmusic-player-bar #progress-bar #sliderContainer,
+ytmusic-player-bar #progress-bar .bar-container,
+ytmusic-player-bar #progress-bar #sliderBar {
+  height: 4px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+ytmusic-player-bar #progress-bar #progressContainer,
+ytmusic-player-bar #progress-bar #primaryProgress,
+ytmusic-player-bar #progress-bar #secondaryProgress {
+  height: 4px !important;
+  border-radius: 999px !important;
+}
+
+ytmusic-player-bar #progress-bar #progressContainer {
+  overflow: hidden !important;
+  background: rgba(255,255,255,.14) !important;
+}
+
+ytmusic-player-bar #primaryProgress,
+ytmusic-player-bar #primaryProgress.tp-yt-paper-progress {
+  background: var(--am-accent) !important;
+  --paper-progress-active-color: var(--am-accent) !important;
+}
+
+ytmusic-player-bar #progress-bar #sliderKnob {
+  visibility: hidden !important;
+}
+
+/* =========================
+   QUEUE
+   ========================= */
+
+ytmusic-player-queue-item {
+  --ytmusic-player-queue-item-thumbnail-size: 42px !important;
+  margin: 2px 8px !important;
+  padding: 6px 8px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  transition: background .18s ease, transform .12s ease !important;
+}
+
+ytmusic-player-queue-item:hover {
+  background: rgba(255,255,255,.075) !important;
+}
+
+ytmusic-player-queue-item[selected] {
+  background: rgba(255,255,255,.105) !important;
+}
+
+ytmusic-player-queue-item:active {
+  transform: scale(.992) !important;
+}
+
+ytmusic-player-queue-item yt-img-shadow,
+ytmusic-player-queue-item yt-img-shadow img {
+  border-radius: 7px !important;
+  overflow: hidden !important;
+}
+
+/* =========================
+   MENUS / DIALOGS
+   ========================= */
+
+tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer),
+tp-yt-iron-dropdown:has(ytmusic-menu-popup-renderer),
+ytmusic-dialog,
+tp-yt-paper-dialog:has(ytmusic-add-to-playlist-renderer),
+tp-yt-paper-dialog:has(ytmusic-unified-share-panel-renderer),
+tp-yt-paper-dialog:has(ytmusic-playlist-form),
+tp-yt-paper-dialog:has(ytmusic-confirm-dialog-renderer),
+tp-yt-paper-dialog:has(yt-confirm-dialog-renderer),
+tp-yt-paper-dialog:has(yt-dialog-view-model),
+tp-yt-paper-dialog:has(ytmusic-dismissable-dialog-renderer),
+tp-yt-paper-dialog:has(yt-report-form-modal-renderer) {
+  background: rgba(24,24,27,.86) !important;
+  backdrop-filter: blur(32px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(120%) !important;
+  border: 1px solid var(--am-border) !important;
+  border-radius: var(--am-radius-lg) !important;
+  box-shadow: var(--am-shadow) !important;
+}
+
+ytmusic-menu-popup-renderer,
+ytmusic-multi-page-menu,
+ytmusic-multi-page-menu-renderer,
+tp-yt-paper-listbox,
+ytmusic-add-to-playlist-renderer,
+ytmusic-unified-share-panel-renderer,
+ytmusic-playlist-form,
+ytmusic-confirm-dialog-renderer,
+yt-confirm-dialog-renderer,
+tp-yt-paper-dialog-scrollable,
+yt-dialog-view-model,
+dialog-layout,
+ytmusic-dismissable-dialog-renderer,
+yt-report-form-modal-renderer {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-navigation-item-renderer,
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-service-item-renderer,
+ytmusic-playlist-add-to-option-renderer,
+.category-menu-item.ytmusic-settings-page {
+  min-height: 40px !important;
+  border-radius: 9px !important;
+  transition: background .16s ease !important;
+}
+
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-navigation-item-renderer:hover,
+ytmusic-menu-popup-renderer tp-yt-paper-item.ytmusic-menu-service-item-renderer:hover,
+ytmusic-playlist-add-to-option-renderer:hover,
+.category-menu-item.ytmusic-settings-page:hover {
+  background: rgba(255,255,255,.09) !important;
+}
+
+/* Toasts */
+tp-yt-paper-toast {
+  --paper-toast-background-color: transparent !important;
+  background: rgba(24,24,27,.88) !important;
+  color: var(--am-text) !important;
+  border: 1px solid var(--am-border) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--am-shadow-soft) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+}
+
+
+
+/* =========================
+   PLAYER BAR — ROTATING DISC ART
+   ========================= */
+
+/*
+  Smaller, circular now-playing artwork.
+  32px is ~11% smaller than this theme's previous 36px artwork.
+*/
+:root {
+  --am-player-disc-size: 32px;
+  --am-player-disc-speed: 14s;
+}
+
+ytmusic-player-bar .thumbnail-image-wrapper,
+ytmusic-player-bar #song-image,
+ytmusic-player-bar .image.ytmusic-player-bar {
+  width: var(--am-player-disc-size) !important;
+  height: var(--am-player-disc-size) !important;
+  min-width: var(--am-player-disc-size) !important;
+  min-height: var(--am-player-disc-size) !important;
+  max-width: var(--am-player-disc-size) !important;
+  max-height: var(--am-player-disc-size) !important;
+  flex: 0 0 var(--am-player-disc-size) !important;
+  aspect-ratio: 1 / 1 !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-shadow:
+    0 3px 10px rgba(0, 0, 0, .28),
+    0 0 0 1px rgba(255, 255, 255, .10) !important;
+}
+
+/* Keep the artwork perfectly circular and rotate it like a record. */
+ytmusic-player-bar .thumbnail-image-wrapper img,
+ytmusic-player-bar #song-image img,
+ytmusic-player-bar .image.ytmusic-player-bar img {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 1 / 1 !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  transform-origin: 50% 50% !important;
+  animation: am-player-disc-spin var(--am-player-disc-speed) linear infinite !important;
+  will-change: transform !important;
+}
+
+/* Tiny spindle detail for a subtle vinyl/disc feel. */
+ytmusic-player-bar .thumbnail-image-wrapper::after,
+ytmusic-player-bar #song-image::after,
+ytmusic-player-bar .image.ytmusic-player-bar::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 4px !important;
+  height: 4px !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 50% !important;
+  background: rgba(10, 10, 12, .78) !important;
+  border: 1px solid rgba(255, 255, 255, .46) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .18) !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+@keyframes am-player-disc-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+
+@media (max-width: 1280px) {
+  :root {
+    --blyrics-panel-size: 50%;
+    --blyrics-font-size: clamp(1.95rem, 3.35vw, 3.65rem);
+  }
+
+  .blyrics-container {
+    padding-inline: 20px !important;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --blyrics-font-size: clamp(1.75rem, 5.2vw, 2.9rem);
+  }
+
+  .blyrics--line {
+    letter-spacing: -.027em !important;
+    line-height: 1.10 !important;
+  }
+
+  ytmusic-player-page:not([video-mode]):not([player-ui-state="MINIPLAYER"])
+  #player.ytmusic-player-page {
+    width: min(68vw, 44vh) !important;
+    max-width: min(68vw, 44vh) !important;
+  }
+}
+
+/* =========================
+   ACCESSIBILITY / COMFORT
+   ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --blyrics-lyric-inactive-color: rgba(255,255,255,.46);
+    --am-border: rgba(255,255,255,.18);
+    --am-border-soft: rgba(255,255,255,.12);
+    --am-text-2: rgba(255,255,255,.78);
+  }
+}
+
+
+/* ==========================================================================
+   LYRIC GLOW — FINAL REFINEMENT LAYER
+   ==========================================================================
+   This single section replaces the historical v1.2 / v1.3 append-only
+   patches. Keeping the refinement layer together makes maintenance easier
+   while preserving the v1.3 visual result.
+   ========================================================================== */
+
+:root {
+  /* Final lyric layout */
+  --blyrics-panel-size: 55%;
+  --blyrics-video-panel-size: 43%;
+  --blyrics-fullscreen-panel-size: 59%;
+  --blyrics-fullscreen-video-panel-size: 42%;
+
+  /* Final lyric typography / scale */
+  --blyrics-font-weight: 610;
+  --blyrics-active-scale: 1.012;
+
+  /* Lyric preview hierarchy */
+  --am-lyric-next-1: .56;
+  --am-lyric-next-2: .42;
+  --am-lyric-next-3: .32;
+  --am-lyric-next-4: .24;
+  --am-lyric-past: .095;
+}
+
+/* --------------------------------------------------------------------------
+   1. LYRIC READING FIELD
+   -------------------------------------------------------------------------- */
+
+.blyrics-container:not([data-no-lyrics="true"]) {
+  position: relative !important;
+  padding-inline: clamp(34px, 3.1vw, 58px) !important;
+  scroll-padding-block: 27vh !important;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, .075) 0%,
+      rgba(0, 0, 0, .025) 24%,
+      transparent 55%,
+      rgba(255, 255, 255, .008) 100%
+    ) !important;
+
+  -webkit-mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, .30) 4%,
+      rgba(0, 0, 0, .88) 10%,
+      #000 17%,
+      #000 82%,
+      rgba(0, 0, 0, .90) 89%,
+      rgba(0, 0, 0, .35) 96%,
+      transparent 100%
+    ) !important;
+  mask-image:
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(0, 0, 0, .30) 4%,
+      rgba(0, 0, 0, .88) 10%,
+      #000 17%,
+      #000 82%,
+      rgba(0, 0, 0, .90) 89%,
+      rgba(0, 0, 0, .35) 96%,
+      transparent 100%
+    ) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line {
+  position: relative !important;
+  isolation: isolate !important;
+
+  margin-inline: -18px !important;
+  margin-block: 4px !important;
+  padding-block: clamp(14px, 1.55vh, 21px) !important;
+  padding-inline: 18px !important;
+
+  border-radius: 0 !important;
+  letter-spacing: -.037em !important;
+
+  transition:
+    opacity .30s ease,
+    filter .38s ease,
+    text-shadow .35s ease,
+    letter-spacing .38s var(--am-ease) !important;
+}
+
+/* Keep actual lyric content above decorative glow layers. */
+.blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Diffuse active-line aura. */
+.blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+
+  inset: -16px -38px -16px -42px !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+
+  background:
+    radial-gradient(
+      ellipse at 16% 50%,
+      rgba(255, 255, 255, .105) 0%,
+      rgba(255, 255, 255, .060) 24%,
+      rgba(255, 255, 255, .028) 45%,
+      rgba(255, 255, 255, .010) 58%,
+      transparent 76%
+    ) !important;
+
+  box-shadow: none !important;
+  filter: blur(10px) !important;
+
+  opacity: 0 !important;
+  transform: scale(.94) translateX(-10px) !important;
+  transform-origin: left center !important;
+
+  transition:
+    opacity .44s ease,
+    transform .58s cubic-bezier(.16, 1, .3, 1),
+    filter .44s ease !important;
+}
+
+/* Small reading marker. */
+.blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line::after {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+
+  left: -18px !important;
+  top: 50% !important;
+  width: 2px !important;
+  height: 14px !important;
+  border-radius: 999px !important;
+
+  background: rgba(255, 255, 255, .72) !important;
+  box-shadow:
+    0 0 7px rgba(255, 255, 255, .17),
+    0 0 16px rgba(255, 255, 255, .08) !important;
+
+  opacity: 0 !important;
+  transform: translateY(-50%) scaleY(.45) !important;
+
+  transition:
+    opacity .30s ease,
+    transform .48s cubic-bezier(.16, 1, .3, 1) !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. ACTIVE / UPCOMING / PAST HIERARCHY
+   -------------------------------------------------------------------------- */
+
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active,
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating {
+  opacity: 1 !important;
+  filter: none !important;
+  letter-spacing: -.032em !important;
+
+  text-shadow:
+    0 1px 1px rgba(0, 0, 0, .12),
+    0 8px 30px rgba(255, 255, 255, .045) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active::before,
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating::before {
+  opacity: .86 !important;
+  transform: scale(1) translateX(0) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  filter: blur(11px) !important;
+}
+
+/*
+  No custom aura keyframe is used here. Earlier builds animated opacity/filter
+  while those same properties were !important, so the animation could not win
+  the cascade. Removing it avoids useless animation work without changing the
+  rendered appearance.
+*/
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--active::after,
+.blyrics-container:not(.blyrics-user-scrolling):not([data-no-lyrics="true"])
+> .blyrics--line.blyrics--animating::after {
+  opacity: .62 !important;
+  transform: translateY(-50%) scaleY(1) !important;
+}
+
+.blyrics-container > .blyrics--line.blyrics--active .blyrics-line-main,
+.blyrics-container > .blyrics--line.blyrics--animating .blyrics-line-main {
+  font-weight: 638 !important;
+  font-variation-settings: "wght" 638 !important;
+  line-height: 1.055 !important;
+  letter-spacing: -.034em !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line {
+  opacity: var(--am-lyric-next-1) !important;
+  filter: blur(0) saturate(.98) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line + .blyrics--line {
+  opacity: var(--am-lyric-next-2) !important;
+  filter: blur(.10px) saturate(.95) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active))
++ .blyrics--line + .blyrics--line + .blyrics--line {
+  opacity: var(--am-lyric-next-3) !important;
+  filter: blur(.24px) saturate(.92) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--active:not(:has(~ .blyrics--active))
++ .blyrics--line + .blyrics--line + .blyrics--line + .blyrics--line {
+  opacity: var(--am-lyric-next-4) !important;
+  filter: blur(.42px) saturate(.89) !important;
+}
+
+.blyrics-container:not(.blyrics-user-scrolling)
+> .blyrics--line:has(~ .blyrics--active):not(.blyrics--active):not(.blyrics--animating) {
+  opacity: var(--am-lyric-past) !important;
+  filter: blur(.85px) saturate(.80) !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. VOICE AGENTS / CHORUS
+   Better Lyrics uses data-agent v1/v2/v3/v1000 for voice positioning.
+   -------------------------------------------------------------------------- */
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v2"]::before,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v3"]::before {
+  inset: -16px -42px -16px -38px !important;
+
+  background:
+    radial-gradient(
+      ellipse at 84% 50%,
+      rgba(255, 255, 255, .105) 0%,
+      rgba(255, 255, 255, .060) 24%,
+      rgba(255, 255, 255, .028) 45%,
+      rgba(255, 255, 255, .010) 58%,
+      transparent 76%
+    ) !important;
+
+  border: 0 !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  filter: blur(10px) !important;
+
+  transform-origin: right center !important;
+  transform: scale(.965) translateX(8px) !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v2"]::after,
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v3"]::after {
+  left: auto !important;
+  right: -18px !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v1000"]::before {
+  inset: -18px -56px !important;
+  border-radius: 50% !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      rgba(255, 255, 255, .095) 0%,
+      rgba(255, 255, 255, .045) 36%,
+      rgba(255, 255, 255, .015) 56%,
+      transparent 76%
+    ) !important;
+
+  filter: blur(12px) !important;
+  transform-origin: center center !important;
+}
+
+.blyrics-container:not([data-no-lyrics="true"])
+> .blyrics--line[data-agent="v1000"]::after {
+  display: none !important;
+}
+
+.blyrics-container > .blyrics--line[data-agent="v1000"].blyrics--active .blyrics-line-main,
+.blyrics-container > .blyrics--line[data-agent="v1000"].blyrics--animating .blyrics-line-main {
+  letter-spacing: -.027em !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. RICH SYNC / BACKGROUND VOCALS / CAPTIONS
+   -------------------------------------------------------------------------- */
+
+/*
+  Do not set transform/animation here. Better Lyrics drives word-level
+  wobble/swipe/glow timing through the Web Animations API.
+*/
+.blyrics--word {
+  font-optical-sizing: auto !important;
+  font-kerning: normal !important;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1 !important;
+  text-rendering: geometricPrecision !important;
+}
+
+.blyrics-background-line {
+  margin-top: .22em !important;
+  max-width: 94% !important;
+  opacity: .67 !important;
+  font-size: .54em !important;
+  line-height: 1.12 !important;
+  letter-spacing: -.015em !important;
+}
+
+.blyrics-background-lyric {
+  font-weight: 560 !important;
+  color: rgba(255, 255, 255, .62) !important;
+}
+
+.blyrics--line > .blyrics--romanized,
+.blyrics--line > .blyrics--translated {
+  margin-top: .50em !important;
+  max-width: 92% !important;
+
+  color: rgba(255, 255, 255, .40) !important;
+  font-size: clamp(.88rem, .34em, 1.26rem) !important;
+  font-weight: 480 !important;
+  line-height: 1.22 !important;
+  letter-spacing: -.004em !important;
+
+  text-shadow: 0 2px 12px rgba(0, 0, 0, .12) !important;
+
+  transition:
+    color .32s ease,
+    opacity .32s ease !important;
+}
+
+.blyrics--line.blyrics--active > .blyrics--romanized,
+.blyrics--line.blyrics--active > .blyrics--translated,
+.blyrics--line.blyrics--animating > .blyrics--romanized,
+.blyrics--line.blyrics--animating > .blyrics--translated {
+  color: rgba(255, 255, 255, .62) !important;
+}
+
+.blyrics--line[data-agent="v2"] > .blyrics--romanized,
+.blyrics--line[data-agent="v2"] > .blyrics--translated,
+.blyrics--line[data-agent="v3"] > .blyrics--romanized,
+.blyrics--line[data-agent="v3"] > .blyrics--translated {
+  margin-left: auto !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. INSTRUMENTAL / MANUAL BROWSING
+   -------------------------------------------------------------------------- */
+
+.blyrics--instrumental-icon {
+  box-sizing: content-box !important;
+  padding: .18em !important;
+  border-radius: 999px !important;
+
+  background: rgba(255, 255, 255, .055) !important;
+  border: 1px solid rgba(255, 255, 255, .075) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .04),
+    0 10px 30px rgba(0, 0, 0, .08) !important;
+
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-no-lyrics="true"])
+> .blyrics--line {
+  opacity: .61 !important;
+  filter: none !important;
+  cursor: pointer !important;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-no-lyrics="true"])
+> .blyrics--line::before {
+  inset: -7px -18px !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, .022) !important;
+  filter: blur(0) !important;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-no-lyrics="true"])
+> .blyrics--line:hover {
+  opacity: 1 !important;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-no-lyrics="true"])
+> .blyrics--line:hover::before {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  background: rgba(255, 255, 255, .050) !important;
+}
+
+.blyrics-container.blyrics-user-scrolling:not([data-no-lyrics="true"])
+> .blyrics--line:hover::after {
+  opacity: .38 !important;
+  transform: translateY(-50%) scaleY(.68) !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. PLAYER-SIDE TABS
+   -------------------------------------------------------------------------- */
+
+ytmusic-player-page tp-yt-paper-tab {
+  min-height: 42px !important;
+  opacity: .54 !important;
+  font-size: 12px !important;
+  font-weight: 580 !important;
+  letter-spacing: .012em !important;
+
+  transition:
+    opacity .20s ease,
+    color .20s ease !important;
+}
+
+ytmusic-player-page tp-yt-paper-tab:hover {
+  opacity: .82 !important;
+}
+
+ytmusic-player-page tp-yt-paper-tab[aria-selected="true"],
+ytmusic-player-page tp-yt-paper-tab.iron-selected {
+  opacity: 1 !important;
+  color: rgba(255, 255, 255, .98) !important;
+  font-weight: 660 !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. IMMERSIVE BACKDROP / PLAYER BAR / SIDEBAR
+   -------------------------------------------------------------------------- */
+
+ytmusic-player-page::before {
+  filter:
+    blur(calc(var(--blyrics-background-blur, 30px) + 21px))
+    saturate(.76)
+    brightness(.40) !important;
+  opacity: .63 !important;
+}
+
+ytmusic-player-page::after {
+  background:
+    radial-gradient(
+      circle at 24% 38%,
+      rgba(255, 255, 255, .045),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 76% 45%,
+      rgba(0, 0, 0, .10),
+      transparent 44%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(8, 8, 10, .07),
+      rgba(8, 8, 10, .34) 58%,
+      rgba(8, 8, 10, .58)
+    ) !important;
+}
+
+ytmusic-player-bar {
+  background: rgba(12, 12, 14, .78) !important;
+  backdrop-filter: blur(28px) saturate(82%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(82%) !important;
+  border-top: 1px solid rgba(255, 255, 255, .065) !important;
+  box-shadow: 0 -12px 34px rgba(0, 0, 0, .16) !important;
+}
+
+ytmusic-player-bar #progress-bar {
+  top: -2px !important;
+  height: 3px !important;
+}
+
+ytmusic-player-bar #progress-bar #sliderContainer,
+ytmusic-player-bar #progress-bar .bar-container,
+ytmusic-player-bar #progress-bar #sliderBar,
+ytmusic-player-bar #progress-bar #progressContainer,
+ytmusic-player-bar #progress-bar #primaryProgress,
+ytmusic-player-bar #progress-bar #secondaryProgress {
+  height: 3px !important;
+}
+
+ytmusic-app-layout[player-page-open] #guide-wrapper,
+ytmusic-app-layout[player-ui-state="PLAYER_PAGE_OPEN"] #guide-wrapper {
+  background: rgba(10, 10, 12, .30) !important;
+  backdrop-filter: blur(34px) saturate(78%) !important;
+  -webkit-backdrop-filter: blur(34px) saturate(78%) !important;
+  border-right-color: rgba(255, 255, 255, .055) !important;
+}
+
+ytmusic-app-layout[player-page-open]
+ytmusic-guide-entry-renderer[active] tp-yt-paper-item,
+ytmusic-app-layout[player-ui-state="PLAYER_PAGE_OPEN"]
+ytmusic-guide-entry-renderer[active] tp-yt-paper-item {
+  background: rgba(255, 255, 255, .095) !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. RESPONSIVE REFINEMENT
+   -------------------------------------------------------------------------- */
+
+/*
+  These breakpoints intentionally remain after the base theme breakpoints:
+  this reproduces the final v1.3 cascade.
+*/
+@media (max-width: 1450px) {
+  :root {
+    --blyrics-panel-size: 55%;
+    --blyrics-fullscreen-panel-size: 58%;
+    --blyrics-font-size: clamp(1.90rem, 2.98vw, 3.95rem);
+  }
+
+  .blyrics-container:not([data-no-lyrics="true"]) {
+    padding-inline: clamp(30px, 2.8vw, 50px) !important;
+  }
+}
+
+@media (max-width: 1050px) {
+  :root {
+    --blyrics-panel-size: 52%;
+    --blyrics-fullscreen-panel-size: 55%;
+  }
+
+  .blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line {
+    margin-inline: -12px !important;
+    padding-inline: 12px !important;
+  }
+
+  .blyrics-container:not([data-no-lyrics="true"]) > .blyrics--line::after {
+    left: -10px !important;
+  }
+
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line[data-agent="v2"]::after,
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line[data-agent="v3"]::after {
+    left: auto !important;
+    right: -10px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line.blyrics--active::before,
+  .blyrics-container:not([data-no-lyrics="true"])
+  > .blyrics--line.blyrics--animating::before {
+    animation: none !important;
+  }
+}

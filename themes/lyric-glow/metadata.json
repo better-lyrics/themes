@@ -1,0 +1,19 @@
+{
+  "id": "lyric-glow",
+  "title": "Lyric Glow",
+  "description": "An immersive dark Better Lyrics theme with cinematic album-art ambience, fluid native rich-sync motion, and a typography-first lyric experience.",
+  "creators": [
+    "MatiuxXcd"
+  ],
+  "minVersion": "2.4.0.1",
+  "hasShaders": false,
+  "version": "1.3.1",
+  "tags": [
+    "dark",
+    "minimal",
+    "colorful"
+  ],
+  "images": [
+    "1.png"
+  ]
+}
