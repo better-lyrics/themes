@@ -80,19 +80,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-0b5a745a27c6c23dfe940617a4939b56f00169b200f5038f9702d59c6fff1cf3",
+          "integrity": "sha256-d6065d31e6cc8c04ec5b428f1b43b201f17a9421b90498d9eac57e59107c053f",
           "minVersion": "2.2.0",
           "path": "themes/dynamic-background",
-          "version": "3.2.3"
+          "version": "3.2.4"
         }
       ],
-      "commit": "0fe6d75bd5a5ca10707b501f46fce81b59a2ee77",
+      "commit": "9b90f93473014bc3298e53af4490338b19d56195",
       "discussion": 20,
       "id": "dynamic-background",
-      "integrity": "sha256-0b5a745a27c6c23dfe940617a4939b56f00169b200f5038f9702d59c6fff1cf3",
-      "locked": "2026-08-12T11:25:14Z",
+      "integrity": "sha256-d6065d31e6cc8c04ec5b428f1b43b201f17a9421b90498d9eac57e59107c053f",
+      "locked": "2026-08-13T05:37:36Z",
       "repo": "chengggit/YouTube-Music-Dynamic-Theme",
-      "version": "3.2.3"
+      "version": "3.2.4"
     },
     {
       "builds": [
@@ -316,6 +316,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-08-12T11:25:54Z",
+  "updated": "2026-08-13T05:38:00Z",
   "version": 1
 }
