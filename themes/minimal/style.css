@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## */
-/* 2026-07-31 v1.8.2 (BetterLyrics v2.4.0+ only)    */
+/* 2026-08-12 v1.8.3 (BetterLyrics v2.4.0+ only)    */
 
 /* Blur is off by default. Go to Section-3.3 for    */
 /*   turning it back on.                            */
@@ -68,7 +68,7 @@
   --blyrics-translated-font-size: 0.6667em;
   --blyrics-line-height: 1.5;
   --blyrics-padding: 0.45em;
-  --blyrics-lyric-inactive-color: oklch(1 0 0/0.35);
+  --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
   --blyrics-lyric-active-color: var(--white-1);
   --blyrics-error-color: oklch(0.75 0.25 20);
   --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
@@ -1163,16 +1163,23 @@ ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
       var(--ytmusic-immersive-header-gradient-padding-top)
   );
   --mask-gradient: linear-gradient(
-    to bottom,
-    oklch(0 0 0 / 0.00) 0dvh,
-    oklch(0 0 0 / 0.05) calc(var(--fade-height) * 1 / 3),
-    oklch(0 0 0 / 0.20) calc(var(--fade-height) * 2 / 3),
-    oklch(0 0 0 / 0.45) calc(var(--fade-height) * 3 / 3),
-    oklch(0 0 0 / 0.75) calc(var(--fade-height) * 4 / 3),
-    oklch(0 0 0 / 0.90) calc(var(--fade-height) * 5 / 3),
-    oklch(0 0 0 / 0.97) calc(var(--fade-height) * 6 / 3),
-    oklch(0 0 0 / 1.00) calc(var(--fade-height) * 7 / 3)
-  );
+  to bottom in oklch,
+  oklch(0 0 0 / 0.000) 0dvh,
+  oklch(0 0 0 / 0.009) calc(var(--fade-height) * 1 / 6),
+  oklch(0 0 0 / 0.040) calc(var(--fade-height) * 2 / 6),
+  oklch(0 0 0 / 0.098) calc(var(--fade-height) * 3 / 6),
+  oklch(0 0 0 / 0.184) calc(var(--fade-height) * 4 / 6),
+  oklch(0 0 0 / 0.301) calc(var(--fade-height) * 5 / 6),
+  oklch(0 0 0 / 0.450) calc(var(--fade-height) * 6 / 6),
+  oklch(0 0 0 / 0.590) calc(var(--fade-height) * 7 / 6),
+  oklch(0 0 0 / 0.708) calc(var(--fade-height) * 8 / 6),
+  oklch(0 0 0 / 0.804) calc(var(--fade-height) * 9 / 6),
+  oklch(0 0 0 / 0.880) calc(var(--fade-height) * 10 / 6),
+  oklch(0 0 0 / 0.936) calc(var(--fade-height) * 11 / 6),
+  oklch(0 0 0 / 0.974) calc(var(--fade-height) * 12 / 6),
+  oklch(0 0 0 / 0.994) calc(var(--fade-height) * 13 / 6),
+  oklch(0 0 0 / 1.000) calc(var(--fade-height) * 14 / 6)
+);
   -webkit-mask-image: var(--mask-gradient);
   mask-image: var(--mask-gradient);
   background-color: var(--filter-replacement-backgroundcolor);
@@ -1205,7 +1212,7 @@ ytmusic-immersive-header-renderer {
 @property --fade-stop {
   syntax: '<percentage>';
   inherits: false;
-  initial-value: 70%;
+  initial-value: 65%;
 }
 
 [is-mweb-modernization-enabled]
@@ -1218,15 +1225,17 @@ ytmusic-immersive-header-renderer {
   width: 100dvw;
   height: 45dvh;
   object-fit: cover;
-  --fade-stop: 70%;
+  --fade-stop: 65%;
   mask-image: linear-gradient(
-    to bottom,
+    to bottom in oklch,
     black var(--fade-stop),
+    calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
-    to bottom,
+    to bottom in oklch,
     black var(--fade-stop),
+    calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
     transparent 100%
   );
   animation-name: expand-dim-stick;
@@ -1310,6 +1319,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 }
 .blyrics--instrumental.blyrics--line::after {
   content: "♫";
+  display: inline-block;
+  font-size: 1.2em;
 }
 .blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break {
   display: inline-flex;
@@ -1320,6 +1331,46 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 .blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
   content: "♫";
   visibility: visible;
+  display: inline-block;
+  font-size: 1.2em;
+}
+.blyrics--instrumental.blyrics--line::after,
+.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: paused;
+  transform: scale(100%);
+  text-shadow: 0px 0 0px transparent;
+  opacity: 1;
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after,
+.blyrics--active.blyrics--line:has(.blyrics--word[data-content=""])
+  .blyrics--break::before {
+  animation-play-state: running;
+}
+.blyrics--paused.blyrics--line:has(.blyrics--word[data-content=""])
+  .blyrics--break::before,
+.blyrics--paused.blyrics--instrumental.blyrics--line::after {
+  animation-play-state: paused;
+}
+@keyframes note-pulse {
+  0% {
+    text-shadow: 0px 0 0px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+  50% {
+    text-shadow: 0px 0px 15px var(--white-dot-60);
+    opacity: 1;
+    transform: scale(105%);
+    transform-origin: bottom center;
+  }
+  100% {
+    text-shadow: 0px 0 0px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
 }
 
 /* ## SECTION-26 - Portrait View Player Fix ####### */
@@ -1586,74 +1637,320 @@ ytmusic-player-page[is-mweb-modernization-enabled]
 
 /* ### Section 29 - No Lyrics Text Replace ######## */
 @keyframes fadeOutOnly {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
+
 @keyframes fadeInOnly {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
-@keyframes squeeze-shut {
+
+@keyframes go-invisible {
   to {
     visibility: hidden;
-    font-size: 0;
-    letter-spacing: -1em;
+    pointer-events: none;
   }
 }
-.blyrics-container[data-no-lyrics="true"] .blyrics--line span {
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main {
+  position: relative;
+  min-height: 1lh;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main > .blyrics-bidi-run {
   animation:
     fadeOutOnly 2s forwards 8s,
-    squeeze-shut 0.01s forwards 10s;
+    go-invisible 0s forwards 10s;
 }
-.blyrics-container[data-no-lyrics="true"] .blyrics--line::after {
+
+.blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main::after {
+  content: "No lyrics found";
+  animation: none;
+}
+
+.blyrics-container[data-no-lyrics="true"] {
+  padding-top: 4em;
+  padding-bottom: 4em;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main::after {
   content: "♫";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   opacity: 0;
   cursor: help;
-  animation: fadeInOnly 2s forwards 10.2s;
+  font-size: 1.4em;
+  transform: scale(1);
+  animation:
+    fadeInOnly 2s forwards 10.2s,
+    i-love-a-shooting-star 6s linear infinite 12.2s;
 }
-.blyrics-container[data-no-lyrics="true"]:hover .blyrics--line::after {
-  content: "No lyrics found";
+
+@keyframes i-love-a-shooting-star {
+  0% {
+    opacity: .45;
+    transform: scale(1);
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  25% {
+    opacity: 1;
+    transform: scale(1.5);
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  26% {
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 12px oklch(100% 0 0 / 12%);
+  }
+  29% {
+    text-shadow:
+      -0.857em -0.6em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 16px oklch(100% 0 0 / 30%);
+  }
+  32% {
+    text-shadow:
+      -1.714em -1.2em 28.143px oklch(100% 0 0 / 11.429%),
+      1.114em 0.043em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 20px oklch(100% 0 0 / 50%);
+  }
+  33% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      1.486em 0.057em 20.429px oklch(100% 0 0 / 34.286%),
+      0.257em 0.257em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 22px oklch(100% 0 0 / 58%);
+  }
+  35% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.229em 0.086em 28.143px oklch(100% 0 0 / 11.429%),
+      0.771em 0.771em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 26px oklch(100% 0 0 / 70%);
+  }
+  36% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.029em 1.029em 20.429px oklch(100% 0 0 / 34.286%),
+      0.171em -0.329em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 28px oklch(100% 0 0 / 75%);
+  }
+  38% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.543em 1.543em 28.143px oklch(100% 0 0 / 11.429%),
+      0.514em -0.986em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 32px oklch(100% 0 0 / 82%);
+  }
+  39% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      0.686em -1.314em 20.429px oklch(100% 0 0 / 34.286%),
+      -0.386em 0.043em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 31px oklch(100% 0 0 / 80%);
+  }
+  41% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.029em -1.971em 28.143px oklch(100% 0 0 / 11.429%),
+      -1.157em 0.129em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 27px oklch(100% 0 0 / 65%);
+  }
+  42% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -1.543em 0.171em 20.429px oklch(100% 0 0 / 34.286%),
+      -0.214em 0.314em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 25px oklch(100% 0 0 / 57%);
+  }
+  44% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.314em 0.257em 28.143px oklch(100% 0 0 / 11.429%),
+      -0.643em 0.943em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 20px oklch(100% 0 0 / 42%);
+  }
+  45% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -0.857em 1.257em 20.429px oklch(100% 0 0 / 34.286%),
+      0.286em -0.243em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 18px oklch(100% 0 0 / 35%);
+  }
+  48% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      1.143em -0.971em 20.429px oklch(100% 0 0 / 34.286%),
+      0 0 14px oklch(100% 0 0 / 18%);
+  }
+  51% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 11px oklch(100% 0 0 / 6%);
+  }
+  60% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  80% {
+    opacity: .65;
+    transform: scale(1.2333);
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  100% {
+    opacity: .45;
+    transform: scale(1);
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
 }
 
 /* ### Section 30 - Layout & Navigation Transitions */
+/*
 #content-wrapper {
   transition-duration: 0.7s;
   transition-property: margin;
   transition-timing-function: var(--transition-curve);
 }
+*/ /* disabling for potential performance issues */
 
 #contentContainer {
   transition-duration: 0.35s !important;
-  transition-property: visibility, width, transform;
+  /* transition-property: visibility, width, transform; */
+  /* disabling for potential performance issues */
+  transition-property: visibility, transform;
   transition-timing-function: var(--transition-curve);
 }
-
+/*
 ytmusic-player-page#player-page {
   transition-duration: 0.35s, 0.35s, 0.7s !important;
   transition-property: left, transform, width;
   transition-timing-function: var(--transition-curve);
-}
-
+} */ /* disabling for potential performance issues */
+/*
 .content-container.ytmusic-immersive-header-renderer {
   transition-duration: 0.7s !important;
   transition-property: width;
   transition-timing-function: var(--transition-curve);
 }
-
+*/ /* disabling for potential performance issues */
+/*
 #header
   > ytmusic-immersive-header-renderer
   > ytmusic-fullbleed-thumbnail-renderer {
   transition-duration: 1.05s !important;
   transition-property: margin, transform;
   transition-timing-function: var(--transition-curve);
+}
+*/ /* disabling for potential performance issues */
+ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout,
+ytmusic-app-layout[player-page-open] #mini-guide-background.ytmusic-app-layout {
+    opacity: 0;
 }
 
 tp-yt-paper-item.ytmusic-guide-entry-renderer {
@@ -1775,19 +2072,20 @@ ytmusic-player-bar[is-mweb-player-bar-modernization-enabled]
   right: 0;
   margin: auto !important;
 }
-
+/*
 .slider-knob.tp-yt-paper-slider {
   transition: left 0.25s cubic-bezier(0.0, 0.0, 0.2, 1);
   will-change: left;
   transform: translateZ(0);
 }
-
+*/
+ /* disabling for potential performance issues */
+/*
 #primaryProgress.tp-yt-paper-progress,
 #secondaryProgress.tp-yt-paper-progress {
   transition: transform 0.25s cubic-bezier(0.0, 0.0, 0.2, 1);
-  /* will-change: transform; */
 }
-
+*/
 .time-info.ytmusic-player-bar,
 .current-time.ytmusic-player-controls,
 .total-time.ytmusic-player-controls {
@@ -2228,3 +2526,4 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 }
 
 /* ################################################ */
+
