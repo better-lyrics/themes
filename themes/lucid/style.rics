@@ -1,5 +1,3 @@
-/* Lucid v1.1.1, a custom theme for BetterLyrics */
-
 @font-face {
   font-family: "MySanFrancisco";
   src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
@@ -470,10 +468,33 @@ ytmusic-top-result-item-renderer ytmusic-background-overlay-renderer {
   background: transparent !important;
 }
 
-/* 2. Strip background from the overlay container itself */
-ytmusic-card-shelf-renderer ytmusic-item-thumbnail-overlay-renderer,
-ytmusic-top-result-item-renderer ytmusic-item-thumbnail-overlay-renderer {
-  background: transparent !important;
+/* =========================================
+   YTM SEARCH CARD UNIFIED GLASS FIX
+   ========================================= */
+
+/* 1. Nuke YTM's split virtual backgrounds AND the darkened immersive image */
+ytmusic-card-shelf-renderer .immersive-background,
+ytmusic-card-shelf-renderer .undercards-container::before,
+ytmusic-card-shelf-renderer .card-content-container::before {
+    display: none !important;
+}
+
+/* 2. Ensure the inner halves are completely hollow */
+ytmusic-card-shelf-renderer .card-content-container,
+ytmusic-card-shelf-renderer .undercards-container {
+    background: transparent !important;
+}
+
+/* 3. Apply one unified, lighter glass shell to the master container */
+ytmusic-card-shelf-renderer .card-container {
+    /* Using your theme's lighter menu variable instead of the dark one */
+    background: var(--lucid-menu-light-bg) !important; 
+    backdrop-filter: blur(var(--lucid-glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--lucid-glass-blur)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 16px !important; /* You can crank this back up to 16px now! */
+    overflow: hidden !important; /* Prevents sharp corners inside from poking out */
+    padding: 4px !important; /* Gives the split a little breathing room */
 }
 
 /* 3. Apply your custom border-radius and smooth transitions */
@@ -1389,61 +1410,62 @@ ytmusic-setting-category-collection-renderer.ytmusic-settings-page {
 /* The Main Toast Container */
 tp-yt-paper-toast {
   --paper-toast-background-color: transparent !important;
-  background: var(--lucid-menu-dark-bg) !important;
+  background: var(--lucid-menu-light-bg) !important; /* <--- Changed to light-bg */
   backdrop-filter: blur(var(--lucid-glass-blur)) !important;
   -webkit-backdrop-filter: blur(var(--lucid-glass-blur)) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1) !important;
   margin-bottom: 20px !important; 
 }
 
 /* Base Text */
-tp-yt-paper-toast,
-tp-yt-paper-toast #label,
-tp-yt-paper-toast yt-formatted-string {
+tp-yt-paper-toast #text-container,
+tp-yt-paper-toast yt-formatted-string,
+tp-yt-paper-toast span {
   color: #ffffff !important;
-  font-family: var(--blyrics-font-family) !important;
   font-weight: 500 !important;
 }
 
-tp-yt-paper-toast .action-button,
-tp-yt-paper-toast yt-button-renderer,
-tp-yt-paper-toast yt-button-shape {
-  background: transparent !important;
-  border: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-/* Apply the glass pill ONLY to the lowest-level clickable surfaces */
-tp-yt-paper-toast .yt-spec-button-shape-next,
-tp-yt-paper-toast paper-button {
+/* Action Button (e.g. "Change", "Undo") */
+tp-yt-paper-toast #action-button button {
   background: rgba(255, 255, 255, 0.1) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 16px !important;
-  padding: 8px 16px !important;
-  margin-left: 12px !important; /* Pushes it away from the toast text */
+  padding: 0px 16px !important;
+  margin-left: 12px !important; /* Pushes it away from the text */
   transition: background-color 0.2s ease, transform 0.1s cubic-bezier(0.45, 0, 0.15, 1) !important;
 }
 
-/* Force the inner text to be bright white, overriding YTM's default blue */
-tp-yt-paper-toast .yt-spec-button-shape-next *,
-tp-yt-paper-toast paper-button * {
+/* Force the action button text to be white (Fixes the default blue) */
+tp-yt-paper-toast #action-button button * {
   color: #ffffff !important;
   font-weight: 600 !important;
-  text-transform: none !important; /* Stops YTM from forcing ALL CAPS on older buttons */
+  text-transform: none !important;
 }
 
-/* Hover & Active States */
-tp-yt-paper-toast .yt-spec-button-shape-next:hover,
-tp-yt-paper-toast paper-button:hover {
+tp-yt-paper-toast #action-button button:hover {
   background: rgba(255, 255, 255, 0.2) !important;
 }
 
-tp-yt-paper-toast .yt-spec-button-shape-next:active,
-tp-yt-paper-toast paper-button:active {
+tp-yt-paper-toast #action-button button:active {
   transform: scale(0.92) !important;
+}
+
+/* Close Button (X) */
+tp-yt-paper-toast #close-button {
+  border-radius: 50% !important;
+  transition: background-color 0.2s ease !important;
+}
+
+tp-yt-paper-toast #close-button yt-icon,
+tp-yt-paper-toast #close-button svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+tp-yt-paper-toast #close-button:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
 }
 
 /* =========================================
@@ -1711,11 +1733,11 @@ ytmusic-app-layout:not([player-ui-state="PLAYER_PAGE_OPEN"]) #nav-bar-background
 }
 
 /* STEP 1: Make the original dropdown transparent and set it as an Anchor */
-ytmusic-search-box[is-bauhaus-sidenav-enabled] {
+ytmusic-search-box {
   --ytmusic-search-background: transparent !important;
 }
 
-ytmusic-search-box[is-bauhaus-sidenav-enabled] #suggestion-list.ytmusic-search-box {
+ytmusic-search-box #suggestion-list {
   background: transparent !important;
   box-shadow: none !important;
   border: none !important;
@@ -1911,3 +1933,4 @@ html body .blyrics-container[data-no-lyrics="true"] .blyrics-footer {
     filter: brightness(200%) contrast(200%) grayscale(100%) !important;
     opacity: 1 !important;
 }
+

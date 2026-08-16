@@ -1,9 +1,11 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
-## v1.2.0 Update
+## v1.2.1 Update
 
-- **Support for Better Lyrics v2.4.0 added**
-
+- Fixed search suggestions box
+- Fixed search results card
+- Updated toast notifications
+  
 ## Features
 
 - **Seamless Frosted Glass:** Applied site-wide and to all context menus.
