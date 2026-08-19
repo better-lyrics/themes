@@ -52,6 +52,23 @@
       "version": "1.1.8"
     },
     {
+      "builds": [
+        {
+          "integrity": "sha256-2044a0ec90eb2c845015937d07f3eb47d926cf346490111bc70fad351593fabb",
+          "minVersion": "2.0.0",
+          "path": "themes/clarity-theme",
+          "version": "1.0.5"
+        }
+      ],
+      "commit": "14ae6d53ac4f565cbd4fa0b2118ddda97c45380a",
+      "discussion": 82,
+      "id": "clarity-theme",
+      "integrity": "sha256-2044a0ec90eb2c845015937d07f3eb47d926cf346490111bc70fad351593fabb",
+      "locked": "2026-08-19T12:57:44Z",
+      "repo": "AlFarrizi-Studio/Clarity-Theme",
+      "version": "1.0.5"
+    },
+    {
       "commit": "aaa2f8e7711b1a9b4fd3ad32a3f33d796f98be5c",
       "discussion": 10,
       "id": "colorful-vocals",
@@ -316,6 +333,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-08-16T08:11:01Z",
+  "updated": "2026-08-19T12:58:46Z",
   "version": 1
 }
