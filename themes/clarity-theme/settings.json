@@ -1,0 +1,83 @@
+{
+    "layout": {
+        "pos": 0,
+        "type": "heading",
+        "label": "Layout & Placement"
+    },
+    "layout-placement": {
+        "pos": 1,
+        "type": "dropdown",
+        "label": "Which side the layout should be placed at",
+        "options": [
+            { "label": "Left (default)", "value": "left" },
+            { "label": "Right", "value": "right" },
+            { "label": "Center", "value": "center" }
+        ],
+        "attribute": "placement",
+        "attrType": "rics",
+        "default": 0
+    },
+    "album-cover": {
+        "pos": 2,
+        "type": "heading",
+        "label": "Album Cover"
+    },
+    "album-cover-border-radius": {
+        "pos": 3,
+        "type": "textfield",
+        "label": "Border radius of the album cover",
+        "attribute": "album-cover-border-radius",
+        "attrType": "rics",
+        "default": "2rem"
+    },
+    "animations": {
+        "pos": 4,
+        "type": "heading",
+        "label": "Animations"
+    },
+    "lyrics-animation-speed": {
+        "pos": 5,
+        "type": "textfield",
+        "label": "Lyrics animation speed",
+        "attribute": "lyrics-animation-speed",
+        "attrType": "rics",
+        "default": "1.6s"
+    },
+    "center-animation-speed": {
+        "pos": 6,
+        "type": "textfield",
+        "label": "Center layout animation speed",
+        "attribute": "center-animation-speed",
+        "attrType": "rics",
+        "default": "1.2s"
+    }
+    "player-bar": {
+        "pos": 7,
+        "type": "heading",
+        "label": "Player Bar"
+    },
+    "bar-bg": {
+        "pos": 8,
+        "type": "textfield",
+        "label": "Player bar background color",
+        "attribute": "bar-bg",
+        "attrType": "rics",
+        "default": "rgba(14, 14, 18, 0.86)"
+    },
+    "bar-radius": {
+        "pos": 9,
+        "type": "textfield",
+        "label": "Player bar border radius",
+        "attribute": "bar-radius",
+        "attrType": "rics",
+        "default": "20px"
+    },
+    "accent-color": {
+        "pos": 10,
+        "type": "textfield",
+        "label": "Accent color",
+        "attribute": "accent",
+        "attrType": "rics",
+        "default": "#1db954"
+    }
+}

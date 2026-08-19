@@ -1,0 +1,29 @@
+{
+  "id": "clarity-theme",
+  "title": "Clarity",
+  "description": "A sleek glassmorphism theme for Better Lyrics. Clarity transforms YouTube Music with translucent blurred surfaces, a floating rounded player bar, vinyl-style playback animations, custom navigation tabs, and a clean modern layout that keeps your lyrics front and center.",
+  "creators": [
+    "Al Farrizi"
+  ],
+  "minVersion": "2.0.0",
+  "hasShaders": false,
+  "version": "1.0.5",
+  "tags": [
+    "dark",
+    "glassmorphism",
+    "blur",
+    "transparent",
+    "minimal",
+    "modern",
+    "rounded",
+    "animated"
+  ],
+  "images": [
+    "1.webp",
+    "2.webp",
+    "3.png",
+    "4.png",
+    "5.png",
+    "6.png"
+  ]
+}

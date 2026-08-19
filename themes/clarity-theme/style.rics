@@ -1,0 +1,2457 @@
+@import url("https://fonts.googleapis.com/css2?family=Figtree:wght@800&family=Lexend:wght@600&family=Albert+Sans:wght@500&family=Inter:wght@400;500;600;700&display=swap");
+
+/* ============================================================
+   Name:    Clarity
+   Author:  Al Farrizi
+   Version: 1.0.5
+   ============================================================ */
+
+// ============================================================
+// CONFIG
+// ============================================================
+
+$placement: left; // right | left | center
+$album-cover-border-radius: 2rem;
+$lyrics-animation-speed: 1.6s;
+$center-animation-speed: 1.2s;
+$cover-vinyl-animation-speed: 0.7s;
+
+
+// ============================================================
+// TYPOGRAPHY
+// ============================================================
+
+$lyrics-font-family: "Figtree", sans-serif;
+$lyrics-font-weight: 800;
+
+$translation-font-family: "Lexend", sans-serif;
+$translation-font-weight: 600;
+
+$romanization-font-family: "Albert Sans", sans-serif;
+$romanization-font-weight: 500;
+
+$ui-font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+
+// ============================================================
+// PLAYER BAR VARIABLES
+// ============================================================
+
+$bar-bg: rgba(14, 14, 18, 0.86);
+$bar-radius: 20px;
+$bar-padding: 14px 22px 18px;
+$bar-gap: 20px;
+
+$surface-1: rgba(255, 255, 255, 0.06);
+$surface-2: rgba(255, 255, 255, 0.10);
+$surface-3: rgba(255, 255, 255, 0.16);
+$surface-hover: rgba(255, 255, 255, 0.12);
+$border-subtle: rgba(255, 255, 255, 0.08);
+
+$text-1: #ffffff;
+$text-2: rgba(255, 255, 255, 0.70);
+$text-3: rgba(255, 255, 255, 0.45);
+
+$accent: #1db954;
+$accent-soft: rgba(29, 185, 84, 0.14);
+
+$btn-sm: 36px;
+$btn-md: 40px;
+$btn-lg: 54px;
+
+$radius-sm: 10px;
+$radius-md: 12px;
+$radius-lg: 14px;
+
+$ease: cubic-bezier(0.25, 1, 0.5, 1);
+$ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+$duration: 0.22s;
+
+
+// ============================================================
+// KEYFRAMES
+// ============================================================
+
+@keyframes animate__bounceInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 120px, 0);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate3d(0, -8px, 0);
+  }
+
+  80% {
+    transform: translate3d(0, 3px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes animate__bounceOutDown {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  20% {
+    transform: translate3d(0, 3px, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 120px, 0);
+  }
+}
+
+@keyframes animate__slideInLeft {
+  from { transform: translate3d(-2000px, 0, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@keyframes animate__slideInRight {
+  from { transform: translate3d(2000px, 0, 0); opacity: 0; }
+  to   { transform: translate3d(0, 0, 0); opacity: 1; }
+}
+
+@keyframes animate__slideOutLeft {
+  from { transform: translate3d(0, 0, 0); opacity: 1; }
+  to   { transform: translate3d(-2000px, 0, 0); opacity: 0; }
+}
+
+@keyframes animate__slideOutRight {
+  from { transform: translate3d(0, 0, 0); opacity: 1; }
+  to   { transform: translate3d(2000px, 0, 0); opacity: 0; }
+}
+
+$cover-shift: 14px;
+
+@keyframes animate__vinylSlideLeft {
+  from { left: 100%; }
+  to   { left: calc(50% + #{$cover-shift}); }
+}
+
+@keyframes animate__vinylSlideRight {
+  from { left: calc(50% + #{$cover-shift}); }
+  to   { left: 100%; }
+}
+
+@keyframes animate__coverSlideLeft {
+  from { transform: translate3d(#{$cover-shift}, 0, 0); }
+  to   { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes animate__coverSlideRight {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(#{$cover-shift}, 0, 0); }
+}
+
+@keyframes animate__bounceInCenter {
+  from, 60%, 75%, 90%, to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  0%   { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+  60%  { opacity: 1; transform: scale3d(1.1, 1.1, 1.1); }
+  75%  { transform: scale3d(0.9, 0.9, 0.9); }
+  90%  { transform: scale3d(1.03, 1.03, 1.03); }
+  to   { opacity: 1; transform: scale3d(1, 1, 1); }
+}
+
+@keyframes animate__bounceOutCenter {
+  20%       { transform: scale3d(0.9, 0.9, 0.9); }
+  50%, 55%  { opacity: 1; transform: scale3d(1.1, 1.1, 1.1); }
+  to        { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+}
+
+@keyframes animate__flipInX {
+  from {
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
+
+  30% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    opacity: 1;
+  }
+
+  to {
+    transform: perspective(400px);
+    opacity: 1;
+  }
+}
+
+@keyframes animate__flipOutX {
+  from { transform: perspective(400px); }
+
+  30% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    opacity: 1;
+  }
+
+  to {
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    opacity: 0;
+  }
+}
+
+
+// ============================================================
+// FULLSCREEN MEDIA CONTROL ANIMATIONS
+// ============================================================
+
+@keyframes animate__slideInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes animate__slideOutDown {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+
+// ============================================================
+// ROOT VARIABLES
+// ============================================================
+
+:root {
+  --blyrics-font-family: #{$lyrics-font-family};
+  --blyrics-font-weight: #{$lyrics-font-weight};
+
+  --blyrics-translated-font-family: #{$translation-font-family};
+  --blyrics-translated-font-weight: #{$translation-font-weight};
+
+  --blyrics-font-size: calc(3rem * 1.1);
+  --blyrics-instrumental-icon-size: 4rem;
+  --blyrics-fullscreen-video-panel-size: 40%;
+  --blyrics-wobble-duration: 2.5s;
+
+  --ytm-tv-vertical-padding: 0;
+  --ytm-tv-horizontal-padding: calc(64px * 3);
+  --ytm-tv-song-info-font-size: calc(2rem * 1.2);
+}
+
+
+// ============================================================
+// PLAYER PAGE
+// ============================================================
+
+ytmusic-player-page:not([is-mweb-modernization-enabled]) {
+  --blyrics-font-size: calc(3rem * 1.1);
+  --blyrics-line-height: 1.25;
+  --blyrics-padding: calc(2rem * 0.9);
+
+  #player.ytmusic-player-page,
+  .song-media-controls.ytmusic-player {
+    border-radius: $album-cover-border-radius;
+    overflow: hidden;
+  }
+
+  &[player-fullscreened]:not([blyrics-dfs]) {
+    --blyrics-font-size: 6rem;
+    --blyrics-padding: 3rem;
+
+    &:has(.blyrics-container[data-no-lyrics="true"]) {
+      #side-panel {
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      #main-panel {
+        transition-delay: 0s;
+
+        @if $placement == right {
+          transform: translateX(calc(-50vw + 50% + var(--ytm-tv-horizontal-padding)));
+        } @else if $placement == left {
+          transform: translateX(calc(50vw - 50% - var(--ytm-tv-horizontal-padding)));
+        } @else {
+          transform: translateX(0);
+        }
+      }
+    }
+
+    .content.ytmusic-player-page {
+      flex-direction: if($placement == right, row-reverse, row);
+    }
+
+    #side-panel {
+      @if $placement == right {
+        margin: 0 var(--ytmusic-player-page-content-gap) 0 0;
+      } @else if $placement == left {
+        margin: 0 0 0 var(--ytmusic-player-page-content-gap);
+      } @else {
+        margin: 0;
+      }
+    }
+
+    #blyrics-song-info {
+      text-align: left !important;
+
+      > p {
+        font-size: var(--ytm-tv-song-info-font-size) !important;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+        text-align: left !important;
+      }
+    }
+
+    &:not([video-mode]) {
+      .content.ytmusic-player-page {
+        padding: var(--ytm-tv-vertical-padding) var(--ytm-tv-horizontal-padding) 0;
+      }
+
+      #side-panel {
+        height: 95vh;
+        transform: translateY(-48px);
+      }
+
+      .autoscroll-resume-wrapper {
+        position: relative;
+      }
+
+      #player.ytmusic-player-page {
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+
+// ============================================================
+// BETTER LYRICS CONTAINER
+// ============================================================
+
+.blyrics-container {
+  .blyrics--word,
+  .blyrics-line-main,
+  .blyrics-content-line {
+    font-family: $lyrics-font-family;
+    font-weight: $lyrics-font-weight;
+    font-style: normal;
+    letter-spacing: 0.02em;
+    text-rendering: optimizeLegibility;
+  }
+
+  .blyrics--romanized,
+  .blyrics--romanized .blyrics--word,
+  .blyrics-line-romanized,
+  [class*="romanized"] {
+    font-family: $romanization-font-family;
+    font-weight: $romanization-font-weight;
+    font-style: normal;
+    letter-spacing: 0.01em;
+  }
+
+  .blyrics--translated,
+  .blyrics--translated .blyrics--word,
+  .blyrics-line-translated,
+  [class*="translated"] {
+    font-family: $translation-font-family;
+    font-weight: $translation-font-weight;
+    font-style: normal;
+  }
+
+  .blyrics--word::after {
+    font-family: inherit;
+    font-weight: inherit;
+  }
+
+  text-align: if($placement == left, left, if($placement == right, right, center));
+
+  .blyrics--word {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    &:after {
+      text-shadow: none;
+    }
+  }
+
+  .blyrics--line {
+    position: relative;
+    z-index: 1;
+    animation-duration: $lyrics-animation-speed;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+
+    @if $placement == left {
+      animation-name: animate__slideInLeft;
+    } @else if $placement == right {
+      animation-name: animate__slideInRight;
+    } @else {
+      animation-name: animate__flipInX;
+    }
+
+    &[data-agent="v1"] {
+      text-align: left;
+      animation-name: animate__slideInRight;
+    }
+
+    &[data-agent="v2"],
+    &[data-agent="v3"] {
+      text-align: right;
+      animation-name: animate__slideInLeft;
+    }
+
+    &[data-agent="v1000"] {
+      text-align: center;
+      animation-name: animate__flipInX;
+      animation-duration: $center-animation-speed;
+    }
+  }
+
+  &:not(.blyrics-user-scrolling):not([data-sync="none"]) {
+    .blyrics--line:not(.blyrics--active):not(.blyrics--animating):not(.blyrics--active ~ .blyrics--line) {
+      position: relative;
+      z-index: 1;
+      animation-duration: $lyrics-animation-speed;
+      animation-fill-mode: forwards;
+      animation-timing-function: cubic-bezier(0.5, 0, 0.75, 0);
+
+      &[data-agent="v1"] {
+        animation-name: animate__slideOutLeft;
+      }
+
+      &[data-agent="v2"],
+      &[data-agent="v3"] {
+        animation-name: animate__slideOutRight;
+      }
+
+      &[data-agent="v1000"] {
+        animation-name: animate__flipOutX;
+        animation-duration: $center-animation-speed;
+        animation-timing-function: ease-in;
+        transform-origin: center center;
+        backface-visibility: visible;
+      }
+
+      &:not([data-agent="v1"]):not([data-agent="v2"]):not([data-agent="v3"]):not([data-agent="v1000"]) {
+        @if $placement == left {
+          animation-name: animate__slideOutLeft;
+        } @else if $placement == right {
+          animation-name: animate__slideOutRight;
+        } @else {
+          animation-name: animate__bounceOutCenter;
+        }
+      }
+    }
+  }
+}
+
+
+// ============================================================
+// BETTER LYRICS FONT OVERRIDES
+// ============================================================
+
+.blyrics-container {
+  .blyrics--word {
+    font-family: $lyrics-font-family !important;
+    font-weight: $lyrics-font-weight !important;
+    letter-spacing: 0.02em !important;
+    text-rendering: optimizeLegibility !important;
+  }
+
+  .blyrics--romanized,
+  .blyrics-line-romanized,
+  [class*="romanized"] {
+    font-family: $romanization-font-family !important;
+    font-weight: $romanization-font-weight !important;
+    letter-spacing: 0.01em !important;
+  }
+
+  .blyrics--translated,
+  .blyrics-line-translated,
+  [class*="translated"] {
+    font-family: $translation-font-family !important;
+    font-weight: $translation-font-weight !important;
+  }
+}
+
+
+// ============================================================
+// YOUTUBE MUSIC UI & SIDE NAV
+// ============================================================
+
+#layout {
+  ytmusic-player-bar,
+  #player-bar-background,
+  #mini-guide-background,
+  #nav-bar-background {
+    background: transparent;
+  }
+
+  #nav-bar-background {
+    backdrop-filter: blur(1rem);
+  }
+}
+
+ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
+  background: transparent;
+}
+
+
+// ============================================================
+// MEDIA CONTROL / PLAYER BAR
+// ============================================================
+
+ytmusic-player-bar {
+  position: fixed !important;
+
+  left: 16px !important;
+  right: 16px !important;
+  bottom: 5px !important;
+
+  width: auto !important;
+  height: 92px !important;
+  min-height: 92px !important;
+  max-height: 92px !important;
+
+  box-sizing: border-box !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+
+  align-items: center !important;
+  gap: $bar-gap;
+
+  padding: 8px 22px 12px !important;
+
+  background: $bar-bg !important;
+
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
+
+  border: 1px solid $border-subtle;
+  border-radius: $bar-radius !important;
+
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+
+  overflow: hidden !important;
+
+  font-family: $ui-font-family;
+  color: $text-1;
+
+  transition: box-shadow $duration $ease;
+
+  &:hover {
+    box-shadow:
+      0 16px 48px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+  }
+
+  #player-bar-background,
+  #right-controls-mweb,
+  #hover-time-info,
+  .mweb-thumbnail-image-wrapper,
+  .cast-overlay-wrapper,
+  .spinner-container,
+  .badge-style-type-ad-stark {
+    display: none !important;
+  }
+
+  > dom-if {
+    display: none !important;
+  }
+}
+
+// ============================================================
+// FULLSCREEN BAR BACKGROUND — TRANSPARENT + BLUR
+// ============================================================
+// Overrides the non-fullscreen background to stay transparent here;
+// blur stays active so it's still readable over content.
+
+ytmusic-player-bar[player-fullscreened] {
+  background: rgba(0, 0, 0, 0.15) !important;
+  
+  backdrop-filter: blur(32px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(180%) !important;
+  
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset !important;
+}
+
+// ============================================================
+// FULLSCREEN CHILD SIZING — MIRRORS NON-FULLSCREEN 1:1
+// ============================================================
+// Native YTM CSS scopes [player-fullscreened] with higher specificity,
+// so every non-fullscreen metric is reasserted here with !important
+// to keep both bars identical.
+
+ytmusic-player-bar[player-fullscreened] {
+  // ---- bar metrics (same as non-FS) ----
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: $bar-gap !important;
+  padding: 8px 22px 12px !important;
+
+  > #left-controls,
+  > .middle-controls,
+  > #right-controls {
+    position: relative !important;
+    transform: none !important;
+    float: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  // ---- LEFT cluster (thumbnail + info + like) = order 1 ----
+  .middle-controls {
+    order: 1 !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    background: transparent !important;
+  }
+
+  .thumbnail-image-wrapper {
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    width: auto !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    max-width: 100px !important;
+  }
+
+  .thumbnail-image-wrapper .image {
+    width: auto !important;
+    height: 56px !important;
+    min-width: 56px !important;
+    max-width: 100px !important;
+    min-height: 56px !important;
+    max-height: 56px !important;
+    border-radius: 4px !important;
+  }
+
+  .content-info-wrapper {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    left: 10px !important;
+    gap: 3px !important;
+  }
+
+  .title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.3 !important;
+  }
+
+  .subtitle,
+  .byline {
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    line-height: 1.3 !important;
+  }
+
+  // like / dislike / menu → 36px, icon 18px, gap 0 (same as non-FS)
+  .middle-controls-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    flex-shrink: 0 !important;
+
+    yt-icon-button,
+    .yt-button-shape {
+      width: $btn-sm !important;
+      height: $btn-sm !important;
+    }
+
+    yt-icon-button button,
+    .yt-button-shape button {
+      width: $btn-sm !important;
+      height: $btn-sm !important;
+      border-radius: $radius-sm !important;
+    }
+
+    yt-icon {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+
+  // ---- CENTER cluster (transport) = order 2 ----
+  #left-controls {
+    order: 2 !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    width: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+
+    .left-controls-buttons {
+      display: flex !important;
+      align-items: center !important;
+      gap: 14px !important; // prev/play/next spacing, same as non-FS
+    }
+
+    .time-info {
+      font-size: 11px !important;
+      font-weight: 500 !important;
+      left: 5px !important;
+    }
+  }
+
+  // transport buttons: 40px hit area, 22px / 28px icons (matches non-FS)
+  .previous-button,
+  .next-button,
+  #play-pause-button {
+    width: $btn-md !important;
+    height: $btn-md !important;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    button {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+  }
+
+  .previous-button yt-icon,
+  .next-button yt-icon {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  #play-pause-button yt-icon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  // ---- RIGHT cluster = order 3 ----
+  #right-controls {
+    order: 3 !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 2px !important;
+  }
+
+  .right-controls-buttons {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important; // tight like non-FS, not the native FS gap
+
+    yt-icon-button,
+    .yt-button-shape {
+      width: $btn-md !important;
+      height: $btn-md !important;
+    }
+
+    yt-icon-button button,
+    .yt-button-shape button {
+      width: $btn-md !important;
+      height: $btn-md !important;
+      border-radius: $radius-md !important;
+    }
+
+    yt-icon {
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+
+  // ---- VOLUME — CLEANUP FOR FULLSCREEN ----
+  
+  // Default: fully collapsed (no white blob)
+  #volume-slider {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    
+    transition:
+      width 0.3s $ease,
+      min-width 0.3s $ease,
+      max-width 0.3s $ease,
+      opacity 0.25s $ease !important;
+  }
+
+  // Expands when #right-controls is hovered
+  #right-controls:hover #volume-slider {
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    margin: 0 8px !important;
+  }
+
+  // Knob & container hidden while collapsed
+  #volume-slider #sliderKnob,
+  #volume-slider #sliderKnobContainer,
+  #volume-slider .slider-knob-inner {
+    opacity: 0 !important;
+    transition: opacity 0.2s ease !important;
+  }
+
+  // Knob appears when the slider expands
+  #right-controls:hover #volume-slider #sliderKnob,
+  #right-controls:hover #volume-slider #sliderKnobContainer,
+  #right-controls:hover #volume-slider .slider-knob-inner {
+    opacity: 1 !important;
+  }
+
+  // Speaker button: force a consistent size
+  .volume {
+    width: $btn-md !important;
+    height: $btn-md !important;
+    flex: 0 0 auto !important;
+    
+    button {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    yt-icon {
+      width: 20px !important;
+      height: 20px !important;
+    }
+  }
+}
+
+// ============================================================
+// HARDENING — PLAYER BAR CHILDREN
+// ============================================================
+
+ytmusic-player-bar > #left-controls,
+ytmusic-player-bar > .middle-controls,
+ytmusic-player-bar > #right-controls {
+  position: relative !important;
+  transform: none !important;
+  float: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+
+// ============================================================
+// CLEANUP TOTAL
+// ============================================================
+
+ytmusic-player-bar {
+  .previous-button,
+  .next-button,
+  #play-pause-button,
+  .volume,
+  .captions,
+  .repeat,
+  .shuffle,
+  .expand-button,
+  .toggle-player-page-button,
+  .exit-fullscreen-button {
+
+    width: $btn-md;
+    height: $btn-md;
+
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    &::before,
+    &::after {
+      content: none !important;
+      display: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    yt-interaction,
+    yt-interaction .fill,
+    yt-interaction .stroke,
+    yt-interaction::before,
+    yt-interaction::after {
+      display: none !important;
+      opacity: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      content: none !important;
+    }
+
+    tp-yt-paper-ripple,
+    tp-yt-paper-ripple #background,
+    tp-yt-paper-ripple #waves,
+    tp-yt-paper-ripple::before,
+    tp-yt-paper-ripple::after {
+      display: none !important;
+      opacity: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+    }
+
+    button {
+      width: 100% !important;
+      height: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+
+      border-radius: 50%;
+
+      background: transparent !important;
+      box-shadow: none !important;
+
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+
+      color: $text-1;
+
+      transition: color $duration $ease;
+
+      pointer-events: auto !important;
+
+      &::before,
+      &::after {
+        content: none !important;
+        display: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+}
+
+
+// ============================================================
+// 1) LEFT / MIDDLE CONTROLS
+// ============================================================
+
+ytmusic-player-bar .middle-controls {
+  order: 1;
+  flex: 1 1 0;
+  min-width: 0;
+
+  display: flex !important;
+  flex-direction: row !important;
+
+  align-items: center;
+  justify-content: flex-start !important;
+
+  gap: 14px;
+  width: auto !important;
+
+  background: transparent !important;
+}
+
+
+// ============================================================
+// SMART THUMBNAIL
+// ============================================================
+
+ytmusic-player-bar .thumbnail-image-wrapper {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+
+  width: auto !important;
+  height: 56px !important;
+
+  min-width: 56px !important;
+  max-width: 100px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  overflow: visible !important;
+
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  box-sizing: border-box !important;
+  position: relative !important;
+}
+
+
+// ============================================================
+// VINYL DISC
+// ============================================================
+
+ytmusic-player-bar .thumbnail-image-wrapper::before {
+  content: "";
+
+  position: absolute;
+
+  width: 56px;
+  height: 56px;
+
+  left: 100%;
+  top: 50%;
+
+  transform:
+    translate(-50%, -50%)
+    rotate(0deg);
+
+  background-image: url("https://raw.githubusercontent.com/AlFarrizi-Studio/Clarity-Theme/refs/heads/main/images/rics%20elements/Vinly%20Disc.png");
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  z-index: 0;
+  pointer-events: none;
+
+  animation:
+    vinyl-spin
+    10s
+    linear
+    infinite;
+
+  animation-play-state: running;
+}
+
+
+// ============================================================
+// ALBUM COVER
+// ============================================================
+
+ytmusic-player-bar .thumbnail-image-wrapper .image {
+  display: block !important;
+
+  width: auto !important;
+  height: 56px !important;
+
+  min-width: 56px !important;
+  max-width: 100px !important;
+
+  min-height: 56px !important;
+  max-height: 56px !important;
+
+  object-fit: contain !important;
+  object-position: center center !important;
+
+  border-radius: 4px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  flex: 0 0 auto !important;
+
+  position: relative !important;
+  z-index: 2 !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+
+  transform-origin: center center;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+
+// ============================================================
+// VINYL ROTATION
+// ============================================================
+
+@keyframes vinyl-spin {
+  from {
+    transform:
+      translate(-50%, -50%)
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
+}
+
+
+// ============================================================
+// PLAYING STATE
+// ============================================================
+
+ytmusic-player-bar:has(
+  #play-pause-button[title="Pause"],
+  #play-pause-button[aria-label="Pause"],
+  #play-pause-button[title="Jeda"],
+  #play-pause-button[aria-label="Jeda"]
+)
+.thumbnail-image-wrapper::before {
+  animation:
+    vinyl-spin
+    10s
+    linear
+    infinite,
+    animate__vinylSlideRight
+    $cover-vinyl-animation-speed
+    $ease
+    both;
+
+  animation-play-state: running, running;
+}
+
+ytmusic-player-bar:has(
+  #play-pause-button[title="Pause"],
+  #play-pause-button[aria-label="Pause"],
+  #play-pause-button[title="Jeda"],
+  #play-pause-button[aria-label="Jeda"]
+)
+.thumbnail-image-wrapper .image {
+  animation:
+    animate__coverSlideLeft
+    $cover-vinyl-animation-speed
+    $ease
+    both;
+}
+
+
+// ============================================================
+// PAUSED STATE
+// ============================================================
+
+ytmusic-player-bar:has(
+  #play-pause-button[title="Play"],
+  #play-pause-button[aria-label="Play"],
+  #play-pause-button[title="Putar"],
+  #play-pause-button[aria-label="Putar"]
+)
+.thumbnail-image-wrapper::before {
+  animation:
+    vinyl-spin
+    10s
+    linear
+    infinite,
+    animate__vinylSlideLeft
+    $cover-vinyl-animation-speed
+    $ease
+    both;
+
+  animation-play-state: paused, running;
+}
+
+ytmusic-player-bar:has(
+  #play-pause-button[title="Play"],
+  #play-pause-button[aria-label="Play"],
+  #play-pause-button[title="Putar"],
+  #play-pause-button[aria-label="Putar"]
+)
+.thumbnail-image-wrapper .image {
+  animation:
+    animate__coverSlideRight
+    $cover-vinyl-animation-speed
+    $ease
+    both;
+}
+
+
+// ============================================================
+// HOVER / SONG INFO
+// ============================================================
+
+ytmusic-player-bar
+.thumbnail-image-wrapper:hover
+.image {
+  filter: brightness(1.03);
+}
+
+ytmusic-player-bar .content-info-wrapper {
+  flex: 0 1 auto;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  position: relative !important;
+  left: 10px !important;
+}
+
+ytmusic-player-bar .title {
+  font-family: $ui-font-family !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+
+  color: $text-1 !important;
+
+  letter-spacing: -0.01em;
+  line-height: 1.3 !important;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ytmusic-player-bar .subtitle,
+ytmusic-player-bar .byline {
+  font-family: $ui-font-family !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+
+  color: $text-2 !important;
+  line-height: 1.3 !important;
+
+  a {
+    color: inherit !important;
+    text-decoration: none !important;
+
+    transition: color $duration $ease;
+
+    &:hover {
+      color: $text-1 !important;
+    }
+  }
+}
+
+ytmusic-player-bar .middle-controls-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+
+  yt-icon-button button,
+  .yt-button-shape button {
+    width: $btn-sm;
+    height: $btn-sm;
+
+    border-radius: $radius-sm;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    color: $text-2;
+
+    transition: color $duration $ease;
+
+    &:hover {
+      color: $text-1;
+    }
+  }
+
+  yt-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  yt-interaction,
+  yt-interaction .fill,
+  yt-interaction .stroke,
+  yt-touch-feedback-shape,
+  yt-touch-feedback-shape .ytSpecTouchFeedbackShapeStroke,
+  yt-touch-feedback-shape .ytSpecTouchFeedbackShapeFill,
+  tp-yt-paper-ripple {
+    display: none !important;
+    opacity: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+ytmusic-player-bar ytmusic-like-button-renderer[like-status="LIKE"] #button-shape-like button {
+  color: $text-1;
+}
+
+
+// ============================================================
+// 2) CENTER CONTROLS
+// ============================================================
+
+ytmusic-player-bar #left-controls {
+  order: 2;
+
+  flex: 0 0 auto;
+
+  margin: 0 !important;
+  width: auto !important;
+
+  display: flex !important;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  .left-controls-buttons {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .time-info {
+    font-family: $ui-font-family !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+
+    color: $text-3;
+
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+
+    position: relative !important;
+    left: 6px !important;
+  }
+}
+
+ytmusic-player-bar {
+  .previous-button yt-icon,
+  .next-button yt-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  #play-pause-button yt-icon {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+
+// ============================================================
+// 3) RIGHT CONTROLS
+// ============================================================
+
+ytmusic-player-bar #right-controls {
+  order: 3;
+
+  flex: 1 1 0;
+  min-width: 0;
+
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-end !important;
+
+  gap: 2px;
+  width: auto !important;
+
+  #volume-slider {
+    width: 0 !important;
+    opacity: 0;
+    margin: 0 !important;
+
+    transition:
+      width 0.3s $ease,
+      opacity 0.25s $ease;
+  }
+
+  &:hover #volume-slider {
+    width: 110px !important;
+    opacity: 1;
+    margin: 0 8px !important;
+  }
+}
+
+ytmusic-player-bar .right-controls-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  yt-icon-button button {
+    width: $btn-md;
+    height: $btn-md;
+
+    border-radius: $radius-md;
+
+    color: $text-2;
+
+    transition: color $duration $ease;
+
+    &:hover {
+      color: $text-1;
+    }
+
+    yt-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+ytmusic-player-bar[repeat-mode="ONE"] .repeat button,
+ytmusic-player-bar[repeat-mode="ALL"] .repeat button,
+ytmusic-player-bar .captions[title*="Aktif"] button,
+ytmusic-player-bar .captions[title*="Active"] button {
+  color: $text-1;
+}
+
+// ============================================================
+// HIDE USELESS BUTTONS (◀, ▼, ▲, expanding menu, etc.)
+// ============================================================
+// Buttons kept visible:
+//   - Non-fullscreen: volume, captions, repeat, shuffle
+//   - Fullscreen: volume, captions, repeat, shuffle, exit-fullscreen
+
+// 1) Global buttons that serve no purpose (all modes)
+ytmusic-player-bar {
+  .toggle-player-page-button,
+  .back-button,
+  .down-button {
+    display: none !important;
+    pointer-events: none !important;
+  }
+}
+
+// 2) "More player controls" button (▼) + its popup submenu (non-FS)
+ytmusic-player-bar:not([player-fullscreened]) {
+  .expand-button {
+    display: none !important;
+  }
+
+  // 3) Popup expanding menu (▼ submenu)
+  ytmusic-player-expanding-menu {
+    display: none !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+// 4) Other buttons in the RIGHT cluster (non-fullscreen)
+//    Keep only: volume, captions, repeat, shuffle
+ytmusic-player-bar:not([player-fullscreened]) .right-controls-buttons > * {
+  &:not(.volume):not(.captions):not(.repeat):not(.shuffle) {
+    display: none !important;
+  }
+}
+
+// 5) Other buttons in the RIGHT cluster (fullscreen)
+//    Keep only: volume, captions, repeat, shuffle, exit-fullscreen
+ytmusic-player-bar[player-fullscreened] .right-controls-buttons > * {
+  &:not(.volume):not(.captions):not(.repeat):not(.shuffle):not(.exit-fullscreen-button) {
+    display: none !important;
+  }
+}
+
+// 6) Safety: exit-fullscreen-button may only appear in fullscreen
+ytmusic-player-bar:not([player-fullscreened]) .exit-fullscreen-button {
+  display: none !important;
+}
+
+// ============================================================
+// MEDIA CONTROL PROGRESS BAR
+// ============================================================
+
+ytmusic-player-bar {
+  overflow: hidden !important;
+  border-radius: $bar-radius !important;
+
+  #progress-bar,
+  tp-yt-paper-slider#progress-bar {
+    position: absolute !important;
+
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    inset: auto 0 0 0 !important;
+
+    width: 100% !important;
+
+    height: 4px !important;
+    min-height: 4px !important;
+    max-height: 4px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+    display: block !important;
+
+    z-index: 99999 !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    transform: none !important;
+    pointer-events: auto !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    --paper-slider-container-color:
+      rgba(255, 255, 255, 0.14) !important;
+
+    --paper-slider-secondary-color:
+      rgba(255, 255, 255, 0.08) !important;
+
+    --paper-slider-active-color:
+      rgba(255, 255, 255, 0.96) !important;
+
+    --paper-slider-knob-color:
+      #ffffff !important;
+
+    --paper-slider-knob-start-color:
+      #ffffff !important;
+
+    --paper-slider-knob-start-border-color:
+      transparent !important;
+  }
+
+  #progress-bar #sliderContainer,
+  #progress-bar .bar-container,
+  #progress-bar #sliderBar,
+  #progress-bar #progressContainer,
+  tp-yt-paper-slider#progress-bar #sliderContainer,
+  tp-yt-paper-slider#progress-bar .bar-container,
+  tp-yt-paper-slider#progress-bar #sliderBar,
+  tp-yt-paper-slider#progress-bar #progressContainer {
+    position: absolute !important;
+
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100% !important;
+    height: 4px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    transform: none !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 2px !important;
+    overflow: hidden !important;
+  }
+
+  #progress-bar #secondaryProgress,
+  #progress-bar tp-yt-paper-progress#secondaryProgress,
+  tp-yt-paper-slider#progress-bar #secondaryProgress {
+    position: absolute !important;
+
+    top: 0 !important;
+    left: 0 !important;
+
+    width: 100% !important;
+    height: 4px !important;
+
+    margin: 0 !important;
+
+    background: rgba(255, 255, 255, 0.14) !important;
+    border-radius: 2px !important;
+    transition: transform 0.8s linear !important;
+  }
+
+  #progress-bar #primaryProgress,
+  #progress-bar tp-yt-paper-progress#primaryProgress,
+  tp-yt-paper-slider#progress-bar #primaryProgress {
+    height: 4px !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    border-radius: 2px !important;
+    transition: transform 1s linear !important;
+  }
+
+  #progress-bar tp-yt-paper-progress,
+  tp-yt-paper-slider#progress-bar tp-yt-paper-progress {
+    height: 4px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-radius: 2px !important;
+    overflow: hidden !important;
+    transition: transform 1s linear !important;
+  }
+
+  #progress-bar #sliderKnobContainer,
+  tp-yt-paper-slider#progress-bar #sliderKnobContainer {
+    position: absolute !important;
+    top: 50% !important;
+
+    width: 14px !important;
+    height: 14px !important;
+
+    margin: 0 !important;
+
+    transform: translate(-50%, -50%) !important;
+
+    z-index: 100 !important;
+    pointer-events: none !important;
+    transition: left 1s linear !important;
+  }
+
+  #progress-bar #sliderKnob,
+  tp-yt-paper-slider#progress-bar #sliderKnob {
+    width: 14px !important;
+    height: 14px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: transparent !important;
+
+    border: 0 !important;
+    box-shadow: none !important;
+
+    opacity: 0 !important;
+
+    transition:
+      opacity 0.18s $ease,
+      left 1s linear !important;
+  }
+
+  #progress-bar #sliderKnob .slider-knob-inner,
+  tp-yt-paper-slider#progress-bar
+  #sliderKnob .slider-knob-inner {
+    width: 10px !important;
+    height: 10px !important;
+
+    margin: 0 !important;
+
+    background: #ffffff !important;
+
+    border-radius: 50% !important;
+
+    box-shadow:
+      0 1px 5px rgba(0, 0, 0, 0.45) !important;
+
+    transform: scale(1) !important;
+  }
+
+  #progress-bar:hover #sliderKnob,
+  tp-yt-paper-slider#progress-bar:hover #sliderKnob,
+  &:hover #progress-bar #sliderKnob,
+  &:hover tp-yt-paper-slider#progress-bar #sliderKnob {
+    opacity: 1 !important;
+  }
+}
+
+
+// ============================================================
+// RESPONSIVE
+// ============================================================
+
+@media (max-width: 1100px) {
+  ytmusic-player-bar .byline span[dir="auto"] {
+    &:nth-child(n+2) {
+      display: none !important;
+    }
+  }
+}
+
+@media (max-width: 800px) {
+  ytmusic-player-bar {
+    gap: 14px !important;
+
+    left: 10px !important;
+    right: 10px !important;
+    bottom: 12px !important;
+
+    height: 68px !important;
+    min-height: 68px !important;
+    max-height: 68px !important;
+
+    padding: 6px 14px 11px !important;
+
+    #progress-bar,
+    tp-yt-paper-slider#progress-bar {
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100% !important;
+    }
+
+    #right-controls {
+      display: none !important;
+    }
+
+    .middle-controls {
+      flex: 1 1 auto;
+    }
+
+    .thumbnail-image-wrapper .image {
+      width: 52px;
+      height: 52px;
+      border-radius: 4px;
+    }
+
+    #play-pause-button yt-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    .previous-button,
+    .next-button {
+      button {
+        width: 36px;
+        height: 36px;
+
+        yt-icon {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+  }
+}
+
+
+// ============================================================
+// SIDE PANEL TABS
+// ============================================================
+
+#side-panel {
+  .tab-header-container,
+  #tabsContainer,
+  #tabsContent {
+    border: none !important;
+    border-bottom: none !important;
+  }
+
+  #tabsContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  #selectionBar {
+    display: none !important;
+  }
+
+  .tab-header {
+    position: relative;
+
+    flex: 0 0 auto !important;
+
+    width: 6rem !important;
+    height: 3.6rem !important;
+
+    min-width: 0;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border-radius: 1rem;
+    overflow: hidden !important;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    transition: background-color 0.2s ease;
+
+    .tab-content {
+      width: 100%;
+      height: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 0 !important;
+      line-height: 0 !important;
+      color: transparent !important;
+
+      &::before {
+        content: "";
+
+        width: 2.4rem;
+        height: 2.4rem;
+
+        background-color: rgba(255, 255, 255, 0.7);
+
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+
+        -webkit-mask-size: contain;
+        -webkit-mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+
+        transition: background-color 0.2s ease;
+      }
+    }
+
+    tp-yt-paper-ripple,
+    tp-yt-paper-ripple #background,
+    tp-yt-paper-ripple #waves {
+      border-radius: inherit;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.14);
+
+      .tab-content::before {
+        background-color: rgba(255, 255, 255, 1);
+      }
+    }
+
+    &.iron-selected {
+      background: rgba(255, 255, 255, 0.18);
+
+      box-shadow:
+        inset 0 0 0 1.5px rgba(255, 255, 255, 0.45);
+
+      .tab-content::before {
+        background-color: rgba(255, 255, 255, 1);
+      }
+    }
+  }
+
+  $icon-next: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z'/%3E%3C/svg%3E");
+  $icon-lyrics: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z'/%3E%3C/svg%3E");
+  $icon-comment: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1.9-2 2-2zm0 14H6l-2 2V4h16v12z'/%3E%3C/svg%3E");
+  $icon-related: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z'/%3E%3C/svg%3E");
+
+  .tab-header:nth-of-type(1) .tab-content::before {
+    mask-image: $icon-next;
+    -webkit-mask-image: $icon-next;
+  }
+
+  .tab-header:nth-of-type(2) .tab-content::before {
+    mask-image: $icon-lyrics;
+    -webkit-mask-image: $icon-lyrics;
+  }
+
+  .tab-header:nth-of-type(3) .tab-content::before {
+    mask-image: $icon-comment;
+    -webkit-mask-image: $icon-comment;
+  }
+
+  .tab-header:nth-of-type(4) .tab-content::before {
+    mask-image: $icon-related;
+    -webkit-mask-image: $icon-related;
+  }
+}
+
+
+// ============================================================
+// SONG INFO ALIGNMENT & POSITIONING
+// ============================================================
+
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) {
+  #blyrics-song-info {
+    text-align: left !important;
+
+    margin: 0 !important;
+    margin-right: auto !important;
+
+    transform:
+      translateY(
+        calc(
+          var(--ytmusic-nav-bar-height, 64px) * -1 + 0.5rem
+        )
+      ) !important;
+
+    padding-top: 1rem !important;
+  }
+
+  #player.ytmusic-player-page {
+    transform: translateY(-1.5rem) !important;
+  }
+}
+
+#blyrics-song-info {
+  text-align: left !important;
+
+  margin-left: 0 !important;
+  margin-right: auto !important;
+
+  #blyrics-title,
+  #blyrics-artist,
+  > p {
+    text-align: left !important;
+  }
+}
+
+
+// ============================================================
+// FOOTER & ACTION UI
+// ============================================================
+
+.blyrics-footer {
+  &__container,
+  &__discord,
+  &__container.blyrics-footer__unison-card {
+    background: rgba(0, 0, 0, 0.25);
+
+    padding: 1rem 2rem;
+
+    box-shadow:
+      0 0 4px rgba(0, 0, 0, 0.2);
+
+    transition: background-color 0.15s;
+    animation: none !important;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    > * {
+      animation: none !important;
+    }
+  }
+}
+
+
+// ============================================================
+// ROMANIZATION VISUAL CLEANUP
+// ============================================================
+
+.blyrics-container {
+  .blyrics--romanized,
+  .blyrics-line-romanized,
+  [class*="romanized"] {
+    background: transparent !important;
+    background-color: transparent !important;
+
+    border: 0 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+    outline: none !important;
+
+    padding: 0 !important;
+
+    &::before,
+    &::after {
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+    }
+  }
+}
+
+// ============================================================
+// HIDE NOTIFICATION TOASTS
+// ============================================================
+// Hides all notification toasts (like/unlike, add to playlist, etc.),
+// covering both the modern action-button toast and the text toast.
+
+tp-yt-paper-toast.toast-button,
+tp-yt-paper-toast.ytmusic-notification-text-renderer,
+yt-notification-action-renderer,
+yt-notification-action-renderer tp-yt-paper-toast {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(20px) !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+// ============================================================
+// DOCK SPACING — NON-FULLSCREEN
+// ============================================================
+// In non-fullscreen mode the Better Lyrics dock sits flush against
+// the media control, so it's nudged up for breathing room. Unchanged
+// in fullscreen, where the dock stays put for hover.
+
+body:not(:has(ytmusic-player-page[player-fullscreened])) .blyrics-dock {
+  translate: -56px -16px !important; // shifted up 16px
+}
+
+// ============================================================
+// COVER SPACING — NON-FULLSCREEN
+// ============================================================
+// Auto-calculated: overlap (97px - 72px) plus the desired breathing
+// room, applied via padding-bottom so the cover shrinks and rises
+// without being covered by the bar or clipped at the top.
+
+ytmusic-player-page[player-page-open]:not([player-fullscreened]) {
+  .content.ytmusic-player-page {
+    padding-bottom: calc(97px - var(--ytmusic-player-bar-height, 72px) + 20px) !important;
+    // = 25px overlap + 20px spacing = 49px
+  }
+}
+
+// ============================================================
+// TABS BELOW COVER — NON-FULLSCREEN
+// ============================================================
+// display: contents on #side-panel lets its children be rearranged
+// via grid on .content. Layout: left = cover (top) + tabs (bottom),
+// right = lyrics.
+
+ytmusic-player-page[player-page-open]:not([player-fullscreened]) {
+  .content.ytmusic-player-page {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "main side"
+      "tabs side";
+    column-gap: 24px;
+    position: relative;
+  }
+
+  // Break side-panel into "contents" so its children can be split apart
+  #side-panel {
+    display: contents !important;
+  }
+
+  // Left column, row 1: cover
+  #main-panel {
+    grid-area: main !important;
+    min-height: 0;
+  }
+
+  // Left column, row 2: tab buttons, centered below the cover
+  #side-panel > tp-yt-paper-tabs.tab-header-container {
+    grid-area: tabs !important;
+    display: flex !important;
+    justify-content: center;
+    padding: 10px 0 6px;
+    margin-top: -180px !important;
+  }
+
+  // Right column: lyrics / queue / message
+  #side-panel > ytmusic-tab-renderer,
+  #side-panel > ytmusic-message-renderer {
+    grid-area: side !important;
+    min-height: 0;   // required so lyrics scrolling keeps working
+  }
+
+  // "Resume autoscroll" button stays floating over the lyrics
+  #side-panel > #autoscroll-resume-wrapper {
+    grid-area: side;
+    position: absolute;
+    top: 8px;
+    left: 50%;               // centered in the right column
+    transform: translateX(-50%);
+  }
+}
+
+// ============================================================
+// VIDEO MODE — NON-FULLSCREEN (HOST-LEVEL ONLY)
+// ============================================================
+// #song-video / <video> live inside the shadow DOM, so document CSS
+// can't reach them — only ytmusic-player#player is stylable. Giving
+// the host a clean, centered 16:9 box lets the player's own JS fill
+// and center any aspect ratio inside it correctly.
+
+ytmusic-player-page[player-page-open]:not([player-fullscreened]):has(ytmusic-av-toggle[is-video-playback-mode-selected="true"]),
+ytmusic-player-page[player-page-open]:not([player-fullscreened])[video-mode] {
+  // Left column: flex column, centered
+  #main-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 0;
+  }
+
+  .av {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  // Host player: 16:9 box, full column width, centered, no overflow
+  ytmusic-player#player {
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    max-width: 93.2% !important;
+    aspect-ratio: 16 / 9;      // standard video box shape
+    max-height: 100% !important;
+    margin: 0 auto !important; // center horizontally
+  }
+
+  // Don't pull tabs up like in cover mode
+  #side-panel > tp-yt-paper-tabs.tab-header-container {
+    margin-top: 0 !important; 
+  }
+}
+
+// ============================================================
+// SEARCH BAR — CENTERED + WIDE
+// ============================================================
+ytmusic-nav-bar .center-content {
+  flex: 1 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+ytmusic-search-box,
+ytmusic-search-box .search-container {
+  width: 100% !important;
+  max-width: 700px !important;   // adjust the width here
+  margin: 0 auto !important;     // stay centered
+}
+
+// ============================================================
+// HIDE EMPTY PLAYER BAR
+// ============================================================
+// Hides the bar before a track is loaded (page open/refresh); once
+// a track loads, .title fills in and the bar shows normally.
+
+ytmusic-player-bar:not([player-fullscreened]):has(.title[is-empty]),
+ytmusic-player-bar:not([player-fullscreened]):has(.title:empty) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+// ============================================================
+// POPUP MENU — TRANSPARENT + BLUR
+// ============================================================
+// Makes the song's three-dot dropdown menu transparent + blurred,
+// matching the player bar's design.
+
+// Dropdown container (tp-yt-iron-dropdown)
+tp-yt-iron-dropdown.ytmusic-popup-container {
+  // The native container is usually already transparent;
+  // this just guards against a solid background.
+  background: transparent !important;
+}
+
+// Popup renderer (the menu's actual content)
+ytmusic-menu-popup-renderer {
+  background: rgba(14, 14, 18, 0.86) !important;  // matches $bar-bg
+  
+  backdrop-filter: blur(28px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(150%) !important;
+  
+  border: 1px solid $border-subtle !important;
+  border-radius: 14px !important;  // matches the player bar
+  
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset !important;
+  
+  overflow: hidden !important;
+}
+
+// Listbox inside the popup
+tp-yt-paper-listbox#items.ytmusic-menu-popup-renderer {
+  background: transparent !important;
+  padding: 8px !important;  // inner spacing
+  
+  // Each menu item
+  > * {
+    border-radius: 8px !important;
+    margin: 2px 0 !important;
+    
+    // Hover state
+    &:hover {
+      background: $surface-hover !important;
+    }
+    
+    // Selected/active state
+    &.iron-selected {
+      background: $surface-2 !important;
+    }
+    
+    // Text color
+    yt-formatted-string,
+    .text {
+      color: $text-1 !important;
+    }
+    
+    // Icon color
+    yt-icon {
+      color: $text-2 !important;
+    }
+  }
+}
+
+// Divider/separator between items (if present)
+ytmusic-menu-popup-renderer tp-yt-paper-listbox > [role="separator"] {
+  background: $border-subtle !important;
+  margin: 8px 0 !important;
+}
+
+// ============================================================
+// SHARE DIALOG — TRANSPARENT + BLUR
+// ============================================================
+// Song "Share" dialog (tp-yt-paper-dialog)
+tp-yt-paper-dialog.ytmusic-popup-container {
+  background: rgba(14, 14, 18, 0.86) !important;
+  
+  backdrop-filter: blur(28px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(150%) !important;
+  
+  border: 1px solid $border-subtle !important;
+  border-radius: $bar-radius !important;
+  
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset !important;
+  
+  overflow: hidden !important;
+}
+
+// Share panel contents
+ytmusic-unified-share-panel-renderer {
+  background: transparent !important;
+  color: $text-1 !important;
+  
+  // "Share" header
+  .header {
+    background: transparent !important;
+    border-bottom: 1px solid $border-subtle !important;
+    
+    #title,
+    h2 {
+      color: $text-1 !important;
+    }
+    
+    // Close button (X)
+    .close-button {
+      yt-icon {
+        color: $text-2 !important;
+      }
+      
+      &:hover yt-icon {
+        color: $text-1 !important;
+      }
+    }
+  }
+  
+  // Share targets (WhatsApp, FB, X, etc.)
+  #contents {
+    background: transparent !important;
+  }
+  
+  yt-share-target-renderer {
+    button#target {
+      background: transparent !important;
+      border-radius: $radius-md !important;
+      
+      &:hover {
+        background: $surface-hover !important;
+      }
+      
+      #title {
+        color: $text-2 !important;
+      }
+      
+      &:hover #title {
+        color: $text-1 !important;
+      }
+    }
+  }
+  
+  // Copy link bar
+  #copy-link {
+    background: transparent !important;
+    
+    #bar {
+      background: $surface-1 !important;
+      border: 1px solid $border-subtle !important;
+      border-radius: $radius-md !important;
+    }
+    
+    input#share-url {
+      color: $text-1 !important;
+      background: transparent !important;
+    }
+    
+    button {
+      background: $surface-2 !important;
+      color: $text-1 !important;
+      border-radius: $radius-sm !important;
+      
+      &:hover {
+        background: $surface-3 !important;
+      }
+    }
+  }
+  
+  // Start at checkbox
+  #start-at {
+    tp-yt-paper-checkbox {
+      --paper-checkbox-checked-color: #{$accent};
+      --paper-checkbox-checked-ink-color: #{$accent};
+      --paper-checkbox-unchecked-color: #{$text-3};
+      
+      #checkboxLabel {
+        color: $text-2 !important;
+      }
+    }
+    
+    tp-yt-paper-input {
+      --paper-input-container-color: #{$text-3};
+      --paper-input-container-input-color: #{$text-1};
+      
+      input {
+        color: $text-1 !important;
+      }
+    }
+  }
+}
+
+// ============================================================
+// SEARCH + SUGGESTIONS — FULL GLASS EFFECT
+// ============================================================
+
+// 1) Clear all native backgrounds inside the search box
+//    (black history rows, grey result sections, dividers, etc.)
+ytmusic-search-box * {
+  background-color: transparent !important;
+}
+
+// 2) Glass effect on just the 2 main containers, so blur shows and text stays sharp
+ytmusic-search-box .search-box {
+  background: rgba(14, 14, 18, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box #suggestion-list {
+  background: rgba(14, 14, 18, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45) !important;
+}
+
+// 3) Divider between sections (history | results) for a tidy look
+ytmusic-search-box #suggestion-list > ytmusic-search-suggestions-section:not(:first-child) {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+// 4) Item hover restored, since the earlier * rule disabled it
+ytmusic-search-box ytmusic-search-suggestion .left-content:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+ytmusic-search-box ytmusic-responsive-list-item-renderer:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+// 5) Keep text & icons white / sharp
+ytmusic-search-box #input,
+ytmusic-search-box ytmusic-search-suggestion .title,
+ytmusic-search-box ytmusic-responsive-list-item-renderer .title {
+  color: #ffffff !important;
+  filter: none !important;
+}
+
+ytmusic-search-box #placeholder,
+ytmusic-search-box .subtitle,
+ytmusic-search-box ytmusic-search-suggestion yt-icon {
+  color: rgba(255, 255, 255, 0.55) !important;
+  filter: none !important;
+}
+
+// ============================================================
+// SIDEBAR / NAVIGATION — GLASS TRANSPARENT + BLUR, NO BORDER
+// ============================================================
+
+// Drawer panel (the visible layer) — same glass effect as the search box
+tp-yt-app-drawer#guide #contentContainer {
+  background: rgba(14, 14, 18, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+// All inner layers made transparent so the blur shows through
+tp-yt-app-drawer#guide,
+#guide-wrapper,
+#guide-content,
+ytmusic-guide-renderer#guide-renderer,
+ytmusic-guide-renderer .guide-nav,
+ytmusic-guide-renderer #sections,
+ytmusic-guide-section-renderer {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+// Scrim (dark overlay when the drawer opens) — lightened so the blur shows
+tp-yt-app-drawer#guide #scrim {
+  background: rgba(0, 0, 0, 0.25) !important;
+  // swap in display: none !important; to remove the darken entirely
+}
+
+// Sidebar items: hover & active states matching the glass theme
+ytmusic-guide-entry-renderer tp-yt-paper-item:hover {
+  background: $surface-hover !important;
+}
+
+ytmusic-guide-entry-renderer tp-yt-paper-item[aria-current="true"] {
+  background: $surface-2 !important;
+}
+
+// ============================================================
+// NAVBAR LOGO — CLICK AREA FIX (HOME LINK)
+// ============================================================
+// The <a> tag is the link to Home. It gets a fixed size so the
+// click area doesn't shrink once the original image is removed.
+
+ytmusic-nav-bar ytmusic-logo {
+  // Remove the original image entirely
+  picture, img {
+    display: none !important;
+  }
+
+  // Styling applied directly to the <a> tag (the link / click area)
+  a.yt-simple-endpoint {
+    display: block !important;
+    
+    // Click area & logo size (adjust these values as needed)
+    width: 250px !important;
+    height: 70px !important;
+    
+    // Position (shift left/right/up/down)
+    margin-left: 10px !important;  // shifts right
+    margin-right: 20px !important; // shifts left
+    margin-top: -23px !important;    // shifts down
+
+    border-radius: 28px !important;
+
+    // Apply the SVG directly on the <a> tag
+    background-image: url("https://raw.githubusercontent.com/AlFarrizi-Studio/Clarity-Theme/refs/heads/main/images/rics%20elements/YouTube%20Music.svg") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: contain !important;
+    
+    transition: transform 0.2s ease, filter 0.2s ease !important;
+  }
+
+  // Hover effect (zoom & brighten)
+  a.yt-simple-endpoint:hover {
+    transform: scale(1.05) !important;
+    filter: brightness(1.15) !important;
+  }
+}

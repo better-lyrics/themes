@@ -1,0 +1,16 @@
+{
+  "repo": "AlFarrizi-Studio/Clarity-Theme",
+  "id": "clarity-theme",
+  "version": "1.0.5",
+  "commit": "14ae6d53ac4f565cbd4fa0b2118ddda97c45380a",
+  "integrity": "sha256-2044a0ec90eb2c845015937d07f3eb47d926cf346490111bc70fad351593fabb",
+  "locked": "2026-08-19T12:57:44Z",
+  "builds": [
+    {
+      "version": "1.0.5",
+      "minVersion": "2.0.0",
+      "path": "themes/clarity-theme",
+      "integrity": "sha256-2044a0ec90eb2c845015937d07f3eb47d926cf346490111bc70fad351593fabb"
+    }
+  ]
+}
