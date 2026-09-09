@@ -2,8 +2,8 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v1.1.0
- * 2026-08-25
+ * v1.1.3
+ * 2026-09-09
  *
  * Minimal theme can be turned off easily.
  *
@@ -174,12 +174,15 @@ blyrics-target-scroll-pos-ratio = 0.4;
 #blyrics-loader:not([state="showing-message"]):not([state="exiting-message"]):after,
 #blyrics-ad-overlay:after,
 .autoscroll-resume-button,
-.blyrics-container,
 .blyrics--line,
 .blyrics--word.blyrics--animating,
 .blyrics--word::after,
 .blyrics--word.blyrics--animating::after {
   will-change: unset;
+}
+
+.blyrics-container {
+  will-change: transform;
 }
 
 @property --blyrics-richsync-line-base-opacity {
@@ -281,7 +284,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
   animation-fill-mode: both;
   animation-timing-function: ease-out;
   animation-delay: calc(var(--blyrics-anim-delay) + var(--highlight-timing-offset-richsync, 0s));
-  will-change: opacity;
+  will-change: opacity, transform, translate;
 }
 
 #blyrics-wrapper .blyrics-container .blyrics--word.blyrics--paused,
@@ -439,6 +442,7 @@ blyrics-target-scroll-pos-ratio = 0.4;
     );
   animation-timing-function: ease-in-out;
   animation-fill-mode: both, forwards;
+  will-change: opacity;
 }
 
 @keyframes line-entry {
