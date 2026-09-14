@@ -1,6 +1,9 @@
 @import url("https://fonts.boidu.dev/css/switzer-variable");
 
-/* blyrics-hide-instrumental-only = true; */
+/*
+blyrics-hide-instrumental-only = true;
+blyrics-letter-wave = true;
+*/
 
 :root {
   --yt-album-size: 600px;

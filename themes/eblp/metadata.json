@@ -4,7 +4,7 @@
   "creators": ["boidushya", "noah"],
   "minVersion": "2.4.0.1",
   "hasShaders": true,
-  "version": "1.0.5",
+  "version": "1.0.6",
   "tags": ["animated", "dark"],
   "images": ["eblp-1.png", "eblp-2.png", "eblp-3.png"],
   "description": "An enhanced lyrics theme with blur effects, rich animations, and a refined player layout"
