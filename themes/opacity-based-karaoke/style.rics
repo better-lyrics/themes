@@ -2,7 +2,7 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v1.10.3
+ * v1.10.4
  * 2026-09-14
  *
  * Minimal theme can be turned off easily.
@@ -19,7 +19,7 @@ $enable-minimal: on;
 $karaoke-style: reveal;
 /* reveal / flash / trail / spotlight */
 
-$enable-blur: on;
+$enable-blur: off;
 /* on / off */
 
 $blur-amount: 30px;
