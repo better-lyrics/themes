@@ -40,6 +40,7 @@ blyrics-letter-wave = true;
 
 
 $fullscreen-lyrics-placement: left; // Can be `left` or `right`
+$song-info-layout: 1; // Can be `1` or `2`
 
 
 * {
@@ -390,6 +391,13 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]):not([blyrics-video-mode
   max-width: var(--blyrics-img-max-width);
 }
 
+ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-video-mode]):not([video-mode]) ytmusic-player:not([video-mode]) {
+  @if $song-info-layout == 1{
+    border-radius: 2rem 2rem 0 0;
+    --yt-img-border-radius: 2rem 2rem 0 0;
+  }
+}
+
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info {
   text-align: left;
   width: 100%;
@@ -400,6 +408,16 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   box-sizing: border-box;
   transition: max-width 0.5s ease-in-out;
   transition-delay: var(--blyrics-no-lyrics-slide-delay);
+  @if $song-info-layout == 1 {
+    padding: 2rem;
+    margin-bottom: 8rem;
+    outline: 1px dashed rgb(255 255 255 / 15%);
+    border-radius: 0 0 2rem 2rem;
+    z-index: -1;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 20px 20px 0px;
+  }
 }
 
 ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened][video-mode]:not([blyrics-dfs]) #blyrics-song-info {
