@@ -395,7 +395,6 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   width: 100%;
   max-width: var(--blyrics-img-max-width);
   margin-bottom: 4rem;
-  z-index: -1;
   transform: translateY(-64px);
   box-sizing: border-box;
   transition: max-width 0.5s ease-in-out;
