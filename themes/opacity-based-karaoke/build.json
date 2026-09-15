@@ -1,16 +1,16 @@
 {
   "repo": "ramansg/Max-Performance-BlyricsTheme",
   "id": "opacity-based-karaoke",
-  "version": "2.1.1",
-  "commit": "3458b9700c1ecdef3cd397a2383b34974d34fdbd",
-  "integrity": "sha256-d96ab70333a512562fada423f316952a355b60321823d2bceba6c0b4691bed7f",
-  "locked": "2026-09-14T17:54:16Z",
+  "version": "2.1.2",
+  "commit": "76411889a594181f886b7039dcbf0e7743553683",
+  "integrity": "sha256-607a0b6beb2bcee6b1c1a076653f7b98d3baf713a97a4c41063372378fb6be5c",
+  "locked": "2026-09-15T06:53:29Z",
   "builds": [
     {
-      "version": "2.1.1",
+      "version": "2.1.2",
       "minVersion": "2.2.0.0",
       "path": "themes/opacity-based-karaoke",
-      "integrity": "sha256-d96ab70333a512562fada423f316952a355b60321823d2bceba6c0b4691bed7f"
+      "integrity": "sha256-607a0b6beb2bcee6b1c1a076653f7b98d3baf713a97a4c41063372378fb6be5c"
     }
   ]
 }

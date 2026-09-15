@@ -2,8 +2,8 @@
 /*
  *
  * Max Performance - Opacity based karaoke
- * v1.10.4
- * 2026-09-14
+ * v2.1.2
+ * 2026-09-15
  *
  * Minimal theme can be turned off easily.
  *
@@ -40,7 +40,7 @@ $blur-amount: 30px;
    ++++++++++++++++++++++++++++++++++++++++++++++++++
  *
  *   reveal    : words float and appear one by one, then
- *                 the whole line disappears when it's finished. (default)
+ *                 the whole line disappears. (default)
  *   flash     : each word flashes only once and then disappears.
  *   trail     : words appear and disappear like a
  *                 soft trailing streak of light.
@@ -185,7 +185,6 @@ blyrics-target-scroll-pos-ratio = 0.4;
 #blyrics-loader:not([state="showing-message"]):not([state="exiting-message"]):after,
 #blyrics-ad-overlay:after,
 .autoscroll-resume-button,
-.blyrics-container,
 .blyrics--line,
 .blyrics--word.blyrics--animating,
 .blyrics--word::after,
