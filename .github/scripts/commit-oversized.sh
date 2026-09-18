@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Commit and push staged changes with a plain git push, used only when the
-# change set is too large for ghcommit-action's 45MB createCommitOnBranch cap.
-# These commits are not GitHub-signed; attribute them to the app's bot user.
+# Unsigned fallback for change sets over ghcommit-action's 45MB createCommitOnBranch cap.
 
 MESSAGE="${1:?commit message required}"
 BRANCH="${2:?branch required}"

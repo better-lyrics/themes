@@ -217,7 +217,9 @@ jobs:
       - name: Measure commit size
         id: size
         if: steps.stage.outputs.has_changes == 'true'
-        run: node .github/scripts/payload-size.mjs "themes/${{ steps.metadata.outputs.id }}"
+        env:
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+        run: node .github/scripts/payload-size.mjs "themes/$THEME_ID"
 
       - name: Commit and push changes
         id: commit
@@ -238,11 +240,13 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+          VERSION: ${{ steps.metadata.outputs.version }}
         run: |
           bash .github/scripts/commit-oversized.sh \
-            "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}" \
+            "feat($THEME_ID): update to v$VERSION" \
             master \
-            "themes/${{ steps.metadata.outputs.id }}"
+            "themes/$THEME_ID"
 
       # The commit step uses continue-on-error, so ALL commit failures (not just
       # CAS races) flow into this bounded retry. ghcommit exposes no
