@@ -1,0 +1,22 @@
+{
+  "version": "2.0",
+  "settings": {
+    "enabled": true,
+    "kawarpOpacity": 0.75,
+    "kawarpWarpIntensity": 1,
+    "kawarpBlurPasses": 8,
+    "kawarpAnimationSpeed": 1.8,
+    "kawarpTransitionDuration": 1500,
+    "kawarpSaturation": 1.7,
+    "kawarpDithering": 0,
+    "kawarpAudioScaleBoost": 2,
+    "audioResponsive": false,
+    "audioSpeedMultiplier": 4,
+    "audioBeatThreshold": 0.75,
+    "pauseOnInactive": true,
+    "showLogs": false,
+    "showOnBrowsePages": false,
+    "enableAnimatedArt": true
+  },
+  "exportedAt": "2026-05-24T14:00:26.324Z"
+}
