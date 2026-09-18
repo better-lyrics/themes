@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { buildReport, SINGLE_CAP } from "./image-report.mjs";
+import { buildReport, codeSpan, SINGLE_CAP } from "./image-report.mjs";
 
 test("clean theme: no warning", () => {
   const images = [{ name: "a.webp", bytes: 100000 }];
@@ -42,4 +42,30 @@ test("oversized but all referenced: warning without unused section", () => {
   const images = [{ name: "big.webp", bytes: SINGLE_CAP + 1 }];
   const out = buildReport(images, "url(big.webp)");
   assert.doesNotMatch(out, /may be unused/);
+});
+
+test("regression: substring collision does not hide a genuinely unused image", () => {
+  const images = [
+    { name: "g.webp", bytes: SINGLE_CAP + 1 },
+    { name: "bg.webp", bytes: SINGLE_CAP + 1 },
+  ];
+  const out = buildReport(images, "background: url(bg.webp)");
+  const unusedSection = out.split("may be unused")[1];
+  assert.match(unusedSection, /- `g\.webp`/);
+  assert.doesNotMatch(unusedSection, /- `bg\.webp`/);
+});
+
+test("path-prefixed reference still counts as used", () => {
+  const images = [{ name: "bg.webp", bytes: SINGLE_CAP + 1 }];
+  const out = buildReport(images, "url(./images/bg.webp)");
+  assert.doesNotMatch(out, /may be unused/);
+});
+
+test("regression: backtick in filename cannot break out of the code span", () => {
+  const evil = "a`](http://evil).webp";
+  assert.equal(codeSpan(evil), "``" + evil + "``");
+});
+
+test("codeSpan pads when content starts or ends with a backtick", () => {
+  assert.equal(codeSpan("`x"), "`` `x ``");
 });

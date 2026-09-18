@@ -17,19 +17,32 @@ function mb(bytes) {
   return (bytes / 1024 / 1024).toFixed(1);
 }
 
+export function codeSpan(text) {
+  const runs = text.match(/`+/g);
+  const longest = runs ? Math.max(...runs.map((r) => r.length)) : 0;
+  const fence = "`".repeat(longest + 1);
+  const pad = text.startsWith("`") || text.endsWith("`") ? " " : "";
+  return `${fence}${pad}${text}${pad}${fence}`;
+}
+
+function isReferenced(name, haystack) {
+  const escaped = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(^|[^a-z0-9._-])${escaped}([^a-z0-9]|$)`).test(haystack);
+}
+
 export function buildReport(images, referenceText, { singleCap = SINGLE_CAP, totalCap = TOTAL_CAP } = {}) {
   const total = images.reduce((sum, i) => sum + i.bytes, 0);
   const large = images.filter((i) => i.bytes > singleCap);
   if (large.length === 0 && total <= totalCap) return "";
 
   const haystack = referenceText.toLowerCase();
-  const unused = images.filter((i) => !haystack.includes(i.name.toLowerCase()));
+  const unused = images.filter((i) => !isReferenced(i.name, haystack));
 
   const lines = [
     "**A note on your theme's images (this does not block publishing):**",
     "",
     "Some images are large. Big images make your theme slower to load for listeners and add weight to the registry each time a version is snapshotted:",
-    ...large.map((i) => `- \`${i.name}\`: ${mb(i.bytes)} MB`),
+    ...large.map((i) => `- ${codeSpan(i.name)}: ${mb(i.bytes)} MB`),
     `- total: about ${Math.round(total / 1024 / 1024)} MB across ${images.length} images`,
   ];
 
@@ -37,7 +50,7 @@ export function buildReport(images, referenceText, { singleCap = SINGLE_CAP, tot
     lines.push(
       "",
       "Some images also do not appear to be referenced in your `style.rics`, `shader.json`, `settings.json`, `metadata.json`, or `DESCRIPTION.md`, so they may be unused:",
-      ...unused.map((i) => `- \`${i.name}\``),
+      ...unused.map((i) => `- ${codeSpan(i.name)}`),
     );
   }
 
