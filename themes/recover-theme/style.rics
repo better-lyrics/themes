@@ -1,5 +1,6 @@
 /* Configurable variables */
 $placement: left; // Placement of the album cover: left | right
+$glassy-browser-page: false; // Should the entire YTM layout be blurry and transparent
 $affect-lyric-direction: true; // Should the placement of the album cover affets the text direction of the lyrics
 $opacity-after-line: .5; // The opacity of the already sung lyrics
 $blur-after-line: .5rem; // The blur strength of the already sung lyrics
@@ -195,5 +196,28 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
     }
     .blyrics--word:after {
         text-shadow: none;
+    }
+}
+
+/* Blurry transparent layout (Optional) */
+@if $glassy-browser-page == true {
+    #layout {
+        ytmusic-search-box {
+            border: none;
+        }
+        #player-bar-background, {
+            background: transparent !important;
+        }
+        ytmusic-tabs,
+        #guide-wrapper,
+        #mini-guide-background,
+        #nav-bar-background {
+            background: transparent !important;
+            backdrop-filter: blur(2rem);
+        }
+        ytmusic-player-bar {
+            background: rgba(0, 0, 0, .2);
+            backdrop-filter: blur(1rem);
+        }
     }
 }

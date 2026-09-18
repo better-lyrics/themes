@@ -16,13 +16,23 @@
         "attrType": "rics",
         "default": 0
     },
-    "lyrics": {
+    "glassy-browser-page": {
         "pos": 2,
+        "type": "toggle",
+        "label": "Should the entire YTM layout be blurry and transparent? Best enabled when using BL Shaders",
+        "onValue": "true",
+        "offValue": "false",
+        "attribute": "glassy-browser-page",
+        "attrType": "rics",
+        "default": false
+    },
+    "lyrics": {
+        "pos": 3,
         "type": "heading",
         "label": "Lyrics"
     },
     "affect-lyric-direction": {
-        "pos": 3,
+        "pos": 4,
         "type": "toggle",
         "label": "Should the placement of the album cover affets the text direction of the lyrics",
         "onValue": "true",
@@ -32,7 +42,7 @@
         "default": false
     },
     "opacity-after-line": {
-        "pos": 4,
+        "pos": 5,
         "type": "range",
         "label": "Opacity of the lyric line after it has been sung, with autoscroll enabled",
         "attribute": "opacity-after-line",
@@ -43,7 +53,7 @@
         "default": 0.1
     },
     "blur-after-line": {
-        "pos": 5,
+        "pos": 6,
         "type": "textfield",
         "label": "Blur strength of the lyric line after it has been sung, with autoscroll enabled",
         "attribute": "blur-after-line",
@@ -51,12 +61,12 @@
         "default": ".5rem"
     },
     "track-info": {
-        "pos": 6,
+        "pos": 7,
         "type": "heading",
         "label": "Track Info"
     },
     "visible-track-info": {
-        "pos": 7,
+        "pos": 8,
         "type": "toggle",
         "label": "Show floating track info",
         "attribute": "visibility-track-info",
@@ -66,7 +76,7 @@
         "default": true
     },
     "opacity-bg-track-info": {
-        "pos": 8,
+        "pos": 9,
         "type": "range",
         "label": "Opacity of the track info's background",
         "attribute": "bg-opacity-track-info",
@@ -77,7 +87,7 @@
         "default": 0.5
     },
     "color-bg-track-info": {
-        "pos": 9,
+        "pos": 10,
         "type": "color",
         "label": "Color of the track info's background",
         "attribute": "bg-color-track-info",
@@ -85,7 +95,7 @@
         "default": "#000"
     },
     "blur-backdrop-track-info": {
-        "pos": 10,
+        "pos": 11,
         "type": "textfield",
         "label": "Blur strength of the track info's backdrop",
         "attribute": "backdrop-blur-track-info",
@@ -93,12 +103,12 @@
         "default": "1rem"
     },
     "album-cover": {
-        "pos": 11,
+        "pos": 12,
         "type": "heading",
         "label": "Album Cover"
     },
     "size-album-cover": {
-        "pos": 12,
+        "pos": 13,
         "type": "textfield",
         "label": "Size of the album cover in non-fullscreen mode",
         "attribute": "yt-album-size",
@@ -106,7 +116,7 @@
         "default": "80%"
     },
     "border-radius-album-cover": {
-        "pos": 13,
+        "pos": 14,
         "type": "textfield",
         "label": "Border radius size of the album cover in non-fullscreen mode",
         "attribute": "yt-album-border-radius",
