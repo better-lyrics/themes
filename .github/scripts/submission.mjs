@@ -21,6 +21,11 @@ export function isValidRepo(repo) {
   return /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(String(repo ?? ""));
 }
 
+// isValidThemeId(id) -> true for a create-bl-theme id (lowercase, digits, hyphens); also safe as a themes/<id> dir name.
+export function isValidThemeId(id) {
+  return /^[a-z0-9-]+$/.test(String(id ?? ""));
+}
+
 // idTaken(id, ids) -> true when id exactly equals one of the existing ids. The
 // compare is a literal string equality, never a regex: a submitted id like
 // ".*" must match only itself, not every registered id.
@@ -28,11 +33,13 @@ export function idTaken(id, ids) {
   return (ids ?? []).includes(String(id ?? ""));
 }
 
-// CLI for the workflow. Two subcommands:
+// CLI for the workflow. Three subcommands:
 //   normalize  -> prints normalized repo from $RAW_REPO; exits 0 if it is a
 //                 valid owner/name, else 1 (the workflow rejects on nonzero).
 //   id-taken <id> -> reads candidate ids (one per line) on stdin; exits 0 if
 //                 <id> is already taken, else 1.
+//   valid-id <id> -> exits 0 if <id> is a valid theme id, else 1 (the workflow
+//                 rejects on nonzero).
 const isDirectRun = import.meta.url === `file://${process.argv[1]}`;
 if (isDirectRun) {
   const cmd = process.argv[2];
@@ -47,6 +54,8 @@ if (isDirectRun) {
       .map((s) => s.trim())
       .filter(Boolean);
     process.exit(idTaken(id, ids) ? 0 : 1);
+  } else if (cmd === "valid-id") {
+    process.exit(isValidThemeId(process.argv[3] ?? "") ? 0 : 1);
   } else {
     process.stderr.write(`submission.mjs: unknown command ${JSON.stringify(cmd)}\n`);
     process.exit(2);

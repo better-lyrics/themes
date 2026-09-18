@@ -41,10 +41,10 @@ jobs:
 
       - name: Validate payload
         id: payload
+        env:
+          REPO: ${{ github.event.client_payload.repo }}
+          COMMIT: ${{ github.event.client_payload.commit }}
         run: |
-          REPO="${{ github.event.client_payload.repo }}"
-          COMMIT="${{ github.event.client_payload.commit }}"
-
           if [ -z "$REPO" ] || [ -z "$COMMIT" ]; then
             echo "error=Missing repo or commit in payload" >> $GITHUB_OUTPUT
             exit 1
@@ -55,9 +55,9 @@ jobs:
 
       - name: Check theme is registered
         id: check-registered
+        env:
+          REPO: ${{ steps.payload.outputs.repo }}
         run: |
-          REPO="${{ steps.payload.outputs.repo }}"
-
           if ! jq -e --arg repo "$REPO" '.themes[] | select(.repo == $repo)' index.json > /dev/null; then
             echo "error=Theme $REPO is not registered in index.json" >> $GITHUB_OUTPUT
             exit 1
@@ -67,10 +67,10 @@ jobs:
 
       - name: Clone theme repo
         id: clone
+        env:
+          REPO: ${{ steps.payload.outputs.repo }}
+          COMMIT: ${{ steps.payload.outputs.commit }}
         run: |
-          REPO="${{ steps.payload.outputs.repo }}"
-          COMMIT="${{ steps.payload.outputs.commit }}"
-
           git clone "https://github.com/$REPO.git" theme-repo
           cd theme-repo
           git checkout "$COMMIT"
@@ -84,16 +84,21 @@ jobs:
           THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
           VERSION=$(jq -r '.version' theme-repo/metadata.json)
 
+          if ! node .github/scripts/submission.mjs valid-id "$THEME_ID"; then
+            echo "error=Invalid theme id (lowercase letters, numbers, and hyphens only)" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
           echo "id=$THEME_ID" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Check version increment
         id: version-check
+        env:
+          REPO: ${{ steps.payload.outputs.repo }}
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+          NEW_VERSION: ${{ steps.metadata.outputs.version }}
         run: |
-          REPO="${{ steps.payload.outputs.repo }}"
-          THEME_ID="${{ steps.metadata.outputs.id }}"
-          NEW_VERSION="${{ steps.metadata.outputs.version }}"
-
           # Get current version from the theme's own build.json
           CURRENT_VERSION=$(jq -r '.version // "0.0.0"' "themes/$THEME_ID/build.json" 2>/dev/null || echo "0.0.0")
 
@@ -121,11 +126,12 @@ jobs:
 
       - name: Vendor theme
         id: vendor
+        env:
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+          VERSION: ${{ steps.metadata.outputs.version }}
+          REPO: ${{ steps.payload.outputs.repo }}
+          COMMIT: ${{ steps.payload.outputs.commit }}
         run: |
-          THEME_ID="${{ steps.metadata.outputs.id }}"
-          VERSION="${{ steps.metadata.outputs.version }}"
-          REPO="${{ steps.payload.outputs.repo }}"
-          COMMIT="${{ steps.payload.outputs.commit }}"
           MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
@@ -214,10 +220,17 @@ jobs:
           git add .
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
+      - name: Measure commit size
+        id: size
+        if: steps.stage.outputs.has_changes == 'true'
+        env:
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+        run: node .github/scripts/payload-size.mjs "themes/$THEME_ID"
+
       - name: Commit and push changes
         id: commit
         continue-on-error: true
-        if: steps.stage.outputs.has_changes == 'true'
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized != 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
           commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
@@ -226,6 +239,20 @@ jobs:
           file_pattern: themes/${{ steps.metadata.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Commit via git push (oversized)
+        id: push
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
+          THEME_ID: ${{ steps.metadata.outputs.id }}
+          VERSION: ${{ steps.metadata.outputs.version }}
+        run: |
+          bash .github/scripts/commit-oversized.sh \
+            "feat($THEME_ID): update to v$VERSION" \
+            master \
+            "themes/$THEME_ID"
 
       # The commit step uses continue-on-error, so ALL commit failures (not just
       # CAS races) flow into this bounded retry. ghcommit exposes no
@@ -237,15 +264,15 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           RETRY_RAW: ${{ github.event.client_payload.retry || 0 }}
+          REPO: ${{ steps.payload.outputs.repo }}
+          COMMIT: ${{ steps.payload.outputs.commit }}
+          INSTALL_ID: ${{ github.event.client_payload.installationId }}
         run: |
           # RETRY_RAW comes from the dispatch payload; read it via env (not inline
           # interpolation) so a malformed value cannot inject a command, and run it
           # through the sanitizer so the comparison/increment below always gets a
           # clean non-negative integer.
           RETRY="$(node .github/scripts/retry-redispatch.mjs)"
-          REPO="${{ steps.payload.outputs.repo }}"
-          COMMIT="${{ steps.payload.outputs.commit }}"
-          INSTALL_ID="${{ github.event.client_payload.installationId }}"
           if [ "$RETRY" -lt 5 ]; then
             sleep $((RANDOM % 20 + 5))   # jitter so the colliding window clears
             if curl -sS --fail-with-body -X POST "https://api.github.com/repos/${{ github.repository }}/dispatches" \
@@ -264,34 +291,50 @@ jobs:
           fi
 
       - name: Report success status
-        if: steps.commit.outcome == 'success'
+        if: steps.commit.outcome == 'success' || steps.push.outcome == 'success'
+        env:
+          STORE_API_URL: ${{ secrets.STORE_API_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          REPO: ${{ steps.payload.outputs.repo }}
+          COMMIT: ${{ steps.payload.outputs.commit }}
+          INSTALL_ID: ${{ github.event.client_payload.installationId }}
+          VERSION: ${{ steps.metadata.outputs.version }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
-            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "repo": "${{ steps.payload.outputs.repo }}",
-              "commit": "${{ steps.payload.outputs.commit }}",
-              "installationId": ${{ github.event.client_payload.installationId }},
-              "success": true,
-              "description": "Published v${{ steps.metadata.outputs.version }}",
-              "targetUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }'
+          jq -nc \
+            --arg repo "$REPO" \
+            --arg commit "$COMMIT" \
+            --argjson installationId "${INSTALL_ID:-null}" \
+            --arg description "Published v$VERSION" \
+            --arg targetUrl "$RUN_URL" \
+            '{repo: $repo, commit: $commit, installationId: $installationId, success: true, description: $description, targetUrl: $targetUrl}' \
+            | curl -X POST "$STORE_API_URL/api/webhooks/complete" \
+                -H "Authorization: Bearer $WEBHOOK_SECRET" \
+                -H "Content-Type: application/json" \
+                -d @-
 
       - name: Report failure status
         if: failure() && steps.redispatch.outputs.requeued != 'true'
+        env:
+          STORE_API_URL: ${{ secrets.STORE_API_URL }}
+          WEBHOOK_SECRET: ${{ secrets.WEBHOOK_SECRET }}
+          REPO: ${{ steps.payload.outputs.repo }}
+          COMMIT: ${{ steps.payload.outputs.commit }}
+          INSTALL_ID: ${{ github.event.client_payload.installationId }}
+          DESCRIPTION: ${{ steps.check-registered.outputs.error || steps.metadata.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}
+          RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
-            -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "repo": "${{ steps.payload.outputs.repo }}",
-              "commit": "${{ steps.payload.outputs.commit }}",
-              "installationId": ${{ github.event.client_payload.installationId }},
-              "success": false,
-              "description": "${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}",
-              "targetUrl": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }'
+          jq -nc \
+            --arg repo "$REPO" \
+            --arg commit "$COMMIT" \
+            --argjson installationId "${INSTALL_ID:-null}" \
+            --arg description "$DESCRIPTION" \
+            --arg targetUrl "$RUN_URL" \
+            '{repo: $repo, commit: $commit, installationId: $installationId, success: false, description: $description, targetUrl: $targetUrl}' \
+            | curl -X POST "$STORE_API_URL/api/webhooks/complete" \
+                -H "Authorization: Bearer $WEBHOOK_SECRET" \
+                -H "Content-Type: application/json" \
+                -d @-
 
   # Job for push events (new themes added via PR merge)
   vendor-new:
@@ -356,6 +399,8 @@ jobs:
       - name: Vendor new themes
         id: vendor
         if: steps.changes.outputs.new != ''
+        env:
+          NEW_THEMES: ${{ steps.changes.outputs.new }}
         run: |
           TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           VENDORED=""
@@ -378,6 +423,13 @@ jobs:
             THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
             VERSION=$(jq -r '.version' theme-repo/metadata.json)
             MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
+
+            if ! node .github/scripts/submission.mjs valid-id "$THEME_ID"; then
+              echo "::error::Invalid theme id in $repo"
+              FAILED="$FAILED$repo\n"
+              rm -rf theme-repo
+              continue
+            fi
 
             # Validate theme
             OUTPUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
@@ -425,7 +477,7 @@ jobs:
             VENDORED="$VENDORED$THEME_ID (v$VERSION)\n"
 
             rm -rf theme-repo
-          done <<< "${{ steps.changes.outputs.new }}"
+          done <<< "$NEW_THEMES"
 
           echo "vendored<<EOF" >> $GITHUB_OUTPUT
           echo -e "$VENDORED" >> $GITHUB_OUTPUT
@@ -444,6 +496,8 @@ jobs:
       - name: Remove old themes
         id: cleanup
         if: steps.changes.outputs.removed != ''
+        env:
+          REMOVED_THEMES: ${{ steps.changes.outputs.removed }}
         run: |
           REMOVED=""
 
@@ -466,7 +520,7 @@ jobs:
 
               REMOVED="$REMOVED$THEME_ID\n"
             fi
-          done <<< "${{ steps.changes.outputs.removed }}"
+          done <<< "$REMOVED_THEMES"
 
           echo "removed<<EOF" >> $GITHUB_OUTPUT
           echo -e "$REMOVED" >> $GITHUB_OUTPUT
@@ -482,8 +536,13 @@ jobs:
           git add .
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
-      - name: Commit and push changes
+      - name: Measure commit size
+        id: size
         if: steps.stage.outputs.has_changes == 'true'
+        run: node .github/scripts/payload-size.mjs
+
+      - name: Commit and push changes
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized != 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
           commit_message: "chore: vendor themes"
@@ -492,16 +551,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
+      - name: Commit via git push (oversized)
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
+        run: |
+          bash .github/scripts/commit-oversized.sh "chore: vendor themes" master
+
       - name: Summary
         if: always()
         continue-on-error: true
+        env:
+          VENDORED: ${{ steps.vendor.outputs.vendored }}
+          REMOVED: ${{ steps.cleanup.outputs.removed }}
+          FAILED: ${{ steps.vendor.outputs.failed }}
         run: |
           echo "## Theme Vendoring Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-
-          VENDORED="${{ steps.vendor.outputs.vendored }}"
-          REMOVED="${{ steps.cleanup.outputs.removed }}"
-          FAILED="${{ steps.vendor.outputs.failed }}"
 
           if [ -n "$VENDORED" ]; then
             echo "### Vendored Themes" >> $GITHUB_STEP_SUMMARY

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-import { normalizeRepo, isValidRepo, idTaken } from "./submission.mjs";
+import { normalizeRepo, isValidRepo, idTaken, isValidThemeId } from "./submission.mjs";
 
 test("normalizeRepo: bare owner/name passes through", () => {
   assert.equal(normalizeRepo("owner/repo"), "owner/repo");
@@ -85,4 +85,38 @@ test("idTaken: empty / null / empty list -> not taken", () => {
   assert.equal(idTaken(null, ["a", "b"]), false);
   assert.equal(idTaken("a", []), false);
   assert.equal(idTaken("a", undefined), false);
+});
+
+test("isValidThemeId: accepts lowercase, digits and hyphens", () => {
+  assert.equal(isValidThemeId("apple-music"), true);
+  assert.equal(isValidThemeId("apple-music-v3"), true);
+  assert.equal(isValidThemeId("darky"), true);
+  assert.equal(isValidThemeId("eblp"), true);
+});
+
+test("isValidThemeId: matches create-bl-theme leniency on hyphen placement", () => {
+  assert.equal(isValidThemeId("-foo"), true);
+  assert.equal(isValidThemeId("foo-"), true);
+  assert.equal(isValidThemeId("a--b"), true);
+  assert.equal(isValidThemeId("0"), true);
+});
+
+test("isValidThemeId: rejects path separators and traversal", () => {
+  assert.equal(isValidThemeId("../../etc"), false);
+  assert.equal(isValidThemeId("a/b"), false);
+  assert.equal(isValidThemeId("a.b"), false);
+  assert.equal(isValidThemeId(".."), false);
+});
+
+test("isValidThemeId: rejects uppercase, whitespace, underscore and unicode", () => {
+  assert.equal(isValidThemeId("Apple"), false);
+  assert.equal(isValidThemeId("a b"), false);
+  assert.equal(isValidThemeId("a_b"), false);
+  assert.equal(isValidThemeId("café"), false);
+});
+
+test("isValidThemeId: rejects empty and null", () => {
+  assert.equal(isValidThemeId(""), false);
+  assert.equal(isValidThemeId(null), false);
+  assert.equal(isValidThemeId(undefined), false);
 });

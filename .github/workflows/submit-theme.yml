@@ -103,6 +103,9 @@ jobs:
                   ERR="Your theme didn't pass validation:"
                 fi
               fi
+              if [ -z "$ERR" ]; then
+                node .github/scripts/image-report.mjs theme-repo > imgwarn.md || true
+              fi
             else
               ERR="Couldn't clone \`$REPO\`."
             fi
@@ -169,8 +172,13 @@ jobs:
           PR_URL: ${{ steps.cpr.outputs.url }}
           ISSUE: ${{ github.event.issue.number }}
         run: |
-          printf 'Thanks! Opened %s for review. Your theme publishes once a maintainer merges it.\n' "$PR_URL" \
-            | bash .github/scripts/upsert-status.sh
+          {
+            printf 'Thanks! Opened %s for review. Your theme publishes once a maintainer merges it.\n' "$PR_URL"
+            if [ -s imgwarn.md ]; then printf '\n'; cat imgwarn.md; fi
+          } | bash .github/scripts/upsert-status.sh
+          if [ -s imgwarn.md ]; then
+            gh pr comment "$PR_URL" --body-file imgwarn.md || true
+          fi
           gh issue close "$ISSUE" --reason completed
 
       - name: Comment and close (rejected)
