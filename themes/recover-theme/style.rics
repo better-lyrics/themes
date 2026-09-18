@@ -43,6 +43,22 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
             margin: 0 if($placement == right, var(--ytmusic-player-page-content-gap), 0) 0 if($placement == right, 0, var(--ytmusic-player-page-content-gap));
         }
 
+        /* BL 2.4.0.8 controls column is sized to the album art and transformed; hide it and neutralise the box so the floating card keeps its corner */
+        #blyrics-fs-controls,
+        .blyrics-fs-info-actions {
+            display: none;
+        }
+
+        #blyrics-fs-column {
+            transform: none !important;
+            width: auto !important;
+            margin: 0 !important;
+        }
+
+        #blyrics-fs-column #blyrics-song-info {
+            padding: 1rem 1.25rem;
+        }
+
         @if $affect-lyric-direction == true {
             /* Adjust the layout of the lyric line based on the placement */
             .blyrics--line:not([data-agent="v1000"]) {
@@ -140,7 +156,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
         backdrop-filter: blur($backdrop-blur-track-info);
         left: if($placement == left, 2rem, unset);
         right: if($placement == right, 2rem, unset);
-        top: 2rem;
+        top: calc(2rem - var(--ytmusic-nav-bar-height, 0px)); // BL 2.4.0.8 nests the card so its fixed containing block is offset down by the nav bar; pull it back to the viewport corner
         border-radius: .5rem;
         justify-content: flex-end;
         align-items: if($placement == left, flex-start, flex-end);
