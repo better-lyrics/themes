@@ -214,10 +214,15 @@ jobs:
           git add .
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
+      - name: Measure commit size
+        id: size
+        if: steps.stage.outputs.has_changes == 'true'
+        run: node .github/scripts/payload-size.mjs "themes/${{ steps.metadata.outputs.id }}"
+
       - name: Commit and push changes
         id: commit
         continue-on-error: true
-        if: steps.stage.outputs.has_changes == 'true'
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized != 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
           commit_message: "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}"
@@ -226,6 +231,18 @@ jobs:
           file_pattern: themes/${{ steps.metadata.outputs.id }}
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Commit via git push (oversized)
+        id: push
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
+        run: |
+          bash .github/scripts/commit-oversized.sh \
+            "feat(${{ steps.metadata.outputs.id }}): update to v${{ steps.metadata.outputs.version }}" \
+            master \
+            "themes/${{ steps.metadata.outputs.id }}"
 
       # The commit step uses continue-on-error, so ALL commit failures (not just
       # CAS races) flow into this bounded retry. ghcommit exposes no
@@ -264,7 +281,7 @@ jobs:
           fi
 
       - name: Report success status
-        if: steps.commit.outcome == 'success'
+        if: steps.commit.outcome == 'success' || steps.push.outcome == 'success'
         run: |
           curl -X POST "${{ secrets.STORE_API_URL }}/api/webhooks/complete" \
             -H "Authorization: Bearer ${{ secrets.WEBHOOK_SECRET }}" \
@@ -482,8 +499,13 @@ jobs:
           git add .
           git diff --staged --quiet || echo "has_changes=true" >> $GITHUB_OUTPUT
 
-      - name: Commit and push changes
+      - name: Measure commit size
+        id: size
         if: steps.stage.outputs.has_changes == 'true'
+        run: node .github/scripts/payload-size.mjs
+
+      - name: Commit and push changes
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized != 'true'
         uses: planetscale/ghcommit-action@v0.2.19
         with:
           commit_message: "chore: vendor themes"
@@ -491,6 +513,14 @@ jobs:
           branch: master
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Commit via git push (oversized)
+        if: steps.stage.outputs.has_changes == 'true' && steps.size.outputs.oversized == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
+        run: |
+          bash .github/scripts/commit-oversized.sh "chore: vendor themes" master
 
       - name: Summary
         if: always()
