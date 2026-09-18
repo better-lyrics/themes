@@ -84,6 +84,11 @@ jobs:
           THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
           VERSION=$(jq -r '.version' theme-repo/metadata.json)
 
+          if ! node .github/scripts/submission.mjs valid-id "$THEME_ID"; then
+            echo "error=Invalid theme id (lowercase letters, numbers, and hyphens only)" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
           echo "id=$THEME_ID" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -316,7 +321,7 @@ jobs:
           REPO: ${{ steps.payload.outputs.repo }}
           COMMIT: ${{ steps.payload.outputs.commit }}
           INSTALL_ID: ${{ github.event.client_payload.installationId }}
-          DESCRIPTION: ${{ steps.check-registered.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}
+          DESCRIPTION: ${{ steps.check-registered.outputs.error || steps.metadata.outputs.error || steps.version-check.outputs.error || steps.validate.outputs.error || 'Update failed' }}
           RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           jq -nc \
@@ -418,6 +423,13 @@ jobs:
             THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
             VERSION=$(jq -r '.version' theme-repo/metadata.json)
             MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
+
+            if ! node .github/scripts/submission.mjs valid-id "$THEME_ID"; then
+              echo "::error::Invalid theme id in $repo"
+              FAILED="$FAILED$repo\n"
+              rm -rf theme-repo
+              continue
+            fi
 
             # Validate theme
             OUTPUT=$(NO_COLOR=1 npx create-bl-theme@latest validate theme-repo 2>&1 | sed 's/\x1b\[[0-9;]*m//g')
