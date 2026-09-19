@@ -5,9 +5,9 @@
   "creators": ["a-dogann"],
   "minVersion": "1.0.0",
   "hasShaders": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "cover": "cover.png",
   "preview": "cover.png",
   "tags": ["dark", "minimalist", "apple-music", "spotify"],
-  "images": ["1.png", "YTM.png"]
+  "images": ["1.png", "2.png"]
 }
