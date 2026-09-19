@@ -1,16 +1,16 @@
 {
   "repo": "better-lyrics/theme-eblp",
   "id": "eblp",
-  "version": "1.0.6",
-  "commit": "ca11463b57dca1f1386068c523b14765487b0167",
-  "integrity": "sha256-edf21c92dc95b65422d453af010bcfa7b3f7816ed356d635e035c692f01fa2e5",
-  "locked": "2026-09-14T21:31:08Z",
+  "version": "1.0.7",
+  "commit": "4df02983442d0c1f3d0869e6c15c505fa898de0f",
+  "integrity": "sha256-ae7935ad31984b5e448cd2a7e392485b25626253a5a26e77e065e17f2f38e478",
+  "locked": "2026-09-19T16:43:33Z",
   "builds": [
     {
-      "version": "1.0.6",
-      "minVersion": "2.4.0.1",
+      "version": "1.0.7",
+      "minVersion": "2.4.0",
       "path": "themes/eblp",
-      "integrity": "sha256-edf21c92dc95b65422d453af010bcfa7b3f7816ed356d635e035c692f01fa2e5"
+      "integrity": "sha256-ae7935ad31984b5e448cd2a7e392485b25626253a5a26e77e065e17f2f38e478"
     },
     {
       "version": "1.0.4",
