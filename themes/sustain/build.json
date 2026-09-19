@@ -1,22 +1,16 @@
 {
   "repo": "better-lyrics/theme-sustain",
   "id": "sustain",
-  "version": "1.0.17",
-  "commit": "a1b46bf22425526be9c20c9d59f65c2b698a303a",
-  "integrity": "sha256-360f9a41106235b05c4f5259f6794ac543edbe4e19589f674c4c2ed737b655e3",
-  "locked": "2026-09-15T16:36:53Z",
+  "version": "1.0.18",
+  "commit": "8d19deb2e7dd0a8425b78400ab80087084185b1c",
+  "integrity": "sha256-4ae5c713b3d206ad166081542fd78ced17dbf132339ac6cb2efe80cb19721fbd",
+  "locked": "2026-09-19T16:42:16Z",
   "builds": [
     {
-      "version": "1.0.17",
-      "minVersion": "2.4.0.8",
+      "version": "1.0.18",
+      "minVersion": "2.4.0",
       "path": "themes/sustain",
-      "integrity": "sha256-360f9a41106235b05c4f5259f6794ac543edbe4e19589f674c4c2ed737b655e3"
-    },
-    {
-      "version": "1.0.15",
-      "minVersion": "2.4.0.1",
-      "path": "themes/sustain/v/1.0.15",
-      "integrity": "sha256-41ba2953a4cb0fe84f4b0fff508380129ffbfe97723c73f0fb138d8f78a4c06a"
+      "integrity": "sha256-4ae5c713b3d206ad166081542fd78ced17dbf132339ac6cb2efe80cb19721fbd"
     },
     {
       "version": "1.0.13",
