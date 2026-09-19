@@ -3,10 +3,10 @@
   "title": "Better-YTM",
   "description": "A theme that adds more dynamic animations and UI improvements.",
   "creators": ["WolftheE"],
-  "minVersion": "2.4.0.1",
+  "minVersion": "2.0.5.6",
   "hasShaders": true,
   "hasSettings": true,
-  "version": "4.1.0",
+  "version": "4.0.1",
   "tags": ["dark", "animations", "dynamic"],
   "images": ["1.png", "2.png", "3.png", "4.png"]
 }
