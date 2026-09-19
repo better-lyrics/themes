@@ -3,19 +3,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-f30d5fb64f60fab8f34c920657aa37b62f206794a0e4e19dcc793713c9ea582e",
+          "integrity": "sha256-d7d2425b1c3ad19c2901e65e5e9d85616c3df89aaa9dd5b53e6fa85b038af2a2",
           "minVersion": "1.0.0",
           "path": "themes/ad-nextgen",
-          "version": "1.0.0"
+          "version": "1.0.1"
         }
       ],
-      "commit": "336757491fa3cc5484111025eb4edcb57d011257",
+      "commit": "fff5dac14208d2511b5cbdfe8d25ec86e759311a",
       "discussion": 76,
       "id": "ad-nextgen",
-      "integrity": "sha256-f30d5fb64f60fab8f34c920657aa37b62f206794a0e4e19dcc793713c9ea582e",
-      "locked": "2026-07-29T14:34:45Z",
+      "integrity": "sha256-d7d2425b1c3ad19c2901e65e5e9d85616c3df89aaa9dd5b53e6fa85b038af2a2",
+      "locked": "2026-09-19T16:44:45Z",
       "repo": "a-dogann/-ADNEXTGEN-THEME",
-      "version": "1.0.0"
+      "version": "1.0.1"
     },
     {
       "builds": [
@@ -363,6 +363,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-09-19T16:44:04Z",
+  "updated": "2026-09-19T16:45:16Z",
   "version": 1
 }
