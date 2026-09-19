@@ -7,8 +7,12 @@
 // for every build, no other build has BOTH a higher version AND a
 // lower-or-equal minVersion.
 
-// A non-zero 4th part is a canary ordinal leading up to its stable release, so 2.4.0.8 sorts below 2.4.0.
-function parseVersion(version) {
+// minVersion is an EXTENSION version: a non-zero 4th part is a canary ordinal, so
+// 2.4.0.8 sorts below 2.4.0. version is the THEME author's own string and is plain
+// positional. Never cross them: a theme version run through the extension comparator
+// drops the newer build off the staircase and deletes its snapshot dir.
+
+function parseExtensionVersion(version) {
   const parts = String(version)
     .replace(/-.*$/, "")
     .split(".")
@@ -23,9 +27,9 @@ function parseVersion(version) {
   };
 }
 
-export function versionCompare(a, b) {
-  const pa = parseVersion(a);
-  const pb = parseVersion(b);
+export function extensionVersionCompare(a, b) {
+  const pa = parseExtensionVersion(a);
+  const pb = parseExtensionVersion(b);
 
   for (let i = 0; i < 3; i++) {
     if (pa.release[i] !== pb.release[i]) return pa.release[i] - pb.release[i];
@@ -35,6 +39,18 @@ export function versionCompare(a, b) {
   if (pa.canary === null) return 1;
   if (pb.canary === null) return -1;
   return pa.canary - pb.canary;
+}
+
+export function themeVersionCompare(a, b) {
+  const pa = String(a).replace(/-.*$/, "").split(".");
+  const pb = String(b).replace(/-.*$/, "").split(".");
+  const len = Math.max(pa.length, pb.length);
+  for (let i = 0; i < len; i++) {
+    const na = Number.parseInt(pa[i] ?? "0", 10) || 0;
+    const nb = Number.parseInt(pb[i] ?? "0", 10) || 0;
+    if (na !== nb) return na - nb;
+  }
+  return 0;
 }
 
 function latestPath(id) {
@@ -50,11 +66,11 @@ function snapshotPath(id, version) {
 // is strictly below that running minimum. The highest-version build is always
 // kept (nothing has been seen before it).
 function staircase(builds) {
-  const sorted = [...builds].sort((x, y) => versionCompare(y.version, x.version));
+  const sorted = [...builds].sort((x, y) => themeVersionCompare(y.version, x.version));
   const kept = [];
   let runningMin = null;
   for (const build of sorted) {
-    if (runningMin === null || versionCompare(build.minVersion, runningMin) < 0) {
+    if (runningMin === null || extensionVersionCompare(build.minVersion, runningMin) < 0) {
       kept.push(build);
       runningMin = build.minVersion;
     }
@@ -90,7 +106,7 @@ export function computeBuilds(existingBuilds, newBuild, id) {
   const candidates = [latest, ...existingSnapshots];
 
   let snapshot = null;
-  if (outgoingLatest && versionCompare(outgoingLatest.minVersion, newBuild.minVersion) < 0) {
+  if (outgoingLatest && extensionVersionCompare(outgoingLatest.minVersion, newBuild.minVersion) < 0) {
     snapshot = {
       version: outgoingLatest.version,
       minVersion: outgoingLatest.minVersion,
