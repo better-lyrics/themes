@@ -1,10 +1,10 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
-## v1.2.1 Update
+## v1.2.2 Update
 
-- Fixed search suggestions box
-- Fixed search results card
-- Updated toast notifications
+- Fixed Better Lyrics v2.4.0 Compatibility
+- Reduced vertical gap between main and background Lyricss
+- Auto hide fullscreen player controls when player bar is shown
   
 ## Features
 

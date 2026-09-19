@@ -1,3 +1,5 @@
+/* Lucid, a marketplace theme by drago-oo */
+
 @font-face {
   font-family: "MySanFrancisco";
   src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
@@ -704,6 +706,11 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
   justify-content: flex-end; 
   text-align: right; 
   transform-origin: right center !important; 
+}
+
+/* Pull background vocals closer to the main vocal line */
+.blyrics-background-line {
+  margin-top: -0.5em !important; 
 }
 
 /* Unified Line States */
@@ -1934,3 +1941,15 @@ html body .blyrics-container[data-no-lyrics="true"] .blyrics-footer {
     opacity: 1 !important;
 }
 
+#blyrics-fs-controls,
+.blyrics-fs-info-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#layout[player-fullscreened]:not([blyrics-dfs])[show-fullscreen-controls] #blyrics-fs-controls,
+#layout[player-fullscreened]:not([blyrics-dfs])[show-fullscreen-controls] .blyrics-fs-info-actions {
+  opacity: 0;
+  pointer-events: none;
+}
