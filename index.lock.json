@@ -120,10 +120,10 @@
     {
       "builds": [
         {
-          "integrity": "sha256-edf21c92dc95b65422d453af010bcfa7b3f7816ed356d635e035c692f01fa2e5",
-          "minVersion": "2.4.0.1",
+          "integrity": "sha256-ae7935ad31984b5e448cd2a7e392485b25626253a5a26e77e065e17f2f38e478",
+          "minVersion": "2.4.0",
           "path": "themes/eblp",
-          "version": "1.0.6"
+          "version": "1.0.7"
         },
         {
           "integrity": "sha256-1ec30156f936e1e5ad5f050402c5bc5c92ade3053caf71b694ece73d9314bf9b",
@@ -132,13 +132,13 @@
           "version": "1.0.4"
         }
       ],
-      "commit": "ca11463b57dca1f1386068c523b14765487b0167",
+      "commit": "4df02983442d0c1f3d0869e6c15c505fa898de0f",
       "discussion": 27,
       "id": "eblp",
-      "integrity": "sha256-edf21c92dc95b65422d453af010bcfa7b3f7816ed356d635e035c692f01fa2e5",
-      "locked": "2026-09-14T21:31:08Z",
+      "integrity": "sha256-ae7935ad31984b5e448cd2a7e392485b25626253a5a26e77e065e17f2f38e478",
+      "locked": "2026-09-19T16:43:33Z",
       "repo": "better-lyrics/theme-eblp",
-      "version": "1.0.6"
+      "version": "1.0.7"
     },
     {
       "commit": "4adc5c318f0e8eac9afb3af0e96eb133fe700497",
@@ -363,6 +363,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-09-19T16:42:42Z",
+  "updated": "2026-09-19T16:44:04Z",
   "version": 1
 }
