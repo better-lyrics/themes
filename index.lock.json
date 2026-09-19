@@ -235,19 +235,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-7f403dedfa8d9530a152e4feeaefbe934896199619f618b63b31abaafb13af38",
+          "integrity": "sha256-5eb07241fc86f1cdda9ed1bb574856b91efe15d24b216f2921507fae4a37ac4c",
           "minVersion": "2.2.0.0",
           "path": "themes/opacity-based-karaoke",
-          "version": "2.1.4"
+          "version": "2.1.5"
         }
       ],
-      "commit": "13f7a20b30a0cf6503a062be2492fada3dbad62f",
+      "commit": "675ac4040d4eaf4ac914050c8d1a3225135aa8df",
       "discussion": 44,
       "id": "opacity-based-karaoke",
-      "integrity": "sha256-7f403dedfa8d9530a152e4feeaefbe934896199619f618b63b31abaafb13af38",
-      "locked": "2026-09-18T20:21:53Z",
+      "integrity": "sha256-5eb07241fc86f1cdda9ed1bb574856b91efe15d24b216f2921507fae4a37ac4c",
+      "locked": "2026-09-19T09:05:22Z",
       "repo": "ramansg/Max-Performance-BlyricsTheme",
-      "version": "2.1.4"
+      "version": "2.1.5"
     },
     {
       "builds": [
@@ -363,6 +363,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-09-19T05:18:21Z",
+  "updated": "2026-09-19T09:05:50Z",
   "version": 1
 }
