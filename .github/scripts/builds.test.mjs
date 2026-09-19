@@ -19,9 +19,32 @@ test("versionCompare: differing part counts, missing parts treated as 0", () => 
   assert.equal(versionCompare("2.2.0.0", "2.3.2") < 0, true);
 });
 
-test("versionCompare: trailing higher part still counts", () => {
-  assert.equal(versionCompare("2.2.0.1", "2.2.0.0") > 0, true);
-  assert.equal(versionCompare("2.2.0", "2.2.0.1") < 0, true);
+test("versionCompare: a canary sorts below the stable it leads up to", () => {
+  assert.equal(versionCompare("2.4.0.1", "2.4.0") < 0, true);
+  assert.equal(versionCompare("2.4.0.8", "2.4.0") < 0, true);
+  assert.equal(versionCompare("2.4.0", "2.4.0.10") > 0, true);
+});
+
+test("versionCompare: a trailing .0 means stable, not canary zero", () => {
+  assert.equal(versionCompare("2.4.0.0", "2.4.0"), 0);
+  assert.equal(versionCompare("2.4.0.0", "2.4.0.1") > 0, true);
+});
+
+test("versionCompare: canaries order among themselves by ordinal", () => {
+  assert.equal(versionCompare("2.4.0.2", "2.4.0.1") > 0, true);
+  assert.equal(versionCompare("2.4.0.9", "2.4.0.10") < 0, true);
+  assert.equal(versionCompare("2.4.0.3", "2.4.0.3"), 0);
+});
+
+test("versionCompare: the release triple outranks the canary ordinal", () => {
+  assert.equal(versionCompare("2.4.0.1", "2.3.3") > 0, true);
+  assert.equal(versionCompare("2.0.5.6", "2.4.0") < 0, true);
+  assert.equal(versionCompare("2.4.1.1", "2.4.0") > 0, true);
+});
+
+test("versionCompare: a prerelease suffix is stripped before comparing", () => {
+  assert.equal(versionCompare("2.0.5.6-canary", "2.0.5.6"), 0);
+  assert.equal(versionCompare("2.0.5.6-canary", "2.0.5") < 0, true);
 });
 
 test("computeBuilds: first build for a brand-new theme (no prior builds)", () => {

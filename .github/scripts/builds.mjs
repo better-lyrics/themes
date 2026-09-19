@@ -7,19 +7,34 @@
 // for every build, no other build has BOTH a higher version AND a
 // lower-or-equal minVersion.
 
-// Numeric, part-by-part version compare. Differing part counts are allowed;
-// missing parts count as 0 (so "2.2.0" equals "2.2.0.0"). Returns a negative
-// number when a < b, 0 when equal, a positive number when a > b.
+// A non-zero 4th part is a canary ordinal leading up to its stable release, so 2.4.0.8 sorts below 2.4.0.
+function parseVersion(version) {
+  const parts = String(version)
+    .replace(/-.*$/, "")
+    .split(".")
+    .map((part) => {
+      const num = Number.parseInt(part, 10);
+      return Number.isNaN(num) ? 0 : num;
+    });
+  const canary = parts[3] ?? 0;
+  return {
+    release: [parts[0] ?? 0, parts[1] ?? 0, parts[2] ?? 0],
+    canary: canary === 0 ? null : canary,
+  };
+}
+
 export function versionCompare(a, b) {
-  const pa = String(a).split(".");
-  const pb = String(b).split(".");
-  const len = Math.max(pa.length, pb.length);
-  for (let i = 0; i < len; i++) {
-    const na = Number(pa[i] ?? 0);
-    const nb = Number(pb[i] ?? 0);
-    if (na !== nb) return na - nb;
+  const pa = parseVersion(a);
+  const pb = parseVersion(b);
+
+  for (let i = 0; i < 3; i++) {
+    if (pa.release[i] !== pb.release[i]) return pa.release[i] - pb.release[i];
   }
-  return 0;
+
+  if (pa.canary === pb.canary) return 0;
+  if (pa.canary === null) return 1;
+  if (pb.canary === null) return -1;
+  return pa.canary - pb.canary;
 }
 
 function latestPath(id) {
