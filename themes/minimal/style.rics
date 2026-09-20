@@ -1,40 +1,23 @@
 
-/* ## SECTION-0 - Info and Intro ################## */
-/* 2026-08-12 v1.8.3 (BetterLyrics v2.4.0+ only)    */
+/* ## SECTION-0 - Info and Intro ################## *
+ * 2026-09-20 v1.9.1 (BetterLyrics v2.4.0+ only)    */
 
-/* Blur is off by default. Go to Section-3.3 for    */
-/*   turning it back on.                            */
+/* Karaoke can be turned on in Section 3.           */
 
-/* Install from Theme Marketplace to always have    */ 
-/*   the latest version!                            */
+/* Blur can be turned on in Section-3.              */
 
-/* Report bugs, suggestions and performance issues  */
-/*   on the better-lyrics discord.                  */
+/* Previous/Current/Next lyrics' visibility can be  *
+ *   changed from Section-3.1.                      */
 
-/* Credits to chengg, mukeen, drago, boidu, noah,   */
-/*   tposejank, for code help and every test-user   */
+/* Bugs & Suggestions on BetterLyrics Discord       */
 
-/* This theme explicitly changes/disables lyrics    */
-/*   swipe animation. To bring back default lyric   */ 
-/*   animation & styles, delete all of              */
-/*   the following - Section-2-font-family-line,    */
-/*   3.1, 3.2, 4, 6, & 25                           */ 
+/* Credits to chengg, mukeen, drago, boidu, noah,   *
+ *   tposejank, for code help and every test-user   */
 
-/* You can then control stylized animations from    */
-/*   extension settings like other themes.          */
 
-/* Previous/Next/Current lyrics' visibility can be  */
-/*   changed easily from Section-3.1                */
+/*     ____Time, Tide, & I wait for nothing____     *
+ *               __ - boidu (maybe)__               */
 
-/* Section 3.3 has all the set background effects.  */
-
-/* Lower blur value gives higher performance.       */
-
-/* The background can be can be completely disabled */
-/*   from extension settings for better performance.*/
-
-/*     ____Time, Tide, & I wait for nothing____     */
-/*               __ - boidu (maybe)__               */
 
 /* ## SECTION-1 - Custom Font URL ################# */
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
@@ -44,77 +27,154 @@
 * {
   --whole-website-font-family:  "Google Sans Flex",
                                 "Roboto Flex", Roboto,
-                                var(--noto-sans-universal), sans-serif, system-ui;
-  /* Font for everthing, delete above line if you   */
-  /*   want to use YT default                       */
+                                var(--noto-sans-universal),
+                                sans-serif, system-ui;
+  /* Font for everthing, delete above line if you   *
+   *   want to use YT default                       */
   font-family: var(--whole-website-font-family) !important;
   font-optical-sizing: auto;
   scrollbar-width: thin;
 }
 
 /* ## SECTION-3 - EASY CHANGE SETTINGS ############ */
+
+/* -- Karaoke Mode Toggle -- */
+$karaoke-mode: off; /* off / minimal / default */
+
+/* - off     = No karaoke - Only Line by line sync    *
+ * - minimal = Minimal theme styled lyrics and karaoke*
+ *               experience. Better than default.     *
+ * - default = The default look and experience of the *
+ *               lyrics in BetterLyrics extension     */
+ 
+/* -- Blur toggle -- */
+$enable-blur: off; /* on / off */
+
+$blur-amount: 30px;
+/* higher number = more blur      *
+ * less blur = better performance */
+ 
 :root {
   /*# SECTION-3.1 ################################# */
+
+  /* -- Line visibility (opacity) -- */
   --current-lyric-visibility: 1;      /* 1    would mean 100%*/
   --previous-lyrics-visibility: 0.35; /* 0.35 would mean 35% */
   --next-lyrics-visibility: 0.02;     /* 0.02 would mean 2%  */
+  
   --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
   --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
-  --translated-lyric-visibility: 0.7;  /*    also romanized  */
+  --translated-lyric-visibility: 0.82;
+  --romanized-lyric-visibility: 0.55;
+
+  /* -- Typography -- */
+  @if $karaoke-mode != default {
   --blyrics-font-family: var(--whole-website-font-family);
-  --blyrics-footer-font-family: var(--blyrics-font-family);
   --blyrics-font-weight: 600;
   --blyrics-font-size: 3.5rem;
-  --blyrics-translated-font-size: 0.6667em;
   --blyrics-line-height: 1.5;
   --blyrics-padding: 0.45em;
-  --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
+  }
+  /* -- Footer -- */
+  --blyrics-footer-font-family: var(--whole-website-font-family);
+  @if $karaoke-mode != default {
+  --blyrics-translated-font-size: 0.7071em;
+  }
+  --blyrics-romanized-font-size: 0.6429em;
+
+  /* -- Colors -- */
+  @if $karaoke-mode == off {
   --blyrics-lyric-active-color: var(--white-1);
-  --blyrics-error-color: oklch(0.75 0.25 20);
+  --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
+  } @else if $karaoke-mode == minimal {
+  --blyrics-lyric-active-color: var(--white-1);
+  --blyrics-lyric-inactive-color: oklch(1 0 0 / 0.35);
+  }
+  @if $karaoke-mode != default {
   --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
   --blyrics-translated-color: var(--white-dot-60);
+  --blyrics-error-color: oklch(0.75 0.25 20);
+  }
 
   /*# SECTION-3.2 ################################# */
-  --blyrics-lyric-scroll-duration: 1.5s; 
+
+  /* -- Scroll / transition timing -- */
+  @if $karaoke-mode == off {
+  --blyrics-lyric-scroll-duration: 1.5s;
   --blyrics-lyric-scroll-timing-function: var(--transition-curve);
-  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 1) var(--blyrics-lyric-scroll-timing-function);
+  }
+  /* something-something */
+  @if $karaoke-mode != default {
+  --blyrics-line-scroll-uniform-duration: 1.5s;
+  }
+  /* something-something */
+  @if $karaoke-mode != default {
+  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration, 650ms) * 1) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
   --blyrics-scale-transition-duration: 0.5s;
-  --blyrics-lyric-highlight-fade-in-duration: 0.4s;
-  --blyrics-lyric-highlight-fade-out-duration: 0.4s; 
-  --blyrics-scroll-timing-offset: 0s; 
-  --blyrics-wobble-duration: 0s;
+  }
+
+  /* -- Offsets -- */
+  @if $karaoke-mode == off {
+  --blyrics-scroll-timing-offset: 0s;
   --blyrics-timing-offset: 0.4s;
   --blyrics-richsync-timing-offset: 0.4s;
+  }
 
+  /* -- Highlight fade timing -- */
+  @if $karaoke-mode != default {
+  --blyrics-lyric-highlight-fade-in-duration: 0.4s;
+  --blyrics-lyric-highlight-fade-out-duration: 0.4s;
+  }
+
+  /* -- Animation on/off toggles (0 = off, 1 = on) -- */
+  @if $karaoke-mode == off {
+  --blyrics-wobble-duration: 0s;
   --blyrics-animate-line-scale: 0;
   --blyrics-animate-word-wobble: 0;
   --blyrics-animate-highlight-swipe: 0;
   --blyrics-animate-highlight-glow: 0;
+  --blyrics-animate-highlight-fade: 0;
+  --blyrics-animate-instrumental: 0;
+  } @else if $karaoke-mode == minimal {
+  --blyrics-wobble-duration: 0s;
+  --blyrics-animate-line-scale: 0;
+  --blyrics-animate-word-wobble: 0;
+  --blyrics-animate-highlight-swipe: 1;
+  --blyrics-animate-highlight-glow: 0;
+  --blyrics-animate-highlight-fade: 1;
+  --blyrics-animate-instrumental: 0;
+  }
+
+  /* -- Scale -- */
+  @if $karaoke-mode != default {
+  --blyrics-scale: 1;
+  }
 
   /*# SECTION-3.3 Background Effects ############## */
   --blyrics-gradient-stops: none;
   --background-image-transition: background 2.5s ease-in-out 5s;
-  
-      /* BLUR- to turn on blur, change --apply-blur */
-      --blyrics-background-blur: var(--apply-blur-toggle, blur(var(--blur-amount)));
-
-      /* change blur amount here. but it only turns on from changing --apply-blur */  
-      --blur-amount: 30px; 
-  
-      /* "--apply-blur-toggle: ;" means it's OFF.             *
-       * Write "--apply-blur-toggle: initial;" to turn it ON. */
-      --apply-blur-toggle: ; 
-  
   --blyrics-background-saturate: 1;
   --background-brightness: 0.20;
   --background-contrast: 0.85;
-  --background-image-filter: saturate(var(--blyrics-background-saturate))
-  brightness(var(--background-brightness)) contrast(var(--background-contrast))
-  var(--blyrics-background-blur);
+
+  @if $enable-blur == on {
+        --blyrics-background-blur: blur(#{$blur-amount});
+        --background-image-filter: saturate(var(--blyrics-background-saturate))
+    brightness(var(--background-brightness)) contrast(var(--background-contrast))
+    var(--blyrics-background-blur);
+  }
+
+  @else {
+    --blyrics-background-blur: none;
+    --background-image-filter: saturate(var(--blyrics-background-saturate))
+    brightness(var(--background-brightness)) contrast(var(--background-contrast));
+    }
+
   --filter-replacement-backgroundcolor: oklch(18.67% 0.0000 0 / 0.80);
-  
+
   /*# SECTION-3.4 Custom Variables ################ */
-  --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
+
+  /* -- Base palette -- */
   --white-1:      oklch(1 0 0 / 1);
   --white-dot-87: oklch(1 0 0 / 0.87);
   --white-dot-60: oklch(1 0 0 / 0.60);
@@ -122,12 +182,15 @@
   --white-dot-10: oklch(1 0 0 / 0.10);
   --black-dot-87: oklch(0 0 0 / 0.87);
   --black-dot-60: oklch(0 0 0 / 0.60);
+
+  /* -- Easing / curves -- */
+  --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
   --blyrics-loader-transition-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
-  
-  
+
+
   /* ## End of SECTION-3.4 ######################## */
-  
-  
+
+
   /* Do not delete the following bracket            */
 }
 
@@ -139,23 +202,50 @@
 /* ## SECTION-4 - Lyric Animation Fine-tuning ##### */
 
 /* Removing this block will affect lyric animation.
-It's supposed to be in a comment like this to work.
+It's supposed to be in a comment like this to work. */
 
+@if $karaoke-mode == off {
+/*
 ;
+-- why do these features exist -- ;
 blyrics-disable-richsync = true;
+blyrics-letter-wave = false;
+blyrics-debug-renderer = false;
+blyrics-add-extra-top-padding = true;
+
+-- time is precious -- ;
 blyrics-line-synced-animation-delay = 0;
 blyrics-lyric-ending-threshold-s = 0;
 blyrics-early-scroll-consider-s = 0;
 blyrics-queue-scroll-ms = 1520;
-
-blyrics-debug-renderer = false;
 blyrics-target-scroll-pos-ratio = 0.4;
-blyrics-add-extra-top-padding = true;
-blyrics-line-scroll-duration = var(--blyrics-lyric-scroll-duration);
-blyrics-line-scroll-above-duration = var(--blyrics-lyric-scroll-duration);
-blyrics-line-scroll-below-duration = var(--blyrics-lyric-scroll-duration);
-blyrics-line-scroll-active-duration = var(--blyrics-lyric-scroll-duration);
+
+-- Scroll durations (refer Section-3.2) -- ;
+blyrics-line-scroll-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-above-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-below-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-active-duration = var(--blyrics-line-scroll-uniform-duration);
 */
+} @else if $karaoke-mode == minimal {
+/*
+;
+-- say hello to old friends -- ;
+blyrics-letter-wave = false;
+blyrics-add-extra-top-padding = true;
+blyrics-lyric-ending-threshold-s = 2;
+blyrics-early-scroll-consider-s = 0;
+blyrics-target-scroll-pos-ratio = 0.4;
+
+-- Scroll durations (refer Section-3.2) -- ;
+blyrics-line-scroll-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-above-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-below-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-active-duration = var(--blyrics-line-scroll-uniform-duration);
+*/
+}
+@if $karaoke-mode == default {
+/* whatever is default in better lyrics */
+}
 
 /* ## SECTION-5 - Hiding Scrollbar from homepage ## */
 html {
@@ -168,6 +258,11 @@ ytmusic-app-layout > [slot="player-bar"] {
 /* ## SECTION-6 - Style and animation of lyrics ### */
 
   /* ## SECTION-6.1 - Lyrics and wrapper ########## */
+
+@if $karaoke-mode != default {
+
+/* -- 6.1.a Animation & effects disabling -- */
+
 /* Eroding Animations */
 @keyframes blyrics-wobble {
   from,
@@ -186,7 +281,18 @@ ytmusic-app-layout > [slot="player-bar"] {
 #blyrics-wrapper .blyrics--word::after,
 #blyrics-wrapper .blyrics--word::before,
 #blyrics-wrapper .blyrics-container::after,
-#blyrics-wrapper .blyrics-container::before,
+#blyrics-wrapper .blyrics-container::before {
+  content: "";
+  display: none;
+  animation: none;
+  transition: none;
+  background: none;
+  transform: none;
+  filter: none;
+}
+
+/* actual karaoke gradient-fill overlay */
+@if $karaoke-mode == off {
 #blyrics-wrapper .blyrics-container div .blyrics-word-highlight {
   content: "";
   display: none;
@@ -195,6 +301,7 @@ ytmusic-app-layout > [slot="player-bar"] {
   background: none;
   transform: none;
   filter: none;
+}
 }
 
 /* Disabling active animations */
@@ -207,15 +314,24 @@ ytmusic-app-layout > [slot="player-bar"] {
   perspective: none;
 }
 
-#blyrics-wrapper .blyrics--line.blyrics--pre-animating,
-#blyrics-wrapper .blyrics--line.blyrics--pre-animating .blyrics--word {
-  will-change: auto;
+@if $karaoke-mode == off {
+.blyrics-highlight-run,
+.blyrics-word-highlight
+{ display: none; }
 }
 
 #blyrics-wrapper .blyrics--word {
   transform: none;
   will-change: auto;
 }
+
+/* Hardcoding system lyric stylization disabling */
+.blyrics-container div span.blyrics--animating::after,
+.blyrics-container div span.blyrics--animating {
+  animation: none;
+}
+
+/* -- 6.1.b Line opacity states (current/prev/next/hover) -- */
 
 /* Container Lines - Base State */
 #blyrics-wrapper .blyrics-container > div {
@@ -225,8 +341,14 @@ ytmusic-app-layout > [slot="player-bar"] {
 }
 
 /* Active Line */
+@if $karaoke-mode == off {
 #blyrics-wrapper .blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
+}
+} @else if $karaoke-mode == minimal {
+#blyrics-wrapper .blyrics-container > div.blyrics--animating {
+  opacity: var(--current-lyric-visibility);
+}
 }
 
 /* Next Lines (Lines strictly after the LAST active line) */ /*
@@ -237,35 +359,13 @@ ytmusic-app-layout > [slot="player-bar"] {
   opacity: var(--next-lyrics-visibility);
 }
 */
+
 /* Next Lines (any line after an active one) */
 #blyrics-wrapper
   .blyrics-container
   > div.blyrics--active
   ~ div:not(.blyrics--active) {
   opacity: var(--next-lyrics-visibility);
-}
-
-/* Text Colors */
-#blyrics-wrapper .blyrics-container div .blyrics--word {
-  color: var(--white-1);
-}
-
-/* Translations and Romanization */
-#blyrics-wrapper :is(.blyrics--romanized, .blyrics--translated),
-#blyrics-wrapper .blyrics--romanized,
-#blyrics-wrapper .blyrics--translated {
-  color: var(--white-1);
-  font-size: var(--blyrics-translated-font-size);
-  line-height: 1.5;
-  opacity: var(--translated-lyric-visibility);
-  transition: var(--lyrics-opacity-transition);
-}
-
-#blyrics-wrapper
-  .blyrics-container
-  > div.blyrics--active
-  :is(.blyrics--romanized, .blyrics--translated) {
-  opacity: var(--translated-lyric-visibility);
 }
 
 /* User Scrolling or Hover */
@@ -293,32 +393,15 @@ ytmusic-app-layout > [slot="player-bar"] {
   padding-block: 0 !important;
 }
 
-/* Layout Adjustments for Translations */
-#blyrics-wrapper .blyrics-container .blyrics--romanized {
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  font-weight: 200;
-}
-
-#blyrics-wrapper .blyrics-container .blyrics--translated {
-  margin-top: 0.4em;
-}
-
-/* Fullscreen Specifics */
-ytmusic-app-layout:not([is-mweb-modernization-enabled])
-  [player-fullscreened]:not([blyrics-dfs])
-  .blyrics-container {
-  font-size: 4.5rem;
-}
-
-/* Final Overrides */ /*
-#blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active,
-#blyrics-wrapper .blyrics-container > div.blyrics--animating {
-  opacity: var(--current-lyric-visibility);
-}
-*/
+/* Final Overrides - higher specificity score */
+@if $karaoke-mode == off {
 #blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active {
   opacity: var(--current-lyric-visibility);
+}
+} @else if $karaoke-mode == minimal {
+#blyrics-wrapper .blyrics-container > div.blyrics--animating.blyrics--animating {
+  opacity: var(--current-lyric-visibility);
+}
 }
 
 /* Previous Lines Enforcer */ /*
@@ -332,11 +415,82 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   opacity: var(--previous-lyrics-visibility);
 }
 */
-/* Hardcoding system lyric stylization disabling */
-.blyrics-container div span.blyrics--animating::after,
-.blyrics-container div span.blyrics--animating {
-  animation: none;
+
+/* -- 6.1.c Text colors -- */
+
+/* Text Colors */
+@if $karaoke-mode == off {
+#blyrics-wrapper .blyrics-container div .blyrics--word {
+  color: var(--white-1);
 }
+}
+
+/* Translations and Romanization */
+#blyrics-wrapper .blyrics--translated {
+  color: var(--white-1);
+  font-size: var(--blyrics-translated-font-size);
+  line-height: 1.5;
+  opacity: var(--translated-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+@if $karaoke-mode == minimal {
+#blyrics-wrapper .blyrics--translated {
+  color: var(--blyrics-lyric-inactive-color);
+}
+
+#blyrics-wrapper .blyrics--active .blyrics--translated {
+  color: var(--blyrics-lyric-active-color);
+}
+}
+
+#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--translated {
+  opacity: var(--translated-lyric-visibility);
+}
+
+#blyrics-wrapper .blyrics--romanized {
+  color: var(--white-1);
+  font-size: var(--blyrics-romanized-font-size);
+  line-height: 1.5;
+  opacity: var(--romanized-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--romanized {
+  opacity: var(--romanized-lyric-visibility);
+}
+
+/* -- 6.1.d Translation / romanization layout -- */
+
+/* Layout Adjustments for Translations */
+#blyrics-wrapper .blyrics-container .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: .2em;
+  margin-bottom: .2em;
+  font-weight: 350;
+  letter-spacing: .03em;
+}
+
+#blyrics-wrapper .blyrics-container .blyrics--translated {
+  margin-top: 0.4em;
+  font-weight: 600;
+}
+
+/* -- 6.1.e Fullscreen specifics -- */
+
+/* Fullscreen Specifics */
+ytmusic-app-layout:not([is-mweb-modernization-enabled])
+  [player-fullscreened]:not([blyrics-dfs])
+  .blyrics-container {
+  font-size: 4.5rem;
+}
+
+} /* end of $karaoke-mode != default for 6.1 */
 
   /*# SECTION-6.2 - Footer #########################*/
 
@@ -675,7 +829,7 @@ ytmusic-app-layout {
     opacity: 1 !important;
 }
 
-ytmusic-app[is-bauhaus-sidenav-enabled] #guide-wrapper.ytmusic-app {
+ytmusic-app #guide-wrapper.ytmusic-app {
   height: calc(100vh - var(--ytmusic-player-bar-height));
 }
 
@@ -771,7 +925,7 @@ ytmusic-fullbleed-thumbnail-renderer {
   z-index: 0;
 }
 
-ytmusic-app-layout[is-bauhaus-sidenav-enabled].content-scrolled #mini-guide-background.ytmusic-app-layout {
+ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout {
   opacity: 0;
 }
 
@@ -827,8 +981,13 @@ ytmusic-browse-response[has-background]:not([disable-gradient])
 }
 
 /* ## SECTION-17 - Search Box ##################### */
+
+ytmusic-search-box[has-query], ytmusic-search-box[opened] {
+  border: none;
+}
+
 ytmusic-search-box {
-  &[is-bauhaus-sidenav-enabled] {
+  & {
     --ytmusic-search-border: var(--white-dot-10);
     --ytmusic-search-background: oklch(from #212121 l c h);
 
@@ -1314,6 +1473,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 }
 
 /* ## SECTION-25 - Music Note Animation disable ### */
+@if $karaoke-mode != default {
 .blyrics--instrumental-icon {
   display: none;
 }
@@ -1321,56 +1481,49 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
   content: "♫";
   display: inline-block;
   font-size: 1.2em;
-}
-.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.5em;
-  line-height: var(--blyrics-line-height);
-}
-.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
-  content: "♫";
-  visibility: visible;
-  display: inline-block;
-  font-size: 1.2em;
-}
-.blyrics--instrumental.blyrics--line::after,
-.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
-  animation: note-pulse 1.5s ease-in-out infinite;
+  animation: none;
   animation-play-state: paused;
   transform: scale(100%);
-  text-shadow: 0px 0 0px transparent;
+  text-shadow: unset;
+  filter:none;
   opacity: 1;
 }
-.blyrics--active.blyrics--instrumental.blyrics--line::after,
-.blyrics--active.blyrics--line:has(.blyrics--word[data-content=""])
-  .blyrics--break::before {
+.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  animation: note-pulse 1.5s ease-in-out infinite;
   animation-play-state: running;
 }
-.blyrics--paused.blyrics--line:has(.blyrics--word[data-content=""])
-  .blyrics--break::before,
 .blyrics--paused.blyrics--instrumental.blyrics--line::after {
   animation-play-state: paused;
 }
 @keyframes note-pulse {
   0% {
-    text-shadow: 0px 0 0px transparent;
+    text-shadow: 0px 0 2px transparent;
     opacity: 0.6;
     transform: scale(100%);
     transform-origin: bottom center;
   }
   50% {
-    text-shadow: 0px 0px 15px var(--white-dot-60);
+    text-shadow: 0px 0px 8px var(--white-dot-60);
     opacity: 1;
     transform: scale(105%);
     transform-origin: bottom center;
   }
   100% {
-    text-shadow: 0px 0 0px transparent;
+    text-shadow: 0px 0 2px transparent;
     opacity: 0.6;
     transform: scale(100%);
     transform-origin: bottom center;
   }
+}
+} /* end of $karaoke-mode != default wrapper for Section-25 */
+
+@if $karaoke-mode == minimal {
+.blyrics--instrumental.blyrics--line::after {
+  color: var(--blyrics-lyric-inactive-color);
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  color: var(--blyrics-lyric-active-color);
+}
 }
 
 /* ## SECTION-26 - Portrait View Player Fix ####### */
@@ -1667,6 +1820,8 @@ ytmusic-player-page[is-mweb-modernization-enabled]
 .blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main::after {
   content: "No lyrics found";
   animation: none;
+  transform: scale(1) translate(0px);
+  transition: none;
 }
 
 .blyrics-container[data-no-lyrics="true"] {
@@ -1984,7 +2139,7 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
 }
 
 /* ### Section 31 - Translation etc entry ######### */
-.blyrics--romanized,
+/* .blyrics--romanized,
 .blyrics--translated {
   animation: smoothReveal 0.3s var(--transition-curve) backwards;
   overflow: hidden;
@@ -2007,7 +2162,7 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
     transform: translateY(0) scaleY(1);
     max-height: 500px;
   }
-}
+} */
 
 /* ### Section 32 - Progress bar and knob ######### */
 #hover-time-info.ytmusic-player-bar {
