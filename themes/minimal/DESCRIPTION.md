@@ -1,14 +1,10 @@
-> Note:
-> - v1.9.1 introduces a simple on/off system for both blur and karaoke
-> - Go to Themes, then create, then scroll down to section-3 to turn on blur or karaoke.
+# Better Lyrics – Minimal Theme (v1.9.2)
 
-> the following details are slightly outdated. The following text will be updated soon.
+Performance-focused theme for the **Better Lyrics** extension for **YouTube Music**. By default it swaps lyric swipe/word animations for a smoother, opacity-based line-by-line lyrics system, surrounded with a function-over-form approach based design for opimized readability.
 
-# Better Lyrics – Minimal Immersive Theme (v1.8.1)
+**Karaoke Mode** and **blur** can be easily reenabled via section-3.
 
-A clean, performance-focused theme for the **Better Lyrics** extension on **YouTube Music**. Removes most lyric swipe/word animations in favor of a smooth, opacity-based focus system, paired with a calm, blurred album-art background.
-
-Requires **Better Lyrics v2.4.0+** — that release changed how word-level lyric highlighting renders, and this theme's lyric-animation sections target that newer markup.
+Requires **Better Lyrics v2.4.0+**.
 
 > "Time, Tide, & I wait for nothing."
 > — *Boidu (probably)*
@@ -31,14 +27,25 @@ Requires **Better Lyrics v2.4.0+** — that release changed how word-level lyric
 
 ## 🛠 Quick Customization
 
-Most tweaks live in **Section 3** at the top of the file:
+Two following options are right at the top of **Section 3**:
+
+```css
+$karaoke-mode: off; /* off / minimal / default */
+$enable-blur: off;  /* on / off */
+$blur-amount: 30px;
+```
+
+* **`$karaoke-mode`** — **`off` by default.** Controls Karaoke enabling and styling (see [🎯 Lyrics Behavior](#-lyrics-behavior) and [🚫 Animation Changes](#-animation-changes)).
+* **`$enable-blur`** — **`off` by default**, for performance (see [🌌 Background System](#-background-system)).
+
+The rest of the options live further are in its subsections:
 
 * **Section 3.1 & 3.2** — lyric opacity levels, font size/weight, scroll timing.
-* **Section 3.3** — background blur (off by default: `--apply-blur-toggle: initial;` to turn on), plus brightness/contrast/saturation.
+* **Section 3.3** — background blur amount, plus brightness/contrast/saturation.
 * **Section 3.4** — shared OKLCH color/easing variables the rest of the theme depends on; edit with care.
 * **Section-2** — delete the `font-family` line to fall back to YouTube's default font.
 
-Want more animation? Switch back to the default Better Lyrics theme, or delete Sections 3.1, 3.2, 4, 6, and 25 to restore default lyric animation while keeping the rest of this theme.
+Want more animation? Set `$karaoke-mode: default` to fall back to Better Lyrics' own default lyric look and experience, while keeping the rest of this theme.
 
 ---
 
@@ -67,7 +74,12 @@ Instead of animating emphasis, the theme fades lines by opacity. Tune it in `:ro
 Raise or lower these for more or less focus intensity, a tighter "spotlight" effect, or to hide upcoming lines completely.
 
 ### Translations & Romanization
-Translated and romanized lines ease into view without jarring the layout, when enabled.
+Translated and romanized lines entry is now controlled by the extension. You can configure each of their respective visibility levels separately:
+
+```css
+--translated-lyric-visibility: 0.82; /* opacity for translated lines */
+--romanized-lyric-visibility: 0.55;  /* opacity for romanized lines */
+```
 
 ![Performance and Elegance](https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/images/3.webp)
 
@@ -75,11 +87,15 @@ Translated and romanized lines ease into view without jarring the layout, when e
 
 ## 🚫 Animation Changes
 
-This theme disables rich-sync animations, word glow/wobble/swipe effects, and shimmer on active words.
+How much karaoke animation you have is controlled by `$karaoke-mode`, at the very top of Section 3:
 
-Word effects are switched off via Better Lyrics' own `--blyrics-animate-word-wobble`, `--blyrics-animate-highlight-swipe`, and `--blyrics-animate-highlight-glow` variables (set in Section 3.2), with some extra CSS resets in Section 6 as a fallback.
+* **`off`** *(default)* — no karaoke at all. Rich-sync animations, word glow/wobble/swipe, and shimmer on active lines are all disabled; lines simply change the opacity levels as listed in [Lyrics Behavior](#-lyrics-behavior).
+* **`minimal`** — turns on karaoke, but lyrics retain their style to match the theme: every other animation than karaoke swipe on the current line and opacity change from the off mode is still disabled. Recommended option for karaoke, looks better than default.
+* **`default`** — turns on the Better Lyrics' default look and experience (including animations) for lyrics; no minimal styling is applied on the lyrics.
 
-To get default animations back, delete **Section-2**'s font line, **Section 3.1**, **3.2**, **4**, **6**, and **25**, then use Better Lyrics' own animation settings instead.
+Each mode configures Better Lyrics' `--blyrics-animate-word-wobble`, `--blyrics-animate-highlight-swipe`, `--blyrics-animate-highlight-glow`, and related variables (Section 3.2), with some CSS resets in Section 6.
+
+More details about the default mode are available in the Better Lyrics' styling document.
 
 ---
 
@@ -88,9 +104,9 @@ To get default animations back, delete **Section-2**'s font line, **Section 3.1*
 
 Dynamic album-art background, tuned for legibility over spectacle:
 
-* Blur: **off by default** for performance — enable with `--apply-blur-toggle: initial;`, then adjust strength via `--blur-amount: 30px;`
+* Blur: **off by default** for performance (less blur = faster) — enable with `$enable-blur: on;` at the top of Section 3, then adjust amount via `$blur-amount: 30px;`
 * Brightness: `0.20` (lowered for legibility)
-* Contrast: `0.85`
+* Contrast: `0.85` (so black album art thumbnails look different from backgrounds)
 * Saturation: `1.0` (unboosted)
 
 You can also disable the background entirely in the extension's own settings.
@@ -106,6 +122,8 @@ Dedicated fullscreen lyric scaling, portrait-window layout fixes, and dynamic ar
 ## 🎵 'No Lyrics Found' Experience
 
 If synced lyrics aren't found, the text fades out and a subtle `♫` appears in its place; hovering reveals "No lyrics found." No harsh error screens.
+
+On instrumental lines (when `$karaoke-mode` isn't `default`), the `♫`  only animates when that line is active.
 
 ---
 
@@ -143,11 +161,11 @@ The loading state uses a simple opacity shimmer instead of a spinning logo, with
 
 ## 🔖 Version
 
-**v1.8.1** — Last updated: 2026-07-31 — Requires Better Lyrics **v2.4.0+**
+**v1.9.2** — Last updated: 2026-09-21 — Requires Better Lyrics **v2.4.0+** (current stable)
 
 Please report bugs or suggestions on the Better Lyrics Discord.
 
-**Credits:** Thanks to chengg, mukeen, drago, boidu, noah, and tposejank for code help and testing.
+**Credits:** Thanks to chengg, mukeen, drago, boidu, noah, tposejank, and many others for code help and testing.
 
 ---
 
@@ -171,47 +189,44 @@ Prefer the default Better Lyrics theme but want to cherry-pick a feature? Copy t
   /* 0.02 would mean 2%  */
   --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
   --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
-  --translated-lyric-visibility: 0.7; /* also romanized */
+  --translated-lyric-visibility: 0.82;
+  --romanized-lyric-visibility: 0.55;
   --blyrics-footer-font-family: var(--blyrics-font-family);
   --blyrics-font-weight: 600;
   --blyrics-font-size: 3.5rem;
-  --blyrics-translated-font-size: 0.6667em;
+  --blyrics-translated-font-size: 0.7071em;
+  --blyrics-romanized-font-size: 0.6429em;
   --blyrics-line-height: 1.5;
   --blyrics-padding: 0.45em;
 
   --white-1:      oklch(1 0 0 / 1);   /* Lyrics Color      */
   --white-dot-60: oklch(1 0 0 / 0.60);/* Translations etc  */
 
-  --blyrics-lyric-inactive-color: oklch(1 0 0/0.35);
   --blyrics-lyric-active-color: var(--white-1);
+  --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
   --blyrics-error-color: oklch(0.75 0.25 20);
   --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
   --blyrics-translated-color: var(--white-dot-60);
 
-  --transition-curve: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
   /* scroll animation curve */
 
-  --blyrics-lyric-scroll-duration: 0.6s;
+  --blyrics-lyric-scroll-duration: 1.5s;
   /* dont change without blyrics-queue-scroll-ms */
 
   --blyrics-lyric-scroll-timing-function: var(--transition-curve);
+  --blyrics-line-scroll-uniform-duration: 1.5s;
 
-  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration) * 0.75) var(--blyrics-lyric-scroll-timing-function);
+  --lyrics-opacity-transition: opacity calc(var(--blyrics-lyric-scroll-duration, 650ms) * 1) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
   /* opacity transition time and curve */
 
-  --blyrics-scale-transition-duration: var(--blyrics-lyric-scroll-duration);
-  --blyrics-lyric-highlight-fade-in-duration: var(--blyrics-lyric-scroll-duration);
-  --blyrics-lyric-highlight-fade-out-duration: var(--blyrics-lyric-scroll-duration);
-  --blyrics-scroll-timing-offset: var(--blyrics-lyric-scroll-duration);
+  --blyrics-scale-transition-duration: 0.5s;
+  --blyrics-lyric-highlight-fade-in-duration: 0.4s;
+  --blyrics-lyric-highlight-fade-out-duration: 0.4s;
+  --blyrics-scroll-timing-offset: 0s;
   --blyrics-wobble-duration: 0s;
-  --blyrics-timing-offset: 0s;
-  --blyrics-richsync-timing-offset: 0s;
-
-  /* v2.4.0+ animation-engine toggles — set to 0 to turn each effect off  */
-  --blyrics-animate-line-scale: 0;
-  --blyrics-animate-word-wobble: 0;
-  --blyrics-animate-highlight-swipe: 0;
-  --blyrics-animate-highlight-glow: 0;
+  --blyrics-timing-offset: 0.4s;
+  --blyrics-richsync-timing-offset: 0.4s;
 }
 
 /* Removing this block will affect lyric animation.
@@ -219,13 +234,18 @@ It's supposed to be in a comment like this to work.
 
 ;
 blyrics-disable-richsync = true;
+blyrics-letter-wave = false;
+blyrics-debug-renderer = false;
+blyrics-add-extra-top-padding = true;
 blyrics-line-synced-animation-delay = 0;
 blyrics-lyric-ending-threshold-s = 0;
 blyrics-early-scroll-consider-s = 0;
-blyrics-queue-scroll-ms = 720;
-blyrics-debug-renderer = false;
+blyrics-queue-scroll-ms = 1520;
 blyrics-target-scroll-pos-ratio = 0.4;
-blyrics-add-extra-top-padding = true;
+blyrics-line-scroll-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-above-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-below-duration = var(--blyrics-line-scroll-uniform-duration);
+blyrics-line-scroll-active-duration = var(--blyrics-line-scroll-uniform-duration);
 */
 
 /* Override Keyframes (kept as a fallback — word effects mainly run via the
@@ -242,7 +262,16 @@ blyrics-add-extra-top-padding = true;
 #blyrics-wrapper .blyrics--word::after,
 #blyrics-wrapper .blyrics--word::before,
 #blyrics-wrapper .blyrics-container::after,
-#blyrics-wrapper .blyrics-container::before,
+#blyrics-wrapper .blyrics-container::before {
+  content: "";
+  display: none;
+  animation: none;
+  transition: none;
+  background: none;
+  transform: none;
+  filter: none;
+}
+
 #blyrics-wrapper .blyrics-container div .blyrics-word-highlight {
   content: "";
   display: none;
@@ -253,7 +282,7 @@ blyrics-add-extra-top-padding = true;
   filter: none;
 }
 
-/* Disabling active animations (now only relevant to the instrumental note icon) */
+/* Disabling active animations */
 #blyrics-wrapper .blyrics-container div .blyrics--word.blyrics--animating,
 #blyrics-wrapper .blyrics--word.blyrics--animating {
   animation: none;
@@ -263,14 +292,20 @@ blyrics-add-extra-top-padding = true;
   perspective: none;
 }
 
-#blyrics-wrapper .blyrics--line.blyrics--pre-animating,
-#blyrics-wrapper .blyrics--line.blyrics--pre-animating .blyrics--word {
-  will-change: auto;
+.blyrics-highlight-run,
+.blyrics-word-highlight {
+  display: none;
 }
 
 #blyrics-wrapper .blyrics--word {
   transform: none;
   will-change: auto;
+}
+
+/* Hardcoding system lyric stylization disabling */
+.blyrics-container div span.blyrics--animating::after,
+.blyrics-container div span.blyrics--animating {
+  animation: none;
 }
 
 /* Container Lines - Base State */
@@ -288,26 +323,6 @@ blyrics-add-extra-top-padding = true;
 /* Next Lines (any line after an active one) */
 #blyrics-wrapper .blyrics-container > div.blyrics--active ~ div:not(.blyrics--active) {
   opacity: var(--next-lyrics-visibility);
-}
-
-/* Text Colors */
-#blyrics-wrapper .blyrics-container div .blyrics--word {
-  color: var(--white-1);
-}
-
-/* Translations and Romanization */
-#blyrics-wrapper :is(.blyrics--romanized, .blyrics--translated),
-#blyrics-wrapper .blyrics--romanized,
-#blyrics-wrapper .blyrics--translated {
-  color: var(--white-1);
-  font-size: var(--blyrics-translated-font-size);
-  line-height: 1.5;
-  opacity: var(--translated-lyric-visibility);
-  transition: var(--lyrics-opacity-transition);
-}
-
-#blyrics-wrapper .blyrics-container > div.blyrics--active :is(.blyrics--romanized, .blyrics--translated) {
-  opacity: var(--translated-lyric-visibility);
 }
 
 /* User Scrolling or Hover */
@@ -331,31 +346,63 @@ blyrics-add-extra-top-padding = true;
   padding-block: 0 !important;
 }
 
-/* Layout Adjustments for Translations */
-#blyrics-wrapper .blyrics-container .blyrics--romanized {
-  margin-top: 0.2em;
-  margin-bottom: 0.2em;
-  font-weight: 200;
-}
-
-#blyrics-wrapper .blyrics-container .blyrics--translated {
-  margin-top: 0.4em;
-}
-
-/* Fullscreen Specifics */
-ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:not([blyrics-dfs]) .blyrics-container {
-  font-size: 4.5rem;
-}
-
 /* Final Overrides */
 #blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 
-/* Hardcoding system lyric stylization disabling (instrumental icon only) */
-.blyrics-container div span.blyrics--animating::after,
-.blyrics-container div span.blyrics--animating {
-  animation: none;
+/* Text Colors */
+#blyrics-wrapper .blyrics-container div .blyrics--word {
+  color: var(--white-1);
+}
+
+/* Translations and Romanization (now on independent opacity levels) */
+#blyrics-wrapper .blyrics--translated {
+  color: var(--white-1);
+  font-size: var(--blyrics-translated-font-size);
+  line-height: 1.5;
+  opacity: var(--translated-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--translated {
+  opacity: var(--translated-lyric-visibility);
+}
+
+#blyrics-wrapper .blyrics--romanized {
+  color: var(--white-1);
+  font-size: var(--blyrics-romanized-font-size);
+  line-height: 1.5;
+  opacity: var(--romanized-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--romanized {
+  opacity: var(--romanized-lyric-visibility);
+}
+
+/* Layout Adjustments for Translations */
+#blyrics-wrapper .blyrics-container .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: 0.2em;
+  margin-bottom: 0.2em;
+  font-weight: 350;
+  letter-spacing: 0.03em;
+}
+
+#blyrics-wrapper .blyrics-container .blyrics--translated {
+  margin-top: 0.4em;
+  font-weight: 600;
+}
+
+/* Fullscreen Specifics */
+ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:not([blyrics-dfs]) .blyrics-container {
+  font-size: 4.5rem;
 }
 
 /* Footer (credit line) */
@@ -385,13 +432,18 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 }
 ```
 
+*This is the `$karaoke-mode: off` behavior.*
+
 </details>
 
 ### 2. Optional Musical Note Plugins
-#### Disable musical note animation
+
+Both **instrumental lines** and **empty lines** can be modified separately with custom musical notes.
+
+#### Instrumental Lines
 
 <details>
-<summary>Show CSS</summary>
+<summary>Static note (no animation)</summary>
 
 ```css
 .blyrics--instrumental-icon {
@@ -404,22 +456,111 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled]) [player-fullscreened]:no
 
 </details>
 
-#### Replace all breaks with musical notes
-*Note: `.blyrics--break` isn't referenced anywhere in the extension's current stylesheets or its styling docs, unlike the classes above — worth a quick test before relying on it.*
-
 <details>
-<summary>Show CSS</summary>
+<summary>Pulsing note (synced to playback)</summary>
+
+*Pulses when the line is active, pauses when user pauses the song.
 
 ```css
-.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break {
+.blyrics--instrumental-icon {
+  display: none;
+}
+.blyrics--instrumental.blyrics--line::after {
+  content: "♫";
+  display: inline-block;
+  font-size: 1.2em;
+  animation: none;
+  animation-play-state: paused;
+  transform: scale(100%);
+  text-shadow: unset;
+  filter: none;
+  opacity: 1;
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+}
+.blyrics--paused.blyrics--instrumental.blyrics--line::after {
+  animation-play-state: paused;
+}
+
+@keyframes note-pulse {
+  0%, 100% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+  50% {
+    text-shadow: 0px 0px 8px var(--white-dot-60);
+    opacity: 1;
+    transform: scale(105%);
+    transform-origin: bottom center;
+  }
+}
+```
+
+</details>
+
+#### Empty Lines
+
+<details>
+<summary>Static note (no animation)</summary>
+
+```css
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main {
   display: inline-flex;
   align-items: center;
   min-height: 1.5em;
   line-height: var(--blyrics-line-height);
 }
-.blyrics--line:has(.blyrics--word[data-content=""]) .blyrics--break::before {
+
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   content: "♫";
-  visibility: visible;
+}
+```
+
+</details>
+
+<details>
+<summary>Pulsing note (synced to playback)</summary>
+
+*Same pulse/pause behavior as above*
+
+```css
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5em;
+  line-height: var(--blyrics-line-height);
+}
+
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  content: "♫";
+}
+
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.blyrics--paused.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation-play-state: paused;
+}
+
+@keyframes note-pulse {
+  0%, 100% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+  50% {
+    text-shadow: 0px 0px 8px var(--white-dot-60);
+    opacity: 1;
+    transform: scale(105%);
+    transform-origin: bottom center;
+  }
 }
 ```
 

@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-09-20 v1.9.1 (BetterLyrics v2.4.0+ only)    */
+ * 2026-09-21 v1.9.2 (BetterLyrics v2.4.0+ only)    */
 
 /* Karaoke can be turned on in Section 3.           */
 
@@ -1495,6 +1495,28 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 .blyrics--paused.blyrics--instrumental.blyrics--line::after {
   animation-play-state: paused;
 }
+
+/* empty lines */
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5em;
+  line-height: var(--blyrics-line-height);
+}
+
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  content: "♫";
+}
+
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.blyrics--paused.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation-play-state: paused;
+}
+
 @keyframes note-pulse {
   0% {
     text-shadow: 0px 0 2px transparent;
@@ -1518,10 +1540,12 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 } /* end of $karaoke-mode != default wrapper for Section-25 */
 
 @if $karaoke-mode == minimal {
-.blyrics--instrumental.blyrics--line::after {
+.blyrics--instrumental.blyrics--line::after,
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   color: var(--blyrics-lyric-inactive-color);
 }
-.blyrics--active.blyrics--instrumental.blyrics--line::after {
+.blyrics--active.blyrics--instrumental.blyrics--line::after,
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   color: var(--blyrics-lyric-active-color);
 }
 }
@@ -2681,4 +2705,3 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 }
 
 /* ################################################ */
-
