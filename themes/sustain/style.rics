@@ -87,13 +87,13 @@ $selector: "+ .blyrics--line:not(#{$playing})";
 }
 
 ytmusic-player:not([video-mode]) {
-  border-radius: 2rem;
+  border-radius: var(--yt-img-border-radius);
   outline: 1px solid rgb(175 175 175 / 15%);
   overflow: hidden;
 }
 
-ytmusic-player[is-music-web-player-page-layout-fixes-enabled]:not([is-mweb-modernization-enabled]):not([video-mode])[player-page-open] {
-  border-radius: 2rem;
+ytmusic-player:not([is-mweb-modernization-enabled]):not([video-mode])[player-page-open] {
+  border-radius: var(--yt-img-border-radius);
 }
 
 img.yt-img-shadow:not(#song-image img){
