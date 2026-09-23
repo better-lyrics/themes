@@ -205,6 +205,10 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer:hover {
   padding-inline: 20px;
 }
 
+.blyrics-pip-shell .blyrics-container {
+  --blyrics-target-scroll-pos-ratio: 0.37;
+}
+
 .blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
   > div:not(.blyrics--active):not(.blyrics--active ~ div) {
   transition:
