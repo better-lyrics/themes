@@ -206,7 +206,7 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer:hover {
 }
 
 .blyrics-pip-shell .blyrics-container {
-  --blyrics-target-scroll-pos-ratio: 0.37;
+  --blyrics-target-scroll-pos-ratio: 0.2;
 }
 
 .blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
