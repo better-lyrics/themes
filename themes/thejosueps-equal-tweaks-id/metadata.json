@@ -1,0 +1,11 @@
+{
+  "id": "thejosueps-equal-tweaks-id",
+  "title": "EqualTweaks",
+  "description": "This theme is not a big deal, just minor changes and fixes to the base experience.",
+  "creators": ["thejosuep"],
+  "minVersion": "2.4.0.0",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": ["dark", "minimal", "responsive"],
+  "images": ["01.png", "02.png", "03.png", "04.png"]
+}
