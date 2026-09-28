@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-09-21 v1.9.2 (BetterLyrics v2.4.0+ only)    */
+ * 2026-09-28 v1.9.27 (BetterLyrics v2.4.0+ only)    */
 
 /* Karaoke can be turned on in Section 3.           */
 
@@ -152,7 +152,13 @@ $blur-amount: 30px;
 
   /*# SECTION-3.3 Background Effects ############## */
   --blyrics-gradient-stops: none;
-  --background-image-transition: background 2.5s ease-in-out 5s;
+  --background-image-transition-duration: 2.5s;
+  --background-image-transition-easing: ease-in-out;
+  --background-image-transition-delay: 5s;
+  --background-image-transition: background
+    var(--background-image-transition-duration)
+    var(--background-image-transition-easing)
+    var(--background-image-transition-delay);
   --blyrics-background-saturate: 1;
   --background-brightness: 0.20;
   --background-contrast: 0.85;
@@ -277,64 +283,28 @@ ytmusic-app-layout > [slot="player-bar"] {
   }
 }
 
-/* Resetting Pseudo-elements and animations */
-#blyrics-wrapper .blyrics--word::after,
-#blyrics-wrapper .blyrics--word::before,
-#blyrics-wrapper .blyrics-container::after,
-#blyrics-wrapper .blyrics-container::before {
-  content: "";
+/* Hiding the extension's narrow-viewport background glow pseudo-elements */
+#blyrics-wrapper .blyrics-container:not([data-no-lyrics="true"])::after,
+#blyrics-wrapper .blyrics-container:not([data-no-lyrics="true"])::before {
   display: none;
-  animation: none;
-  transition: none;
-  background: none;
-  transform: none;
-  filter: none;
 }
 
-/* actual karaoke gradient-fill overlay */
-@if $karaoke-mode == off {
-#blyrics-wrapper .blyrics-container div .blyrics-word-highlight {
-  content: "";
-  display: none;
-  animation: none;
-  transition: none;
-  background: none;
-  transform: none;
-  filter: none;
-}
-}
-
-/* Disabling active animations */
-#blyrics-wrapper .blyrics-container div .blyrics--word.blyrics--animating,
-#blyrics-wrapper .blyrics--word.blyrics--animating {
-  animation: none;
-  transform: none;
-  filter: none;
-  translate: none;
-  perspective: none;
-}
-
+/* karaoke gradient-fill overlay */
 @if $karaoke-mode == off {
 .blyrics-highlight-run,
 .blyrics-word-highlight
 { display: none; }
 }
 
-#blyrics-wrapper .blyrics--word {
+.blyrics-container .blyrics--word {
   transform: none;
   will-change: auto;
-}
-
-/* Hardcoding system lyric stylization disabling */
-.blyrics-container div span.blyrics--animating::after,
-.blyrics-container div span.blyrics--animating {
-  animation: none;
 }
 
 /* -- 6.1.b Line opacity states (current/prev/next/hover) -- */
 
 /* Container Lines - Base State */
-#blyrics-wrapper .blyrics-container > div {
+.blyrics-container > div {
   opacity: var(--previous-lyrics-visibility);
   transform: none;
   transition: var(--lyrics-opacity-transition);
@@ -342,11 +312,11 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Active Line */
 @if $karaoke-mode == off {
-#blyrics-wrapper .blyrics-container > div.blyrics--active {
+.blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 } @else if $karaoke-mode == minimal {
-#blyrics-wrapper .blyrics-container > div.blyrics--animating {
+.blyrics-container > div.blyrics--animating {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -361,31 +331,28 @@ ytmusic-app-layout > [slot="player-bar"] {
 */
 
 /* Next Lines (any line after an active one) */
-#blyrics-wrapper
-  .blyrics-container
+.blyrics-container
   > div.blyrics--active
   ~ div:not(.blyrics--active) {
   opacity: var(--next-lyrics-visibility);
 }
 
 /* User Scrolling or Hover */
-#blyrics-wrapper
-  .blyrics-container:is(:hover, .blyrics-user-scrolling)
+.blyrics-container:is(:hover, .blyrics-user-scrolling)
   > div:not(.blyrics--active):not(:hover) {
   opacity: var(--non-hovered-lines-visibility);
   transition: opacity 0.3s var(--transition-curve);
 }
 
 /* Specific Line Hover */
-#blyrics-wrapper
-  .blyrics-container:is(:hover, .blyrics-user-scrolling)
+.blyrics-container:is(:hover, .blyrics-user-scrolling)
   > div:not(.blyrics--active):hover {
   opacity: var(--hovered-line-visibility);
   transition: opacity 0.1s var(--transition-curve);
 }
 
 /* Unsynced Lyrics */
-#blyrics-wrapper .blyrics-container[data-sync="none"] > div {
+.blyrics-container[data-sync="none"] > div {
   opacity: var(--current-lyric-visibility);
   transform: none;
   transition: none;
@@ -395,11 +362,11 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Final Overrides - higher specificity score */
 @if $karaoke-mode == off {
-#blyrics-wrapper .blyrics-container > .blyrics--active.blyrics--active {
+.blyrics-container > .blyrics--active.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 } @else if $karaoke-mode == minimal {
-#blyrics-wrapper .blyrics-container > div.blyrics--animating.blyrics--animating {
+.blyrics-container > div.blyrics--animating.blyrics--animating {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -420,13 +387,13 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Text Colors */
 @if $karaoke-mode == off {
-#blyrics-wrapper .blyrics-container div .blyrics--word {
+.blyrics-container div .blyrics--word {
   color: var(--white-1);
 }
 }
 
 /* Translations and Romanization */
-#blyrics-wrapper .blyrics--translated {
+.blyrics-container .blyrics--translated {
   color: var(--white-1);
   font-size: var(--blyrics-translated-font-size);
   line-height: 1.5;
@@ -435,20 +402,20 @@ ytmusic-app-layout > [slot="player-bar"] {
 }
 
 @if $karaoke-mode == minimal {
-#blyrics-wrapper .blyrics--translated {
+.blyrics-container .blyrics--translated {
   color: var(--blyrics-lyric-inactive-color);
 }
 
-#blyrics-wrapper .blyrics--active .blyrics--translated {
+.blyrics-container .blyrics--active .blyrics--translated {
   color: var(--blyrics-lyric-active-color);
 }
 }
 
-#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--translated {
+.blyrics-container > div.blyrics--active .blyrics--translated {
   opacity: var(--translated-lyric-visibility);
 }
 
-#blyrics-wrapper .blyrics--romanized {
+.blyrics-container .blyrics--romanized {
   color: var(--white-1);
   font-size: var(--blyrics-romanized-font-size);
   line-height: 1.5;
@@ -456,14 +423,14 @@ ytmusic-app-layout > [slot="player-bar"] {
   transition: var(--lyrics-opacity-transition);
 }
 
-#blyrics-wrapper .blyrics-container > div.blyrics--active .blyrics--romanized {
+.blyrics-container > div.blyrics--active .blyrics--romanized {
   opacity: var(--romanized-lyric-visibility);
 }
 
 /* -- 6.1.d Translation / romanization layout -- */
 
 /* Layout Adjustments for Translations */
-#blyrics-wrapper .blyrics-container .blyrics--romanized {
+.blyrics-container .blyrics--romanized {
   width: auto;
   padding-block: initial;
   background: 0;
@@ -476,7 +443,7 @@ ytmusic-app-layout > [slot="player-bar"] {
   letter-spacing: .03em;
 }
 
-#blyrics-wrapper .blyrics-container .blyrics--translated {
+.blyrics-container .blyrics--translated {
   margin-top: 0.4em;
   font-weight: 600;
 }
@@ -495,36 +462,36 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   /*# SECTION-6.2 - Footer #########################*/
 
 .blyrics-footer__container.blyrics-footer__shaders {
+  animation: none;
+  background: var(--blyrics-footer-bg-color);
+  box-shadow: none;
+  border: 1px solid var(--blyrics-footer-border-color);
+  padding: 0.5rem 1.25rem;
+  font-weight: unset;
+
+  & > span {
     animation: none;
-    background: var(--blyrics-footer-bg-color);
-    box-shadow: none;
-    border: 1px solid var(--blyrics-footer-border-color);
-    padding: 0.5rem 1.25rem;
-    font-weight: unset; 
+    background: none;
+    -webkit-background-clip: unset;
+    color: var(--blyrics-footer-link-color);
+  }
 
-    & > span {
-        animation: none;
-        background: none;
-        -webkit-background-clip: unset;
-        color: var(--blyrics-footer-link-color);
-    }
-
-    &:hover > span {
-        text-decoration: underline;
-    }
+  &:hover > span {
+    text-decoration: underline;
+  }
 }
 
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
-    opacity: 1;
+div.blyrics-container.blyrics-container > div.blyrics-footer {
+  opacity: 1;
 
-    & > * {
-        opacity: 0.3;
-        transition: opacity 0.1s var(--transition-curve, ease); 
+  & > * {
+    opacity: 0.3;
+    transition: opacity 0.1s var(--transition-curve, ease);
 
-        &:hover {
-            opacity: 1;
-        }
+    &:hover {
+      opacity: 1;
     }
+  }
 }
 
 /* ## SECTION-7 - Before Lyrics are Loaded ######## */
@@ -697,6 +664,22 @@ ytmusic-player-page[player-fullscreened]::before {
   border-radius: 8%;
   corner-shape: superellipse(2);
   overflow: hidden;
+}
+
+/* creating my own album art for transition */
+ytmusic-player-page #song-image > yt-img-shadow#thumbnail,
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail {
+  background-image: var(--blyrics-background-img);
+  background-position: center;
+  background-size: cover;
+  transition: var(--background-image-transition);
+  transition-delay: 0s;
+}
+
+/* Hiding the actual album-art */
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#img,
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#blyrics-img {
+  display: none !important;
 }
 
 /* ## SECTION-10 - Portrait Window Lyrics Screen ## */
@@ -974,10 +957,6 @@ ytmusic-browse-response[has-background]:not([disable-gradient])
 .image.ytmusic-immersive-header-renderer
   ~ .content-container-wrapper.ytmusic-immersive-header-renderer {
   background: none;
-}
-
-#blyrics-wrapper > div > div.blyrics-footer {
-  opacity: 1;
 }
 
 /* ## SECTION-17 - Search Box ##################### */
@@ -1823,6 +1802,11 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   to { opacity: 1; }
 }
 
+@keyframes noteFadeIn {
+  from { opacity: 0; }
+  to { opacity: .45; }
+}
+
 @keyframes go-invisible {
   to {
     visibility: hidden;
@@ -1841,19 +1825,48 @@ ytmusic-player-page[is-mweb-modernization-enabled]
     go-invisible 0s forwards 10s;
 }
 
-.blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main::after {
+.blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main > .blyrics-bidi-run {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.blyrics-container[data-no-lyrics="true"]::before {
   content: "No lyrics found";
-  animation: none;
-  transform: scale(1) translate(0px);
-  transition: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::before {
+  opacity: 1;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::after {
+  opacity: 0 !important;
 }
 
 .blyrics-container[data-no-lyrics="true"] {
   padding-top: 4em;
-  padding-bottom: 4em;
+  padding-bottom: 4em !important;
 }
 
-.blyrics-container[data-no-lyrics="true"] .blyrics-line-main::after {
+.blyrics-no-lyrics-button-container {
+ flex-wrap: wrap;
+}
+
+/* keep the extension's narrow-viewport glow from painting behind the note/text */
+.blyrics-container[data-no-lyrics="true"]::before,
+.blyrics-container[data-no-lyrics="true"]::after {
+  background: none !important;
+  filter: none !important;
+  border-radius: 0;
+}
+
+.blyrics-container[data-no-lyrics="true"]::after {
   content: "♫";
   position: absolute;
   inset: 0;
@@ -1863,16 +1876,16 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   opacity: 0;
   cursor: help;
   font-size: 1.4em;
-  transform: scale(1);
+  scale: 1;
   animation:
-    fadeInOnly 2s forwards 10.2s,
+    noteFadeIn 2s forwards 10.2s,
     i-love-a-shooting-star 6s linear infinite 12.2s;
 }
 
 @keyframes i-love-a-shooting-star {
   0% {
     opacity: .45;
-    transform: scale(1);
+    scale: 1;
     text-shadow:
       0 0 5px oklch(100% 0 0 / 0%),
       0 0 5px oklch(100% 0 0 / 0%),
@@ -1885,7 +1898,7 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   }
   25% {
     opacity: 1;
-    transform: scale(1.5);
+    scale: 1.5;
     text-shadow:
       0 0 5px oklch(100% 0 0 / 0%),
       0 0 5px oklch(100% 0 0 / 0%),
@@ -2063,7 +2076,7 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   }
   80% {
     opacity: .65;
-    transform: scale(1.2333);
+    scale: 1.2333;
     text-shadow:
       -2em -1.4em 32px oklch(100% 0 0 / 0%),
       2.6em 0.1em 32px oklch(100% 0 0 / 0%),
@@ -2076,7 +2089,7 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   }
   100% {
     opacity: .45;
-    transform: scale(1);
+    scale: 1;
     text-shadow:
       -2em -1.4em 32px oklch(100% 0 0 / 0%),
       2.6em 0.1em 32px oklch(100% 0 0 / 0%),
@@ -2703,5 +2716,324 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   outline: 1px solid var(--white-dot-10);
   outline-offset: -1px;
 }
+
+/* ## SECTION-39 - Picture-In-Picture - PIP ####### */
+.blyrics-pip-shell.blyrics-pip-shell {
+ --blyrics-pip-artwork-shadow: none;
+}
+
+.blyrics-pip-backdrop.blyrics-pip-backdrop {
+  opacity: 1 !important;
+}
+
+.blyrics-pip-backdrop__layer.blyrics-pip-backdrop__layer {
+  position: fixed !important;
+  height: 100dvh;
+  width: 100dvw;
+  transform: scale(1.2);
+  filter: var(--background-image-filter) !important;
+}
+
+.blyrics-pip-shell[blyrics-pip-transition="flip"]
+  .blyrics-pip-artwork__face[data-front="true"],
+.blyrics-pip-shell[blyrics-pip-transition="shuffle"]
+  .blyrics-pip-artwork__face[data-front="true"],
+.blyrics-pip-shell[blyrics-pip-transition="shuffle"][data-running="true"]
+  .blyrics-pip-artwork__face,
+.blyrics-pip-artwork {
+  box-shadow: none !important;
+  --blyrics-pip-artwork-shadow: none;
+  --blyrics-pip-artwork-shadow: none;
+}
+
+.blyrics-pip-artwork.blyrics-pip-artwork,
+.blyrics-pip-artwork__face.blyrics-pip-artwork__face,
+.blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
+  --blyrics-pip-artwork-radius: 8%;
+  border-radius: 8% !important;
+  corner-shape: superellipse(2);
+}
+
+/* backround when controls hovered - scrim */
+.blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
+  background: var(--filter-replacement-backgroundcolor);
+  /* transition: none; */
+}
+
+
+/* prev / next */
+.blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control {
+  background: none;
+  outline: none;
+  opacity: 0.7;
+  transition: none;
+
+  &::before {
+    display: none;
+  }
+
+  &:hover {
+    background-color: var(--white-dot-10);
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    opacity: 1;
+  }
+}
+
+/* play / pause */
+.blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control--play-pause {
+  color: var(--white-1);
+  background-color: var(--white-dot-10);
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  opacity: 0.87;
+
+  &:hover {
+    background-color: var(--white-dot-15);
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+    opacity: 1;
+  }
+}
+
+/* prev next click animation */
+.blyrics-pip-shell .blyrics-control-nudge-prev svg,
+.blyrics-pip-shell .blyrics-control-nudge-next svg {
+ /* animation: none; */
+}
+
+.blyrics-pip-shell .blyrics-control-ripple-layer {
+  display: none;
+}
+
+/* PIP background and album art */
+@media (prefers-reduced-motion: no-preference) {
+  /* replicates my design */
+  .blyrics-pip-backdrop__layer.blyrics-pip-backdrop__layer[data-front="true"] {
+    animation-duration: var(--background-image-transition-duration);
+    animation-delay: var(--background-image-transition-delay);
+    animation-timing-function: var(--background-image-transition-easing);
+  }
+
+  /* no fancy motion */
+  .blyrics-pip-shell .blyrics-pip-artwork__card,
+  .blyrics-pip-shell .blyrics-pip-artwork__face {
+    animation: none !important;
+    transform: none !important;
+    transition: none !important;
+    backface-visibility: visible !important;
+  }
+
+  /* again somehow replicates my design */
+  .blyrics-pip-backdrop:not([data-first]) ~ .blyrics-pip-art-col
+    .blyrics-pip-artwork__face[data-front="true"] {
+    animation: blyrics-pip-art-in
+      var(--background-image-transition-duration)
+      var(--background-image-transition-easing)
+      0s both !important;
+  }
+}
+
+@keyframes blyrics-pip-art-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Progress bar and knob*/
+.blyrics-progress {
+  --blyrics-progress-track: var(--white-dot-10);
+  --blyrics-progress-dot-shadow: none;
+}
+
+.blyrics-progress__bar {
+  height: 2px;
+}
+
+.blyrics-progress__bar.dragging {
+  /* box-shadow: 0 0 0 1px var(--white-dot-60); */
+  outline: 1px solid var(--white-dot-60);
+  outline-offset: 0px;
+}
+
+.blyrics-progress__fill {
+  background: var(--white-dot-60);
+}
+
+.blyrics-progress__knob-dot.blyrics-progress__knob-dot {
+  width: calc(100%) !important;
+  height: calc(55%) !important;
+  /* height: calc(100% - 10px) !important; */
+  border-radius: 999rem !important;
+  corner-shape: superellipse(1.2) !important;
+  background: var(--white-dot-60);
+  outline: 1px solid var(--white-dot-60);
+  outline-offset: -1px;
+  visibility: hidden;
+}
+
+.blyrics-progress__bar.blyrics-progress__bar:hover .blyrics-progress__knob-dot.blyrics-progress__knob-dot {
+  box-shadow: none;
+  visibility: visible;
+}
+
+/* title subtitle text shenanigans */
+/* animation only on hover */
+.blyrics-pip-header:not(:hover) .blyrics-pip-line[data-marquee="read"] {
+  animation-name: none !important;
+}
+
+.blyrics-pip-header:hover .blyrics-pip-line[data-marquee="read"] {
+  --pip-marquee-speed: 1.5;
+  --pip-marquee-hover-delay: 250ms;
+  animation-duration: calc(var(--blyrics-pip-marquee-cycle) / var(--pip-marquee-speed));
+  animation-delay: calc(var(--pip-marquee-hover-delay) - 1500ms / var(--pip-marquee-speed));
+}
+
+.blyrics-pip-line[data-overflows] {
+  transition: none !important;
+}
+
+.blyrics-pip-line__unit {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="true"],
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="false"] {
+  animation: none !important;
+}
+
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="false"] {
+  opacity: 0 !important;
+}
+
+/*  loader mess */
+.blyrics-pip-loader__mark.blyrics-pip-loader__mark {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  width: 1em;
+  height: 1em;
+}
+
+.blyrics-pip-loader__label.blyrics-pip-loader__label {
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--white-1);
+  font-size: 1em;
+  line-height: 1.5;
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+.blyrics-pip-loader.blyrics-pip-loader {
+  opacity: 1;
+  transition: opacity var(--blyrics-loader-transition-duration, 0.6s)
+    var(--blyrics-loader-transition-easing);
+}
+
+@starting-style {
+  .blyrics-pip-loader.blyrics-pip-loader {
+    opacity: 0;
+  }
+}
+
+/* ## SECTION-40 - Unison ######################### */
+.blyrics-gam__featured,
+.blyrics-gam__seal,
+.blyrics-gam__tier,
+.blyrics-gam__ring,
+.blyrics-footer__unison-score-line {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+
+  transition:
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    margin 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
+  transition-delay: 0.3s;
+}
+
+.blyrics-gam__featured,
+.blyrics-gam__tier {
+  max-width: 0;
+  margin-left: -10px;
+  padding: 0;
+}
+
+.blyrics-gam__ring {
+  max-width: 0;
+  margin-right: -10px;
+  padding: 0;
+}
+
+.blyrics-gam__seal {
+  max-width: 0;
+  margin-top: -10px;
+  padding: 0;
+}
+
+.blyrics-footer__unison-score-line {
+  max-width: 100%;
+  margin-top: -0.5rem;
+}
+
+.blyrics-footer__unison-author:hover {
+  & .blyrics-gam__featured,
+  & .blyrics-gam__seal,
+  & .blyrics-gam__tier,
+  & .blyrics-gam__ring {
+    max-width: 400px;
+    max-height: 40px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  & .blyrics-gam__featured,
+  & .blyrics-gam__tier {
+    margin-left: 0;
+  }
+
+  & .blyrics-gam__ring {
+    margin-right: 0;
+  }
+
+  & .blyrics-gam__seal {
+    margin-top: 0;
+    padding: 0 10px 0 0;
+  }
+
+  & .blyrics-gam__tier {
+    padding: 0 12px 0 7px;
+  }
+}
+
+.blyrics-footer__unison-actions-block:hover {
+  & .blyrics-footer__unison-score-line {
+    max-height: 20px;
+    opacity: 1;
+    margin-top: 0;
+    pointer-events: auto;
+  }
+}
+
+.blyrics-footer__container.blyrics-footer__unison-card {
+  box-shadow: none;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  background: var(--white-dot-10);
+  transition: none;
+
+  &:hover {
+    background: var(--white-dot-10);
+  }
+} 
 
 /* ################################################ */
