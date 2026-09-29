@@ -1,6 +1,6 @@
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-09-28 v1.9.27 (BetterLyrics v2.4.0+ only)    */
+ * 2026-09-29 v1.9.33 (BetterLyrics v2.4.0+ only)    */
 
 /* Karaoke can be turned on in Section 3.           */
 
@@ -184,10 +184,16 @@ $blur-amount: 30px;
   --white-1:      oklch(1 0 0 / 1);
   --white-dot-87: oklch(1 0 0 / 0.87);
   --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-dot-20: oklch(1 0 0 / 0.20);
   --white-dot-15: oklch(1 0 0 / 0.15);
   --white-dot-10: oklch(1 0 0 / 0.10);
+  
+  --black-1:      oklch(0 0 0 / 1);
   --black-dot-87: oklch(0 0 0 / 0.87);
   --black-dot-60: oklch(0 0 0 / 0.60);
+  --black-dot-20: oklch(0 0 0 / 0.20);
+  
+  --youtube-gray-212121: oklch(0.248 0 0);
 
   /* -- Easing / curves -- */
   --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
@@ -621,10 +627,8 @@ div.blyrics-container.blyrics-container > div.blyrics-footer {
 
 /* ## SECTION-8 - Player Background ############### */
 ytmusic-player-page::before {
-  background: var(
-    --blyrics-background-img,
-    var(--ytmusic-brand-background-solid)
-  );
+  background-image: var(--blyrics-background-img);
+  background-color: var(--youtube-gray-212121);
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
@@ -666,14 +670,16 @@ ytmusic-player-page[player-fullscreened]::before {
   overflow: hidden;
 }
 
-/* creating my own album art for transition */
+/* creating my own album art for better transition */
 ytmusic-player-page #song-image > yt-img-shadow#thumbnail,
 div#song-image.ytmusic-player > yt-img-shadow#thumbnail {
   background-image: var(--blyrics-background-img);
+  background-color: var(--youtube-gray-212121);
   background-position: center;
   background-size: cover;
   transition: var(--background-image-transition);
   transition-delay: 0s;
+  transition-duration: 0.6s;
 }
 
 /* Hiding the actual album-art */
@@ -773,10 +779,8 @@ ytmusic-app-layout {
     content: "";
     position: absolute;
     inset: -90px;
-    background: var(
-      --blyrics-background-img,
-      var(--ytmusic-brand-background-solid)
-    );
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -789,10 +793,8 @@ ytmusic-app-layout {
     content: "";
     position: absolute;
     inset: -90px;
-    background: var(
-      --blyrics-background-img,
-      var(--ytmusic-brand-background-solid)
-    );
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -822,7 +824,7 @@ tp-yt-paper-toast #close-button {
 }
 
 #toast {
-  background-color: var(--ytmusic-brand-background-solid);
+  background-color: var(--youtube-gray-212121);
   border: 1.5px solid var(--white-dot-10);
   border-radius: 20.88px !important;
   corner-shape: superellipse(2);
@@ -968,7 +970,7 @@ ytmusic-search-box[has-query], ytmusic-search-box[opened] {
 ytmusic-search-box {
   & {
     --ytmusic-search-border: var(--white-dot-10);
-    --ytmusic-search-background: oklch(from #212121 l c h);
+    --ytmusic-search-background: var(--youtube-gray-212121);
 
     & .search-box.ytmusic-search-box {
       transition: background-color 0.2s var(--transition-curve);
@@ -1121,16 +1123,14 @@ ytmusic-queue-header-renderer {
   z-index: 1000;
   container-type: inline-size;
   border: none;
-  box-shadow: 0px 4px 10px 0px oklch(0 0 0 / 0.2);
+  box-shadow: 0px 4px 10px 0px var(--black-dot-20);
 
   &::before {
     content: "";
     overflow: hidden;
     position: absolute;
-    background: var(
-      --blyrics-background-img,
-      var(--ytmusic-brand-background-solid)
-    );
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
@@ -1153,7 +1153,7 @@ ytmusic-queue-header-renderer {
     corner-shape: inherit;
     border: none;
     /*box-shadow: inset 0 0 0px 1px white;*/
-    outline: 1px solid white;
+    outline: 1px solid var(--white-1);
     outline-offset: -1px;
     opacity: 0.1;
     z-index: -1;
@@ -1196,8 +1196,8 @@ ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
 
 #tab-renderer {
   &[page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"] {
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 8%);  
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, var(--black-1) 8%);
+    mask-image: linear-gradient(to bottom, transparent 0%, var(--black-1) 8%);  
   }
 
   &:not([page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"]):not(
@@ -1208,8 +1208,8 @@ ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
 }
 
 .scroller.ytmusic-player-page {
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, oklch(1 0 0/0.2) 0.5cqi, black 2.5cqi);
-  mask-image: linear-gradient(to bottom, transparent 0, oklch(1 0 0/0.2) 0.5cqi, black 2.5cqi);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
+  mask-image: linear-gradient(to bottom, transparent 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
   mask-attachment: scroll;
   -webkit-mask-attachment: scroll;
 }
@@ -1245,7 +1245,7 @@ ytmusic-player-queue-item:is(
   ):hover {
   border-radius: 13.92px !important;
   corner-shape: superellipse(2);
-  background: var(--ytmusic-brand-background-solid, #030303) !important;
+  background: var(--youtube-gray-212121) !important;
   box-sizing: border-box !important;
   height: var(--ytmusic-list-item-height, 56px) !important;
   width: auto !important;
@@ -1259,7 +1259,7 @@ ytmusic-playlist-panel-video-wrapper-renderer:is(
   height: var(--ytmusic-list-item-height, 56px) !important;
   width: auto !important;
   margin: 0 !important;
-  background: var(--ytmusic-brand-background-solid, #030303) !important;
+  background: var(--youtube-gray-212121) !important;
   border-radius: 13.92px;
   corner-shape: superellipse(2);
   display: flex !important;
@@ -1274,7 +1274,7 @@ ytmusic-playlist-panel-video-wrapper-renderer:is(
   height: var(--ytmusic-list-item-height, 56px) !important;
   width: auto !important;
   margin: 0 !important;
-  background: var(--ytmusic-brand-background-solid, #030303) !important;
+  background: var(--youtube-gray-212121) !important;
   border-radius: 13.92px;
   corner-shape: superellipse(2);
   display: flex !important;
@@ -1366,13 +1366,13 @@ ytmusic-immersive-header-renderer {
   --fade-stop: 65%;
   mask-image: linear-gradient(
     to bottom in oklch,
-    black var(--fade-stop),
+    var(--black-1) var(--fade-stop),
     calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to bottom in oklch,
-    black var(--fade-stop),
+    var(--black-1) var(--fade-stop),
     calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
     transparent 100%
   );
@@ -1858,7 +1858,7 @@ ytmusic-player-page[is-mweb-modernization-enabled]
  flex-wrap: wrap;
 }
 
-/* keep the extension's narrow-viewport glow from painting behind the note/text */
+/* this is from the portrait mode gradient and filter */
 .blyrics-container[data-no-lyrics="true"]::before,
 .blyrics-container[data-no-lyrics="true"]::after {
   background: none !important;
@@ -2212,7 +2212,7 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
   corner-shape: superellipse(1.2);
   top: -42px;
   transform: translateX(-50%);
-  box-shadow: 0 4px 12px oklch(0 0 0 / 0.2);
+  box-shadow: 0 4px 12px var(--black-dot-20);
 }
 
 tp-yt-paper-slider {
@@ -2534,7 +2534,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 
 .blyrics-dock__inner {
   background-color: var(--white-dot-10);
-  background: oklch(from var(--paper-listbox-background-color, var(--primary-background-color)) l c h / 0.75);
+  background: oklch(from var(--youtube-gray-212121) l c h / 0.75);
   box-shadow: none;
   outline: 1px solid var(--white-dot-15);
   outline-offset: -1px;
@@ -2550,7 +2550,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 .blyrics-dock__inner:focus-within,
 .blyrics-dock__inner--expanded {
   background-color: var(--black-dot-87);
-  background: var(--paper-listbox-background-color, var(--primary-background-color));
+  background: var(--youtube-gray-212121);
 }
 
 .blyrics-dock--hidden .blyrics-dock__inner,
@@ -2622,7 +2622,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 
 .blyrics-dock__menu {
   background-color: var(--black-dot-87);
-  background: var(--paper-listbox-background-color, var(--primary-background-color));
+  background: var(--youtube-gray-212121);
   box-shadow: none;
   outline: 1px solid var(--white-dot-15);
   outline-offset: -1px;
@@ -2690,7 +2690,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 
 /* ## SECTION-38 - Autoscroll Resume button ####### */
 .autoscroll-resume-button {
-  background: var(--paper-listbox-background-color, var(--primary-background-color));
+  background: var(--youtube-gray-212121);
   opacity: 0.75;
   border: none;
   outline: 1px solid var(--white-dot-10);
@@ -2720,18 +2720,52 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 /* ## SECTION-39 - Picture-In-Picture - PIP ####### */
 .blyrics-pip-shell.blyrics-pip-shell {
  --blyrics-pip-artwork-shadow: none;
+  --pip-blank: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+  --pip-blank: url("https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/piqsels.com-id-zhync.webp");
+  --pip-art-hold: 20s;
+  --pip-art-fade-duration: 0.6s;
 }
 
 .blyrics-pip-backdrop.blyrics-pip-backdrop {
   opacity: 1 !important;
+  background-image: var(--blyrics-pip-art, var(--pip-blank));
+  background-color: var(--youtube-gray-212121);
+  background-position: 50%;
+  background-size: cover;
+  transform: scale(1.2);
+  filter: var(--background-image-filter);
 }
 
+/* begone */
 .blyrics-pip-backdrop__layer.blyrics-pip-backdrop__layer {
-  position: fixed !important;
-  height: 100dvh;
-  width: 100dvw;
-  transform: scale(1.2);
-  filter: var(--background-image-filter) !important;
+  display: none !important;
+}
+
+/* gotta do it to em */
+.blyrics-pip-shell .blyrics-pip-artwork {
+  overflow: hidden !important;
+  perspective: none !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__card {
+  transform: none !important;
+  transform-style: flat !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__face {
+  transform: none !important;
+  backface-visibility: visible !important;
+}
+
+/* baby show up proud */
+.blyrics-pip-shell .blyrics-pip-artwork__image {
+  opacity: 1 !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__placeholder {
+  display: none !important;
 }
 
 .blyrics-pip-shell[blyrics-pip-transition="flip"]
@@ -2806,37 +2840,35 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   display: none;
 }
 
-/* PIP background and album art */
 @media (prefers-reduced-motion: no-preference) {
-  /* replicates my design */
-  .blyrics-pip-backdrop__layer.blyrics-pip-backdrop__layer[data-front="true"] {
-    animation-duration: var(--background-image-transition-duration);
-    animation-delay: var(--background-image-transition-delay);
-    animation-timing-function: var(--background-image-transition-easing);
+  .blyrics-pip-backdrop.blyrics-pip-backdrop {
+    transition: var(--background-image-transition);
   }
 
-  /* no fancy motion */
-  .blyrics-pip-shell .blyrics-pip-artwork__card,
-  .blyrics-pip-shell .blyrics-pip-artwork__face {
+  /* Backdrop */
+  .blyrics-pip-shell:has(.blyrics-pip-artwork:not([data-has-art="true"]))
+    .blyrics-pip-backdrop.blyrics-pip-backdrop {
+    transition-delay: var(--pip-art-hold);
+  }
+
+  /* Artwork */
+  .blyrics-pip-shell .blyrics-pip-artwork__face[data-front="true"] {
+    animation: pip-art-fade var(--pip-art-fade-duration) ease both !important;
+  }
+
+  .blyrics-pip-shell .blyrics-pip-artwork__face[data-front="false"] {
     animation: none !important;
-    transform: none !important;
-    transition: none !important;
-    backface-visibility: visible !important;
-  }
-
-  /* again somehow replicates my design */
-  .blyrics-pip-backdrop:not([data-first]) ~ .blyrics-pip-art-col
-    .blyrics-pip-artwork__face[data-front="true"] {
-    animation: blyrics-pip-art-in
-      var(--background-image-transition-duration)
-      var(--background-image-transition-easing)
-      0s both !important;
   }
 }
 
-@keyframes blyrics-pip-art-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@keyframes pip-art-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 /* Progress bar and knob*/
@@ -2862,7 +2894,6 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 .blyrics-progress__knob-dot.blyrics-progress__knob-dot {
   width: calc(100%) !important;
   height: calc(55%) !important;
-  /* height: calc(100% - 10px) !important; */
   border-radius: 999rem !important;
   corner-shape: superellipse(1.2) !important;
   background: var(--white-dot-60);
