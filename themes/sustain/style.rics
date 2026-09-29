@@ -28,6 +28,7 @@ blyrics-letter-wave = true;
   --blyrics-fullscreen-panel-size: 55%;
   --blyrics-fullscreen-video-panel-size: 55%;
   --yt-img-border-radius: 2rem;
+  --blyrics-karaoke-video-scale: 0.9;
   --ytmusic-nav-bar: transparent;
   --blyrics-img-max-width: 576px;
   --blyrics-lyric-scroll-duration: 581.71ms;
@@ -94,6 +95,12 @@ ytmusic-player:not([video-mode]) {
 
 ytmusic-player:not([is-mweb-modernization-enabled]):not([video-mode])[player-page-open] {
   border-radius: var(--yt-img-border-radius);
+}
+
+.player-wrapper.ytmusic-player {
+  outline: 1px solid rgba(255, 255, 255, 0.025);
+  border-radius: var(--yt-img-border-radius);
+  overflow: hidden;
 }
 
 img.yt-img-shadow:not(#song-image img){
