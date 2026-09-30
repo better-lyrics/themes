@@ -351,6 +351,17 @@ ytmusic-player-bar {
   display: grid;
   grid-template-columns: 1.5fr 2fr 1fr;
   grid-template-areas: "start middle end";
+  background: rgba(20, 20, 20, 0.2) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  backdrop-filter: blur(25px) !important;
+}
+
+ytmusic-app-layout > [slot="player-bar"] {
+  background: transparent !important;
+}
+
+:is(#player-bar-background, ytmusic-player-bar .background-gradient) {
+  display: none !important;
 }
 
 .left-controls.ytmusic-player-bar {
