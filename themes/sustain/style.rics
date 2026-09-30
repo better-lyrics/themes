@@ -28,7 +28,6 @@ blyrics-letter-wave = true;
   --blyrics-fullscreen-panel-size: 55%;
   --blyrics-fullscreen-video-panel-size: 55%;
   --yt-img-border-radius: 2rem;
-  --blyrics-karaoke-video-scale: 0.9;
   --ytmusic-nav-bar: transparent;
   --blyrics-img-max-width: 576px;
   --blyrics-lyric-scroll-duration: 581.71ms;
@@ -97,10 +96,33 @@ ytmusic-player:not([is-mweb-modernization-enabled]):not([video-mode])[player-pag
   border-radius: var(--yt-img-border-radius);
 }
 
-.player-wrapper.ytmusic-player {
-  outline: 1px solid rgba(255, 255, 255, 0.025);
-  border-radius: var(--yt-img-border-radius);
-  overflow: hidden;
+ytmusic-player-page[video-mode][blyrics-karaoke] :is(#player, .html5-video-player) {
+  background: transparent !important;
+}
+
+ytmusic-player-page[video-mode][blyrics-karaoke] :is(.html5-video-container, video.html5-main-video) {
+  width: 100% !important;
+  height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  object-fit: contain !important;
+}
+
+#blyrics-karaoke .blyrics-karaoke-surface {
+  background: rgba(30, 30, 30, 0.35) !important;
+  -webkit-backdrop-filter: blur(25px) !important;
+  backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+#blyrics-karaoke :is(.blyrics-karaoke__card, .blyrics-karaoke__plate[data-end-card]) {
+  background: rgba(15, 15, 15, 0.6) !important;
+}
+
+#blyrics-karaoke .blyrics--line {
+  letter-spacing: -0.2px;
 }
 
 img.yt-img-shadow:not(#song-image img){
