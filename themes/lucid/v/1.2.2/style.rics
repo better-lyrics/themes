@@ -1,3 +1,5 @@
+/* Lucid, a marketplace theme by drago-oo */
+
 @font-face {
   font-family: "MySanFrancisco";
   src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
@@ -12,7 +14,7 @@
 blyrics-line-synced-animation-delay = 0;
 blyrics-long-word-threshold = 1500;
 blyrics-early-scroll-consider-s = 0.67;
-blyrics-hide-instrumental-only = true;
+blyrics-queue-scroll-ms = 150;
 */
 
 /* =========================================
@@ -49,10 +51,6 @@ blyrics-hide-instrumental-only = true;
   --blyrics-scale-transition-duration: 0.6s;
   --blyrics-scroll-timing-offset: 0.6s;
   --blyrics-background-rotate-speed: 30s;
-  --blyrics-animate-word-wobble: 0;
-  --blyrics-credits-opacity: 0.2; 
-  --blyrics-credits-focused-opacity: 1;
-  --blyrics-karaoke-video-scale: 1;
   
   --blyrics-panel-size: 50%;
   --blyrics-video-panel-size: 37%;
@@ -756,6 +754,20 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"]>div>div#side-panel {
 .blyrics-container:not(.blyrics-user-scrolling) > .blyrics--active:not(:has(~ .blyrics--active)) + .blyrics--line + .blyrics--line + .blyrics--line + .blyrics--line + .blyrics--line { filter: blur(8px) !important; }
 
 /* Word Level Adjustments */
+.blyrics--line .blyrics--word, 
+.blyrics--line .blyrics--word.blyrics--animating { 
+  transform: translateY(0px) !important; 
+  animation: none !important; 
+  transition: transform calc(var(--blyrics-duration, 0ms) + 200ms) calc(var(--blyrics-anim-delay, 0.05s) - 0.05s) !important; 
+}
+
+.blyrics--word.blyrics-zero-dur-animate, 
+.blyrics--word.blyrics-zero-dur-animate::after { 
+  animation: none !important; 
+  animation-delay: 0s !important; 
+  transition-duration: 0s !important; 
+}
+
 .blyrics--word::after { 
   --blyrics-glow-color: color(display-p3 1 1 1 / 0.0001); 
 }
@@ -1036,6 +1048,15 @@ ytmusic-player-page[player-ui-state="FULLSCREEN"] #song-media-window {
   background: transparent !important; 
 }
 
+ytmusic-player-page[video-mode] .html5-video-container, 
+ytmusic-player-page[video-mode] video.html5-main-video { 
+  width: 100% !important; 
+  height: 100% !important; 
+  top: 0 !important; 
+  left: 0 !important; 
+  object-fit: contain !important; 
+}
+
 /* AUDIO MODE: Fullscreen */
 ytmusic-player-page:not([video-mode]):not([is-video-truncation-fix-enabled])[player-fullscreened]:not([blyrics-dfs]) #main-panel.ytmusic-player-page { 
   flex-direction: column; 
@@ -1069,34 +1090,32 @@ ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not([blyrics-df
 }
 
 /* VIDEO TAB MODE (Native YouTube Music) */
-ytmusic-player-page[video-mode][player-fullscreened]:not([blyrics-dfs], [blyrics-karaoke]) #player.ytmusic-player-page { 
+ytmusic-player-page[video-mode][player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page { 
   height: auto !important; 
-  width: min(60vw, calc((100vh - 18rem) * var(--blyrics-video-aspect-ratio))) !important; 
-  min-width: min(60vw, calc((100vh - 18rem) * var(--blyrics-video-aspect-ratio))) !important; 
-  max-width: min(60vw, calc((100vh - 18rem) * var(--blyrics-video-aspect-ratio))) !important; 
+  width: 60vw !important; 
+  min-width: 60vw !important; 
+  max-width: 60vw !important; 
   flex-shrink: 0 !important; 
-  aspect-ratio: var(--blyrics-video-aspect-ratio) !important;
+  aspect-ratio: 1.7778 !important;
   border-radius: 12px !important; 
   margin-top: 7vh !important; 
 }
 
-/* Subpixel Gap Fix: Force inner video to perfectly fill fractional gaps in Standard mode */
-ytmusic-player-page[video-mode]:not([blyrics-karaoke]) .html5-video-container, 
-ytmusic-player-page[video-mode]:not([blyrics-karaoke]) video.html5-main-video { 
-  width: 100% !important; 
-  height: 100% !important; 
-  top: 0 !important; 
-  left: 0 !important; 
+ytmusic-player-page[video-mode][player-fullscreened]:not([blyrics-dfs]) #main-panel.ytmusic-player-page { 
+  padding-right: 0vw !important; 
 }
 
-/* Karaoke Mode Fix: Force video to fill the screen and letterbox natively (no cropping!) */
-ytmusic-player-page[video-mode][blyrics-karaoke] .html5-video-container, 
-ytmusic-player-page[video-mode][blyrics-karaoke] video.html5-main-video { 
-  width: 100% !important; 
-  height: 100% !important; 
-  top: 0 !important; 
-  left: 0 !important; 
-  object-fit: contain !important; 
+ytmusic-player-page[video-mode][player-fullscreened]:not([blyrics-dfs]) #side-panel.ytmusic-player-page { 
+  margin-top: 5vh !important; 
+}
+
+ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not([blyrics-dfs]) #main-panel.ytmusic-player-page { 
+  padding-right: var(--lucid-video-tab-gap) !important; 
+}
+
+ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #main-panel { 
+  transform: translateX(var(--lucid-video-tab-center)) !important; 
+  transition-delay: 1.4s !important; 
 }
 
 /* AUDIO TAB MODE (Forced video fallback without YT Premium) */
@@ -1118,8 +1137,8 @@ ytmusic-player-page:not([blyrics-video-mode])[video-mode][player-fullscreened]:n
   transform: translateX(0vw) !important; 
 }
 
-ytmusic-player-page[video-mode][player-fullscreened]:not([blyrics-dfs], [blyrics-karaoke]) #main-panel.ytmusic-player-page { 
-  padding-right: var(--lucid-video-tab-gap) !important; 
+ytmusic-player-page[player-fullscreened][video-mode]:not([blyrics-video-mode]):not([blyrics-dfs]) #main-panel.ytmusic-player-page { 
+  padding-right: var(--lucid-audio-tab-forced-video-gap) !important; 
 }
 
 ytmusic-player-page[player-fullscreened][video-mode]:not([blyrics-video-mode]):not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #main-panel { 
@@ -1145,25 +1164,6 @@ ytmusic-player-page[mini-player-enabled]:not([player-page-open]) #player.ytmusic
   0% { transform: scale(1.7); opacity: 0; } 
   50% { opacity: 0; } 
   100% { transform: translate3d(0, 0, 0) scale(1); opacity: 1; } 
-}
-
-/* =========================================
-   --- SONGWRITER CREDITS --- 
-   ========================================= */
-
-.blyrics-credits {
-  text-align: center !important;
-  width: 100% !important;
-  margin-top: 4rem !important; /* Pushes it away from the last lyric */
-  margin-bottom: -3rem !important; /* Snugs it up nicely above the footer */
-  font-style: normal !important;
-  font-weight: 600 !important;
-  letter-spacing: -0.2px !important;
-  
-  /* Ensure no residual blur or scale breaks it */
-  filter: none !important;
-  transform: none !important;
-  transition: opacity 0.4s ease-out, color 0.4s ease-out !important;
 }
 
 
@@ -1941,45 +1941,15 @@ html body .blyrics-container[data-no-lyrics="true"] .blyrics-footer {
     opacity: 1 !important;
 }
 
-/* Vertically align the empty state with the shifted Album Art */
-ytmusic-player-page[player-fullscreened] .blyrics-container[data-no-lyrics="true"] {
-  padding-top: 0 !important; 
-  margin-top: -5vh !important; 
+#blyrics-fs-controls,
+.blyrics-fs-info-actions {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 320ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* =========================================
-   --- KARAOKE SUBTITLES (MUSIC VIDEO MODE) --- 
-   ========================================= */
-
-/* Upgrade the flat default plate to a Lucid frosted glass pill */
-#blyrics-karaoke .blyrics-karaoke-surface {
-  background: var(--lucid-menu-dark-bg) !important; 
-  backdrop-filter: blur(var(--lucid-glass-blur)) !important;
-  -webkit-backdrop-filter: blur(var(--lucid-glass-blur)) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
-}
-
-/* Optional: Emphasize the text slightly to punch through the video background */
-#blyrics-karaoke .blyrics--line {
-  font-weight: 600 !important;
-  letter-spacing: -0.2px !important;
-}
-
-/* Make the Intro and End-Credit plates slightly darker to stand out */
-#blyrics-karaoke .blyrics-karaoke__card,
-#blyrics-karaoke .blyrics-karaoke__plate[data-end-card] {
-  background: rgba(15, 15, 15, 0.6) !important;
-}
-
-/* =========================================
-   KARAOKE TRANSPARENT LETTERBOXING
-   ========================================= */
-
-/* Strip the black backgrounds so the ambient blur shows through the empty space! */
-ytmusic-player-page[video-mode][blyrics-karaoke] #player,
-ytmusic-player-page[video-mode][blyrics-karaoke] .html5-video-player {
-  background: transparent !important;
-  background-color: transparent !important;
+#layout[player-fullscreened]:not([blyrics-dfs])[show-fullscreen-controls] #blyrics-fs-controls,
+#layout[player-fullscreened]:not([blyrics-dfs])[show-fullscreen-controls] .blyrics-fs-info-actions {
+  opacity: 0;
+  pointer-events: none;
 }
