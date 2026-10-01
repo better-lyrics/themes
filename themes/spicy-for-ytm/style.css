@@ -1,0 +1,1066 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap");
+
+/*
+  Spicy Lyrics style for Better Lyrics (YouTube Music)
+  Import via Better Lyrics - Edit CSS - Import from file.
+
+  NOTE: Better Lyrics runs every custom theme through its rics preprocessor
+  (SCSS-like). rics evaluates min() and max() itself and gets mixed units
+  and var() wrong (min(33vw, 57.2vh) comes out as 33vw), so this file uses
+  clamp() for those, which rics leaves alone.
+
+  NOTE: Better Lyrics reads knob assignments from ANY comment,
+  so descriptive comments in this file never contain an equals sign.
+*/
+
+/*
+blyrics-target-scroll-pos-ratio = 0.5;
+blyrics-long-word-threshold = 1000;
+blyrics-letter-wave = true;
+blyrics-swipe-lead-ratio = 0.1;
+blyrics-swipe-duration-ratio = 1.6;
+blyrics-line-scroll-timing-function = cubic-bezier(0.34, 1.22, 0.64, 1);
+blyrics-line-scroll-duration = 850ms;
+blyrics-line-scroll-above-duration = calc(850ms + var(--blyrics-line-scroll-abs-relative-index) * 15ms);
+blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-relative-index) * 45ms);
+*/
+
+/* ---------------------------------------------------------------------------
+   1. Tunables
+   ------------------------------------------------------------------------ */
+:root {
+  /* distance blur: per line away from the active one, capped at level 4 */
+  --spicy-blur-step: 1.1px;
+  /* lines other than the one being sung. Spicy draws its text twice (50%
+     white letters over a 50% white text shadow, about 75% together) and
+     then sets those lines to 0.51 before and 0.497 after. Better Lyrics
+     draws the text once at 50%, so these values give the same result:
+     about 38% white for coming lines and 48% for sung ones. */
+  --spicy-upcoming-line-opacity: 0.76;
+  --spicy-sung-line-opacity: 0.96;
+  --spicy-line-transition: 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* rounded box behind the line under the mouse pointer, as in Spicy */
+  --spicy-hover-box-color: rgb(255 255 255 / 0.1);
+  --spicy-hover-box-radius: 16px;
+  /* room between the line text and the hover box edge */
+  --spicy-line-side-padding: 0.75em;
+
+  /* background vocals relative size */
+  --spicy-bg-vocal-size: 0.75em;
+
+  /* animated background */
+  --spicy-bg-duration: 45s;
+  --spicy-bg-brightness: 45%;
+  /* Better Lyrics Shaders (Kawarp) background, values from Spicy */
+  --spicy-kawarp-saturate: 2.5;
+  --spicy-kawarp-brightness: 0.65;
+
+  /* word bounce, Spicy's own values (LyricsAnimator.ts). Lift is in em of
+     the lyrics size, as Spicy multiplies it by its font size. Most of the
+     Spicy look comes from size: a word of the line being sung waits at 0.95
+     and a little low, grows to 1.05 while sung, then settles to 1. The
+     waiting words leave slightly wider gaps (scaling does not move the
+     layout); Spicy shows the same. Set the rest scale to 1 to avoid that. */
+  --spicy-word-rest-scale: 0.95;
+  --spicy-word-rest-y: 0.01em;
+  --spicy-word-peak-scale: 1.05;
+  --spicy-word-peak-y: -0.017em;
+  /* how long a word rises: the syllable's own length plus
+     --spicy-word-rise-extra, but never shorter than --spicy-word-rise-min */
+  --spicy-word-rise-min: 300ms;
+  --spicy-word-rise-extra: 100ms;
+
+  /* instrumental dots breathing */
+  --spicy-dots-breathe-duration: 2.4s;
+
+  /* fullscreen (audio mode) */
+  /* same formula as the Spicy NowBar artwork */
+  --spicy-fs-art-size: clamp(0px, 33vw, 57.2vh);
+  /* Spicy rounds the artwork by 2% of the artwork itself (2cqh inside it) */
+  --spicy-fs-art-radius: calc(var(--spicy-fs-art-size) * 0.02);
+  /* gap between the cover and the title */
+  --spicy-fs-info-gap: calc(var(--spicy-fs-art-size) * 0.05);
+  /* how dark the cover gets while the controls are shown */
+  --spicy-fs-art-hover-brightness: 0.6;
+  /* lyrics size in fullscreen, measured from the Spicy screenshot (2.2% of
+     the screen width). Pixels and vw on purpose: YouTube Music sets the
+     root font size to 10px, so rem values come out 37% smaller than usual. */
+  --spicy-fs-font-size: clamp(24px, 2.2vw, 72px);
+  --spicy-fs-translated-font-size: calc(var(--spicy-fs-font-size) * 0.5);
+  /* lyrics start around the middle of the screen, like Spicy */
+  --blyrics-fullscreen-panel-size: 53%;
+
+  /* rest of YouTube Music (home, library, browse pages) */
+  --spicy-font: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+  --spicy-page-bg-brightness: 30%;
+  --spicy-page-bg-blur: 120px;
+  --spicy-page-bg-duration: 90s;
+  --spicy-glass: rgb(0 0 0 / 0.35);
+  --spicy-glass-blur: 30px;
+  --spicy-tile-radius: 10px;
+
+  /* ---- Better Lyrics variables ---- */
+
+  /* typography */
+  --blyrics-font-size: 3.8rem;
+  --blyrics-font-weight: 700;
+  --blyrics-line-height: 1.2;
+  --blyrics-translated-font-size: 1.9rem;
+  --blyrics-translated-font-weight: 600;
+  --blyrics-translated-opacity: 0.5;
+  /* line spacing: Spicy pads each line by about 1% of the panel width */
+  --blyrics-padding: 1.5rem;
+
+  /* colors, from the Spicy gradient: words not sung yet at 50% white,
+     sung words at 85% white (not pure white) */
+  --blyrics-inactive-opacity: 0.5;
+  --blyrics-active-opacity: 0.85;
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0.45);
+
+  /* no zoom on the active line, only a tiny settle */
+  --blyrics-scale: 0.98;
+  --blyrics-active-scale: 1;
+  --blyrics-scale-transition-duration: 0.45s;
+  --blyrics-line-enter-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
+  --blyrics-line-exit-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  /* Spicy letter groups: a syllable held for 1s or more is split into
+     letters that bounce one after another, each growing to 1.175 (Spicy's
+     LetterScaleRange) and lifting a little. That is why held syllables jump
+     more than whole words in Spicy. Better Lyrics does this with its letter
+     wave (knob above, same 1s threshold), which only runs together with its
+     word wobble, so the wobble is on but moves nothing (the word bounce of
+     section 4 does that), and section 4 limits the letters to long words. */
+  --blyrics-animate-word-wobble: 1;
+  --blyrics-word-wobble-transform-from: translateY(0);
+  --blyrics-word-wobble-transform-peak: translateY(0);
+  --blyrics-word-wobble-transform-settle: translateY(0);
+  --blyrics-word-wobble-transform-to: translateY(0);
+  --blyrics-letter-wave-transform: translateY(-0.04em);
+  --blyrics-letter-wave-settle: translateY(0);
+  --blyrics-letter-wave-emphasis-scale: 1.175;
+  --blyrics-letter-wave-duration: 0.9s;
+  --blyrics-letter-wave-rise-easing: cubic-bezier(0.37, 0, 0.63, 1);
+  --blyrics-letter-wave-fall-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  /* soft, wide swipe edge (keeps the 1-per-word-duration speed of the default) */
+  --blyrics-highlight-swipe-start-from: -0.45;
+  --blyrics-highlight-swipe-end-from: -0.1;
+  --blyrics-highlight-swipe-start-to: 1.15;
+  --blyrics-highlight-swipe-end-to: 1.5;
+  --blyrics-highlight-swipe-easing: linear;
+
+  /* glow pulse on each sung word */
+  --blyrics-highlight-glow-radius-from: 0.7rem;
+  --blyrics-highlight-glow-radius-to: 0;
+  --blyrics-highlight-glow-duration-ratio: 1.5;
+  --blyrics-highlight-glow-min-duration: 1s;
+  --blyrics-highlight-glow-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  --blyrics-lyric-highlight-fade-out-duration: 0.8s;
+
+  /* background */
+  --blyrics-background-blur: 90px;
+  --blyrics-background-saturate: 2.2;
+}
+
+/* ---------------------------------------------------------------------------
+   2. Font (declared at the lang boundaries so the Noto fallback resolves
+      per language, as STYLING.md recommends)
+      Spicy Lyrics uses Apple San Francisco at weight 700. It is not bundled
+      here because of its license. It is picked up when installed locally
+      (macOS has it built in), otherwise Inter from Google Fonts is used.
+   ------------------------------------------------------------------------ */
+.blyrics--line,
+.blyrics--translated,
+.blyrics--romanized {
+  /* written out, not var(--spicy-font): a variable from :root would carry
+     the root's Noto order and lose the per-language CJK fallback */
+  --blyrics-font-family: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+}
+
+/* Spicy sets letter-spacing 0 on its lines */
+.blyrics-container {
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   3. Lines: dimming and blur by distance from the active line
+   ------------------------------------------------------------------------ */
+
+/* default: far away */
+.blyrics-container > :where(.blyrics--line) {
+  --spicy-level: 4;
+  transition:
+    filter var(--spicy-line-transition),
+    opacity var(--spicy-line-transition);
+}
+
+.blyrics-container > :where(
+  .blyrics--active + .blyrics--line + .blyrics--line + .blyrics--line,
+  .blyrics--line:has(+ .blyrics--line + .blyrics--line + .blyrics--active)
+) {
+  --spicy-level: 3;
+}
+
+.blyrics-container > :where(
+  .blyrics--active + .blyrics--line + .blyrics--line,
+  .blyrics--line:has(+ .blyrics--line + .blyrics--active)
+) {
+  --spicy-level: 2;
+}
+
+.blyrics-container > :where(
+  .blyrics--active + .blyrics--line,
+  .blyrics--line:has(+ .blyrics--active)
+) {
+  --spicy-level: 1;
+}
+
+/* the active line and any earlier line still being sung stay sharp.
+   The engine marks lines as animating up to 2s before they start, so only
+   animating lines above the active one count, not the ones coming up. */
+.blyrics-container > :where(.blyrics--active, .blyrics--animating:has(~ .blyrics--active)) {
+  --spicy-level: 0;
+}
+
+.blyrics-container:is([data-sync="richsync"], [data-sync="synced"]) > .blyrics--line {
+  filter: blur(calc(var(--spicy-blur-step) * var(--spicy-level)));
+  /* the active line at full strength, every other line at one flat level */
+  opacity: calc(1 - (1 - var(--spicy-line-idle-opacity)) * clamp(0, var(--spicy-level), 1));
+}
+
+/* sung lines (above the active one) and coming lines (after it) get their
+   own level, with a plain sibling selector instead of :has() */
+.blyrics-container > .blyrics--line {
+  --spicy-line-idle-opacity: var(--spicy-sung-line-opacity);
+}
+
+.blyrics-container > .blyrics--active ~ .blyrics--line {
+  --spicy-line-idle-opacity: var(--spicy-upcoming-line-opacity);
+}
+
+/* hover: sharp and fully visible, like Spicy. Spicy's text reads about
+   75% white under the pointer (50% letters over a 50% text shadow), so the
+   waiting color is lifted to that; the line being sung keeps its colors. */
+.blyrics-container > .blyrics--line:hover {
+  --spicy-level: 0;
+}
+
+.blyrics-container > .blyrics--line:not(.blyrics--active):hover {
+  --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.75);
+}
+
+.blyrics-container > .blyrics--line:not(.blyrics--active):hover .blyrics-background-line {
+  --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.5);
+}
+
+/* hover box: a soft rounded box grows in behind the line (Spicy color,
+   radius and scale curve). Spicy's box reaches well past the text (about
+   0.8em at the sides) by scaling beyond the line; in the YTM side panel that
+   overflow gets cut off, so the lines get that room as side padding instead
+   and the box stays inside the line. */
+.blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental) {
+  position: relative;
+}
+
+.blyrics-container > .blyrics--line {
+  padding-inline: var(--spicy-line-side-padding) !important;
+}
+
+.blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: var(--spicy-hover-box-radius);
+  background: var(--spicy-hover-box-color);
+  opacity: 0;
+  scale: 0.94;
+  transition:
+    opacity 0.25s ease,
+    scale 0.4s linear(0, 0.013 1%, 0.051 2.2%, 0.404 9.8%, 0.51 12.6%, 0.602 15.5%, 0.683 18.7%, 0.754 22.2%, 0.813 26%, 0.861 30.2%, 0.9 34.8%, 0.931 40%, 0.972 52.7%, 0.992 70.2%, 1);
+}
+
+.blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental):hover::before {
+  opacity: 1;
+  scale: 1;
+}
+
+/* manual scrolling (autoscroll paused): show everything sharp. In YTM the
+   resume button's wrapper sits right before #tab-renderer; watching it
+   there avoids a :root:has() that restyled the whole page on each toggle. */
+#autoscroll-resume-wrapper:has(> .autoscroll-resume-button:not([autoscroll-hidden="true"])) + #tab-renderer .blyrics-container > .blyrics--line {
+  --spicy-level: 0;
+}
+
+/* unsynced lyrics: plain, readable */
+.blyrics-container[data-sync="none"] > div {
+  filter: none;
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   4. Words
+   ------------------------------------------------------------------------ */
+
+/* Word bounce like Spicy, driven by data-word-state (written by Better
+   Lyrics on both the text and its highlight copy, so they move together).
+   Each syllable bounces on its own, as in Spicy. To keep a word in one
+   piece, syllables scale from the seam they share with their neighbours
+   (the Spicy transform-origin rules): the first syllable from its right
+   edge, the last from its left edge, middle ones from the centre.
+   Uses the separate scale and translate properties, so it stacks with the
+   engine's own transform animations instead of fighting them.
+   Rich-synced lyrics only: line-synced words have no timing of their own. */
+/* one-syllable words and middle syllables grow from their centre, as in
+   Spicy, so a word pops in place instead of drifting to one side */
+.blyrics-word-group > .blyrics--word {
+  transform-origin: center center;
+}
+
+.blyrics-word-group > .blyrics--word:first-child:not(:last-child) {
+  transform-origin: right center;
+}
+
+.blyrics-word-group > .blyrics--word:last-child:not(:first-child) {
+  transform-origin: left center;
+}
+
+.blyrics-rtl .blyrics-word-group > .blyrics--word:first-child:not(:last-child) {
+  transform-origin: left center;
+}
+
+.blyrics-rtl .blyrics-word-group > .blyrics--word:last-child:not(:first-child) {
+  transform-origin: right center;
+}
+
+/* one unbroken motion per syllable: it rises while sung (its own length
+   plus --spicy-word-rise-extra, at least --spicy-word-rise-min, on an
+   ease-in-out curve that ends at the peak with zero speed), then settles
+   back on the Spicy spring from that same point at zero speed.
+   Animations rather than transitions: a transition is cut short when the
+   syllable ends, which jerked mid-rise. Timing is Spicy's: the rise follows
+   the syllable plus about the lag of Spicy's spring, and the settle uses
+   the Spicy springs (scale 0.88 Hz damping 0.64, lift 1.45 Hz damping 0.4,
+   from its Spring.ts and LyricsAnimator.ts).
+   Performance: nothing is kept after the motion ("forwards" fills kept
+   thousands of finished animations alive late in a song), and only the
+   lines around the active one carry the animation at all, so finished ones
+   are dropped as the song moves on. */
+/* waiting words of the line being sung sit smaller and a little lower,
+   easing there as the line turns active (half a second early) */
+.blyrics-container[data-sync="richsync"] .blyrics--word {
+  transition:
+    scale 0.3s ease,
+    translate 0.3s ease;
+}
+
+.blyrics-container[data-sync="richsync"] > .blyrics--active .blyrics--word[data-word-state="upcoming"] {
+  scale: var(--spicy-word-rest-scale);
+  translate: 0 var(--spicy-word-rest-y);
+}
+
+.blyrics-container[data-sync="richsync"] .blyrics--word {
+  --spicy-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
+}
+
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
+  animation:
+    spicy-word-settle 1.64s linear var(--spicy-rise) backwards,
+    spicy-word-rise var(--spicy-rise) cubic-bezier(0.37, 0, 0.63, 1);
+}
+
+/* the bounce stops with the music */
+.blyrics-container[data-sync="richsync"] :is(.blyrics--word.blyrics--paused, .blyrics--paused .blyrics--word) {
+  animation-play-state: paused;
+}
+
+@keyframes spicy-word-rise {
+  from {
+    scale: var(--spicy-word-rest-scale);
+    translate: 0 var(--spicy-word-rest-y);
+  }
+  to {
+    scale: var(--spicy-word-peak-scale);
+    translate: 0 var(--spicy-word-peak-y);
+  }
+}
+
+/* the Spicy springs from the peak back to rest, sampled every 2.5% */
+@keyframes spicy-word-settle {
+  0% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 1.0000); translate: 0 calc(var(--spicy-word-peak-y) * 1.0000); }
+  2.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9767); translate: 0 calc(var(--spicy-word-peak-y) * 0.9374); }
+  5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9159); translate: 0 calc(var(--spicy-word-peak-y) * 0.7792); }
+  7.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.8297); translate: 0 calc(var(--spicy-word-peak-y) * 0.5690); }
+  10% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.7284); translate: 0 calc(var(--spicy-word-peak-y) * 0.3453); }
+  12.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.6203); translate: 0 calc(var(--spicy-word-peak-y) * 0.1382); }
+  15% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.5118); translate: 0 calc(var(--spicy-word-peak-y) * -0.0319); }
+  17.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.4079); translate: 0 calc(var(--spicy-word-peak-y) * -0.1543); }
+  20% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.3121); translate: 0 calc(var(--spicy-word-peak-y) * -0.2266); }
+  22.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.2265); translate: 0 calc(var(--spicy-word-peak-y) * -0.2533); }
+  25% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.1525); translate: 0 calc(var(--spicy-word-peak-y) * -0.2428); }
+  27.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0903); translate: 0 calc(var(--spicy-word-peak-y) * -0.2061); }
+  30% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0397); translate: 0 calc(var(--spicy-word-peak-y) * -0.1544); }
+  32.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0002); translate: 0 calc(var(--spicy-word-peak-y) * -0.0975); }
+  35% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0294); translate: 0 calc(var(--spicy-word-peak-y) * -0.0438); }
+  37.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0503); translate: 0 calc(var(--spicy-word-peak-y) * 0.0013); }
+  40% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0637); translate: 0 calc(var(--spicy-word-peak-y) * 0.0346); }
+  42.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0708); translate: 0 calc(var(--spicy-word-peak-y) * 0.0552); }
+  45% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0730); translate: 0 calc(var(--spicy-word-peak-y) * 0.0638); }
+  47.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0715); translate: 0 calc(var(--spicy-word-peak-y) * 0.0627); }
+  50% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0671); translate: 0 calc(var(--spicy-word-peak-y) * 0.0543); }
+  52.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0609); translate: 0 calc(var(--spicy-word-peak-y) * 0.0417); }
+  55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0535); translate: 0 calc(var(--spicy-word-peak-y) * 0.0273); }
+  57.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0456); translate: 0 calc(var(--spicy-word-peak-y) * 0.0134); }
+  60% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0377); translate: 0 calc(var(--spicy-word-peak-y) * 0.0015); }
+  62.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0301); translate: 0 calc(var(--spicy-word-peak-y) * -0.0075); }
+  65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0230); translate: 0 calc(var(--spicy-word-peak-y) * -0.0133); }
+  67.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0168); translate: 0 calc(var(--spicy-word-peak-y) * -0.0160); }
+  70% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); translate: 0 calc(var(--spicy-word-peak-y) * -0.0161); }
+  72.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); translate: 0 calc(var(--spicy-word-peak-y) * -0.0143); }
+  75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); translate: 0 calc(var(--spicy-word-peak-y) * -0.0112); }
+  77.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0001); translate: 0 calc(var(--spicy-word-peak-y) * -0.0076); }
+  80% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0021); translate: 0 calc(var(--spicy-word-peak-y) * -0.0040); }
+  82.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0036); translate: 0 calc(var(--spicy-word-peak-y) * -0.0009); }
+  85% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0046); translate: 0 calc(var(--spicy-word-peak-y) * 0.0016); }
+  87.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0052); translate: 0 calc(var(--spicy-word-peak-y) * 0.0032); }
+  90% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0053); translate: 0 calc(var(--spicy-word-peak-y) * 0.0040); }
+  92.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0052); translate: 0 calc(var(--spicy-word-peak-y) * 0.0041); }
+  95% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0049); translate: 0 calc(var(--spicy-word-peak-y) * 0.0037); }
+  97.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0045); translate: 0 calc(var(--spicy-word-peak-y) * 0.0030); }
+  100% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0000); translate: 0 calc(var(--spicy-word-peak-y) * 0.0000); }
+}
+
+/* only the line being sung is moved on the GPU, for smooth sub-pixel
+   motion instead of text snapping to whole pixels */
+.blyrics-container[data-sync="richsync"] .blyrics--animating .blyrics--word {
+  will-change: scale, translate;
+}
+
+/* letters move only in long syllables, like Spicy letter groups; shorter
+   ones keep still letters (important beats the engine's letter animation) */
+.blyrics--word:not([data-long-word]) .blyrics--letter {
+  transform: none !important;
+}
+
+/* held notes glow brighter */
+.blyrics-word-highlight[data-long-word] {
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0.9);
+}
+
+/* ---------------------------------------------------------------------------
+   5. Background vocals, translations, duets
+   ------------------------------------------------------------------------ */
+/* size and weight go on the word groups (and the spaces between them),
+   where Better Lyrics sets its own 0.75 and weight 500. Sizing the row too,
+   or the words inside the groups (they carry the same class), shrank the
+   background vocals twice. */
+.blyrics-container .blyrics--line .blyrics-background-line .blyrics-bidi-run > .blyrics-background-lyric {
+  font-size: var(--spicy-bg-vocal-size);
+  font-weight: 600;
+}
+
+.blyrics-background-line {
+  margin-top: 0.05em;
+  /* Spicy background vocals: 30% white before, 60% once sung. Set straight:
+     the engine's own 78% mix sits on the word group and never reaches the
+     words, which carry their own color. */
+  --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.3);
+  --blyrics-lyric-active-color: color(display-p3 1 1 1 / 0.6);
+  transition: opacity 0.4s ease;
+}
+
+/* Spicy gives background vocals a line of their own, which dims like any
+   sung line once they are over (about 0.42 white). Here they share the main
+   line, so the row dims itself when all of its words are past. */
+.blyrics--line .blyrics-background-line:not(:has(.blyrics--word:not([data-word-state="past"]))) {
+  opacity: 0.7;
+}
+
+.blyrics--translated,
+.blyrics--romanized {
+  line-height: 1.25;
+  margin-top: 0.4em;
+  letter-spacing: -0.01em;
+}
+
+/* Spicy shows romanization as plain text, not as a pill */
+.blyrics--romanized {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: var(--blyrics-translated-font-size);
+}
+
+/* Spicy never centers lyrics: lines sung by both voices (v1000) sit on the
+   right, together with the secondary voices, instead of in the middle. */
+.blyrics-container > .blyrics--line[data-agent="v1000"] {
+  text-align: right;
+  transform-origin: right center !important;
+}
+
+/* ---------------------------------------------------------------------------
+   6. Instrumental break: three dots instead of the music note
+      The engine still drives the liquid fill, so it stays in sync.
+   ------------------------------------------------------------------------ */
+.blyrics--instrumental-icon {
+  width: calc(var(--blyrics-font-size) * 1.4);
+  height: calc(var(--blyrics-font-size) * 1.4);
+  margin-left: 0;
+  transform-origin: left center;
+}
+
+.blyrics--instrumental[data-agent="v2"] .blyrics--instrumental-icon,
+.blyrics--instrumental[data-agent="v3"] .blyrics--instrumental-icon,
+.blyrics--instrumental[data-agent="v1000"] .blyrics--instrumental-icon {
+  margin-left: 0;
+  margin-right: 0;
+  transform-origin: right center;
+}
+
+.blyrics--instrumental-bg,
+.blyrics--instrumental-fill {
+  /* three dots, radius 3.2 at x 4.2, 12 and 19.8, big like the Spicy dots */
+  d: path("M 1 12 a 3.2 3.2 0 1 0 6.4 0 a 3.2 3.2 0 1 0 -6.4 0 Z M 8.8 12 a 3.2 3.2 0 1 0 6.4 0 a 3.2 3.2 0 1 0 -6.4 0 Z M 16.6 12 a 3.2 3.2 0 1 0 6.4 0 a 3.2 3.2 0 1 0 -6.4 0 Z");
+}
+
+/* the dots light up one after another, left to right, like Spicy: the fill
+   mask is turned on its side (a block left of x 0 with a wavy right edge)
+   and the engine slides it across the dots over the length of the break */
+.blyrics-container {
+  --blyrics-instrumental-fill-transform-from: translateX(0.2px);
+  --blyrics-instrumental-fill-transform-to: translateX(23.8px);
+  --blyrics-instrumental-wave-path-high: path("M 0 -10 Q 0.6 -7 0 -4 Q -0.6 -1 0 2 Q 0.6 5 0 8 Q -0.6 11 0 14 Q 0.6 17 0 20 Q -0.6 23 0 26 Q 0.6 29 0 32 L -1 32 L -1 -10 Z");
+  --blyrics-instrumental-wave-path-low: path("M 0 -10 Q -0.6 -7 0 -4 Q 0.6 -1 0 2 Q -0.6 5 0 8 Q 0.6 11 0 14 Q -0.6 17 0 20 Q 0.6 23 0 26 Q -0.6 29 0 32 L -1 32 L -1 -10 Z");
+}
+
+.blyrics--wave-rect {
+  d: path("M -40 -10 L 0 -10 L 0 32 L -40 32 Z");
+}
+
+/* keep the wavy edge; the default flattening would squash it downwards */
+.blyrics--wave-path {
+  transform: none !important;
+}
+
+.blyrics--instrumental.blyrics--animating .blyrics--instrumental-icon {
+  animation: spicy-dots-breathe var(--spicy-dots-breathe-duration) ease-in-out infinite;
+}
+
+.blyrics--instrumental.blyrics--paused .blyrics--instrumental-icon {
+  animation-play-state: paused;
+}
+
+@keyframes spicy-dots-breathe {
+  0%,
+  100% {
+    transform: scale(0.92);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   7. Dynamic background: two slowly drifting layers of the blurred cover
+   ------------------------------------------------------------------------ */
+ytmusic-player-page:before {
+  filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-bg-brightness)) blur(var(--blyrics-background-blur));
+  animation: spicy-bg-drift-a var(--spicy-bg-duration) ease-in-out infinite alternate;
+}
+
+ytmusic-player-page:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -99;
+  pointer-events: none;
+  background: var(--blyrics-background-img);
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-bg-brightness)) blur(var(--blyrics-background-blur)) hue-rotate(-12deg);
+  mix-blend-mode: screen;
+  opacity: 0.55;
+  animation: spicy-bg-drift-b calc(var(--spicy-bg-duration) * 1.3) ease-in-out infinite alternate;
+}
+
+@keyframes spicy-bg-drift-a {
+  0% {
+    transform: scale(1.3) translate(-4%, -3%);
+  }
+  50% {
+    transform: scale(1.45) translate(3%, 2%);
+  }
+  100% {
+    transform: scale(1.3) translate(4%, -2%);
+  }
+}
+
+@keyframes spicy-bg-drift-b {
+  0% {
+    transform: scale(1.6) rotate(180deg) translate(5%, 4%);
+  }
+  50% {
+    transform: scale(1.4) rotate(180deg) translate(-3%, -2%);
+  }
+  100% {
+    transform: scale(1.6) rotate(180deg) translate(-5%, 3%);
+  }
+}
+
+/* Better Lyrics Shaders installed and enabled: its WebGL Kawarp layers
+   (a black backdrop plus a canvas at negative z-index) cover the page
+   background anyway, so drop the CSS layers instead of animating a 90px
+   blur nobody can see. The layers are removed when Shaders is disabled,
+   which brings the CSS background back automatically. Shaders names them
+   better-lyrics-kawarp-player, -homepage and -search (older builds used
+   -player-page and -search-page, kept as well). */
+ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-player-page)):before,
+ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-player-page)):after {
+  display: none;
+  animation: none;
+}
+
+/* Spicy runs the same Kawarp engine (warp 1, 8 blur passes, saturation 1.5)
+   and then puts saturate(2.5) brightness(0.65) on the canvas. Shaders has no
+   brightness option, so the same filter goes here. Pair this with the Shaders
+   settings file better-lyrics-shaders-spicy.json (opacity 1). */
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) {
+  filter: saturate(var(--spicy-kawarp-saturate)) brightness(var(--spicy-kawarp-brightness));
+}
+
+/* Shaders draws on the home and search pages too, so the CSS cover
+   background of section 7c is dropped there */
+#layout:has(#better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-search-page)::before {
+  display: none;
+  animation: none;
+}
+
+/* ---------------------------------------------------------------------------
+   7b. Fullscreen, Spicy style (audio mode only, video mode is left alone)
+       Left: big rounded cover with controls on it (shown on hover),
+       centered title and artist below. Right: lyrics from mid screen.
+   ------------------------------------------------------------------------ */
+
+/* larger lyrics */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-container {
+  --blyrics-font-size: var(--spicy-fs-font-size);
+  --blyrics-translated-font-size: var(--spicy-fs-translated-font-size);
+}
+
+/* cover, matched to Spicy: min(33vw, 57.2vh) square, 2vh corners,
+   light shadow, 0.95 opacity */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page {
+  width: var(--spicy-fs-art-size) !important;
+  max-width: var(--spicy-fs-art-size) !important;
+  height: var(--spicy-fs-art-size) !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--spicy-fs-art-radius);
+  overflow: hidden;
+  opacity: 0.95;
+  box-shadow: 0 9px 20px 0 rgb(0 0 0 / 0.271) !important;
+}
+
+/* make the YouTube Music artwork fill the whole cover box */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page #song-image,
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page #song-image img,
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page #thumbnail img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+/* the info column is exactly as wide as the cover and centered under it */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-column {
+  position: relative;
+  z-index: 3;
+  width: var(--spicy-fs-art-size);
+  margin-inline: auto;
+  margin-top: var(--spicy-fs-info-gap);
+  gap: 0;
+  text-align: center;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-row {
+  justify-content: center;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-column #blyrics-song-info {
+  text-align: center;
+}
+
+/* title and artist scale with the cover, like the Spicy NowBar */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-title {
+  font-size: calc(var(--spicy-fs-art-size) * 0.054);
+  font-weight: 900;
+  opacity: 0.95;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-artist {
+  font-size: calc(var(--spicy-fs-art-size) * 0.037);
+  font-weight: 400;
+  opacity: 0.7;
+  margin-top: 0.35rem;
+}
+
+/* Spicy shows only the artists under the title, no album */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info #blyrics-album {
+  display: none;
+}
+
+/* the Better Lyrics dock (offset, source, voting) has no Spicy counterpart:
+   in fullscreen it stays hidden until the pointer reaches it */
+#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock:hover {
+  opacity: 1;
+}
+
+/* playback controls sit ON the cover, bottom part: buttons, then progress */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + var(--spicy-fs-info-gap));
+  flex-direction: column-reverse;
+  gap: 0.9rem;
+  padding: 0 9% 6%;
+}
+
+/* the quick-actions button goes to the top right corner of the cover */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-actions {
+  position: absolute;
+  top: calc((var(--spicy-fs-art-size) + var(--spicy-fs-info-gap)) * -1 + 1rem);
+  right: 1rem;
+}
+
+/* hidden until the pointer is over the cover (Better Lyrics normally swaps
+   them with the YouTube Music bar, the overrides below replace that) */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls,
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-actions {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease !important;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, .blyrics-fs-info-actions:hover) :is(#blyrics-fs-controls, .blyrics-fs-info-actions) {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* the cover dims while the controls are shown */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page {
+  transition: filter 0.3s ease;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, .blyrics-fs-info-actions:hover) #player.ytmusic-player-page {
+  filter: brightness(var(--spicy-fs-art-hover-brightness));
+}
+
+/* progress row like Spicy: start time, bar, end time on one line */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  grid-template-areas: "start bar end";
+  align-items: center;
+  column-gap: 0.75rem;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__bar {
+  grid-area: bar;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__times {
+  display: contents;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__elapsed {
+  grid-area: start;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__end {
+  grid-area: end;
+}
+
+/* controls, times and bar scale with the cover like the title does */
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-fs-disc {
+  width: calc(var(--spicy-fs-art-size) * 0.075);
+  height: calc(var(--spicy-fs-art-size) * 0.075);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-fs-play {
+  width: calc(var(--spicy-fs-art-size) * 0.1);
+  height: calc(var(--spicy-fs-art-size) * 0.1);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-fs-transport-mid {
+  gap: calc(var(--spicy-fs-art-size) * 0.03);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__times {
+  font-size: calc(var(--spicy-fs-art-size) * 0.024);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__bar {
+  height: 8px;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
+  height: 11px;
+}
+
+/* controls: plain white icons, no discs; play is just a bigger icon */
+.blyrics-fs-disc,
+.blyrics-fs-disc:hover,
+.blyrics-fs-disc[data-menu-open] {
+  background: transparent;
+}
+
+.blyrics-fs-disc {
+  opacity: 0.85;
+  transition:
+    opacity 140ms ease,
+    transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.blyrics-fs-disc:hover,
+.blyrics-fs-disc[data-menu-open] {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.blyrics-fs-disc[data-active] {
+  opacity: 1;
+}
+
+.blyrics-fs-play,
+.blyrics-fs-play:hover {
+  background: transparent;
+  color: #fff;
+  opacity: 1;
+}
+
+.blyrics-fs-play svg {
+  width: 72%;
+  height: 72%;
+}
+
+/* progress bar: thicker rounded track, knob only on hover or drag */
+.blyrics-progress {
+  --blyrics-progress-track: rgb(255 255 255 / 0.2);
+}
+
+.blyrics-progress__bar {
+  height: 6px;
+  transition: height 160ms ease;
+}
+
+.blyrics-progress__bar:hover,
+.blyrics-progress__bar.dragging {
+  height: 8px;
+}
+
+.blyrics-progress__knob-dot {
+  transform: translate(-50%, -50%) scale(0);
+}
+
+.blyrics-progress__bar:hover .blyrics-progress__knob-dot {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.blyrics-progress__times {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* ---------------------------------------------------------------------------
+   7c. Rest of YouTube Music (home, library, browse), kept subtle
+       Better Lyrics sets the cover as --blyrics-background-img on #layout,
+       so it is usable outside the player page too. The page background and
+       the bars are skipped while the player page is open or fullscreen
+       (player-ui-state FULLSCREEN), which keeps the lyrics view exactly as
+       above and avoids a hidden blurred layer under it.
+   ------------------------------------------------------------------------ */
+
+/* cover background behind the whole page (plain black without a song) */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"])::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.55)),
+    var(--blyrics-background-img);
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-page-bg-brightness)) blur(var(--spicy-page-bg-blur));
+  /* about 10 steps a second: under a 120px blur the drift looks the same,
+     and the page is redrawn a tenth as often (measured about 40% less GPU) */
+  animation: spicy-bg-drift-a var(--spicy-page-bg-duration) steps(450) infinite alternate;
+}
+
+/* let the background show through the black YouTube Music layers
+   (body keeps its black, it paints the canvas under everything) */
+ytmusic-app,
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]),
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #content,
+ytmusic-browse-response,
+ytmusic-browse-response #contents {
+  background: transparent !important;
+}
+
+/* YouTube Music's own header background on home/browse pages (a blurred
+   picture fading into black) was made for a black page, so its lower edge
+   shows as a hard line over the cover background. The cover replaces it */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) .background-gradient {
+  background: transparent !important;
+}
+
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) ytmusic-fullbleed-thumbnail-renderer[is-background] {
+  visibility: hidden;
+}
+
+/* top bar (shows up after scrolling) and the collapsed side bar: glass */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) :is(#nav-bar-background, #mini-guide-background) {
+  background: var(--spicy-glass) !important;
+  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+  border: none !important;
+}
+
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #nav-bar-divider {
+  display: none;
+}
+
+/* after scrolling, keep the collapsed side bar clear and drop the line
+   under the top bar (YouTube Music fades both in on scroll) */
+ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider).ytmusic-app-layout {
+  opacity: 0 !important;
+}
+
+/* expanded side bar: the glass sits on a pseudo layer, because a backdrop
+   filter on the container itself can break the popups inside it */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #guide-wrapper {
+  background: transparent !important;
+  border-color: transparent !important;
+  isolation: isolate;
+}
+
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #guide-wrapper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--spicy-glass);
+  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+}
+
+/* same font as the lyrics. YouTube Music sets "YouTube Sans" and Roboto
+   straight on its titles with more specific rules, so the text elements
+   need important to take the font (icons are SVG and are not affected) */
+:is(ytmusic-browse-response, ytmusic-nav-bar, ytmusic-guide-renderer) {
+  font-family: var(--spicy-font);
+}
+
+:is(ytmusic-browse-response, ytmusic-nav-bar, ytmusic-guide-renderer) :is(yt-formatted-string, a, h2, span, input) {
+  font-family: var(--spicy-font) !important;
+}
+
+/* section headers: bigger and bolder, small line above them dimmed */
+ytmusic-carousel-shelf-basic-header-renderer .title {
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em;
+}
+
+ytmusic-carousel-shelf-basic-header-renderer .strapline {
+  opacity: 0.6;
+}
+
+/* tile captions */
+ytmusic-two-row-item-renderer .title {
+  font-weight: 600;
+}
+
+ytmusic-two-row-item-renderer .subtitle {
+  opacity: 0.75;
+}
+
+/* covers: rounder, soft shadow, a small bouncy zoom on hover
+   (artist tiles, cropped to a circle, are left round) */
+ytmusic-two-row-item-renderer .image-wrapper:not(:has([thumbnail-crop*="CIRCLE"])),
+ytmusic-responsive-list-item-renderer .left-items {
+  border-radius: var(--spicy-tile-radius) !important;
+  overflow: hidden;
+  box-shadow: 0 6px 16px rgb(0 0 0 / 0.3);
+}
+
+ytmusic-two-row-item-renderer .image-wrapper {
+  transition: transform 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-two-row-item-renderer:hover .image-wrapper {
+  transform: scale(1.03);
+}
+
+/* mood chips: light fill instead of flat grey, same shape (no backdrop
+   blur: they sit on an already blurred background, where it was invisible
+   but cost about a third of the page's GPU time) */
+ytmusic-chip-cloud-chip-renderer:not([is-selected]) a {
+  background: rgb(255 255 255 / 0.1) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   8. Credits
+   ------------------------------------------------------------------------ */
+.blyrics-credits {
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   9. Reduced motion
+   ------------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page:before,
+  ytmusic-player-page:after,
+  .blyrics--instrumental.blyrics--animating .blyrics--instrumental-icon {
+    animation: none;
+  }
+
+  /* the page background rule of 7c is more specific, so this one needs
+     important to win */
+  #layout::before {
+    animation: none !important;
+  }
+
+  .blyrics-container > .blyrics--line,
+  ytmusic-two-row-item-renderer .image-wrapper {
+    transition: none;
+  }
+
+  .blyrics-container[data-sync="richsync"] .blyrics--word {
+    scale: none !important;
+    translate: none !important;
+    animation: none !important;
+  }
+}
