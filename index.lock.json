@@ -279,6 +279,23 @@
       "version": "1.3.7"
     },
     {
+      "builds": [
+        {
+          "integrity": "sha256-eea23ae7d965f05351f504dc4224297ee59effa1b40c1f9ebcad5f39e58cec6c",
+          "minVersion": "2.4.1",
+          "path": "themes/spicy-for-ytm",
+          "version": "1.0.0"
+        }
+      ],
+      "commit": "42b5903c32bd842691e67f90cc7e6b4f51fd7061",
+      "discussion": 100,
+      "id": "spicy-for-ytm",
+      "integrity": "sha256-eea23ae7d965f05351f504dc4224297ee59effa1b40c1f9ebcad5f39e58cec6c",
+      "locked": "2026-10-01T20:24:16Z",
+      "repo": "olafix52/spicy-for-youtube-music",
+      "version": "1.0.0"
+    },
+    {
       "commit": "2b3ac598ef80c33a4620fce826950ccae474a304",
       "discussion": 35,
       "id": "spinning-record",
@@ -392,6 +409,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-09-30T22:54:47Z",
+  "updated": "2026-10-01T20:25:40Z",
   "version": 1
 }
