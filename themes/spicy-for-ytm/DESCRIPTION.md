@@ -2,7 +2,9 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 
 ## Features
 
-- **Word bounce.** Every syllable rises and grows while it is sung, then settles back on a soft spring. Syllables of one word stay joined.
+- **Word bounce.** Every syllable rises and grows while it is sung, then settles back on Spicy's spring. Syllables of one word stay joined.
+- **Letter wave on held syllables.** Letters swell and glow one after another as they are lit, like Spicy's letter groups. The timing and shape come from Spicy's own animator.
+- **Spicy highlight and glow.** Words light up over exactly their length with a soft edge and a gentle glow.
 - **Distance blur.** Lines further from the active one get more blur, and every line except the active one is dimmed to the Spicy levels.
 - **Hover box.** A rounded box grows in behind the line under the pointer.
 - **Instrumental breaks** are drawn as three dots that light up left to right over the length of the break.

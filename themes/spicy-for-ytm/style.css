@@ -15,10 +15,10 @@
 
 /*
 blyrics-target-scroll-pos-ratio = 0.5;
-blyrics-long-word-threshold = 1000;
+blyrics-long-word-threshold = 700;
 blyrics-letter-wave = true;
-blyrics-swipe-lead-ratio = 0.1;
-blyrics-swipe-duration-ratio = 1.6;
+blyrics-swipe-lead-ratio = 0;
+blyrics-swipe-duration-ratio = 1;
 blyrics-line-scroll-timing-function = cubic-bezier(0.34, 1.22, 0.64, 1);
 blyrics-line-scroll-duration = 850ms;
 blyrics-line-scroll-above-duration = calc(850ms + var(--blyrics-line-scroll-abs-relative-index) * 15ms);
@@ -116,7 +116,10 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
      sung words at 85% white (not pure white) */
   --blyrics-inactive-opacity: 0.5;
   --blyrics-active-opacity: 0.85;
-  --blyrics-glow-color: color(display-p3 1 1 1 / 0.45);
+  /* Spicy glows a sung word softly: up to 35% white, 4 to 6px wide
+     (LyricsAnimator.ts); the strong glow belongs to the letters of a held
+     syllable, see --spicy-letter-glow */
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0.35);
 
   /* no zoom on the active line, only a tiny settle */
   --blyrics-scale: 0.98;
@@ -125,38 +128,46 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --blyrics-line-enter-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
   --blyrics-line-exit-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
 
-  /* Spicy letter groups: a syllable held for 1s or more is split into
-     letters that bounce one after another, each growing to 1.175 (Spicy's
-     LetterScaleRange) and lifting a little. That is why held syllables jump
-     more than whole words in Spicy. Better Lyrics does this with its letter
-     wave (knob above, same 1s threshold), which only runs together with its
-     word wobble, so the wobble is on but moves nothing (the word bounce of
-     section 4 does that), and section 4 limits the letters to long words. */
-  --blyrics-animate-word-wobble: 1;
-  --blyrics-word-wobble-transform-from: translateY(0);
-  --blyrics-word-wobble-transform-peak: translateY(0);
-  --blyrics-word-wobble-transform-settle: translateY(0);
-  --blyrics-word-wobble-transform-to: translateY(0);
-  --blyrics-letter-wave-transform: translateY(-0.04em);
-  --blyrics-letter-wave-settle: translateY(0);
-  --blyrics-letter-wave-emphasis-scale: 1.175;
-  --blyrics-letter-wave-duration: 0.9s;
-  --blyrics-letter-wave-rise-easing: cubic-bezier(0.37, 0, 0.63, 1);
-  --blyrics-letter-wave-fall-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
+  /* Spicy letter groups: a held syllable is split into letters. Spicy
+     does it from 1s in its own timing; Better Lyrics timing is shorter for
+     the same words (a recording of Highlights shows "town" at about 0.74s
+     here and split in Spicy), so the threshold knob above is 700ms. Better Lyrics would
+     animate them only together with its word wobble, so the wobble stays
+     off and section 4 runs the Spicy letter wave itself. */
+  --blyrics-animate-word-wobble: 0;
+  /* letters of a held syllable wait a bit smaller and lower (Spicy), and
+     the wave strength scales Spicy's typical letter swell (about 1.07 and
+     0.03em up; 1 means as in Spicy) */
+  --spicy-letter-rest-scale: 0.95;
+  --spicy-letter-rest-y: 0.02em;
+  --spicy-letter-strength: 1;
+  /* glow of a waving letter (Spicy: up to full white and 16px while the
+     letter swells); 0 turns it off */
+  --spicy-letter-glow: 1;
+  /* how long after a letter is fully lit its wave peaks (0: as it lights,
+     as seen in a Spicy recording) */
+  --spicy-letter-follow: 0s;
 
-  /* soft, wide swipe edge (keeps the 1-per-word-duration speed of the default) */
-  --blyrics-highlight-swipe-start-from: -0.45;
-  --blyrics-highlight-swipe-end-from: -0.1;
-  --blyrics-highlight-swipe-start-to: 1.15;
-  --blyrics-highlight-swipe-end-to: 1.5;
+  /* highlight timing of Spicy: a gradient whose bright edge runs from -20%
+     to 100% of the word over exactly the word's length, with a soft edge 20%
+     of the word wide (knobs above: ratio 1, no lead). The lit edge is the
+     start, the leading soft edge the end. */
+  --blyrics-highlight-swipe-start-from: -0.2;
+  --blyrics-highlight-swipe-end-from: 0;
+  --blyrics-highlight-swipe-start-to: 1;
+  --blyrics-highlight-swipe-end-to: 1.2;
   --blyrics-highlight-swipe-easing: linear;
 
-  /* glow pulse on each sung word */
-  --blyrics-highlight-glow-radius-from: 0.7rem;
+  /* glow on each sung word. The engine shrinks the glow from full to none
+     over the word (at least the min duration); Spicy's glow instead holds
+     through most of the word and fades at its end, so the curve stays near
+     full for the first half and drops late. A fast-dropping curve had the
+     glow gone before a short word was even lit, so only long words glowed. */
+  --blyrics-highlight-glow-radius-from: 0.6rem;
   --blyrics-highlight-glow-radius-to: 0;
   --blyrics-highlight-glow-duration-ratio: 1.5;
-  --blyrics-highlight-glow-min-duration: 1s;
-  --blyrics-highlight-glow-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --blyrics-highlight-glow-min-duration: 0.9s;
+  --blyrics-highlight-glow-easing: cubic-bezier(0.55, 0.05, 0.7, 0.4);
 
   --blyrics-lyric-highlight-fade-out-duration: 0.8s;
 
@@ -440,15 +451,156 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   will-change: scale, translate;
 }
 
-/* letters move only in long syllables, like Spicy letter groups; shorter
-   ones keep still letters (important beats the engine's letter animation) */
-.blyrics--word:not([data-long-word]) .blyrics--letter {
-  transform: none !important;
+/* Spicy letter wave in held syllables (over the threshold). Every letter gets an
+   equal slice of the syllable (Spicy's Emphasize.ts); the motion of one
+   letter (rise, then back to rest) was taken from a run of Spicy's own
+   letter animator with its springs and neighbour falloff, for a typical
+   0.25s slice, and stretches with the slice. As in Spicy, a letter peaks
+   as it is lit (--spicy-letter-follow after the engine's highlight has
+   fully passed it). With this theme's swipe settings (ratio 1, no lead,
+   edges -0.2 to 1 and 0 to 1.2) the engine lights letter i of n by
+   duration * ((i+1)/n + 0.2) / 1.2, and the wave peaks 46% into its run,
+   which gives the delay below; change it if the swipe settings change. Once the word is sung all its letters spring back to
+   normal together, as in Spicy. The engine's own letter animation stays
+   off (wobble off). */
+.blyrics-container[data-sync="richsync"] .blyrics--word[data-long-word] {
+  --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
 }
 
-/* held notes glow brighter */
-.blyrics-word-highlight[data-long-word] {
-  --blyrics-glow-color: color(display-p3 1 1 1 / 0.9);
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(1) { --spicy-letter-i: 0; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(2) { --spicy-letter-i: 1; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(3) { --spicy-letter-i: 2; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(4) { --spicy-letter-i: 3; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(5) { --spicy-letter-i: 4; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(6) { --spicy-letter-i: 5; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(7) { --spicy-letter-i: 6; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(8) { --spicy-letter-i: 7; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(9) { --spicy-letter-i: 8; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(10) { --spicy-letter-i: 9; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(11) { --spicy-letter-i: 10; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(12) { --spicy-letter-i: 11; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(13) { --spicy-letter-i: 12; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(14) { --spicy-letter-i: 13; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(15) { --spicy-letter-i: 14; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(16) { --spicy-letter-i: 15; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(17) { --spicy-letter-i: 16; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(18) { --spicy-letter-i: 17; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(19) { --spicy-letter-i: 18; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(20) { --spicy-letter-i: 19; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(21) { --spicy-letter-i: 20; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(22) { --spicy-letter-i: 21; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(23) { --spicy-letter-i: 22; }
+.blyrics--word[data-long-word] > .blyrics--letter:nth-child(24) { --spicy-letter-i: 23; }
+
+/* only short held syllables wave: Better Lyrics marks any word over the
+   threshold, including plain long words like "everybody" (0.8s over 9
+   letters), which Spicy never splits; a held syllable has few letters,
+   so up to 8 (Spicy's own check is time per syllable). Style queries read the letter
+   count the engine writes on each word. */
+@container style(--letters: 1) or style(--letters: 2) or style(--letters: 3) or style(--letters: 4) or style(--letters: 5) or style(--letters: 6) or style(--letters: 7) or style(--letters: 8) {
+  /* around the line being sung, letters of a held syllable rest small and
+     low; their wave plays on top, and the sung spring lifts them to normal */
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word] > .blyrics--letter {
+    scale: var(--spicy-letter-rest-scale);
+    translate: 0 var(--spicy-letter-rest-y);
+  }
+
+  /* both motions are set once, when the syllable starts, and never change:
+     the wave follows the letter's highlight, the sung spring starts at the
+     end of the syllable (all delays count from the start of the syllable).
+     Changing the animation list when the syllable ends made running waves
+     skip a frame. The sung
+     spring holds normal size until the line moves out of this range, where
+     letters are at normal size anyway. */
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) > .blyrics--letter {
+    animation:
+      spicy-letter-sung 1.64s linear var(--blyrics-duration, 1000ms) forwards,
+      spicy-letter-wave calc(var(--spicy-letter-slot) * 2 + 0.55s) linear clamp(0s, calc(var(--spicy-letter-slot) * (var(--spicy-letter-i, 0) + 1) / 1.2 + var(--blyrics-duration, 1000ms) / 6 + var(--spicy-letter-follow) - (var(--spicy-letter-slot) * 2 + 0.55s) * 0.46), 100s);
+  }
+}
+
+/* the letter glow is drawn once: the engine lays a highlighted copy of every
+   letter over the text, and a shadow on both doubled the glow (important
+   beats the wave animation's text-shadow on the copy) */
+.blyrics-highlight-run .blyrics--letter {
+  text-shadow: none !important;
+}
+
+.blyrics-container[data-sync="richsync"] :is(.blyrics--paused .blyrics--letter, .blyrics--letter.blyrics--paused) {
+  animation-play-state: paused;
+}
+
+/* one letter's wave; the start and the end are left to the letter's own
+   value, so it rises from and settles to wherever it rests */
+@keyframes spicy-letter-wave {
+  4% { scale: calc(var(--spicy-letter-rest-scale) + 0.0013 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0007em * var(--spicy-letter-strength)); text-shadow: 0 0 4.1px rgb(255 255 255 / calc(0.011 * var(--spicy-letter-glow))); }
+  8% { scale: calc(var(--spicy-letter-rest-scale) + 0.0080 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0044em * var(--spicy-letter-strength)); text-shadow: 0 0 4.8px rgb(255 255 255 / calc(0.065 * var(--spicy-letter-glow))); }
+  12% { scale: calc(var(--spicy-letter-rest-scale) + 0.0215 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0117em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.176 * var(--spicy-letter-glow))); }
+  16% { scale: calc(var(--spicy-letter-rest-scale) + 0.0405 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0220em * var(--spicy-letter-strength)); text-shadow: 0 0 8.0px rgb(255 255 255 / calc(0.331 * var(--spicy-letter-glow))); }
+  20% { scale: calc(var(--spicy-letter-rest-scale) + 0.0629 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0335em * var(--spicy-letter-strength)); text-shadow: 0 0 10.2px rgb(255 255 255 / calc(0.515 * var(--spicy-letter-glow))); }
+  24% { scale: calc(var(--spicy-letter-rest-scale) + 0.0843 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0445em * var(--spicy-letter-strength)); text-shadow: 0 0 12.3px rgb(255 255 255 / calc(0.690 * var(--spicy-letter-glow))); }
+  28% { scale: calc(var(--spicy-letter-rest-scale) + 0.1000 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0499em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.818 * var(--spicy-letter-glow))); }
+  32% { scale: calc(var(--spicy-letter-rest-scale) + 0.1090 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0488em * var(--spicy-letter-strength)); text-shadow: 0 0 14.7px rgb(255 255 255 / calc(0.892 * var(--spicy-letter-glow))); }
+  36% { scale: calc(var(--spicy-letter-rest-scale) + 0.1151 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0447em * var(--spicy-letter-strength)); text-shadow: 0 0 15.3px rgb(255 255 255 / calc(0.942 * var(--spicy-letter-glow))); }
+  40% { scale: calc(var(--spicy-letter-rest-scale) + 0.1194 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0393em * var(--spicy-letter-strength)); text-shadow: 0 0 15.7px rgb(255 255 255 / calc(0.977 * var(--spicy-letter-glow))); }
+  44% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0339em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
+  48% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0289em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
+  52% { scale: calc(var(--spicy-letter-rest-scale) + 0.1176 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0227em * var(--spicy-letter-strength)); text-shadow: 0 0 15.5px rgb(255 255 255 / calc(0.962 * var(--spicy-letter-glow))); }
+  56% { scale: calc(var(--spicy-letter-rest-scale) + 0.1095 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0157em * var(--spicy-letter-strength)); text-shadow: 0 0 14.8px rgb(255 255 255 / calc(0.896 * var(--spicy-letter-glow))); }
+  60% { scale: calc(var(--spicy-letter-rest-scale) + 0.0997 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0093em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.816 * var(--spicy-letter-glow))); }
+  64% { scale: calc(var(--spicy-letter-rest-scale) + 0.0890 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0042em * var(--spicy-letter-strength)); text-shadow: 0 0 12.7px rgb(255 255 255 / calc(0.728 * var(--spicy-letter-glow))); }
+  68% { scale: calc(var(--spicy-letter-rest-scale) + 0.0783 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0008em * var(--spicy-letter-strength)); text-shadow: 0 0 11.7px rgb(255 255 255 / calc(0.641 * var(--spicy-letter-glow))); }
+  72% { scale: calc(var(--spicy-letter-rest-scale) + 0.0676 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0010em * var(--spicy-letter-strength)); text-shadow: 0 0 10.6px rgb(255 255 255 / calc(0.553 * var(--spicy-letter-glow))); }
+  76% { scale: calc(var(--spicy-letter-rest-scale) + 0.0557 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0020em * var(--spicy-letter-strength)); text-shadow: 0 0 9.5px rgb(255 255 255 / calc(0.456 * var(--spicy-letter-glow))); }
+  80% { scale: calc(var(--spicy-letter-rest-scale) + 0.0454 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0023em * var(--spicy-letter-strength)); text-shadow: 0 0 8.5px rgb(255 255 255 / calc(0.372 * var(--spicy-letter-glow))); }
+  84% { scale: calc(var(--spicy-letter-rest-scale) + 0.0361 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0019em * var(--spicy-letter-strength)); text-shadow: 0 0 7.5px rgb(255 255 255 / calc(0.295 * var(--spicy-letter-glow))); }
+  88% { scale: calc(var(--spicy-letter-rest-scale) + 0.0279 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0012em * var(--spicy-letter-strength)); text-shadow: 0 0 6.7px rgb(255 255 255 / calc(0.228 * var(--spicy-letter-glow))); }
+  92% { scale: calc(var(--spicy-letter-rest-scale) + 0.0210 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0002em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.172 * var(--spicy-letter-glow))); }
+}
+
+/* all letters of a sung word back to normal on the Spicy springs */
+@keyframes spicy-letter-sung {
+  0% { scale: var(--spicy-letter-rest-scale); translate: 0 var(--spicy-letter-rest-y); }
+  2.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.9767); translate: 0 calc(var(--spicy-letter-rest-y) * 0.9374); }
+  5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.9159); translate: 0 calc(var(--spicy-letter-rest-y) * 0.7792); }
+  7.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.8297); translate: 0 calc(var(--spicy-letter-rest-y) * 0.5690); }
+  10% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.7284); translate: 0 calc(var(--spicy-letter-rest-y) * 0.3453); }
+  12.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.6203); translate: 0 calc(var(--spicy-letter-rest-y) * 0.1382); }
+  15% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.5118); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0319); }
+  17.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.4079); translate: 0 calc(var(--spicy-letter-rest-y) * -0.1543); }
+  20% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.3121); translate: 0 calc(var(--spicy-letter-rest-y) * -0.2266); }
+  22.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.2265); translate: 0 calc(var(--spicy-letter-rest-y) * -0.2533); }
+  25% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.1525); translate: 0 calc(var(--spicy-letter-rest-y) * -0.2428); }
+  27.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0903); translate: 0 calc(var(--spicy-letter-rest-y) * -0.2061); }
+  30% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0397); translate: 0 calc(var(--spicy-letter-rest-y) * -0.1544); }
+  32.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0002); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0975); }
+  35% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0294); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0438); }
+  37.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0503); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0013); }
+  40% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0637); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0346); }
+  42.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0708); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0552); }
+  45% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0730); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0638); }
+  47.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0715); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0627); }
+  50% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0671); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0543); }
+  52.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0609); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0417); }
+  55% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0535); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0273); }
+  57.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0456); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0134); }
+  60% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0377); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0015); }
+  62.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0301); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0075); }
+  65% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0230); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0133); }
+  67.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0168); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0160); }
+  70% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0113); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0161); }
+  72.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0067); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0143); }
+  75% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0030); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0112); }
+  77.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0001); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0076); }
+  80% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0021); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0040); }
+  82.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0036); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0009); }
+  85% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0046); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0016); }
+  87.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0052); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0032); }
+  90% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0053); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0040); }
+  92.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0052); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0041); }
+  95% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0049); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0037); }
+  97.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0045); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0030); }
+  100% { scale: 1; translate: 0 0; }
 }
 
 /* ---------------------------------------------------------------------------
@@ -1058,7 +1210,7 @@ ytmusic-chip-cloud-chip-renderer:not([is-selected]) a {
     transition: none;
   }
 
-  .blyrics-container[data-sync="richsync"] .blyrics--word {
+  .blyrics-container[data-sync="richsync"] :is(.blyrics--word, .blyrics--letter) {
     scale: none !important;
     translate: none !important;
     animation: none !important;

@@ -10,7 +10,7 @@
     "kawarpSaturation": 1.5,
     "kawarpDithering": 0.008,
     "kawarpAudioScaleBoost": 0,
-    "audioResponsive": true,
+    "audioResponsive": false,
     "audioSpeedMultiplier": 2.5,
     "audioBeatThreshold": 0.75,
     "pauseOnInactive": true,
