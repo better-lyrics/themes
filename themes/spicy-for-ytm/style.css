@@ -17,6 +17,7 @@
 blyrics-target-scroll-pos-ratio = 0.5;
 blyrics-long-word-threshold = 700;
 blyrics-letter-wave = true;
+blyrics-early-scroll-consider-s = 0;
 blyrics-swipe-lead-ratio = 0;
 blyrics-swipe-duration-ratio = 1;
 blyrics-line-scroll-timing-function = cubic-bezier(0.34, 1.22, 0.64, 1);
@@ -88,6 +89,14 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
      root font size to 10px, so rem values come out 37% smaller than usual. */
   --spicy-fs-font-size: clamp(24px, 2.2vw, 72px);
   --spicy-fs-translated-font-size: calc(var(--spicy-fs-font-size) * 0.5);
+  /* early scroll: Better Lyrics normally scrolls to a line and marks it
+     active up to about 1s before it starts (its scroll clock runs 0.5s
+     ahead, and it also takes in lines starting within 0.54s). Spicy moves
+     on when the line starts, so both are off here. To turn early scroll
+     back on, set this to 0.5s and the early-scroll-consider knob at the
+     top of the file to 0.54. */
+  --blyrics-scroll-timing-offset: 0s;
+
   /* lyrics start around the middle of the screen, like Spicy */
   --blyrics-fullscreen-panel-size: 53%;
 
@@ -361,15 +370,17 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
    thousands of finished animations alive late in a song), and only the
    lines around the active one carry the animation at all, so finished ones
    are dropped as the song moves on. */
-/* waiting words of the line being sung sit smaller and a little lower,
-   easing there as the line turns active (half a second early) */
+/* every word not sung yet sits smaller and a little lower, in all lines,
+   as Spicy does from the start. Doing it only in the line being sung made
+   the next line visibly shrink and thin out shortly before it started
+   (with early scroll on, the engine marks it active before it starts). */
 .blyrics-container[data-sync="richsync"] .blyrics--word {
   transition:
     scale 0.3s ease,
     translate 0.3s ease;
 }
 
-.blyrics-container[data-sync="richsync"] > .blyrics--active .blyrics--word[data-word-state="upcoming"] {
+.blyrics-container[data-sync="richsync"] .blyrics--word[data-word-state="upcoming"] {
   scale: var(--spicy-word-rest-scale);
   translate: 0 var(--spicy-word-rest-y);
 }
@@ -445,12 +456,6 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   100% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0000); translate: 0 calc(var(--spicy-word-peak-y) * 0.0000); }
 }
 
-/* only the line being sung is moved on the GPU, for smooth sub-pixel
-   motion instead of text snapping to whole pixels */
-.blyrics-container[data-sync="richsync"] .blyrics--animating .blyrics--word {
-  will-change: scale, translate;
-}
-
 /* Spicy letter wave in held syllables (over the threshold). Every letter gets an
    equal slice of the syllable (Spicy's Emphasize.ts); the motion of one
    letter (rise, then back to rest) was taken from a run of Spicy's own
@@ -498,8 +503,14 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
    so up to 8 (Spicy's own check is time per syllable). Style queries read the letter
    count the engine writes on each word. */
 @container style(--letters: 1) or style(--letters: 2) or style(--letters: 3) or style(--letters: 4) or style(--letters: 5) or style(--letters: 6) or style(--letters: 7) or style(--letters: 8) {
-  /* around the line being sung, letters of a held syllable rest small and
-     low; their wave plays on top, and the sung spring lifts them to normal */
+  /* letters of a held syllable rest small and low until it is sung, in all
+     lines like the words above; around the line being sung they also rest
+     there once sung, under the sung spring that lifts them to normal */
+  .blyrics-container[data-sync="richsync"] .blyrics--word[data-long-word]:not([data-word-state="past"]) > .blyrics--letter {
+    scale: var(--spicy-letter-rest-scale);
+    translate: 0 var(--spicy-letter-rest-y);
+  }
+
   .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word] > .blyrics--letter {
     scale: var(--spicy-letter-rest-scale);
     translate: 0 var(--spicy-letter-rest-y);
