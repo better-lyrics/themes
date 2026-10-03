@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..900&display=swap");
 
 /*
   Spicy Lyrics style for Better Lyrics (YouTube Music)
@@ -107,7 +107,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --blyrics-fullscreen-panel-size: 53%;
 
   /* rest of YouTube Music (home, library, browse pages) */
-  --spicy-font: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+  --spicy-font: "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
   --spicy-page-bg-brightness: 30%;
   --spicy-page-bg-blur: 120px;
   --spicy-page-bg-duration: 90s;
@@ -211,7 +211,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 .blyrics--romanized {
   /* written out, not var(--spicy-font): a variable from :root would carry
      the root's Noto order and lose the per-language CJK fallback */
-  --blyrics-font-family: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+  --blyrics-font-family: "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
 }
 
 /* Spicy sets letter-spacing 0 on its lines */
@@ -898,20 +898,41 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   text-align: center;
 }
 
+/* ensure song info uses the Spicy font stack instead of YouTube Music defaults */
+#blyrics-song-info,
+#blyrics-song-info :is(p, a, span, .blyrics-song-link) {
+  font-family: var(--spicy-font) !important;
+}
+
 /* title and artist scale with the cover, like the Spicy NowBar */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-title {
+  font-family: var(--spicy-font) !important;
   font-size: calc(var(--spicy-fs-art-size) * 0.054);
-  font-weight: 900;
+  font-weight: 700;
   opacity: 0.95;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
   line-height: 1.25;
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-artist {
+  font-family: var(--spicy-font) !important;
   font-size: calc(var(--spicy-fs-art-size) * 0.037);
   font-weight: 400;
   opacity: 0.7;
   margin-top: 0.35rem;
+  letter-spacing: -0.005em;
+}
+
+/* artist links: smooth opacity hover feedback matching Spicy */
+#blyrics-song-info .blyrics-song-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+}
+
+#blyrics-song-info .blyrics-song-link:hover {
+  text-decoration: none;
+  opacity: 0.75;
 }
 
 /* Spicy shows only the artists under the title, no album */
