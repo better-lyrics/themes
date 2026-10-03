@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,500..900&display=swap");
 
 /*
   Spicy Lyrics style for Better Lyrics (YouTube Music)
@@ -189,8 +189,11 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
    2. Font (declared at the lang boundaries so the Noto fallback resolves
       per language, as STYLING.md recommends)
       Spicy Lyrics uses Apple San Francisco at weight 700. It is not bundled
-      here because of its license. It is picked up when installed locally
-      (macOS has it built in), otherwise Inter from Google Fonts is used.
+      or loaded from the web: Apple's license does not allow redistributing
+      it. It is picked up when installed locally (macOS has it built in),
+      otherwise Inter from Google Fonts is used, loaded with its optical
+      size axis so large lyrics get the tighter Inter Display cut, the
+      closest open match to SF Pro Display.
    ------------------------------------------------------------------------ */
 .blyrics--line,
 .blyrics--translated,
@@ -212,6 +215,20 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 /* default: far away */
 .blyrics-container > :where(.blyrics--line) {
   --spicy-level: 4;
+  contain: layout;
+  transition: opacity var(--spicy-line-transition);
+}
+
+/* Smooth blur transition only for lines entering or leaving the focal zone */
+.blyrics-container > :where(
+  .blyrics--active,
+  .blyrics--animating:has(~ .blyrics--active),
+  .blyrics--line:has(+ .blyrics--active),
+  .blyrics--active + .blyrics--line,
+  .blyrics--line:has(+ .blyrics--line + .blyrics--active),
+  .blyrics--active + .blyrics--line + .blyrics--line,
+  .blyrics--line:hover
+) {
   transition:
     filter var(--spicy-line-transition),
     opacity var(--spicy-line-transition);
@@ -307,6 +324,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 .blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental):hover::before {
   opacity: 1;
   scale: 1;
+  will-change: opacity, scale;
 }
 
 /* manual scrolling (autoscroll paused): show everything sharp. In YTM the
@@ -390,6 +408,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 }
 
 .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
+  will-change: scale, translate;
   animation:
     spicy-word-settle 1.64s linear var(--spicy-rise) backwards,
     spicy-word-rise var(--spicy-rise) cubic-bezier(0.37, 0, 0.63, 1);
@@ -711,6 +730,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 }
 
 .blyrics--instrumental.blyrics--animating .blyrics--instrumental-icon {
+  will-change: transform;
   animation: spicy-dots-breathe var(--spicy-dots-breathe-duration) ease-in-out infinite;
 }
 
@@ -732,6 +752,8 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
    7. Dynamic background: two slowly drifting layers of the blurred cover
    ------------------------------------------------------------------------ */
 ytmusic-player-page:before {
+  will-change: transform;
+  transform: translateZ(0);
   filter: saturate(var(--blyrics-background-saturate)) brightness(var(--spicy-bg-brightness)) blur(var(--blyrics-background-blur));
   animation: spicy-bg-drift-a var(--spicy-bg-duration) ease-in-out infinite alternate;
 }
@@ -742,6 +764,8 @@ ytmusic-player-page:after {
   inset: 0;
   z-index: -99;
   pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
   background: var(--blyrics-background-img);
   background-position: 50%;
   background-repeat: no-repeat;
@@ -928,6 +952,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 
 /* the cover dims while the controls are shown */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page {
+  will-change: filter;
   transition: filter 0.3s ease;
 }
 
@@ -1069,6 +1094,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  will-change: transform;
+  transform: translateZ(0);
   background:
     linear-gradient(to bottom, rgb(0 0 0 / 0.2), rgb(0 0 0 / 0.55)),
     var(--blyrics-background-img);
@@ -1133,6 +1160,7 @@ ytmusic-app-layout.content-scrolled :is(#mini-guide-background, #nav-bar-divider
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  transform: translateZ(0);
   background: var(--spicy-glass);
   backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
 }
@@ -1182,6 +1210,7 @@ ytmusic-two-row-item-renderer .image-wrapper {
 }
 
 ytmusic-two-row-item-renderer:hover .image-wrapper {
+  will-change: transform;
   transform: scale(1.03);
 }
 
