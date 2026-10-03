@@ -46,9 +46,15 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --spicy-hover-box-radius: 16px;
   /* room between the line text and the hover box edge */
   --spicy-line-side-padding: 0.75em;
+  /* glow on active line hover: soft radiant glow matching Spicy */
+  --spicy-active-hover-glow: 0 0 14px rgb(255 255 255 / 0.75), 0 0 28px rgb(255 255 255 / 0.35);
 
   /* background vocals relative size */
   --spicy-bg-vocal-size: 0.75em;
+
+  /* credits brightness matched to Spicy Lyrics (0.6 during song, 0.85 when focused) */
+  --spicy-credits-opacity: 0.6;
+  --spicy-credits-focused-opacity: 0.85;
 
   /* animated background */
   --spicy-bg-duration: 45s;
@@ -108,6 +114,8 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --spicy-glass: rgb(0 0 0 / 0.35);
   --spicy-glass-blur: 30px;
   --spicy-tile-radius: 10px;
+  --spicy-progress-color: rgb(255 255 255 / 0.85);
+  --spicy-progress-track: rgb(255 255 255 / 0.2);
 
   /* ---- Better Lyrics variables ---- */
 
@@ -125,6 +133,9 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
      sung words at 85% white (not pure white) */
   --blyrics-inactive-opacity: 0.5;
   --blyrics-active-opacity: 0.85;
+  /* credits: Spicy displays them at 60% white instead of Better Lyrics default 20% */
+  --blyrics-credits-opacity: var(--spicy-credits-opacity);
+  --blyrics-credits-focused-opacity: var(--spicy-credits-focused-opacity);
   /* Spicy glows a sung word softly: up to 35% white, 4 to 6px wide
      (LyricsAnimator.ts); the strong glow belongs to the letters of a held
      syllable, see --spicy-letter-glow */
@@ -217,7 +228,9 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --spicy-level: 4;
   contain: layout;
   backface-visibility: hidden;
-  transition: opacity var(--spicy-line-transition);
+  transition:
+    opacity var(--spicy-line-transition),
+    text-shadow 0.3s ease;
 }
 
 /* Smooth blur transition only for lines entering or leaving the focal zone */
@@ -232,7 +245,8 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 ) {
   transition:
     filter var(--spicy-line-transition),
-    opacity var(--spicy-line-transition);
+    opacity var(--spicy-line-transition),
+    text-shadow 0.3s ease;
 }
 
 .blyrics-container > :where(
@@ -292,6 +306,17 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 
 .blyrics-container > .blyrics--line:not(.blyrics--active):hover .blyrics-background-line {
   --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.5);
+}
+
+/* active line hover: glowing illumination */
+.blyrics-container > .blyrics--active:hover {
+  text-shadow: var(--spicy-active-hover-glow);
+  --blyrics-lyric-inactive-color: color(display-p3 1 1 1 / 0.95);
+  --blyrics-lyric-active-color: color(display-p3 1 1 1 / 1);
+}
+
+.blyrics-container > .blyrics--active:hover .blyrics-background-line {
+  text-shadow: none;
 }
 
 /* hover box: a soft rounded box grows in behind the line (Spicy color,
@@ -545,7 +570,8 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 /* the letter glow is drawn once: the engine lays a highlighted copy of every
    letter over the text, and a shadow on both doubled the glow (important
    beats the wave animation's text-shadow on the copy) */
-.blyrics-highlight-run .blyrics--letter {
+.blyrics-highlight-run,
+.blyrics-highlight-run :is(.blyrics--word, .blyrics--letter) {
   text-shadow: none !important;
 }
 
@@ -915,23 +941,20 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   padding: 0 9% 6%;
 }
 
-/* the quick-actions button goes to the top right corner of the cover */
+/* the quick-actions button (three dots) is hidden in fullscreen for a clean Spicy look */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-actions {
-  position: absolute;
-  top: calc((var(--spicy-fs-art-size) + var(--spicy-fs-info-gap)) * -1 + 1rem);
-  right: 1rem;
+  display: none !important;
 }
 
 /* hidden until the pointer is over the cover (Better Lyrics normally swaps
    them with the YouTube Music bar, the overrides below replace that) */
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls,
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-actions {
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls {
   opacity: 0 !important;
   pointer-events: none !important;
   transition: opacity 0.3s ease !important;
 }
 
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, .blyrics-fs-info-actions:hover) :is(#blyrics-fs-controls, .blyrics-fs-info-actions) {
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover) #blyrics-fs-controls {
   opacity: 1 !important;
   pointer-events: auto !important;
 }
@@ -942,7 +965,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   transition: filter 0.3s ease;
 }
 
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, .blyrics-fs-info-actions:hover) #player.ytmusic-player-page {
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover) #player.ytmusic-player-page {
   filter: brightness(var(--spicy-fs-art-hover-brightness));
 }
 
@@ -990,12 +1013,34 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   font-size: calc(var(--spicy-fs-art-size) * 0.024);
 }
 
+/* New SliderBar Styling: glass capsule progress bar from Spicy Lyrics */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__bar {
-  height: 8px;
+  height: clamp(9px, calc(var(--spicy-fs-art-size) * 0.024), 16px);
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(12px) saturate(1.6) brightness(1.05);
+  -webkit-backdrop-filter: blur(12px) saturate(1.6) brightness(1.05);
+  box-shadow:
+    0 6px 18px -8px rgba(8, 10, 18, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.36),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+  transition: height 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* iOS-style thickening while engaged or hovered */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
-  height: 11px;
+  height: clamp(13px, calc(var(--spicy-fs-art-size) * 0.036), 22px);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls .blyrics-progress__fill {
+  background: #fff !important;
+  border-radius: 999px;
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls :is(.blyrics-progress__knob, .blyrics-progress__knob-dot) {
+  display: none !important;
 }
 
 /* controls: plain white icons, no discs; play is just a bigger icon */
@@ -1208,11 +1253,92 @@ ytmusic-chip-cloud-chip-renderer:not([is-selected]) a {
 }
 
 /* ---------------------------------------------------------------------------
+   7d. Bottom player bar (Spotify-style glass, white progress bar, rounded art)
+   ------------------------------------------------------------------------ */
+#player-bar-background {
+  background: var(--spicy-glass) !important;
+  backdrop-filter: blur(var(--spicy-glass-blur)) saturate(1.6);
+  border-top: 1px solid rgb(255 255 255 / 0.08) !important;
+}
+
+ytmusic-player-bar {
+  background: transparent !important;
+}
+
+/* progress bar: Spotify-style sleek white track instead of harsh red */
+ytmusic-player-bar,
+#progress-bar.ytmusic-player-bar {
+  --paper-slider-active-color: var(--spicy-progress-color) !important;
+  --paper-slider-knob-color: #fff !important;
+  --paper-slider-knob-start-color: #fff !important;
+  --paper-slider-container-color: var(--spicy-progress-track) !important;
+  --paper-progress-active-color: var(--spicy-progress-color) !important;
+  --paper-progress-container-color: var(--spicy-progress-track) !important;
+  --paper-slider-secondary-color: rgb(255 255 255 / 0.3) !important;
+  --paper-progress-secondary-color: rgb(255 255 255 / 0.3) !important;
+}
+
+#progress-bar.ytmusic-player-bar:hover,
+ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
+  --paper-slider-active-color: #fff !important;
+  --paper-progress-active-color: #fff !important;
+}
+
+#progress-bar.ytmusic-player-bar #primaryProgress,
+#progress-bar.ytmusic-player-bar [id*="primaryProgress"] {
+  background: var(--spicy-progress-color) !important;
+}
+
+#progress-bar.ytmusic-player-bar #sliderKnob .slider-knob-inner {
+  background: #fff !important;
+  border-color: #fff !important;
+}
+
+/* album cover: rounded corners and subtle shadow */
+ytmusic-player-bar :is(.thumbnail, .image, #thumbnail, #thumbnail img) {
+  border-radius: var(--spicy-tile-radius) !important;
+  overflow: hidden;
+}
+
+/* song info typography */
+ytmusic-player-bar .title {
+  font-family: var(--spicy-font) !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+}
+
+ytmusic-player-bar .byline {
+  font-family: var(--spicy-font) !important;
+  opacity: 0.7;
+}
+
+/* controls: smooth hover feedback */
+ytmusic-player-bar yt-icon {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-controls-buttons) yt-icon-button:hover yt-icon {
+  transform: scale(1.08);
+}
+
+/* ---------------------------------------------------------------------------
    8. Credits
    ------------------------------------------------------------------------ */
 .blyrics-credits {
+  color: white;
   font-weight: 600;
   letter-spacing: 0;
+  opacity: var(--blyrics-credits-opacity);
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.blyrics-credits:hover {
+  opacity: var(--blyrics-credits-focused-opacity);
+}
+
+.blyrics-container[data-credits-focused] > .blyrics-credits,
+.blyrics-container[data-sync="none"] > .blyrics-credits {
+  opacity: var(--blyrics-credits-focused-opacity);
 }
 
 /* ---------------------------------------------------------------------------
