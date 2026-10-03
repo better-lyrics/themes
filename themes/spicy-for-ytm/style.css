@@ -216,6 +216,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 .blyrics-container > :where(.blyrics--line) {
   --spicy-level: 4;
   contain: layout;
+  backface-visibility: hidden;
   transition: opacity var(--spicy-line-transition);
 }
 
@@ -405,6 +406,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 
 .blyrics-container[data-sync="richsync"] .blyrics--word {
   --spicy-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
+  backface-visibility: hidden;
 }
 
 .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
@@ -463,16 +465,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   70% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); translate: 0 calc(var(--spicy-word-peak-y) * -0.0161); }
   72.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); translate: 0 calc(var(--spicy-word-peak-y) * -0.0143); }
   75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); translate: 0 calc(var(--spicy-word-peak-y) * -0.0112); }
-  77.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0001); translate: 0 calc(var(--spicy-word-peak-y) * -0.0076); }
-  80% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0021); translate: 0 calc(var(--spicy-word-peak-y) * -0.0040); }
-  82.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0036); translate: 0 calc(var(--spicy-word-peak-y) * -0.0009); }
-  85% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0046); translate: 0 calc(var(--spicy-word-peak-y) * 0.0016); }
-  87.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0052); translate: 0 calc(var(--spicy-word-peak-y) * 0.0032); }
-  90% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0053); translate: 0 calc(var(--spicy-word-peak-y) * 0.0040); }
-  92.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0052); translate: 0 calc(var(--spicy-word-peak-y) * 0.0041); }
-  95% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0049); translate: 0 calc(var(--spicy-word-peak-y) * 0.0037); }
-  97.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0045); translate: 0 calc(var(--spicy-word-peak-y) * 0.0030); }
-  100% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0000); translate: 0 calc(var(--spicy-word-peak-y) * 0.0000); }
+  100% { scale: 1; translate: 0 0; }
 }
 
 /* Spicy letter wave in held syllables (over the threshold). Every letter gets an
@@ -621,15 +614,6 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   70% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0113); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0161); }
   72.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0067); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0143); }
   75% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0030); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0112); }
-  77.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * -0.0001); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0076); }
-  80% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0021); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0040); }
-  82.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0036); translate: 0 calc(var(--spicy-letter-rest-y) * -0.0009); }
-  85% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0046); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0016); }
-  87.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0052); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0032); }
-  90% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0053); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0040); }
-  92.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0052); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0041); }
-  95% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0049); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0037); }
-  97.5% { scale: calc(1 - (1 - var(--spicy-letter-rest-scale)) * 0.0045); translate: 0 calc(var(--spicy-letter-rest-y) * 0.0030); }
   100% { scale: 1; translate: 0 0; }
 }
 
@@ -694,6 +678,7 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   height: calc(var(--blyrics-font-size) * 1.4);
   margin-left: 0;
   transform-origin: left center;
+  backface-visibility: hidden;
 }
 
 .blyrics--instrumental[data-agent="v2"] .blyrics--instrumental-icon,
@@ -853,6 +838,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   overflow: hidden;
   opacity: 0.95;
   box-shadow: 0 9px 20px 0 rgb(0 0 0 / 0.271) !important;
+  backface-visibility: hidden;
 }
 
 /* make the YouTube Music artwork fill the whole cover box */
