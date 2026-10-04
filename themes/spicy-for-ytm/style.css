@@ -203,15 +203,96 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 }
 
 /* ---------------------------------------------------------------------------
-   2. Font (declared at the lang boundaries so the Noto fallback resolves
-      per language, as STYLING.md recommends)
-      Spicy Lyrics uses Apple San Francisco at weight 700. It is not bundled
-      or loaded from the web: Apple's license does not allow redistributing
-      it. It is picked up when installed locally (macOS has it built in),
-      otherwise Inter from Google Fonts is used, loaded with its optical
-      size axis so large lyrics get the tighter Inter Display cut, the
-      closest open match to SF Pro Display.
+   2. Font: SF Pro Display & SF Pro Text web fonts
+      Checks local system font first via local() for zero latency on macOS, iOS
+      or systems with Apple fonts installed, then loads optimized WOFF2 webfonts
+      from jsDelivr CDN, with Inter and CJK as reliable universal fallbacks.
    ------------------------------------------------------------------------ */
+
+/* SF Pro Display */
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("SF Pro Display Regular"), local("SFProDisplay-Regular"), local("SF Pro Display"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local("SF Pro Display Medium"), local("SFProDisplay-Medium"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("SF Pro Display Semibold"), local("SFProDisplay-Semibold"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Semibold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("SF Pro Display Bold"), local("SFProDisplay-Bold"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: local("SF Pro Display Heavy"), local("SFProDisplay-Heavy"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Heavy.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: local("SF Pro Display Black"), local("SFProDisplay-Black"),
+       url("https://cdn.jsdelivr.net/npm/@qpokychuk/sf-pro-display@1.0.2/src/SFProDisplay-Black.woff2") format("woff2");
+}
+
+/* SF Pro Text */
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local("SF Pro Text Regular"), local("SFProText-Regular"), local("SF Pro Text"),
+       url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-text_regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local("SF Pro Text Semibold"), local("SFProText-Semibold"),
+       url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-text_semibold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "SF Pro Text";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local("SF Pro Text Bold"), local("SFProText-Bold"),
+       url("https://cdn.jsdelivr.net/npm/sf-pro@1.0.4/font/woff2/sf-pro-display_bold.woff2") format("woff2");
+}
+
+/* lyrics lines use SF Pro Display with optical fallback */
 .blyrics--line,
 .blyrics--translated,
 .blyrics--romanized {
@@ -926,7 +1007,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info >
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-artist {
-  font-family: var(--spicy-font) !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
   font-size: calc(var(--spicy-fs-art-size) * 0.037);
   font-weight: 400;
   opacity: 0.7;
@@ -1340,7 +1421,7 @@ ytmusic-player-bar .title {
 }
 
 ytmusic-player-bar .byline {
-  font-family: var(--spicy-font) !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
   opacity: 0.7;
 }
 
