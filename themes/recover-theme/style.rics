@@ -182,17 +182,20 @@ ytmusic-player-page:not([is-mweb-modernization-enabled]) {
 /* Lyrics container */
 .blyrics-container:has(.blyrics--active) {
     /* Add blur and opacity on an already sung lyrics with auto-scroll enabled */
-    &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):not(.blyrics--active ~ .blyrics--line) {
+    &:not(.blyrics-user-scrolling) > .blyrics--line:not(.blyrics--active):not(.blyrics--animating):not(.blyrics--active ~ .blyrics--line) {
         opacity: $opacity-after-line;
         filter: blur($blur-after-line);
         transition: transform var(--blyrics-lyric-scroll-duration) var(--blyrics-lyric-scroll-timing-function),
-        opacity .5s .3s,
-        filter .5s .2s;
+        opacity 0.75s .75s,
+        filter 1.5s .5s;
     }
 
     /* Add a shadow to each lyric line so it's more readable */
     .blyrics--word {
         text-shadow: 0 .3rem .5rem rgba(0, 0, 0, .15);
+    }
+    .blyrics--word.blyrics-word-highlight {
+        text-shadow: none;
     }
     .blyrics--word:after {
         text-shadow: none;

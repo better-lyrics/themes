@@ -1,16 +1,16 @@
 {
   "repo": "mukeenanyafiq/recover-theme",
   "id": "recover-theme",
-  "version": "1.3.7",
-  "commit": "9aa7f20b607c476821e05c07de485000bcd4acaa",
-  "integrity": "sha256-0582e4bccd721c0d4c7ca27f619bcbe68b0ec4d270a4e98fd591378cb71e564d",
-  "locked": "2026-09-18T15:22:09Z",
+  "version": "1.3.8",
+  "commit": "61efecbcad6d5b773fc4847ec7c5737e4c5595bb",
+  "integrity": "sha256-602df0180b7787f9becb44418ef1842cceb384349185ae01bd3e12de5cdcd29a",
+  "locked": "2026-10-04T14:51:17Z",
   "builds": [
     {
-      "version": "1.3.7",
+      "version": "1.3.8",
       "minVersion": "2.0.5.6",
       "path": "themes/recover-theme",
-      "integrity": "sha256-0582e4bccd721c0d4c7ca27f619bcbe68b0ec4d270a4e98fd591378cb71e564d"
+      "integrity": "sha256-602df0180b7787f9becb44418ef1842cceb384349185ae01bd3e12de5cdcd29a"
     }
   ]
 }
