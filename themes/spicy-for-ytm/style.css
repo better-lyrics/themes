@@ -827,9 +827,12 @@ ytmusic-player-page:has(> :is(#better-lyrics-kawarp-player, #better-lyrics-kawar
 /* Spicy runs the same Kawarp engine (warp 1, 8 blur passes, saturation 1.5)
    and then puts saturate(2.5) brightness(0.65) on the canvas. Shaders has no
    brightness option, so the same filter goes here. Pair this with the Shaders
-   settings file better-lyrics-shaders-spicy.json (opacity 1). Applied with
-   !important and to canvas so inline scripts cannot strip saturation. */
-:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page),
+   settings file better-lyrics-shaders-spicy.json (opacity 1).
+   The container filter is cleared to prevent compounding with the canvas. */
+:is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) {
+  filter: none !important;
+}
+
 :is(#better-lyrics-kawarp-player, #better-lyrics-kawarp-homepage, #better-lyrics-kawarp-search, #better-lyrics-kawarp-player-page, #better-lyrics-kawarp-search-page) canvas {
   filter: saturate(var(--spicy-kawarp-saturate)) brightness(var(--spicy-kawarp-brightness)) !important;
 }
