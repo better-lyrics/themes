@@ -12,6 +12,12 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 - **Spicy-style fullscreen:**
   - a big rounded cover with the title and artist centered under it, and lyrics from the middle of the screen;
   - playback controls sit on the cover and show on hover.
+- **Spicy Popup Lyrics (Picture-in-Picture):**
+  - matching blurred vibrant backdrop;
+  - compact rounded cover with frosted glass playback controls on hover;
+  - sleek glass progress bar;
+  - top and bottom soft gradient fades on the lyrics container;
+  - active line positioned comfortably above center with smooth spring scrolling and word bounce.
 - **Rest of YouTube Music** (home, library), kept subtle:
   - a blurred cover background;
   - a glass top bar and side bar;

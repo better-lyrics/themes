@@ -1,19 +1,20 @@
 {
   "id": "spicy-for-ytm",
   "title": "Spicy for YouTube Music",
-  "description": "Spicy Lyrics look for YouTube Music: springy word bounce, letter-by-letter wave with glow on held syllables, distance blur, Spicy-style fullscreen with a big cover, hover box, instrumental dots and Kawarp background settings.",
+  "description": "Spicy Lyrics look for YouTube Music: springy word bounce, letter-by-letter wave with glow on held syllables, distance blur, Spicy-style fullscreen with a big cover, Spicy popup lyrics (PiP), hover box, instrumental dots and Kawarp background settings.",
   "creators": [
     "olafix52"
   ],
   "minVersion": "2.4.1",
   "hasShaders": true,
-  "version": "1.1.9",
+  "version": "1.2.0",
   "tags": [
     "spicy-lyrics",
     "spotify",
     "animated",
     "blur",
     "fullscreen",
+    "pip",
     "dark"
   ],
   "images": [

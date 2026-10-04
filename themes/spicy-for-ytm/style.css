@@ -90,6 +90,12 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --spicy-fs-info-gap: calc(var(--spicy-fs-art-size) * 0.05);
   /* how dark the cover gets while the controls are shown */
   --spicy-fs-art-hover-brightness: 0.6;
+
+  /* picture-in-picture / spicy popup lyrics */
+  --spicy-pip-artwork-radius: clamp(10px, 3vw, 16px);
+  --spicy-pip-artwork-shadow: 0 10px 28px rgb(0 0 0 / 0.42), 0 2px 6px rgb(0 0 0 / 0.2);
+  --spicy-pip-blur-step: 0.85px;
+  --spicy-pip-target-scroll: 0.38;
   /* lyrics size in fullscreen, measured from the Spicy screenshot (2.2% of
      the screen width). Pixels and vw on purpose: YouTube Music sets the
      root font size to 10px, so rem values come out 37% smaller than usual. */
@@ -1345,6 +1351,257 @@ ytmusic-player-bar yt-icon {
 
 ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-controls-buttons) yt-icon-button:hover yt-icon {
   transform: scale(1.08);
+}
+
+/* ---------------------------------------------------------------------------
+   7e. Picture-in-Picture / Spicy Popup Lyrics
+   ------------------------------------------------------------------------ */
+
+/* popup typography and smooth foundation */
+.blyrics-pip-shell {
+  font-family: var(--spicy-font);
+  gap: clamp(14px, 3.5vw, 28px);
+  padding: clamp(12px, 3.2vw, 20px);
+}
+
+/* dynamic saturated background matching Spicy Kawarp */
+.blyrics-pip-backdrop__layer {
+  filter: blur(32px) saturate(2.4) brightness(0.42);
+}
+
+/* artwork card: rounded corners with deep ambient shadow */
+.blyrics-pip-artwork {
+  --blyrics-pip-artwork-radius: var(--spicy-pip-artwork-radius, clamp(10px, 3vw, 16px));
+  --blyrics-pip-artwork-shadow: var(--spicy-pip-artwork-shadow, 0 10px 28px rgb(0 0 0 / 0.42));
+  border-radius: var(--blyrics-pip-artwork-radius);
+  box-shadow: var(--blyrics-pip-artwork-shadow);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+/* subtle dimming on hover to bring out the player controls */
+.blyrics-pip-shell:not([data-running="true"]) .blyrics-pip-artwork:hover .blyrics-pip-artwork__image {
+  filter: brightness(var(--spicy-fs-art-hover-brightness, 0.65));
+}
+
+/* frosted glass player controls overlay */
+.blyrics-pip-artwork__controls {
+  --blyrics-pip-control-size: clamp(26px, 8vw, 38px);
+  background: rgb(0 0 0 / 0.38);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.blyrics-pip-artwork__control::before {
+  background: rgb(255 255 255 / 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgb(255 255 255 / 0.2);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.32);
+}
+
+.blyrics-pip-artwork__control:hover::before {
+  background: rgb(255 255 255 / 0.28);
+  border-color: rgb(255 255 255 / 0.35);
+  box-shadow: 0 6px 18px rgb(0 0 0 / 0.4);
+  transform: scale(1.08);
+}
+
+.blyrics-pip-artwork__control:active::before {
+  transform: scale(0.94);
+}
+
+/* play/pause button: prominent white glass disc */
+.blyrics-pip-artwork__control--play-pause {
+  color: #111;
+}
+
+.blyrics-pip-artwork__control--play-pause::before {
+  background: rgb(255 255 255 / 0.95);
+  border: none;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.4);
+}
+
+.blyrics-pip-artwork__control--play-pause:hover::before {
+  background: #ffffff;
+  box-shadow: 0 0 20px rgb(255 255 255 / 0.5), 0 6px 20px rgb(0 0 0 / 0.4);
+  transform: scale(1.08);
+}
+
+/* sleek glass progress bar */
+.blyrics-pip-progress {
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.blyrics-pip-art-col:hover .blyrics-pip-progress,
+.blyrics-pip-progress:hover {
+  opacity: 1;
+}
+
+.blyrics-pip-progress .blyrics-progress__times {
+  font-family: var(--spicy-font);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.blyrics-pip-progress .blyrics-progress__bar {
+  height: 4px;
+  background: rgb(255 255 255 / 0.18);
+  border-radius: 9999px;
+  transition: height 0.2s ease;
+}
+
+.blyrics-pip-progress:hover .blyrics-progress__bar,
+.blyrics-pip-progress .blyrics-progress__bar.dragging {
+  height: 6px;
+}
+
+.blyrics-pip-progress :is(.blyrics-progress__fill, .blyrics-progress__played) {
+  background: var(--spicy-progress-color, #ffffff);
+  border-radius: 9999px;
+}
+
+.blyrics-pip-progress .blyrics-progress__knob-dot {
+  background: #ffffff;
+  box-shadow: 0 0 8px rgb(255 255 255 / 0.7);
+}
+
+/* header: song title and artist */
+.blyrics-pip-header__title {
+  font-family: var(--spicy-font);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 2.5%, #000 97.5%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 2.5%, #000 97.5%, transparent 100%);
+}
+
+.blyrics-pip-header__artist {
+  font-family: var(--spicy-font);
+  font-weight: 500;
+  color: rgb(255 255 255 / 0.68);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 2.5%, #000 97.5%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 2.5%, #000 97.5%, transparent 100%);
+}
+
+/* lyrics area: soft-edge fades at top and bottom */
+.blyrics-pip-lyrics {
+  --blyrics-pip-lyrics-reveal-duration: 480ms;
+  --blyrics-pip-lyrics-reveal-stagger: 35ms;
+  --blyrics-pip-lyrics-reveal-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --blyrics-pip-lyrics-reveal-blur: 2px;
+  -webkit-mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent clamp(4px, 2%, 8px),
+    #000 clamp(24px, 10%, 48px),
+    #000 calc(100% - clamp(24px, 12%, 48px)),
+    transparent calc(100% - clamp(4px, 2%, 8px)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent clamp(4px, 2%, 8px),
+    #000 clamp(24px, 10%, 48px),
+    #000 calc(100% - clamp(24px, 12%, 48px)),
+    transparent calc(100% - clamp(4px, 2%, 8px)),
+    transparent 100%
+  );
+}
+
+/* scoped lyrics engine settings inside the popup */
+.blyrics-pip-shell .blyrics-container {
+  --blyrics-target-scroll-pos-ratio: var(--spicy-pip-target-scroll, 0.38);
+  --blyrics-scroll-timing-offset: 0s;
+  --blyrics-font-size: clamp(1.25rem, 5.2cqw, 2.3rem) !important;
+  --blyrics-translated-font-size: clamp(0.75rem, 2.8cqw, 1.25rem) !important;
+  --blyrics-padding: clamp(0.35rem, 1.8cqw, 0.75rem) !important;
+  --spicy-blur-step: var(--spicy-pip-blur-step, 0.85px);
+  --spicy-line-side-padding: 0.55em;
+  --spicy-hover-box-radius: 12px;
+}
+
+/* compact / near-square popup layout (Spicy NowBar style) */
+@media (max-width: 560px), (max-aspect-ratio: 1/1) {
+  .blyrics-pip-shell {
+    display: grid !important;
+    grid-template-columns: auto 1fr !important;
+    grid-template-rows: auto auto 1fr !important;
+    grid-template-areas:
+      "art header"
+      "progress progress"
+      "lyrics lyrics" !important;
+    gap: 8px 14px !important;
+    padding: 12px 14px !important;
+    max-height: none !important;
+  }
+
+  .blyrics-pip-art-col {
+    display: contents !important;
+  }
+
+  .blyrics-pip-artwork {
+    grid-area: art !important;
+    width: clamp(48px, 14vmin, 64px) !important;
+    height: clamp(48px, 14vmin, 64px) !important;
+    min-width: 48px !important;
+    max-width: 64px !important;
+    border-radius: clamp(8px, 2vmin, 12px) !important;
+  }
+
+  .blyrics-pip-progress {
+    grid-area: progress !important;
+    width: 100% !important;
+    margin-bottom: 4px !important;
+  }
+
+  .blyrics-pip-content {
+    display: contents !important;
+  }
+
+  .blyrics-pip-header {
+    grid-area: header !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .blyrics-pip-header__title {
+    font-size: clamp(14px, 4vw, 17px) !important;
+    height: 1.3em !important;
+  }
+
+  .blyrics-pip-header__artist {
+    font-size: clamp(11px, 3.2vw, 13px) !important;
+    height: 1.3em !important;
+    margin-top: 1px !important;
+  }
+
+  .blyrics-pip-lyrics {
+    grid-area: lyrics !important;
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+}
+
+/* compact height popups */
+@media (max-height: 180px) {
+  .blyrics-pip-shell {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+
+  .blyrics-pip-artwork {
+    --blyrics-pip-artwork-radius: 8px;
+  }
+
+  .blyrics-pip-header {
+    padding-bottom: 4px;
+  }
 }
 
 /* ---------------------------------------------------------------------------
