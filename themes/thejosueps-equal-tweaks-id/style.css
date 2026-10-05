@@ -373,6 +373,10 @@ ytmusic-tab-renderer {
   backdrop-filter: blur(30px);
 }
 
+#blyrics-wrapper .blyrics-container[data-no-lyrics="true"] {
+  padding-bottom: calc(var(--blyrics-padding-bottom, 700px) - 100px) !important;
+}
+
 /********** Lyrics Page: Queue Section **********/
 
 /* Queue items */
@@ -504,9 +508,29 @@ ytmusic-item-section-renderer.style-scope.ytmusic-section-list-renderer {
   transition: transform 0.15s ease;
 }
 
-ytmusic-item-section-renderer.style-scope.ytmusic-section-list-renderer:active {
+ytmusic-item-section-renderer.style-scope.ytmusic-section-list-renderer:active:not(ytmusic-section-list-renderer.style-scope.ytmusic-tab-renderer *) {
   transform: scale(0.95) !important;
 }
+
+/* Fullscreen */
+#player-page[player-fullscreened] {
+  margin-left: 125px;
+  --blyrics-font-size: 4rem;
+}
+
+#player-page[player-fullscreened] #player[focus-within] .song-media-controls.ytmusic-player {
+  background: none;
+}
+
+#player-page[player-fullscreened] .blyrics-dock {
+  left: 93%;
+}
+
+#player-page[player-fullscreened] #autoscroll-resume-wrapper {
+  top: 10%;
+  left: 200px;
+}
+
 
 /***************************************************
  ****************** Mobile Styles ******************

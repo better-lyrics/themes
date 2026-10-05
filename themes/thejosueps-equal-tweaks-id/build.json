@@ -1,16 +1,16 @@
 {
   "repo": "TheJosuep/better-lyrics-equal-tweaks-theme",
   "id": "thejosueps-equal-tweaks-id",
-  "version": "1.0.0",
-  "commit": "f72961e8f92d1c654f0c1d554c84945a5e81beab",
-  "integrity": "sha256-c07af7091e06302899e5b634ea7fb27b0200e43aff5b834eb01801cf9add716c",
-  "locked": "2026-09-26T15:17:23Z",
+  "version": "1.1.0",
+  "commit": "be47b45d26a336fb2fcbef7124b18b2d163a152e",
+  "integrity": "sha256-ffd2936034d9face5f28c4541804a2d0ef31df5d585db73223e8baf82435b599",
+  "locked": "2026-10-05T03:32:07Z",
   "builds": [
     {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "minVersion": "2.4.0.0",
       "path": "themes/thejosueps-equal-tweaks-id",
-      "integrity": "sha256-c07af7091e06302899e5b634ea7fb27b0200e43aff5b834eb01801cf9add716c"
+      "integrity": "sha256-ffd2936034d9face5f28c4541804a2d0ef31df5d585db73223e8baf82435b599"
     }
   ]
 }
