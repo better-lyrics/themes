@@ -5,8 +5,20 @@ NEW_THEMES="$1"
 REPO_ID="$2"
 CATEGORY_ID="$3"
 
+DISCUSSIONS=$(bash .github/scripts/fetch-discussions.sh "$GITHUB_REPOSITORY")
+
 for REPO in $NEW_THEMES; do
   echo "Processing theme: $REPO"
+
+  # A theme re-added to the registry keeps its original discussion.
+  if node --input-type=module -e '
+    import { discussionNumberByRepo } from "./.github/scripts/resolve-discussions.mjs";
+    const [repo, discussions] = process.argv.slice(1);
+    process.exit(discussionNumberByRepo(JSON.parse(discussions)).has(repo.toLowerCase()) ? 0 : 1);
+  ' "$REPO" "$DISCUSSIONS"; then
+    echo "Discussion already exists for $REPO, skipping"
+    continue
+  fi
 
   # Fetch metadata.json using GitHub API (automatically uses default branch)
   METADATA=$(gh api "repos/${REPO}/contents/metadata.json" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || echo '{}')

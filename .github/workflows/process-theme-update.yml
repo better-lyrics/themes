@@ -487,10 +487,9 @@ jobs:
           echo -e "$FAILED" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-          # Fail if any themes failed to vendor
+          # Commit the themes that passed; the job fails after the commit.
           if [ -n "$FAILED" ]; then
-            echo "::error::Some themes failed to vendor"
-            exit 1
+            echo "has_failures=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Remove old themes
@@ -558,6 +557,12 @@ jobs:
           COMMITTER_NAME: ${{ steps.app-token.outputs.app-slug }}[bot]
         run: |
           bash .github/scripts/commit-oversized.sh "chore: vendor themes" master
+
+      - name: Fail on vendoring errors
+        if: steps.vendor.outputs.has_failures == 'true'
+        run: |
+          echo "::error::Some themes failed to vendor"
+          exit 1
 
       - name: Summary
         if: always()
