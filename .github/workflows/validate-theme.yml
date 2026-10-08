@@ -159,6 +159,8 @@ jobs:
         id: validate
         if: steps.json-check.outputs.valid == 'true' && steps.new-themes.outputs.themes != '' && steps.check-duplicates.outputs.has_errors != 'true'
         run: |
+          # Without pipefail the validator's exit code is lost behind sed.
+          set -o pipefail
           RESULTS=""
           HAS_ERRORS=false
 
