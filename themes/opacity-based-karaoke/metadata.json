@@ -1,11 +1,11 @@
 {
   "id": "opacity-based-karaoke",
-  "title": "Opacity Based Karaoke",
+  "title": "[Alpha] Opacity Based Karaoke",
   "description": "Replaced background image karaoke with opacity based karaoke. Visibility level of all the text in the lyrics can be easily edited via the variables at the top.",
   "creators": ["semicolonhope"],
   "minVersion": "2.4.0.0",
   "hasShaders": false,
-  "version": "3.1.14",
+  "version": "3.1.15",
   "tags": ["opacity-based"],
   "images": ["opacity-karaoke-shotcut-video-project-updated.webp", "adele-trail.webp", "beyonce-reveal.webp"]
 }

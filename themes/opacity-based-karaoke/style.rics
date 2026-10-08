@@ -5,7 +5,7 @@
 
 /*
  * Max Performance - Opacity based karaoke
- * v3.1.14-alternative
+ * v3.1.15-alternative
  * 2026-10-05
  *
  * NOTE: - Still pretty much alpha - pip isnt fixed yet
@@ -2909,3 +2909,5 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 #sliderKnob {display: none;}
 
 }
+
+ 
