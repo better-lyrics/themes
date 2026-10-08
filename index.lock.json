@@ -54,6 +54,22 @@
     {
       "builds": [
         {
+          "integrity": "sha256-0ae0e18620dc1aaea59cc2b107d8a8a16bf662c076b347d88a1fa007b54e95ee",
+          "minVersion": "2.4.0.0",
+          "path": "themes/burn",
+          "version": "0.0.1"
+        }
+      ],
+      "commit": "0cda5f30186fa42f10dd7568bb2215f4c2a740e0",
+      "id": "burn",
+      "integrity": "sha256-0ae0e18620dc1aaea59cc2b107d8a8a16bf662c076b347d88a1fa007b54e95ee",
+      "locked": "2026-10-08T17:03:20Z",
+      "repo": "ramansg/Burn-BlyricsTheme",
+      "version": "0.0.1"
+    },
+    {
+      "builds": [
+        {
           "integrity": "sha256-2044a0ec90eb2c845015937d07f3eb47d926cf346490111bc70fad351593fabb",
           "minVersion": "2.0.0",
           "path": "themes/clarity-theme",
@@ -409,6 +425,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-10-08T13:28:52Z",
+  "updated": "2026-10-08T17:03:53Z",
   "version": 1
 }
