@@ -1,14 +1,15 @@
 
 /* NOTE: THEME ONLY WORKS ON EXTENSION VERSION 2.4.0 OR NEWER */
 /* ALTERNATIVE VARIANT: line fades are on .blyrics--line instead. v3.0.0 is the base build. */
+/* It seems that might have been a bad move. I've beeeeeen hereeee beforeee*/
 
 /*
  * Max Performance - Opacity based karaoke
- * v3.1.13-alternative
+ * v3.1.14-alternative
  * 2026-10-05
  *
  * NOTE: - Still pretty much alpha - pip isnt fixed yet
- *       - Uses an older version of minimal
+ *       - Uses an older version of minimal - i need to make some dreaded performance fixes
  *
  * Please be careful removing something.
  *
