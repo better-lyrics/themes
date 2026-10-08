@@ -420,6 +420,13 @@ jobs:
             COMMIT=$(git rev-parse HEAD)
             cd ..
 
+            if ! jq -e 'type == "object"' theme-repo/metadata.json > /dev/null 2>&1; then
+              echo "::error::Missing or invalid metadata.json in $repo"
+              FAILED="$FAILED$repo\n"
+              rm -rf theme-repo
+              continue
+            fi
+
             THEME_ID=$(jq -r '.id' theme-repo/metadata.json)
             VERSION=$(jq -r '.version' theme-repo/metadata.json)
             MIN_VERSION=$(jq -r '.minVersion // empty' theme-repo/metadata.json)
@@ -462,7 +469,12 @@ jobs:
 
             # Initialize builds[] with the single new build (no prior builds, so
             # no snapshot and nothing to prune).
-            PLAN=$(node .github/scripts/builds.mjs "$THEME_ID" "$VERSION" "$MIN_VERSION" "sha256-$INTEGRITY" "[]")
+            if ! PLAN=$(node .github/scripts/builds.mjs "$THEME_ID" "$VERSION" "$MIN_VERSION" "sha256-$INTEGRITY" "[]"); then
+              echo "::error::Failed to plan builds for $repo"
+              FAILED="$FAILED$repo\n"
+              rm -rf "themes/$THEME_ID" theme-repo
+              continue
+            fi
             BUILDS=$(echo "$PLAN" | jq -c '.builds')
 
             # Write this theme's own build.json (a brand-new theme has no prior

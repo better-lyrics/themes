@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Prints the repository's discussions as a JSON array of { number, body }.
-# first:100 covers the registry comfortably; paginate if it ever exceeds 100.
+# Prints every discussion in the repository as a JSON array of { number, body }.
 REPO="$1"
-gh api graphql -F owner="${REPO%/*}" -F name="${REPO#*/}" -f query='
-  query($owner: String!, $name: String!) {
+gh api graphql --paginate --slurp -F owner="${REPO%/*}" -F name="${REPO#*/}" -f query='
+  query($owner: String!, $name: String!, $endCursor: String) {
     repository(owner: $owner, name: $name) {
-      discussions(first: 100) {
+      discussions(first: 100, after: $endCursor) {
         nodes { number body }
+        pageInfo { hasNextPage endCursor }
       }
     }
-  }' --jq '.data.repository.discussions.nodes'
+  }' | jq '[.[].data.repository.discussions.nodes[]]'

@@ -54,7 +54,7 @@ jobs:
 
       - name: Resolve discussions
         run: |
-          node .github/scripts/resolve-discussions.mjs "$(cat discussions.json)"
+          node .github/scripts/resolve-discussions.mjs < discussions.json
 
       # https://github.com/planetscale/ghcommit-action/issues/43#issuecomment-2313129696
       - name: Stage changes
