@@ -1,0 +1,3479 @@
+
+/* Minimal, a marketplace theme by semicolonhope */
+/* blyrics-theme-2026-10-08T11-49-25 */
+
+/* ## SECTION-0 - Info and Intro ################## *
+ * 2026-10-06 v1.9.39 (BetterLyrics v2.4.0+ only)   */
+
+/* - Enable Karaoke - Section 3.                    *
+ * - Enable Blur    - Section-3.                    *
+ * - Change Previous/Current/Next lyrics' visibility*
+ *                  - Section-3.1.                  */
+$enable-blur: off;
+/* Bugs & Suggestions on BetterLyrics Discord       */
+
+/* Credits to chengg, mukeen, drago, boidu, noah,   *
+ *   tposejank, for code help and every test-user   */
+
+/*     ____Time, Tide, & I wait for nothing____     *
+ *               __ - boidu (maybe)__               */
+
+
+/* ## SECTION-1 - Custom Font URLS ################ */
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap');
+
+/* ## SECTION-2 - WEBSITE-WIDE FONT SETTINGS ###### */
+* {
+  --whole-website-font-family:  "Google Sans Flex", "Roboto Flex", Roboto, var(--noto-sans-universal), sans-serif, system-ui;
+  /* delete above line to use YTM defaults */
+  font-family: var(--whole-website-font-family) !important;
+  font-optical-sizing: auto;
+  scrollbar-width: thin;
+}
+
+/* ## SECTION-3 - EASY CHANGE SETTINGS ############ */
+
+/* -- Karaoke Mode Toggle -- */
+$karaoke-mode: minimal; /* off / minimal / default */
+
+/* - off     = No karaoke - Only Line by line sync    *
+ * - minimal = Minimal theme styled lyrics and karaoke*
+ *               experience. Better than default.     *
+ * - default = The default look and experience of the *
+ *               lyrics in BetterLyrics extension     */
+ 
+/* -- Blur toggle -- */
+ /* on / off */
+
+$blur-amount: 25px;
+/* higher number = more blur      *
+ * less blur = better performance */
+ 
+:root {
+  /*# SECTION-3.1 ################################# */
+
+  /* -- Line visibility (opacity) -- */
+  --current-lyric-visibility: 1;      /* 1    would mean 100%*/
+  --previous-lyrics-visibility: 0; /* 0.35 would mean 35% */
+  --next-lyrics-visibility: 1;     /* 0.02 would mean 2%  */
+  
+  --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
+  --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
+  --translated-lyric-visibility: 0.82;
+  --romanized-lyric-visibility: 0.55;
+
+  /* -- Typography -- */
+  @if $karaoke-mode != default {
+  --blyrics-font-family: var(--whole-website-font-family);
+  --blyrics-font-weight: 600;
+  --blyrics-font-size: 3.5rem;
+  --blyrics-line-height: 1.5;
+  --blyrics-padding: 0.45em;
+  }
+  /* -- Footer -- */
+  --blyrics-footer-font-family: var(--whole-website-font-family);
+  @if $karaoke-mode != default {
+  --blyrics-translated-font-size: 0.7071em;
+  }
+  --romanized-font-size: 0.6429em;
+
+  /* -- Colors -- */
+  @if $karaoke-mode == off {
+  --blyrics-lyric-active-color: var(--white-1);
+  --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
+  } @else if $karaoke-mode == minimal {
+  --blyrics-lyric-active-color: var(--white-1);
+  --blyrics-lyric-inactive-color: oklch(1 0 0 / 0.35);
+  }
+  @if $karaoke-mode != default {
+  --blyrics-ui-text-color: var(--blyrics-lyric-active-color);
+  --blyrics-translated-color: var(--white-dot-60);
+  --blyrics-error-color: oklch(0.75 0.25 20);
+  }
+
+  /*# SECTION-3.2 ################################# */
+
+  /* -- Scroll / transition timing -- */
+  @if $karaoke-mode != default {
+  --lyrics-opacity-duration: 1.5s;
+  --blyrics-lyric-scroll-timing-function: var(--transition-curve);
+  --line-scroll-uniform-duration: 1.5s;
+  --blyrics-scale-transition-duration: 0.5s;
+  }
+  /* line opacity 0.6x in off and 1x in minimal */
+  @if $karaoke-mode == off {
+  --lyrics-opacity-transition: opacity calc(var(--lyrics-opacity-duration) * 0.6) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
+  } @else if $karaoke-mode == minimal {
+  --lyrics-opacity-transition: opacity calc(var(--lyrics-opacity-duration) * 1) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
+  }
+
+  /* -- Offsets -- */
+  @if $karaoke-mode != default {
+  --blyrics-timing-offset: 0.4s;
+  --blyrics-richsync-timing-offset: 0.4s;
+  }
+  @if $karaoke-mode == off {
+  --blyrics-scroll-timing-offset: 0s;
+  } @else if $karaoke-mode == minimal {
+  --blyrics-scroll-timing-offset: 0.315s;
+  }
+
+  /* -- Highlight fade timing -- */
+  @if $karaoke-mode != default {
+  --blyrics-lyric-highlight-fade-in-duration: 0.4s;
+  --blyrics-lyric-highlight-fade-out-duration: 0.4s;
+  }
+
+  /* -- Animation on/off toggles (0 = off, 1 = on) -- */
+  @if $karaoke-mode == off {
+  --blyrics-wobble-duration: 0s;
+  --blyrics-animate-line-scale: 0;
+  --blyrics-animate-word-wobble: 0;
+  --blyrics-animate-highlight-swipe: 0;
+  --blyrics-animate-highlight-glow: 0;
+  --blyrics-animate-highlight-fade: 0;
+  --blyrics-animate-instrumental: 0;
+  } @else if $karaoke-mode == minimal {
+  --blyrics-wobble-duration: 0s;
+  --blyrics-animate-line-scale: 0;
+  --blyrics-animate-word-wobble: 0;
+  --blyrics-animate-highlight-swipe: 1;
+  --blyrics-animate-highlight-glow: 0;
+  --blyrics-animate-highlight-fade: 1;
+  --blyrics-animate-instrumental: 0;
+  }
+
+  /* -- Scale -- */
+  @if $karaoke-mode != default {
+  --blyrics-scale: 1;
+  }
+
+  /*# SECTION-3.3 Background Effects ############## */
+  --blyrics-gradient-stops: none;
+  --background-image-transition-duration: 2.5s;
+  --background-image-transition-easing: ease-in-out;
+  --background-image-transition-delay: 5s;
+  --background-image-transition: background
+    var(--background-image-transition-duration)
+    var(--background-image-transition-easing)
+    var(--background-image-transition-delay);
+  --blyrics-background-saturate: 1;
+  --background-brightness: 0.217;
+  --background-contrast: 0.92;
+
+  @if $enable-blur == on {
+        --blyrics-background-blur: blur(#{$blur-amount});
+        --background-image-filter: saturate(var(--blyrics-background-saturate))
+    brightness(var(--background-brightness)) contrast(var(--background-contrast))
+    var(--blyrics-background-blur);
+  }
+
+  @else {
+    --blyrics-background-blur: none;
+    --background-image-filter: saturate(var(--blyrics-background-saturate))
+    brightness(var(--background-brightness)) contrast(var(--background-contrast));
+    }
+
+  --filter-replacement-backgroundcolor: oklch(15.7861072% 0 0 / 0.80036);
+
+  /*# SECTION-3.4 Custom Variables ################ */
+
+  /* -- Base palette -- */
+  --white-1:      oklch(1 0 0 / 1);
+  --white-dot-87: oklch(1 0 0 / 0.87);
+  --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-dot-20: oklch(1 0 0 / 0.20);
+  --white-dot-15: oklch(1 0 0 / 0.15);
+  --white-dot-10: oklch(1 0 0 / 0.10);
+  
+  --black-1:      oklch(0 0 0 / 1);
+  --black-dot-87: oklch(0 0 0 / 0.87);
+  --black-dot-60: oklch(0 0 0 / 0.60);
+  --black-dot-20: oklch(0 0 0 / 0.20);
+  
+  --youtube-gray-212121: oklch(0.248 0 0);
+
+  /* -- Easing / curves -- */
+  --transition-curve: cubic-bezier(0.27, 1.06, 0.18, 1.00);
+  --blyrics-loader-transition-easing: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+
+  /*# End of SECTION-3.4 ########################## */
+
+
+  /* Do not delete the following bracket            */
+}
+
+
+/* ## End of SECTION-3 ############################ */
+
+
+
+/* ## SECTION-4 - Lyric Animation Fine-tuning ##### */
+
+/* Removing this block will affect lyric animation.
+It's supposed to be in a comment like this to work. */
+
+@if $karaoke-mode == off {
+/*
+;
+-- why do these features exist -- ;
+blyrics-disable-richsync = true;
+blyrics-letter-wave = false;
+blyrics-debug-renderer = false;
+blyrics-add-extra-top-padding = true;
+
+-- time is precious -- ;
+blyrics-line-synced-animation-delay = 0;
+blyrics-lyric-ending-threshold-s = 0;
+blyrics-early-scroll-consider-s = 0;
+blyrics-queue-scroll-ms = 1520;
+blyrics-target-scroll-pos-ratio = 0.4;
+
+-- Scroll durations (refer Section-3.2) -- ;
+blyrics-line-scroll-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-above-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-below-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-active-duration = var(--line-scroll-uniform-duration);
+*/
+} @else if $karaoke-mode == minimal {
+/*
+;
+-- say hello to old friends -- ;
+blyrics-letter-wave = false;
+blyrics-add-extra-top-padding = true;
+blyrics-lyric-ending-threshold-s = 2;
+blyrics-early-scroll-consider-s = 0;
+blyrics-target-scroll-pos-ratio = 0.4;
+
+-- Scroll durations (refer Section-3.2) -- ;
+blyrics-line-scroll-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-above-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-below-duration = var(--line-scroll-uniform-duration);
+blyrics-line-scroll-active-duration = var(--line-scroll-uniform-duration);
+*/
+}
+@if $karaoke-mode == default {
+/* whatever is default in better lyrics */
+}
+
+/* ## SECTION-5 - Hiding Scrollbar from homepage ## */
+html {
+  scrollbar-width: none;
+}
+ytmusic-app-layout > [slot="player-bar"] {
+  width: 100dvw;
+}
+
+/* ## SECTION-6 - Style and animation of lyrics ### */
+
+  /* ## SECTION-6.1 - Lyrics and wrapper ########## */
+
+@if $karaoke-mode != default {
+
+/* -- 6.1.a Animation & effects disabling -- */
+
+/* Eroding Animations */
+@keyframes blyrics-wobble {
+  from,
+  to {
+    transform: none;
+  }
+}
+@keyframes blyrics-glow {
+  from,
+  to {
+    transform: none;
+  }
+}
+
+/* Hiding the extension's narrow-viewport background glow pseudo-elements */
+#blyrics-wrapper .blyrics-container:not([data-no-lyrics="true"])::after,
+#blyrics-wrapper .blyrics-container:not([data-no-lyrics="true"])::before {
+  display: none;
+}
+
+/* karaoke gradient-fill overlay */
+@if $karaoke-mode == off {
+.blyrics-highlight-run,
+.blyrics-word-highlight
+{ display: none; }
+}
+
+.blyrics-container .blyrics--word {
+  transform: none;
+  will-change: auto;
+}
+
+/* -- 6.1.b Line opacity states (current/prev/next/hover) -- */
+
+/* Container Lines - Base State */
+.blyrics-container > div {
+  opacity: var(--previous-lyrics-visibility);
+  transform: none;
+  transition: var(--lyrics-opacity-transition);
+}
+
+/* Active Line */
+@if $karaoke-mode == off {
+.blyrics-container > div.blyrics--active {
+  opacity: var(--current-lyric-visibility);
+}
+} @else if $karaoke-mode == minimal {
+.blyrics-container > div.blyrics--animating {
+  opacity: var(--current-lyric-visibility);
+}
+}
+
+/* Next Lines (Lines strictly after the LAST active line) */ /*
+#blyrics-wrapper
+  .blyrics-container
+  > div.blyrics--active
+  ~ div:where(:not(.blyrics--active):not(:has(~ .blyrics--active))) {
+  opacity: var(--next-lyrics-visibility);
+}
+*/
+
+/* Next Lines (any line after an active one) */
+.blyrics-container
+  > div.blyrics--active
+  ~ div:not(.blyrics--active) {
+  opacity: var(--next-lyrics-visibility);
+}
+
+/* User Scrolling or Hover */
+.blyrics-container:is(:hover, .blyrics-user-scrolling)
+  > div:not(.blyrics--active):not(:hover) {
+  opacity: var(--non-hovered-lines-visibility);
+  transition: opacity 0.3s var(--transition-curve);
+}
+
+/* Specific Line Hover */
+.blyrics-container:is(:hover, .blyrics-user-scrolling)
+  > div:not(.blyrics--active):hover {
+  opacity: var(--hovered-line-visibility);
+  transition: opacity 0.1s var(--transition-curve);
+}
+
+/* Unsynced Lyrics */
+.blyrics-container[data-sync="none"] > div {
+  opacity: var(--current-lyric-visibility);
+  transform: none;
+  transition: none;
+  margin-top: 0.5em;
+  padding-block: 0 !important;
+}
+
+/* Final Overrides - higher specificity score */
+@if $karaoke-mode == off {
+.blyrics-container > .blyrics--active.blyrics--active {
+  opacity: var(--current-lyric-visibility);
+}
+} @else if $karaoke-mode == minimal {
+.blyrics-container > div.blyrics--animating.blyrics--animating {
+  opacity: var(--current-lyric-visibility);
+}
+}
+
+/* Previous Lines Enforcer */ /*
+#blyrics-wrapper
+  .blyrics-container:has(> .blyrics--active):not(.blyrics-user-scrolling):not(
+    :hover
+  )
+  > div:not(.blyrics--active):not(
+    :where(.blyrics--active ~ div):not(:has(~ .blyrics--active))
+  ) {
+  opacity: var(--previous-lyrics-visibility);
+}
+*/
+
+/* -- 6.1.c Text colors -- */
+
+/* Text Colors */
+@if $karaoke-mode == off {
+.blyrics-container div .blyrics--word {
+  color: var(--white-1);
+}
+}
+
+/* Translations and Romanization */
+.blyrics-container .blyrics--translated {
+  color: var(--white-1);
+  font-size: var(--blyrics-translated-font-size);
+  line-height: 1.5;
+  opacity: var(--translated-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+@if $karaoke-mode == minimal {
+.blyrics-container .blyrics--translated {
+  color: var(--blyrics-lyric-inactive-color);
+}
+
+.blyrics-container .blyrics--active .blyrics--translated {
+  color: var(--blyrics-lyric-active-color);
+}
+}
+
+.blyrics-container > div.blyrics--active .blyrics--translated {
+  opacity: var(--translated-lyric-visibility);
+}
+
+.blyrics-container .blyrics--romanized {
+  color: var(--white-1);
+  font-size: var(--romanized-font-size);
+  line-height: 1.5;
+  opacity: var(--romanized-lyric-visibility);
+  transition: var(--lyrics-opacity-transition);
+}
+
+.blyrics-container > div.blyrics--active .blyrics--romanized {
+  opacity: var(--romanized-lyric-visibility);
+}
+
+/* -- 6.1.d Translation / romanization layout -- */
+
+/* Layout Adjustments for Translations */
+.blyrics-container .blyrics--romanized {
+  width: auto;
+  padding-block: initial;
+  background: 0;
+  padding: initial;
+  border: 0;
+  border-radius: 0;
+  margin-top: .2em;
+  margin-bottom: .2em;
+  font-weight: 350;
+  letter-spacing: .03em;
+}
+
+.blyrics-container .blyrics--translated {
+  margin-top: 0.4em;
+  font-weight: 600;
+}
+
+/* -- 6.1.e Fullscreen specifics -- */
+
+/* Fullscreen Specifics */
+ytmusic-app-layout:not([is-mweb-modernization-enabled])
+  [player-fullscreened]:not([blyrics-dfs])
+  .blyrics-container {
+  font-size: 4.5rem;
+}
+
+} /* end of $karaoke-mode != default for 6.1 */
+
+  /*# SECTION-6.2 - Footer #########################*/
+
+.blyrics-footer__container.blyrics-footer__shaders {
+  animation: none;
+  background: var(--blyrics-footer-bg-color);
+  box-shadow: none;
+  border: 1px solid var(--blyrics-footer-border-color);
+  padding: 0.5rem 1.25rem;
+  font-weight: unset;
+
+  & > span {
+    animation: none;
+    background: none;
+    -webkit-background-clip: unset;
+    color: var(--blyrics-footer-link-color);
+  }
+
+  &:hover > span {
+    text-decoration: underline;
+  }
+}
+
+div.blyrics-container.blyrics-container > div.blyrics-footer {
+  opacity: 1;
+
+  & > * {
+    opacity: 0.3;
+    transition: opacity 0.1s var(--transition-curve, ease);
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+/* ## SECTION-7 - Before Lyrics are Loaded ######## */
+@keyframes blyrics-shimmer {
+  0%   { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes blyrics-spin {
+  0%, 100% { transform: none; }
+}
+
+/* # SECTION-7.1 - Loader styles ################## */
+#blyrics-loader::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-loader::after {
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+}
+
+#blyrics-loader:not([state="showing-message"]):not([state="exiting-message"])::after {
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--blyrics-ui-text-color);
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: unset;
+}
+
+#blyrics-loader {
+  visibility: visible !important;
+  transition:
+    opacity var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
+    transform var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
+    display var(--blyrics-loader-transition-duration, 0.6s) allow-discrete !important;
+}
+
+#blyrics-loader[state="hidden"],
+#blyrics-loader:not([state]) {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(0) scale(0.85) !important;
+}
+
+#blyrics-loader[state="full-loader"],
+#blyrics-loader[state="small-loader"],
+#blyrics-loader[state="showing-message"],
+#blyrics-loader[state="exiting"],
+#blyrics-loader[state="exiting-message"] {
+  display: flex !important;
+}
+
+@starting-style {
+  #blyrics-loader[state="full-loader"],
+  #blyrics-loader[state="small-loader"],
+  #blyrics-loader[state="showing-message"],
+  #blyrics-loader[state="exiting"],
+  #blyrics-loader[state="exiting-message"] {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+
+/* # Section 7.2 - Ad-overlay ########## */
+#blyrics-ad-overlay {
+  display: none !important;
+  opacity: 0;
+  animation-play-state: paused;
+  transition:
+    opacity 0.4s var(--blyrics-loader-transition-easing),
+    transform 0.4s var(--blyrics-loader-transition-easing),
+    animation-play-state 0.4s allow-discrete
+    display 0.4s allow-discrete !important;
+}
+
+#blyrics-ad-overlay[active],
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+  display: flex !important;
+  opacity: 1;
+}
+
+@starting-style {
+  #blyrics-ad-overlay[active],
+  :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+#blyrics-ad-overlay::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-ad-overlay::after {
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: opacity;
+}
+
+#blyrics-wrapper {
+  transition:
+    transform 0.2s var(--transition-curve),
+    opacity 0.2s var(--transition-curve),
+    display 0.2s allow-discrete !important;
+}
+
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-wrapper,
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(0) scale(0.85) !important;
+}
+
+@starting-style {
+  #blyrics-wrapper {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+/* ## SECTION-8 - Player Background ############### */
+ytmusic-player-page::before {
+  background-image: var(--blyrics-background-img);
+  background-color: var(--youtube-gray-212121);
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: "";
+  filter: var(--background-image-filter);
+  height: 100dvh;
+  inset: calc(0px - var(--ytmusic-nav-bar-height)) 0 0
+    calc(0px - var(--ytmusic-guide-width));
+  position: fixed;
+  transition: var(--background-image-transition);
+  width: 100dvw;
+}
+ytmusic-player-page[is-mweb-modernization-enabled]::before {
+  inset: 0;
+}
+ytmusic-player-page[player-fullscreened]::before {
+  inset: calc(0px - var(--ytmusic-player-bar-height)) 0 0 0;
+}
+
+/* ## SECTION-9 - Album Art Effects ############### */
+#player.ytmusic-player-page,
+.image.ytmusic-player-bar {
+  border-radius: 8% !important;
+  corner-shape: superellipse(2);
+  box-shadow: none !important;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  overflow: hidden;
+}
+
+#player.ytmusic-player-page {
+  background: transparent;
+}
+
+#song-image,
+#thumbnail,
+#thumbnail img,
+#blyrics-img {
+  border-radius: 8%;
+  corner-shape: superellipse(2);
+  overflow: hidden;
+}
+
+/* creating my own album art for better transition */
+ytmusic-player-page #song-image > yt-img-shadow#thumbnail,
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail {
+  background-image: var(--blyrics-background-img);
+  background-color: var(--youtube-gray-212121);
+  background-position: center;
+  background-size: cover;
+  transition: var(--background-image-transition);
+  transition-delay: 0s;
+  transition-duration: 0.6s;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+/* Hiding the actual album-art */
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#img,
+div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#blyrics-img {
+  display: none !important;
+}
+
+/* ## SECTION-10 - Portrait Window Lyrics Screen ## */
+ytmusic-player-page[player-fullscreened] .song-media-controls.ytmusic-player {
+  background-image: none !important;
+}
+.blyrics-container,
+.blyrics-container::after,
+.blyrics-container::before,
+[is-mweb-modernization-enabled][page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"] {
+  background: none !important;
+  filter: none !important;
+}
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .background-gradient.ytmusic-player-page,
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .background-thumbnail.ytmusic-player-page {
+    display: none;
+}
+
+/* ## SECTION-11 - Portrait Window Lyrics Background*/
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .background-image.ytmusic-player-page,
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .side-panel.ytmusic-player-page {
+  background: none;
+}
+
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .background-gradient.ytmusic-player-page,
+ytmusic-player-page[is-mweb-modernization-enabled]
+  .background-thumbnail.ytmusic-player-page {
+  display: none;
+}
+
+ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  #side-panel.ytmusic-player-page,
+ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  #top-player-bar.ytmusic-player-page {
+  backdrop-filter: none;
+  background: transparent !important;
+  border: 0;
+}
+
+#tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"],
+[is-mweb-modernization-enabled] #player-bar-background.ytmusic-app-layout,
+[is-mweb-modernization-enabled] .blyrics-container,
+[is-mweb-modernization-enabled][page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"],
+ytmusic-app-layout .ytmusic-app[is-mweb-modernization-enabled] {
+  backdrop-filter: none;
+  background: none !important;
+  filter: none !important;
+  border: 0;
+}
+
+[is-mweb-modernization-enabled] .blyrics-container::after,
+[is-mweb-modernization-enabled] .blyrics-container::before {
+  opacity: 0;
+}
+
+[is-mweb-modernization-enabled][player-page-open] #guide,
+ytmusic-app-layout[is-mweb-modernization-enabled][player-page-open]
+  > [slot="nav-bar"] {
+  display: none;
+}
+
+/* ## SECTION-12 - Player bar background ########## */
+ytmusic-player-bar {
+  background: transparent !important;
+
+  &:not([player-fullscreened]) {
+    backdrop-filter: none !important;
+  }
+}
+
+#player-bar-background {
+  overflow: hidden;
+  background-color: transparent;
+
+  &.ytmusic-app-layout {
+    background: transparent;
+  }
+}
+
+ytmusic-app-layout {
+  &:not([player-ui-state="FULLSCREEN"]) #player-bar-background {
+    backdrop-filter: none !important;
+  }
+
+  &[player-ui-state="PLAYER_BAR_ONLY"] #player-bar-background::before {
+    content: "";
+    position: absolute;
+    inset: -90px;
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: var(--background-image-transition);
+    filter: var(--background-image-filter);
+    z-index: 0;
+  }
+
+  &[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background::before {
+    content: "";
+    position: absolute;
+    inset: -90px;
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 0.3s ease-in-out 0.3s;
+    filter: var(--background-image-filter);
+    z-index: 0;
+    opacity: 0;
+  }
+
+  &:not([player-ui-state="PLAYER_BAR_ONLY"]) #player-bar-background::before {
+   /* background: transparent !important; */
+   
+  }
+}
+
+#layout[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background {
+    opacity: 1 !important;
+}
+
+ytmusic-app #guide-wrapper.ytmusic-app {
+  height: calc(100vh - var(--ytmusic-player-bar-height));
+}
+
+/* ## SECTION-13 - Bottom Left Nofication ######### */
+tp-yt-paper-toast #close-button {
+  display: none !important;
+}
+
+#toast {
+  background-color: var(--youtube-gray-212121);
+  border: 1.5px solid var(--white-dot-10);
+  border-radius: 20.88px !important;
+  corner-shape: superellipse(2);
+}
+
+.yt-spec-button-shape-next--call-to-action-inverse.yt-spec-button-shape-next--text {
+  color: oklch(0.63 0.19 257.14);
+}
+
+.yt-spec-button-shape-next--call-to-action-inverse.yt-spec-button-shape-next--text:hover {
+  background: oklch(0.63 0.19 257.14 / 0.13);
+}
+
+yt-notification-action-renderer #toast:not(:hover) {
+  animation: idontwannaseeyouanymore-billie 2.5s ease 2.5s forwards !important;
+}
+
+yt-notification-action-renderer #toast:hover {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition:
+    opacity 0.3s var(--transition-curve),
+    transform 0.3s var(--transition-curve) !important;
+}
+
+@keyframes idontwannaseeyouanymore-billie {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+    animation-timing-function: ease-in;
+  }
+  87% {
+    opacity: 0.6;
+    transform: translateY(0);
+    pointer-events: auto;
+    animation-timing-function: ease;
+  }
+  99% {
+    opacity: 0;
+    transform: translateY(100px);
+    pointer-events: auto;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(100px);
+    pointer-events: none;
+    visibility: hidden;
+  }
+}
+
+#text.yt-notification-action-renderer, #sub-text.yt-notification-action-renderer {
+    color: var(--white-1);
+    opacity: 0.87;
+}
+
+/* ## SECTION-14 - Volume popup ################### */
+ytmusic-player-expanding-menu {
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  max-height: 60px;
+}
+
+#main-panel.ytmusic-player-page {
+  height: auto;
+}
+
+/* ## SECTION-15 - Space above album art ########## */
+.strapline.ytmusic-responsive-header-renderer {
+  margin-top: 0;
+}
+
+/* ## SECTION-16 - Background of Albums etc. ###### */
+ytmusic-fullbleed-thumbnail-renderer {
+  display: block !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100dvw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  z-index: 0;
+}
+
+ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout {
+  opacity: 0;
+}
+
+#layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background {
+  transition: opacity 0.4s ease-in-out 0.2s;
+}
+
+#background > ytmusic-fullbleed-thumbnail-renderer > picture::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--filter-replacement-backgroundcolor);
+  pointer-events: none;
+  backdrop-filter: var(--blyrics-background-blur);
+}
+
+ytmusic-browse-response[has-background][page-type="MUSIC_PAGE_TYPE_NON_MUSIC_AUDIO_TRACK_PAGE"]
+  .immersive-background.ytmusic-browse-response
+  ytmusic-fullbleed-thumbnail-renderer.ytmusic-browse-response,
+ytmusic-browse-response[has-background][page-type="MUSIC_PAGE_TYPE_PODCAST_SHOW_DETAIL_PAGE"]
+  .immersive-background.ytmusic-browse-response
+  ytmusic-fullbleed-thumbnail-renderer.ytmusic-browse-response,
+ytmusic-browse-response[has-background][is-playlist-detail-page]
+  .immersive-background.ytmusic-browse-response
+  ytmusic-fullbleed-thumbnail-renderer.ytmusic-browse-response,
+ytmusic-browse-response[has-background][is-album-detail-page]
+  .immersive-background.ytmusic-browse-response
+  ytmusic-fullbleed-thumbnail-renderer.ytmusic-browse-response {
+  filter: none;
+}
+
+ytmusic-browse-response[has-background]:not([disable-gradient])
+  .background-gradient.ytmusic-browse-response {
+  background-image: none;
+}
+
+.image.ytmusic-immersive-header-renderer
+  ~ .content-container-wrapper.ytmusic-immersive-header-renderer
+  .gradient-container.ytmusic-immersive-header-renderer {
+  background: none;
+}
+
+.image.ytmusic-immersive-header-renderer
+  ~ .content-container-wrapper.ytmusic-immersive-header-renderer {
+  background: none;
+}
+
+/* ## SECTION-17 - Search Box ##################### */
+
+ytmusic-search-box[has-query], ytmusic-search-box[opened] {
+  border: none;
+}
+
+ytmusic-search-box {
+  & {
+    --ytmusic-search-border: var(--white-dot-10);
+    --ytmusic-search-background: var(--youtube-gray-212121);
+
+    & .search-box.ytmusic-search-box {
+      transition: background-color 0.2s var(--transition-curve);
+    }
+
+    & #suggestion-list {
+      transition-duration: 0.1s;
+      transition-property: opacity;
+      transition-timing-function: var(--transition-curve);
+
+      &.ytmusic-search-box {
+        border-radius: 0 0 20px 20px;
+        corner-shape: superellipse(2);
+      }
+    }
+
+    &:not([opened]) {
+      & .search-container.ytmusic-search-box {
+        border-radius: 20px;
+        corner-shape: superellipse(2);
+      }
+
+      & #suggestion-list {
+        opacity: 0;
+      }
+
+      &:not([has-query]) {
+        opacity: 0.7;
+        transition: opacity 0.2s var(--transition-curve);
+
+        &:hover {
+          opacity: 1;
+        }
+
+        & .search-box.ytmusic-search-box {
+          background: var(--white-dot-10);
+          border-radius: 20px;
+          corner-shape: superellipse(2);
+        }
+      }
+    }
+
+    &[has-query] .search-container.ytmusic-search-box {
+      box-shadow: none;
+    }
+
+    &[opened]:not(:has(ytmusic-search-suggestions-section)) {
+      & #suggestion-list {
+        opacity: 0;
+      }
+
+      & .search-box.ytmusic-search-box {
+        border-radius: 20px;
+        corner-shape: superellipse(2);
+      }
+    }
+
+    &[opened]:has(ytmusic-search-suggestions-section) .search-box.ytmusic-search-box {
+      border-radius: 20px 20px 0 0;
+      corner-shape: superellipse(2);
+    }
+  }
+
+  &[opened] .search-container.ytmusic-search-box {
+    box-shadow: none;
+  }
+}
+
+ytmusic-search-suggestion {
+  color: var(--white-dot-87);
+}
+
+#suggestions.ytmusic-search-suggestions-section
+  > .ytmusic-search-suggestions-section {
+  border-radius: 20px;
+  corner-shape: superellipse(2);
+  
+  &:is(.hover, .selected-suggestion, :hover) {
+    background-color: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    border-radius: 20px;
+    corner-shape: superellipse(2);
+  }
+}
+
+/* ## SECTION-18 - 3button menu design ############ */
+ytmusic-menu-popup-renderer {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+tp-yt-paper-listbox.ytmusic-menu-popup-renderer {
+  width: auto;
+  padding: 1.2em 0;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+}
+
+tp-yt-paper-listbox#items {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+ytmusic-popup-container tp-yt-iron-dropdown {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+}
+
+ytmusic-popup-container #contentWrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  width: max-content !important;
+  max-height: 65dvh !important;
+  pointer-events: auto !important;
+}
+
+#items.ytmusic-menu-popup-renderer > .ytmusic-menu-popup-renderer {
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  
+  &:hover {
+    background-color: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    border-radius: 13.92px;
+    corner-shape: superellipse(2);
+   }
+}
+
+/* ## SECTION-19 - Player Queue Header ############ */
+ytmusic-queue-header-renderer {
+  box-sizing: border-box;
+  border-radius: 5cqi;
+  corner-shape: superellipse(2);
+  align-items: flex-start;
+  padding: 2.5cqi;
+  margin: 0 0cqi 2cqi;
+  position: sticky;
+  top: 2cqi;
+  z-index: 1000;
+  container-type: inline-size;
+  border: none;
+  box-shadow: 0px 4px 10px 0px var(--black-dot-20);
+
+  &::before {
+    content: "";
+    overflow: hidden;
+    position: absolute;
+    background-image: var(--blyrics-background-img);
+    background-color: var(--youtube-gray-212121);
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: var(--background-image-transition);
+    filter: brightness(var(--background-brightness))
+      contrast(var(--background-contrast));
+    z-index: -1;
+    inset: 0;
+    border: none;
+    border-radius: inherit;
+    corner-shape: inherit;
+    opacity: 1;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    corner-shape: inherit;
+    border: none;
+    /*box-shadow: inset 0 0 0px 1px white;*/
+    outline: 1px solid var(--white-1);
+    outline-offset: -1px;
+    opacity: 0.1;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .container-name {
+    & .subtitle,
+    & .title {
+      color: var(--white-dot-87);
+    }
+
+    & .title {
+      font-weight: 100;
+    }
+  }
+}
+
+ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
+  & a.ytmusic-chip-cloud-chip-renderer {
+    border-radius: 2.5cqi;
+    corner-shape: superellipse(2);
+    background: var(--white-dot-60);
+    padding: 6px;
+    color: var(--black-dot-87);
+
+    yt-icon {
+      color: inherit;
+    }
+
+    &:hover {
+      background-color: var(--white-dot-87);
+    }
+  }
+}
+
+#buttons > ytmusic-chip-cloud-chip-renderer > div > a > yt-icon {
+  margin-left: 5px;
+}
+
+#tab-renderer {
+  &[page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"] {
+    -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 8%);
+    mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 8%);  
+  }
+
+  &:not([page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"]):not(
+      [page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]
+    ) {
+    margin-top: 0;
+  }
+}
+
+.scroller.ytmusic-player-page {
+  -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
+  mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
+  mask-attachment: scroll;
+  -webkit-mask-attachment: scroll;
+}
+
+/* ## SECTION-20 - Player Queue ################### */
+ytmusic-player-queue-item[play-button-state="loading"],
+ytmusic-player-queue-item[play-button-state="paused"],
+ytmusic-player-queue-item[play-button-state="playing"] {
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+}
+
+/* ## SECTION-21 - Player Queue Items ############# */
+ytmusic-player-queue-item {
+  border: none;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+}
+
+#contents ytmusic-player-queue-item {
+&:hover {
+    background: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+}
+
+/* ## SECTION-22 - Player Queue- dragging item #### */
+ytmusic-player-queue-item:is(
+    [style*="z-index: 9"],
+    [style*="cursor: move"]
+  ):hover {
+  border-radius: 13.92px !important;
+  corner-shape: superellipse(2);
+  background: var(--youtube-gray-212121) !important;
+  box-sizing: border-box !important;
+  height: var(--ytmusic-list-item-height, 56px) !important;
+  width: auto !important;
+  margin: 0 !important;
+}
+ytmusic-playlist-panel-video-wrapper-renderer:is(
+    [style*="z-index: 9"],
+    [style*="cursor: move"]
+  ) {
+  box-sizing: border-box !important;
+  height: var(--ytmusic-list-item-height, 56px) !important;
+  width: auto !important;
+  margin: 0 !important;
+  background: var(--youtube-gray-212121) !important;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  display: flex !important;
+  align-items: center;
+  padding: 0 8px;
+}
+ytmusic-playlist-panel-video-wrapper-renderer:is(
+    [style*="z-index: 9"],
+    [style*="cursor: move"]
+  ):hover {
+  box-sizing: border-box !important;
+  height: var(--ytmusic-list-item-height, 56px) !important;
+  width: auto !important;
+  margin: 0 !important;
+  background: var(--youtube-gray-212121) !important;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  display: flex !important;
+  align-items: center;
+  padding: 0 8px;
+}
+
+/* ## SECTION-23 - Arist Page background ########## */
+ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+  .image.ytmusic-fullbleed-thumbnail-renderer {
+  filter: none !important;
+  opacity: 1 !important;
+}
+ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+  ytmusic-fullbleed-thumbnail-renderer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 200dvh;
+  --fade-height: calc(
+    var(--ytmusic-immersive-header-padding-top) +
+      var(--ytmusic-immersive-header-gradient-padding-top)
+  );
+  --mask-gradient: linear-gradient(
+  to bottom in oklch,
+  oklch(0 0 0 / 0.000) 0dvh,
+  oklch(0 0 0 / 0.009) calc(var(--fade-height) * 1 / 6),
+  oklch(0 0 0 / 0.040) calc(var(--fade-height) * 2 / 6),
+  oklch(0 0 0 / 0.098) calc(var(--fade-height) * 3 / 6),
+  oklch(0 0 0 / 0.184) calc(var(--fade-height) * 4 / 6),
+  oklch(0 0 0 / 0.301) calc(var(--fade-height) * 5 / 6),
+  oklch(0 0 0 / 0.450) calc(var(--fade-height) * 6 / 6),
+  oklch(0 0 0 / 0.590) calc(var(--fade-height) * 7 / 6),
+  oklch(0 0 0 / 0.708) calc(var(--fade-height) * 8 / 6),
+  oklch(0 0 0 / 0.804) calc(var(--fade-height) * 9 / 6),
+  oklch(0 0 0 / 0.880) calc(var(--fade-height) * 10 / 6),
+  oklch(0 0 0 / 0.936) calc(var(--fade-height) * 11 / 6),
+  oklch(0 0 0 / 0.974) calc(var(--fade-height) * 12 / 6),
+  oklch(0 0 0 / 0.994) calc(var(--fade-height) * 13 / 6),
+  oklch(0 0 0 / 1.000) calc(var(--fade-height) * 14 / 6)
+);
+  -webkit-mask-image: var(--mask-gradient);
+  mask-image: var(--mask-gradient);
+  background-color: var(--filter-replacement-backgroundcolor);
+  backdrop-filter: var(--blyrics-background-blur);
+  z-index: 1;
+  pointer-events: none;
+  animation: slide-dimmer-up linear both;
+  animation-timeline: scroll(root);
+  animation-range: 0 50dvh;
+}
+@keyframes slide-dimmer-up {
+  0% {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-100dvh);
+  }
+}
+ytmusic-immersive-header-renderer {
+  --ytmusic-immersive-header-padding-top: 48dvh;
+  --ytmusic-immersive-header-gradient-padding-top: 12dvh;
+}
+
+/* ## SECTION-23.1 - Portrait Window Specifics #### */
+[is-mweb-modernization-enabled] ytmusic-immersive-header-renderer {
+  --ytmusic-immersive-header-padding-top: 28dvh;
+  --ytmusic-immersive-header-gradient-padding-top: 12dvh;
+}
+
+@property --fade-stop {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 65%;
+}
+
+[is-mweb-modernization-enabled]
+  ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+  .image.ytmusic-fullbleed-thumbnail-renderer.ytmusic-fullbleed-thumbnail-renderer {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 100dvw;
+  height: 45dvh;
+  object-fit: cover;
+  --fade-stop: 65%;
+  mask-image: linear-gradient(
+    to bottom in oklch,
+    var(--black-1) var(--fade-stop),
+    calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
+    oklch(none none none / 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom in oklch,
+    var(--black-1) var(--fade-stop),
+    calc(var(--fade-stop) + (100% - var(--fade-stop)) * 0.65),
+    oklch(none none none / 0) 100%
+  );
+  animation-name: expand-dim-stick;
+  animation-timeline: scroll(root);
+  animation-range: 0dvh 70dvh;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+[is-mweb-modernization-enabled]
+  ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+  .image.ytmusic-fullbleed-thumbnail-renderer
+  img,
+[is-mweb-modernization-enabled]
+  ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+  .image.ytmusic-fullbleed-thumbnail-renderer
+  picture {
+  width: 100dvw !important;
+  height: 100dvh !important;
+  object-fit: cover !important;
+}
+
+@keyframes expand-dim-stick {
+  90% {
+    height: 100dvh;
+    --fade-stop: 90%;
+  }
+
+  to {
+    height: 100dvh;
+    --fade-stop: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+    ytmusic-fullbleed-thumbnail-renderer::before {
+    animation: none;
+    transform: translateY(-100dvh);
+  }
+
+  [is-mweb-modernization-enabled]
+    ytmusic-browse-response:has([main-page-type="MUSIC_PAGE_TYPE_ARTIST"])
+    .image.ytmusic-fullbleed-thumbnail-renderer.ytmusic-fullbleed-thumbnail-renderer {
+    animation: none;
+    height: 100dvh;
+    --fade-stop: 100%;
+  }
+}
+
+/* ## SECTION-24 - Fullscreen No Lyrics animation #*/
+ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
+    [blyrics-dfs]
+  ):has(.blyrics-container[data-no-lyrics="true"])
+  #main-panel {
+    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+}
+
+ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not(
+    [blyrics-dfs]
+  ):has(.blyrics-container[data-no-lyrics="true"])
+  #main-panel {
+    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
+    [blyrics-dfs]
+  ):has(.blyrics-container[data-no-lyrics="true"])
+  #player {
+    transition: max-width 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+}
+
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
+  #blyrics-wrapper:has(.blyrics-container[data-no-lyrics="true"]) {
+    transition: opacity 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+}
+
+/* ## SECTION-25 - Music Note Animation disable ### */
+@if $karaoke-mode != default {
+.blyrics--instrumental-icon {
+  display: none;
+}
+.blyrics--instrumental.blyrics--line::after {
+  content: "♫";
+  display: inline-block;
+  font-size: 1.2em;
+  animation: none;
+  animation-play-state: paused;
+  transform: scale(100%);
+  text-shadow: unset;
+  filter:none;
+  opacity: 1;
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+}
+.blyrics--paused.blyrics--instrumental.blyrics--line::after {
+  animation-play-state: paused;
+}
+
+/* empty lines */
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5em;
+  line-height: var(--blyrics-line-height);
+}
+
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  content: "♫";
+}
+
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.blyrics--paused.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation-play-state: paused;
+}
+
+@keyframes note-pulse {
+  0% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+  50% {
+    text-shadow: 0px 0px 8px var(--white-dot-60);
+    opacity: 1;
+    transform: scale(105%);
+    transform-origin: bottom center;
+  }
+  100% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+}
+} /* end of $karaoke-mode != default wrapper for Section-25 */
+
+@if $karaoke-mode == minimal {
+.blyrics--instrumental.blyrics--line::after,
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  color: var(--blyrics-lyric-inactive-color);
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after,
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  color: var(--blyrics-lyric-active-color);
+}
+}
+
+/* ## SECTION-26 - Portrait View Player Fix ####### */
+ytmusic-player#player,
+ytmusic-player-bar,
+#top-player-bar {
+  view-transition-name: none !important;
+}
+
+@keyframes open-player-page {
+  0% {
+    transform: translate3d(0, 100vh, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes collapse-player-page {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  99% {
+    transform: translate3d(0, 100vh, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 100vh, 0);
+    opacity: 0;
+  }
+}
+
+ytmusic-app-layout[player-page-open] > [slot="player-page"] {
+  animation: open-player-page 0.4s ease-in-out !important;
+}
+
+ytmusic-app-layout[player-ui-state="PLAYER_BAR_ONLY"] > [slot="player-page"] {
+  animation: collapse-player-page 0.4s ease-in-out !important;
+}
+
+ytmusic-player-page[player-ui-state="PLAYER_BAR_ONLY"] ytmusic-player#player {
+  transition-property:
+    position, bottom, block-size, height, inline-size, width, left, margin,
+    right, top, border-radius, transform, max-width !important;
+  transition-behavior: allow-discrete !important;
+  transition-delay: 0.4s !important;
+  transition-duration: 0.0013s !important;
+  transition-timing-function: step-end !important;
+}
+
+ytmusic-player-page[player-ui-state="PLAYER_BAR_ONLY"]
+  ytmusic-player#player
+  .song-media-controls.ytmusic-player {
+  transition-property: display, opacity, visibility !important;
+  transition-behavior: allow-discrete !important;
+  transition-delay: 0.4s !important;
+  transition-duration: 0.0013s !important;
+  transition-timing-function: step-end !important;
+}
+
+ytmusic-player-page[player-ui-state="PLAYER_BAR_ONLY"]
+  #top-player-bar.ytmusic-player-page {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: none !important;
+}
+
+ytmusic-player-page[player-ui-state="PLAYER_BAR_ONLY"]
+  tp-yt-paper-tabs.ytmusic-player-page {
+  visibility: hidden !important;
+  transition-behavior: allow-discrete !important;
+  transition: visibility 0.4s step-end !important;
+}
+
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="FULL_PLAYER_VIEW"]
+  #info-panel.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="FULL_PLAYER_VIEW"]
+  #player-controls.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="FULL_PLAYER_VIEW"]
+  .av.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="FULL_PLAYER_VIEW"]
+  .collapse-button.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="FULL_PLAYER_VIEW"]
+  .context-menu-button.ytmusic-player-page {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.2667s ease-in-out 0.2667s,
+    transform 0.4s ease-in-out,
+    visibility 0s ease-in-out !important;
+}
+
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  #info-panel.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  #player-controls.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  .av.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  .collapse-button.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  .context-menu-button.ytmusic-player-page {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translate3d(0, -285%, 0);
+  transition:
+    opacity 0.1067s ease-in-out,
+    transform 0.4s ease-in-out,
+    visibility 0.4s ease-in-out !important;
+}
+
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-ui-state="PLAYER_BAR_ONLY"]
+  #info-panel.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-ui-state="PLAYER_BAR_ONLY"]
+  #player-controls.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-ui-state="PLAYER_BAR_ONLY"]
+  .av.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-ui-state="PLAYER_BAR_ONLY"]
+  .collapse-button.ytmusic-player-page,
+#layout
+  ytmusic-player-page[is-mweb-modernization-enabled][player-ui-state="PLAYER_BAR_ONLY"]
+  .context-menu-button.ytmusic-player-page {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition:
+    opacity 0.0667s ease-in-out 0.3333s,
+    visibility 0.0667s ease-in-out 0.3333s !important;
+}
+
+::view-transition-group(player-bar),
+::view-transition-old(player-bar),
+#top-player-bar {
+  transition-duration: 0.4s !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+#player,
+#side-panel,
+#main-panel {
+  transition-property: transform !important;
+  transition-duration: 0.4s !important;
+  transition-timing-function: ease-in-out !important;
+}
+
+/* ## SECTION-27 - Tab headings animation change ## */
+tp-yt-paper-ripple,
+#selectionBar {
+  display: none !important;
+}
+
+tp-yt-paper-tab {
+  text-transform: uppercase;
+  color: var(--white-1);
+  opacity: 0.7;
+  transition: none;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+tp-yt-paper-tab .tab-content {
+  border-radius: 999rem;
+  corner-shape: superellipse(1.2);
+  transition: none;
+}
+
+[is-mweb-modernization-enabled] tp-yt-paper-tab .tab-content:hover,
+tp-yt-paper-tab:not(.iron-selected) .tab-content:hover {
+  color: var(--white-1);
+  background-color: var(--white-dot-10);
+  /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+[is-mweb-modernization-enabled][player-ui-state="MINIPLAYER_IN_PLAYER_PAGE"]
+  tp-yt-paper-tab.iron-selected,
+:not([is-mweb-modernization-enabled])[player-ui-state="PLAYER_PAGE_OPEN"]
+  tp-yt-paper-tab.iron-selected {
+  color: var(--white-1);
+  opacity: 0.87;
+  transition: none;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  & .tab-content {
+    background-color: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+  }
+
+  & .tab-content:hover {
+    background-color: var(--white-dot-15);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+}
+
+[is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"]
+  tp-yt-paper-tab.iron-selected.ytmusic-player-page,
+[is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"]
+tp-yt-paper-tab:not(.iron-selected) .tp-yt-paper-tab[style-target=tab-content] {
+  color: var(--white-1);
+}
+
+[player-ui-state="MINIPLAYER_IN_PLAYER_PAGE"]
+  tp-yt-paper-tab.iron-selected
+  .tab-content:hover {
+  color: inherit;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tp-yt-paper-tab[style-target=tab-content], tp-yt-paper-tab .tp-yt-paper-tab[style-target=tab-content] {
+  transition: none;
+}
+
+ytmusic-player-page[is-mweb-modernization-enabled][player-page-ui-state="TABS_VIEW"]
+  tp-yt-paper-tabs.ytmusic-player-page {
+  border-bottom: none;
+  margin-top: 15px;
+}
+
+ytmusic-player-page tp-yt-paper-tabs.ytmusic-player-page {
+  border-bottom: none;
+}
+
+/* ### Section 28 - Portrait Window No Lyrics ##### */
+ytmusic-player-page[is-mweb-modernization-enabled]
+  #blyrics-wrapper
+  > div.blyrics-no-lyrics-button-container {
+  margin: 4rem;
+}
+
+ytmusic-player-page[is-mweb-modernization-enabled]
+  #blyrics-wrapper
+  > div.blyrics-container[data-no-lyrics="true"]
+  #blyrics-spacing-element {
+  display: none !important;
+}
+
+/* ### Section 29 - No Lyrics Text Replace ######## */
+@keyframes fadeOutOnly {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fadeInOnly {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes noteFadeIn {
+  from { opacity: 0; }
+  to { opacity: .45; }
+}
+
+@keyframes go-invisible {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main {
+  position: relative;
+  min-height: 1lh;
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main > .blyrics-bidi-run {
+  animation:
+    fadeOutOnly 2s forwards 8s,
+    go-invisible 0s forwards 10s;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main > .blyrics-bidi-run {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.blyrics-container[data-no-lyrics="true"]::before {
+  content: "No lyrics found";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::before {
+  opacity: 1;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::after {
+  opacity: 0 !important;
+}
+
+.blyrics-container[data-no-lyrics="true"] {
+  padding-top: 4em;
+  padding-bottom: 4em !important;
+}
+
+.blyrics-no-lyrics-button-container {
+ flex-wrap: wrap;
+}
+
+/* this is from the portrait mode gradient and filter */
+.blyrics-container[data-no-lyrics="true"]::before,
+.blyrics-container[data-no-lyrics="true"]::after {
+  background: none !important;
+  filter: none !important;
+  border-radius: 0;
+}
+
+.blyrics-container[data-no-lyrics="true"]::after {
+  content: "♫";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  cursor: help;
+  font-size: 1.4em;
+  scale: 1;
+  animation:
+    noteFadeIn 2s forwards 10.2s,
+    i-love-a-shooting-star 6s linear infinite 12.2s;
+
+    /* test */
+  --energy-color: #FFFCF0;
+  
+    /* test */
+}
+
+@keyframes i-love-a-shooting-star {
+  0% {
+    opacity: .45;
+    scale: 1;
+    text-shadow:
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
+  }
+  25% {
+    opacity: 1;
+    scale: 1.5;
+    text-shadow:
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
+  }
+  26% {
+    text-shadow:
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 12px oklch(from var(--energy-color) l c h / 12%);
+  }
+  29% {
+    text-shadow:
+      -0.857em -0.6em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 16px oklch(from var(--energy-color) l c h / 30%);
+  }
+  32% {
+    text-shadow:
+      -1.714em -1.2em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      1.114em 0.043em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 20px oklch(from var(--energy-color) l c h / 50%);
+  }
+  33% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.486em 0.057em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.257em 0.257em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 22px oklch(from var(--energy-color) l c h / 58%);
+  }
+  35% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.229em 0.086em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.771em 0.771em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 26px oklch(from var(--energy-color) l c h / 70%);
+  }
+  36% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em 1.029em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.171em -0.329em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 28px oklch(from var(--energy-color) l c h / 75%);
+  }
+  38% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.543em 1.543em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.514em -0.986em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 32px oklch(from var(--energy-color) l c h / 82%);
+  }
+  39% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      0.686em -1.314em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.386em 0.043em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 31px oklch(from var(--energy-color) l c h / 80%);
+  }
+  41% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em -1.971em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -1.157em 0.129em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 27px oklch(from var(--energy-color) l c h / 65%);
+  }
+  42% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.543em 0.171em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.214em 0.314em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 25px oklch(from var(--energy-color) l c h / 57%);
+  }
+  44% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.314em 0.257em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -0.643em 0.943em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 20px oklch(from var(--energy-color) l c h / 42%);
+  }
+  45% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -0.857em 1.257em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.286em -0.243em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 18px oklch(from var(--energy-color) l c h / 35%);
+  }
+  48% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.143em -0.971em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0 0 14px oklch(from var(--energy-color) l c h / 18%);
+  }
+  51% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 11px oklch(from var(--energy-color) l c h / 6%);
+  }
+  60% {
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
+  }
+  80% {
+    opacity: .65;
+    scale: 1.2333;
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
+  }
+  100% {
+    opacity: .45;
+    scale: 1;
+    text-shadow:
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
+  }
+}
+
+/*
+@keyframes i-love-a-shooting-star {
+  0% {
+    opacity: .45;
+    scale: 1;
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  25% {
+    opacity: 1;
+    scale: 1.5;
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  26% {
+    text-shadow:
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 12px oklch(100% 0 0 / 12%);
+  }
+  29% {
+    text-shadow:
+      -0.857em -0.6em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 16px oklch(100% 0 0 / 30%);
+  }
+  32% {
+    text-shadow:
+      -1.714em -1.2em 28.143px oklch(100% 0 0 / 11.429%),
+      1.114em 0.043em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 20px oklch(100% 0 0 / 50%);
+  }
+  33% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      1.486em 0.057em 20.429px oklch(100% 0 0 / 34.286%),
+      0.257em 0.257em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 22px oklch(100% 0 0 / 58%);
+  }
+  35% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.229em 0.086em 28.143px oklch(100% 0 0 / 11.429%),
+      0.771em 0.771em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 26px oklch(100% 0 0 / 70%);
+  }
+  36% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.029em 1.029em 20.429px oklch(100% 0 0 / 34.286%),
+      0.171em -0.329em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 28px oklch(100% 0 0 / 75%);
+  }
+  38% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.543em 1.543em 28.143px oklch(100% 0 0 / 11.429%),
+      0.514em -0.986em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 32px oklch(100% 0 0 / 82%);
+  }
+  39% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      0.686em -1.314em 20.429px oklch(100% 0 0 / 34.286%),
+      -0.386em 0.043em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 31px oklch(100% 0 0 / 80%);
+  }
+  41% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.029em -1.971em 28.143px oklch(100% 0 0 / 11.429%),
+      -1.157em 0.129em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 27px oklch(100% 0 0 / 65%);
+  }
+  42% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -1.543em 0.171em 20.429px oklch(100% 0 0 / 34.286%),
+      -0.214em 0.314em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 5px oklch(100% 0 0 / 0%),
+      0 0 25px oklch(100% 0 0 / 57%);
+  }
+  44% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.314em 0.257em 28.143px oklch(100% 0 0 / 11.429%),
+      -0.643em 0.943em 16.571px oklch(100% 0 0 / 45.714%),
+      0 0 5px oklch(100% 0 0 / 80%),
+      0 0 20px oklch(100% 0 0 / 42%);
+  }
+  45% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -0.857em 1.257em 20.429px oklch(100% 0 0 / 34.286%),
+      0.286em -0.243em 8.857px oklch(100% 0 0 / 68.571%),
+      0 0 18px oklch(100% 0 0 / 35%);
+  }
+  48% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      1.143em -0.971em 20.429px oklch(100% 0 0 / 34.286%),
+      0 0 14px oklch(100% 0 0 / 18%);
+  }
+  51% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 11px oklch(100% 0 0 / 6%);
+  }
+  60% {
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  80% {
+    opacity: .65;
+    scale: 1.2333;
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+  100% {
+    opacity: .45;
+    scale: 1;
+    text-shadow:
+      -2em -1.4em 32px oklch(100% 0 0 / 0%),
+      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
+      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
+      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
+      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
+      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
+      2em -1.7em 32px oklch(100% 0 0 / 0%),
+      0 0 10px oklch(100% 0 0 / 0%);
+  }
+}
+*/
+/* ### Section 30 - Layout & Navigation Transitions */
+/*
+#content-wrapper {
+  transition-duration: 0.7s;
+  transition-property: margin;
+  transition-timing-function: var(--transition-curve);
+}
+*/ /* disabling for potential performance issues */
+
+#contentContainer {
+  transition-duration: 0.35s !important;
+  /* transition-property: visibility, width, transform; */
+  /* disabling for potential performance issues */
+  transition-property: visibility, transform;
+  transition-timing-function: var(--transition-curve);
+}
+/*
+ytmusic-player-page#player-page {
+  transition-duration: 0.35s, 0.35s, 0.7s !important;
+  transition-property: left, transform, width;
+  transition-timing-function: var(--transition-curve);
+} */ /* disabling for potential performance issues */
+/*
+.content-container.ytmusic-immersive-header-renderer {
+  transition-duration: 0.7s !important;
+  transition-property: width;
+  transition-timing-function: var(--transition-curve);
+}
+*/ /* disabling for potential performance issues */
+/*
+#header
+  > ytmusic-immersive-header-renderer
+  > ytmusic-fullbleed-thumbnail-renderer {
+  transition-duration: 1.05s !important;
+  transition-property: margin, transform;
+  transition-timing-function: var(--transition-curve);
+}
+*/ /* disabling for potential performance issues */
+ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout,
+ytmusic-app-layout[player-page-open] #mini-guide-background.ytmusic-app-layout {
+    opacity: 0;
+}
+
+tp-yt-paper-item.ytmusic-guide-entry-renderer {
+  opacity:0.7;
+  transition: none;
+    
+    &:hover{
+    background-color: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    opacity:1;
+    }
+}
+
+ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-renderer {
+  background-color: var(--white-dot-10);
+  /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  opacity: 0.87;
+  transition: none;
+
+  &:hover {
+    opacity: 1;
+    background-color: var(--white-dot-15);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+}
+
+/* ### Section 31 - Translation etc entry ######### */
+/* .blyrics--romanized,
+.blyrics--translated {
+  animation: smoothReveal 0.3s var(--transition-curve) backwards;
+  overflow: hidden;
+  transform-origin: top;
+}
+.blyrics--translated {
+  animation-delay: 0.15s;
+}
+@keyframes smoothReveal {
+  from {
+    transform: translateY(-6px) scaleY(0.98);
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    max-height: 0;
+    padding-bottom: 0;
+  }
+  to {
+    transform: translateY(0) scaleY(1);
+    max-height: 500px;
+  }
+} */
+
+/* ### Section 32 - Progress bar and knob ######### */
+#hover-time-info.ytmusic-player-bar {
+  background-color: var(--white-dot-87);
+  color: var(--black-dot-87);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20.88px;
+  corner-shape: superellipse(1.2);
+  top: -42px;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 12px var(--black-dot-20);
+}
+
+tp-yt-paper-slider {
+  --paper-progress-active-color: var(--white-dot-60);
+  --paper-progress-secondary-color: var(--white-dot-10);
+}
+
+#progress-bar.ytmusic-player-bar[focused],
+#progress-bar.ytmusic-player-bar,
+ytmusic-player-bar[player-fullscreened] #progress-bar.ytmusic-player-bar,
+ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar,
+#progress-bar.ytmusic-player-controls {
+  --paper-slider-knob-color: var(--white-dot-60);
+  --paper-slider-knob-start-color: var(--white-dot-60);
+  --paper-slider-knob-start-border-color: var(--white-dot-60);
+  --paper-slider-container-color: var(--white-dot-10);
+  --paper-slider-active-color: var(--paper-progress-active-color);
+  --paper-slider-secondary-color: var(--paper-progress-secondary-color);
+}
+
+#progress-bar.ytmusic-player-bar {
+  --paper-slider-knob-color: transparent;
+  --paper-slider-knob-start-color: transparent;
+  --paper-slider-knob-start-border-color: transparent;
+}
+
+ytmusic-player-bar[is-mweb-player-bar-modernization-enabled]
+  #progress-bar.ytmusic-player-bar,
+ytmusic-player-bar[is-mweb-player-bar-modernization-enabled]
+  #progress-bar.ytmusic-player-bar[focused] {
+  --paper-slider-disabled-active-color: var(--white-dot-87);
+  --paper-slider-disabled-secondary-color: var(--white-dot-10);
+  --paper-slider-disabled-knob-color: transparent;
+  --paper-slider-container-color: var(--white-dot-10);
+  --paper-slider-knob-color: transparent;
+  --paper-slider-knob-start-color: transparent;
+  --paper-slider-knob-start-border-color: transparent;
+}
+
+.slider-knob-inner.tp-yt-paper-slider {
+  width: calc(100% - 10px) !important;
+  height: calc(100% - 20px) !important;
+  border-radius: 999rem !important;
+  corner-shape: superellipse(1.2) !important;
+  position: absolute !important;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto !important;
+}
+/*
+.slider-knob.tp-yt-paper-slider {
+  transition: left 0.25s cubic-bezier(0.0, 0.0, 0.2, 1);
+  will-change: left;
+  transform: translateZ(0);
+}
+*/
+ /* disabling for potential performance issues */
+/*
+#primaryProgress.tp-yt-paper-progress,
+#secondaryProgress.tp-yt-paper-progress {
+  transition: transform 0.25s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+*/
+.time-info.ytmusic-player-bar,
+.current-time.ytmusic-player-controls,
+.total-time.ytmusic-player-controls {
+  color: var(--white-dot-87) !important;
+  font-weight: 200 !important;
+}
+
+/* ### Section 33 - Audio-Video toggle ############ */
+#av-id {
+  .av-toggle.ytmusic-av-toggle {
+    background-color: var(--white-dot-10);
+    border: none;
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    display: inline-flex;
+    overflow: hidden;
+    corner-shape: superellipse(1.2);
+
+    button {
+      corner-shape: superellipse(1.2);
+      border: none;
+    }
+    
+    ytmusic-app-layout[player-ui-state="FULLSCREEN"] & {
+      background-color: var(--black-dot-60);
+      /*box-shadow: inset 0 0 0px 1px var(--black-dot-60);*/
+      outline: 1px solid var(--black-dot-60);
+      outline-offset: -1px;
+      border: none;
+    }
+  }
+
+  ytmusic-av-toggle {
+    opacity: 0.6;
+    transition: opacity 0.3s var(--transition-curve);
+
+    &:hover {
+      opacity: 0.87;
+    }
+
+    :is(.song-button, .video-button)[aria-pressed="true"] {
+      background-color: var(--white-dot-15);
+      color: var(--white-1);
+      /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+      outline: 1px solid var(--white-dot-10);
+      outline-offset: -1px;
+    }
+
+    &[toggle-disabled] {
+      opacity: 0.1;
+
+      &:hover {
+        opacity: 0.4;
+      }
+
+      button.ytmusic-av-toggle {
+        cursor: default;
+
+        &[aria-pressed="false"] {
+          color: var(--white-dot-15);
+        }
+      }
+    }
+  }
+
+  :is(.song-button, .video-button).ytmusic-av-toggle {
+    background-color: transparent;
+    color: var(--white-dot-60);
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    transition: background-color 0.2s var(--transition-curve),
+      color 0.2s var(--transition-curve);
+  }
+}
+
+@media (min-width: 1364px) and (max-width: 1577px) {
+  ytmusic-player-page {
+    --ytmusic-player-page-vertical-padding: calc(40px * 0.4);
+  }
+}
+
+/* ### Section 34 - Play-next buttons ############# */
+.play-pause-button-wrapper.ytmusic-player-controls {
+  background-color: var(--white-dot-10);
+  /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  opacity: 0.87;
+  transition: none;
+
+  &:hover {
+    opacity: 1;
+    background-color: var(--white-dot-15);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+}
+
+.yt-icon:where(.yt-icon-container),
+.yt-icon:where(.ytIconWrapperHost),
+yt-icon {
+  color: var(--white-1);
+  
+  &:hover {
+    opacity: 1;
+  }
+}
+
+#button:not(ytmusic-responsive-header-renderer #button) > yt-icon > span {
+  opacity: 0.87;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .next-button.ytmusic-player-controls,
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .previous-button.ytmusic-player-controls,
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .seek-back-button.ytmusic-player-controls,
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .seek-forward-button.ytmusic-player-controls,
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .repeat.ytmusic-player-controls,
+ytmusic-player-controls[is-web-delhi-icons-enabled]:not([player-fullscreened])
+  .shuffle.ytmusic-player-controls,
+ytmusic-player-bar[is-web-delhi-icons-enabled]
+  yt-icon-button.ytmusic-player-bar,
+.middle-controls-buttons .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextText,
+#top-level-buttons .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextText,
+ytmusic-menu-renderer:not(ytmusic-responsive-header-renderer ytmusic-menu-renderer) #button-shape > button {
+  opacity: 0.7;
+  transition: none;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    border-radius: 50%;
+    opacity: 1;
+  }
+}
+
+/* ## SECTION-35 - Album & Playlist Header Buttons# */
+ytmusic-responsive-header-renderer[is-album-detail-page][num-header-buttons="3"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  .ytmusic-responsive-header-renderer:not(:nth-child(2)),
+ytmusic-responsive-header-renderer[is-album-detail-page][num-header-buttons="3"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  yt-button-renderer.ytmusic-responsive-header-renderer:nth-child(2),
+ytmusic-responsive-header-renderer[is-album-detail-page][num-header-buttons="4"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  > .ytmusic-responsive-header-renderer,
+ytmusic-responsive-header-renderer[is-album-detail-page][num-header-buttons="5"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  .ytmusic-responsive-header-renderer:not(:nth-child(3)),
+ytmusic-responsive-header-renderer[is-playlist-detail-page][num-header-buttons="3"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  .ytmusic-responsive-header-renderer:not(:nth-child(2)),
+ytmusic-responsive-header-renderer[is-playlist-detail-page][num-header-buttons="3"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  yt-button-renderer.ytmusic-responsive-header-renderer:nth-child(2),
+ytmusic-responsive-header-renderer[is-playlist-detail-page][num-header-buttons="4"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  > .ytmusic-responsive-header-renderer,
+ytmusic-responsive-header-renderer[is-playlist-detail-page][num-header-buttons="5"]
+  .action-buttons.ytmusic-responsive-header-renderer
+  .ytmusic-responsive-header-renderer:not(:nth-child(3)) {
+  background: transparent;
+  /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+  outline: 1px solid var(--white-dot-15);
+  outline-offset: -1px;
+
+  &:hover {
+    background: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+}
+
+ytmusic-responsive-header-renderer
+  #action-buttons
+  > ytmusic-play-button-renderer {
+  background-color: var(--white-dot-10);
+  /*box-shadow: inset 0 0 0px 1px var(--white-dot-10);*/
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  opacity: 0.87;
+  &:hover {
+    background-color: var(--white-dot-15);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+    opacity: 1;
+  }
+}
+
+ytmusic-responsive-header-renderer
+  #action-buttons
+  > :not(ytmusic-play-button-renderer) {
+  opacity: 0.87;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  & yt-icon > span {
+    opacity: inherit !important;
+  }
+}
+
+ytmusic-responsive-header-renderer
+  .ytSpecButtonShapeNextMono.ytSpecButtonShapeNextText:hover {
+  background: transparent;
+  background-color: transparent;
+}
+
+ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
+  color: inherit;
+}
+
+/* ## SECTION-36 - Track Lists #################### */
+
+#contents > ytmusic-responsive-list-item-renderer {
+  box-shadow: none;
+  border-radius: 13.92px;
+  corner-shape: superellipse(2);
+  border: none !important;
+
+  &:hover {
+    background: var(--white-dot-10);
+    /*box-shadow: inset 0 0 0px 1px var(--white-dot-15);*/
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+  }
+
+  & .secondary-flex-columns.ytmusic-responsive-list-item-renderer .flex-column.ytmusic-responsive-list-item-renderer {
+    font-weight: 200;
+  }
+}
+
+/* ## SECTION-37 - Blyrics Dock ################### */
+.blyrics-dock {
+  transition: transform 125ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blyrics-dock__inner {
+  background-color: var(--white-dot-10);
+  background: oklch(from var(--youtube-gray-212121) l c h / 0.75);
+  box-shadow: none;
+  outline: 1px solid var(--white-dot-15);
+  outline-offset: -1px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition:
+    transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 200ms ease;
+}
+
+.blyrics-dock__inner:hover,
+.blyrics-dock__inner:focus-within,
+.blyrics-dock__inner--expanded {
+  background-color: var(--black-dot-87);
+  background: var(--youtube-gray-212121);
+}
+
+.blyrics-dock--hidden .blyrics-dock__inner,
+#layout[player-fullscreened]:not([blyrics-dfs]) .blyrics-dock--idle-hidden .blyrics-dock__inner {
+  filter: none;
+}
+
+.blyrics-dock__divider {
+  background-color: var(--white-dot-10);
+}
+
+.blyrics-dock__control,
+.blyrics-dock__cycle,
+.blyrics-dock__offset-step,
+.blyrics-dock__offset-row-step {
+  color: var(--white-dot-87);
+  transition:
+    background-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blyrics-dock__control:hover,
+.blyrics-dock__cycle:hover,
+.blyrics-dock__offset-step:hover,
+.blyrics-dock__offset-row-step:hover {
+  background-color: var(--white-dot-15);
+  color: var(--white-1);
+}
+
+.blyrics-dock__control--active {
+  box-shadow: none;
+  outline: 1px solid color-mix(in srgb, var(--dock-pill-accent, hsl(45, 100%, 56%)) 30%, transparent);
+  outline-offset: -1px;
+}
+
+.blyrics-dock__control--active:hover {
+  box-shadow: none;
+  outline: 1px solid color-mix(in srgb, var(--dock-pill-accent, hsl(45, 100%, 56%)) 45%, transparent);
+  outline-offset: -1px;
+}
+
+.blyrics-dock__cycle,
+.blyrics-dock__offset-step {
+  transition:
+    background-color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 240ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 240ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blyrics-dock__fx {
+  transition:
+    transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    width 320ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.blyrics-dock__fx-out {
+  filter: none;
+}
+
+.blyrics-dock__source {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__source-position {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__menu {
+  background-color: var(--black-dot-87);
+  background: var(--youtube-gray-212121);
+  box-shadow: none;
+  outline: 1px solid var(--white-dot-15);
+  outline-offset: -1px;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.blyrics-dock__menu-item {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__menu-item:hover {
+  background-color: var(--white-dot-10);
+  color: var(--white-1);
+}
+
+/* --- Offset control --- */
+.blyrics-dock__offset {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__offset-icon:hover {
+  background-color: var(--white-dot-15);
+}
+
+.blyrics-dock__offset-value {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__offset-row-label {
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__offset-reset {
+  background-color: var(--white-dot-10);
+  color: var(--white-dot-87);
+}
+
+.blyrics-dock__offset-reset:hover {
+  background-color: var(--white-dot-15);
+  color: var(--white-1);
+}
+
+@keyframes blyrics-dock-offset-flash-up {
+  0% {
+    color: var(--dock-accent, hsl(45, 95%, 65%));
+    transform: scale(1.22);
+  }
+  100% {
+    color: var(--white-dot-87);
+    transform: scale(1);
+  }
+}
+
+@keyframes blyrics-dock-offset-flash-down {
+  0% {
+    color: var(--dock-accent, hsl(45, 95%, 65%));
+    transform: scale(0.8);
+  }
+  100% {
+    color: var(--white-dot-87);
+    transform: scale(1);
+  }
+}
+
+/* ## SECTION-38 - Autoscroll Resume button ####### */
+.autoscroll-resume-button {
+  background: var(--youtube-gray-212121);
+  opacity: 0.75;
+  border: none;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  color: var(--white-dot-87);
+  font-weight: 500;
+  backdrop-filter: none;
+  will-change: auto;
+
+  transition:
+    opacity 0.15s linear 0.05s,
+    transform 0.2s cubic-bezier(0.5, 1, 0.89, 1);
+}
+
+.autoscroll-resume-button:hover {
+  text-shadow: none;
+  opacity: 1;
+  color: var(--white-1);
+}
+
+.autoscroll-resume-button:focus {
+  outline-color: var(--white-dot-10);
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+/* ## SECTION-39 - Picture-In-Picture - PIP ####### */
+/*# SECTION-39.1 - Variables ################## */
+.blyrics-pip-shell.blyrics-pip-shell {
+  --blyrics-pip-artwork-shadow: none;
+  --pip-blank: url("data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+  --pip-blank: url("https://raw.githubusercontent.com/ramansg/Minimal/refs/heads/main/piqsels.com-id-zhync.webp");
+  --pip-art-hold: 20s;
+  --pip-art-fade-duration: 0.6s;
+}
+
+/*# SECTION-39.2 - Backdrop ################### */
+.blyrics-pip-backdrop.blyrics-pip-backdrop {
+  opacity: 1 !important;
+  background-image: var(--blyrics-pip-art, var(--pip-blank));
+  background-color: var(--youtube-gray-212121);
+  background-position: 50%;
+  background-size: cover;
+  transform: scale(1.2);
+  filter: var(--background-image-filter);
+}
+
+/* begone */
+.blyrics-pip-backdrop__layer.blyrics-pip-backdrop__layer {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .blyrics-pip-backdrop.blyrics-pip-backdrop {
+    transition: var(--background-image-transition);
+  }
+
+  .blyrics-pip-shell:has(.blyrics-pip-artwork:not([data-has-art="true"]))
+    .blyrics-pip-backdrop.blyrics-pip-backdrop {
+    transition-delay: var(--pip-art-hold);
+  }
+}
+
+/*# SECTION-39.3 - Artwork #################### */
+/* gotta do it to em */
+.blyrics-pip-shell .blyrics-pip-artwork {
+  overflow: hidden !important;
+  perspective: none !important;
+}
+
+/* outlining */
+.blyrics-pip-shell .blyrics-pip-artwork::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: inherit;
+  corner-shape: inherit;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  pointer-events: none;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__card {
+  transform: none !important;
+  transform-style: flat !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__face {
+  transform: none !important;
+  backface-visibility: visible !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__face {
+  background: none;
+}
+
+/* baby show up proud */
+.blyrics-pip-shell .blyrics-pip-artwork__image {
+  opacity: 1 !important;
+}
+
+.blyrics-pip-shell .blyrics-pip-artwork__placeholder {
+  display: none !important;
+}
+
+.blyrics-pip-shell[blyrics-pip-transition="flip"]
+  .blyrics-pip-artwork__face[data-front="true"],
+.blyrics-pip-shell[blyrics-pip-transition="shuffle"]
+  .blyrics-pip-artwork__face[data-front="true"],
+.blyrics-pip-shell[blyrics-pip-transition="shuffle"][data-running="true"]
+  .blyrics-pip-artwork__face,
+.blyrics-pip-artwork {
+  box-shadow: none !important;
+}
+
+.blyrics-pip-artwork.blyrics-pip-artwork,
+.blyrics-pip-artwork__face.blyrics-pip-artwork__face,
+.blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
+  --blyrics-pip-artwork-radius: 8%;
+  border-radius: 8% !important;
+  corner-shape: superellipse(2);
+}
+
+/*# SECTION-39.4 - Artwork Controls ########### */
+/* backround when controls hovered - scrim */
+.blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
+  background: var(--filter-replacement-backgroundcolor);
+  /* transition: none; */
+}
+
+/* prev / next */
+.blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control {
+  background: none;
+  outline: none;
+  opacity: 0.7;
+  transition: none;
+
+  &::before {
+    display: none;
+  }
+
+  &:hover {
+    background-color: var(--white-dot-10);
+    outline: 1px solid var(--white-dot-10);
+    outline-offset: -1px;
+    opacity: 1;
+  }
+}
+
+/* play / pause */
+.blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control--play-pause {
+  color: var(--white-1);
+  background-color: var(--white-dot-10);
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  opacity: 0.87;
+
+  &:hover {
+    background-color: var(--white-dot-15);
+    outline: 1px solid var(--white-dot-15);
+    outline-offset: -1px;
+    opacity: 1;
+  }
+}
+
+/* prev next click animation */
+.blyrics-pip-shell .blyrics-control-nudge-prev svg,
+.blyrics-pip-shell .blyrics-control-nudge-next svg {
+ /* animation: none; */
+}
+
+.blyrics-pip-shell .blyrics-control-ripple-layer {
+  display: none;
+}
+
+/*# SECTION-39.5 - Artwork Crossfade ########## */
+/* two faced like the angel */
+.blyrics-pip-shell .blyrics-pip-artwork__face[data-front="false"] {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .blyrics-pip-shell .blyrics-pip-artwork__face[data-front="true"] {
+    animation: pip-art-fade var(--pip-art-fade-duration) ease both !important;
+  }
+
+  .blyrics-pip-shell .blyrics-pip-artwork__face[data-front="false"] {
+    animation: pip-art-hold-back var(--pip-art-fade-duration) linear !important;
+  }
+}
+
+@keyframes pip-art-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pip-art-hold-back {
+  from, to { visibility: visible; }
+}
+
+/*# SECTION-39.6 - Progress Bar ############### */
+.blyrics-progress {
+  --blyrics-progress-track: var(--white-dot-10);
+  --blyrics-progress-dot-shadow: none;
+}
+
+.blyrics-progress__bar {
+  height: 2px;
+}
+
+.blyrics-progress__bar.dragging {
+  /* box-shadow: 0 0 0 1px var(--white-dot-60); */
+  outline: 1px solid var(--white-dot-60);
+  outline-offset: 0px;
+}
+
+.blyrics-progress__fill {
+  background: var(--white-dot-60);
+}
+
+.blyrics-progress__knob-dot.blyrics-progress__knob-dot {
+  width: calc(100%) !important;
+  height: calc(55%) !important;
+  border-radius: 999rem !important;
+  corner-shape: superellipse(1.2) !important;
+  background: var(--white-dot-60);
+  outline: 1px solid var(--white-dot-60);
+  outline-offset: -1px;
+  visibility: hidden;
+}
+
+.blyrics-progress__bar.blyrics-progress__bar:hover .blyrics-progress__knob-dot.blyrics-progress__knob-dot {
+  box-shadow: none;
+  visibility: visible;
+}
+
+/* why even */
+.blyrics-progress__times,
+.blyrics-progress__end {
+  font-variant-numeric: unset;
+  font-weight: 200;
+}
+
+/*# SECTION-39.7 - Title Text ################# */
+
+/* animation only on hover - shenanigans */
+.blyrics-pip-header:not(:hover) .blyrics-pip-line[data-marquee="read"] {
+  animation-name: none !important;
+}
+
+.blyrics-pip-header:hover .blyrics-pip-line[data-marquee="read"] {
+  --pip-marquee-speed: 1.5;
+  --pip-marquee-hover-delay: 250ms;
+  animation-duration: calc(var(--blyrics-pip-marquee-cycle) / var(--pip-marquee-speed));
+  animation-delay: calc(var(--pip-marquee-hover-delay) - 1500ms / var(--pip-marquee-speed));
+}
+
+.blyrics-pip-line[data-overflows] {
+  transition: none !important;
+}
+
+.blyrics-pip-line__unit {
+  animation: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="true"],
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="false"] {
+  animation: none !important;
+}
+
+.blyrics-pip-line[data-swapping="true"]
+  .blyrics-pip-line__layer[data-front="false"] {
+  opacity: 0 !important;
+}
+
+/*# SECTION-39.8 - Loader ##################### */
+/* mess */
+.blyrics-pip-loader__mark.blyrics-pip-loader__mark {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  width: 1em;
+  height: 1em;
+}
+
+.blyrics-pip-loader__label.blyrics-pip-loader__label {
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--white-1);
+  font-size: 1em;
+  line-height: 1.5;
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+.blyrics-pip-loader.blyrics-pip-loader {
+  opacity: 1;
+  transition: opacity var(--blyrics-loader-transition-duration, 0.6s)
+    var(--blyrics-loader-transition-easing);
+}
+
+@starting-style {
+  .blyrics-pip-loader.blyrics-pip-loader {
+    opacity: 0;
+  }
+}
+
+/* ## SECTION-40 - Unison ######################### */
+.blyrics-gam__featured,
+.blyrics-gam__seal,
+.blyrics-gam__tier,
+.blyrics-gam__ring,
+.blyrics-footer__unison-score-line {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  pointer-events: none;
+
+  transition:
+    max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    margin 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    padding 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
+  transition-delay: 0.3s;
+}
+
+.blyrics-gam__featured,
+.blyrics-gam__tier {
+  max-width: 0;
+  margin-left: -10px;
+  padding: 0;
+}
+
+.blyrics-gam__ring {
+  max-width: 0;
+  margin-right: -10px;
+  padding: 0;
+}
+
+.blyrics-gam__seal {
+  max-width: 0;
+  margin-top: -10px;
+  padding: 0;
+}
+
+.blyrics-footer__unison-score-line {
+  max-width: 100%;
+  margin-top: -0.5rem;
+}
+
+.blyrics-footer__unison-author:hover {
+  & .blyrics-gam__featured,
+  & .blyrics-gam__seal,
+  & .blyrics-gam__tier,
+  & .blyrics-gam__ring {
+    max-width: 400px;
+    max-height: 40px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  & .blyrics-gam__featured,
+  & .blyrics-gam__tier {
+    margin-left: 0;
+  }
+
+  & .blyrics-gam__ring {
+    margin-right: 0;
+  }
+
+  & .blyrics-gam__seal {
+    margin-top: 0;
+    padding: 0 10px 0 0;
+  }
+
+  & .blyrics-gam__tier {
+    padding: 0 12px 0 7px;
+  }
+}
+
+.blyrics-footer__unison-actions-block:hover {
+  & .blyrics-footer__unison-score-line {
+    max-height: 20px;
+    opacity: 1;
+    margin-top: 0;
+    pointer-events: auto;
+  }
+}
+
+.blyrics-footer__container.blyrics-footer__unison-card {
+  box-shadow: none;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  background: var(--white-dot-10);
+  transition: none;
+
+  &:hover {
+    background: var(--white-dot-10);
+  }
+} 
+
+/* ################################################ */
+
+:root { 
+  --blyrics-highlight-swipe-start-to: 1.7;
+  --blyrics-highlight-swipe-end-to: 1.8;
+}
+
+/*
+blyrics-swipe-duration-ratio = 1.9;
+*/
+
+.blyrics--word.blyrics-word-highlight {
+  color: oklch(from var(--burnt-color) l c h / 0);
+  --fade: 0.6;
+  background-image: linear-gradient(
+    90deg in oklch,
+    oklch(from var(--burnt-color) l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(1.00 * var(--fade)))), 
+    oklch(from #D4143D l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.52 * var(--fade)))),
+    oklch(from #FF3D00 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.38 * var(--fade)))),
+    oklch(from #FF8A00 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.22 * var(--fade)))),
+    oklch(from #FFD23F l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.09 * var(--fade)))),
+    oklch(from #FFF2A3 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.00 * var(--fade)))),
+    oklch(from var(--unburnt-color) l c h / 1)      calc(100% * var(--lyric-transition-amount-end))
+  );
+}
+
+
+/* the engine's RTL rule overrides background-image, so mirror it */
+.blyrics-word-highlight.blyrics-rtl,
+.blyrics-rtl .blyrics-word-highlight {
+--fade: 0.6;
+color: oklch(from var(--burnt-color) l c h / 0);
+  background-image: linear-gradient(
+    270deg in oklch,
+    oklch(from var(--burnt-color) l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(1.00 * var(--fade)))), 
+    oklch(from #D4143D l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.52 * var(--fade)))),
+    oklch(from #FF3D00 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.38 * var(--fade)))),
+    oklch(from #FF8A00 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.22 * var(--fade)))),
+    oklch(from #FFD23F l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.09 * var(--fade)))),
+    oklch(from #FFF2A3 l c h / 1) calc(100% * (var(--lyric-transition-amount-start) - calc(0.00 * var(--fade)))),
+    oklch(from var(--unburnt-color) l c h / 1)      calc(100% * var(--lyric-transition-amount-end))
+  );
+} 
+
+
+:root {
+--blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
+--burnt-color: oklch(0.17 0.06 20);
+--unburnt-color: oklch(from white l c h);
+--inner-fire-color: oklch(from #D4143D 0.6 c h);
+}
+
+.blyrics--word {
+transition: 
+            color calc(1/4 * var(--blyrics-duration)) linear step-end,
+            -webkit-text-stroke-color calc(3/4 * var(--blyrics-duration)) linear step-end,
+            visibility var(--blyrics-duration) ease 0.1s allow-discrete;
+}
+
+/* PAST LINE */
+/* upper */
+.blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="past"] {
+color: oklch(from var(--unburnt-color) l c h / 0);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
+transition-duration: calc(1/4 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+
+/* lower */
+.blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="past"] {
+color: var(--burnt-color);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
+transition-duration: calc(1/4 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+
+
+
+
+/* current line - past */
+/* upper */
+.blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="past"] {
+color: oklch(from var(--unburnt-color) l c h / 0);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
+transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+/* lower */
+.blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="past"] {
+color: var(--burnt-color);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
+transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+
+
+/* current line - active */
+/* upper */
+.blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="active"] {
+color: oklch(from var(--burnt-color) l c h / 0);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
+transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+/* lower */
+.blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="active"] {
+color: var(--burnt-color);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
+transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+}
+
+  
+/* current line - upcoming */
+/* upper */
+.blyrics--line.blyrics--active .blyrics--word.blyrics-word-highlight[data-word-state="upcoming"] {
+color: oklch(from var(--unburnt-color) l c h / 0);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
+}
+/* lower */
+.blyrics--line.blyrics--active .blyrics--word:not(.blyrics-word-highlight)[data-word-state="upcoming"] {
+color: var(--unburnt-color);
+text-shadow: unset;
+-webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
+opacity: 1;
+}
+
+
+
+
+/* future line upper */
+.blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="upcoming"] {
+color: oklch(from var(--unburnt-color) l c h / 0);
+text-shadow: unset;
+-webkit-text-stroke: unset;
+}
+
+/* future line lower */
+.blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="upcoming"] {
+color: var(--unburnt-color);
+text-shadow: unset;
+-webkit-text-stroke: unset;
+}

@@ -1,0 +1,12 @@
+{
+  "id": "burn",
+  "title": "[Alpha Version] Burn",
+  "description": "Burn aesthetic",
+  "creators": ["semicolonhope"],
+  "minVersion": "2.4.0.0",
+  "hasShaders": false,
+  "version": "0.0.1",
+  "tags": ["aesthetic"],
+  "images": ["burn2.webp"]
+}
+

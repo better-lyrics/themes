@@ -1,0 +1,16 @@
+{
+  "repo": "ramansg/Burn-BlyricsTheme",
+  "id": "burn",
+  "version": "0.0.1",
+  "commit": "0cda5f30186fa42f10dd7568bb2215f4c2a740e0",
+  "integrity": "sha256-0ae0e18620dc1aaea59cc2b107d8a8a16bf662c076b347d88a1fa007b54e95ee",
+  "locked": "2026-10-08T17:03:20Z",
+  "builds": [
+    {
+      "version": "0.0.1",
+      "minVersion": "2.4.0.0",
+      "path": "themes/burn",
+      "integrity": "sha256-0ae0e18620dc1aaea59cc2b107d8a8a16bf662c076b347d88a1fa007b54e95ee"
+    }
+  ]
+}
