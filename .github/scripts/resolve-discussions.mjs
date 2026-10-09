@@ -114,18 +114,18 @@ export function applyResolvedDiscussions(themesDir, discussions) {
 
 // CLI entrypoint for the workflow. Usage:
 //
-//   node resolve-discussions.mjs '<discussionsJson>'
+//   node resolve-discussions.mjs < discussions.json
 //
-// discussionsJson is a JSON array of { number, body }. Scans themes/*/build.json
+// stdin is a JSON array of { number, body }. Scans themes/*/build.json
 // for the theme list, then writes or deletes each themes/<dir>/discussion.json to
 // match the resolved discussion. Never touches the aggregate lockfile.
-function main(argv) {
-  const discussions = JSON.parse((argv[0] ?? "[]").trim() || "[]");
+function main(input) {
+  const discussions = JSON.parse(input.trim() || "[]");
   const { written, deleted } = applyResolvedDiscussions("themes", discussions);
   process.stderr.write(`resolve-discussions: wrote ${written}, deleted ${deleted}\n`);
 }
 
 const isDirectRun = import.meta.url === `file://${process.argv[1]}`;
 if (isDirectRun) {
-  main(process.argv.slice(2));
+  main(readFileSync(0, "utf8"));
 }
