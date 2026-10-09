@@ -247,6 +247,22 @@
       "version": "1.9.38"
     },
     {
+      "builds": [
+        {
+          "integrity": "sha256-84747f211070be37bf0b595abec5743e0a34f8cb7256b4b0fed1d0e7742b4c8b",
+          "minVersion": "2.2.0",
+          "path": "themes/minimalism-music",
+          "version": "1.0.0"
+        }
+      ],
+      "commit": "9a1d704dace450b0164756392560ddfd056f814f",
+      "id": "minimalism-music",
+      "integrity": "sha256-84747f211070be37bf0b595abec5743e0a34f8cb7256b4b0fed1d0e7742b4c8b",
+      "locked": "2026-10-09T15:21:50Z",
+      "repo": "notacoderlols/Minimalisic-Music",
+      "version": "1.0.0"
+    },
+    {
       "commit": "98cfaab13a28f394f674a3159cd59a03c0c76009",
       "discussion": 31,
       "id": "modern-player",
@@ -426,6 +442,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-10-09T11:23:36Z",
+  "updated": "2026-10-09T15:22:31Z",
   "version": 1
 }
