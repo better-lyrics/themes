@@ -1,0 +1,11 @@
+{
+  "id": "minimalism-music",
+  "title": "Minimalism Music",
+  "description": "A minimalistic theme, heavily inspired by Apple Music",
+  "creators": ["notacoderlols"],
+  "minVersion": "2.2.0",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": ["minimal", "aesthetic"],
+  "images": ["Preview.png", "Final-optimized.webp"]
+}

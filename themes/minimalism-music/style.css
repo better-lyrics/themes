@@ -1,0 +1,705 @@
+/* Minimalism Music, a custom theme for BetterLyrics */
+
+/*blyrics-hide-instrumental-only = true !important; */
+/*blyrics-letter-wave = false !important;*/
+
+/* some stuff */
+:root {
+  --yt-album-size: 600px;
+  --blyrics-font-size: 3rem;
+  --blyrics-hover-scale: 1.01;
+  --blyrics-background-color: rgba(0, 0, 0, 0.25);
+  --blyrics-font-weight: 600;
+  --blyrics-wobble-duration: 0s;
+  --blyrics-panel-size: 60%;
+  --blyrics-video-panel-size: 40%;
+  --blyrics-fullscreen-panel-size: 60%;
+  --blyrics-fullscreen-video-panel-size: 40%;
+}
+
+ytmusic-player:not([video-mode]) {
+  border-radius: 2rem;
+  outline: 1px solid rgb(175 175 175 / 15%);
+  overflow: hidden;
+}
+
+@media (min-width: 1400px) {
+  :root {
+    --blyrics-font-size: 4rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --blyrics-font-size: 5rem;
+  }
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --blyrics-font-size: 6rem;
+  }
+}
+
+.blyrics-background-lyric {
+  font-size: 0.9em;
+}
+
+.blyrics-container {
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  padding-top: 10px;
+  padding-inline: 20px 10px;
+}
+
+.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
+  > div:not(.blyrics--active):not(.blyrics--active ~ div) {
+  opacity: 0;
+}
+
+.blyrics-container > div.blyrics--active {
+  opacity: 1;
+}
+
+.blyrics-container > div.blyrics--active ~ div {
+  opacity: 0.75;
+}
+
+.blyrics-container > .blyrics--animating {
+  opacity: 1 !important;
+}
+
+.blyrics-container > div {
+  transition:
+    filter calc(var(--blyrics-duration) / 3) 0.4s,
+    opacity calc(var(--blyrics-duration) / 2) 0.166s,
+    transform 0.166s var(--blyrics-anim-delay, 0s) !important;
+  padding: 5px 0;
+  transform-origin: left center;
+}
+
+/* hover effect for lyrics */
+.blyrics-container > div:hover {
+  opacity: 1 !important;
+  transform: scale(var(--blyrics-hover-scale));
+  transition: all 0.3s ease;
+}
+
+@keyframes scalePulse {
+  0% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes slowRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+ytmusic-player-page:before {
+  background: var(--blyrics-background-img);
+  background-position: 50% !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+  bottom: 0;
+  content: "";
+  filter: blur(var(--blyrics-background-blur))
+    saturate(var(--blyrics-background-saturate));
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform: scale(1.2);
+  transform-origin: center center;
+  z-index: -100;
+  opacity: 0.5;
+
+  animation:
+    scalePulse 4s ease-in-out infinite,
+    slowRotate 20s linear infinite;
+  animation-composition: add;
+  will-change: transform;
+}
+
+/* Player bar alignment stuff */
+ytmusic-player-bar {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr;
+  grid-template-areas: "start middle end";
+}
+.left-controls.ytmusic-player-bar {
+  grid-area: middle;
+  justify-self: center;
+  margin-left: calc(56px - 140px);
+}
+.middle-controls.ytmusic-player-bar {
+  grid-area: start;
+  justify-content: start;
+  margin-left: 16px;
+}
+.middle-controls.ytmusic-player-bar yt-formatted-string.byline:after {
+  content: attr(title);
+  padding-left: 24px;
+}
+
+.middle-controls.ytmusic-player-bar span.yt-formatted-string {
+  overflow: visible !important;
+}
+
+.middle-controls.ytmusic-player-bar:hover yt-formatted-string.byline {
+  will-change: transform;
+  animation: marquee-scroll 7s linear infinite;
+  overflow: visible;
+}
+
+.middle-controls.ytmusic-player-bar .byline-wrapper {
+  mask-image: white(
+    90deg,
+    transparent,
+    #000 7.5%,
+    #000 92.5%,
+    transparent 100%
+  );
+  mask-size: 115%;
+  mask-position: right;
+  transition: mask-size 0.15s linear;
+}
+
+.middle-controls.ytmusic-player-bar:hover .byline-wrapper {
+  mask-size: 100%;
+}
+
+.volume-slider.ytmusic-player-bar {
+  opacity: 0;
+}
+
+.blyrics--word::after {
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0.0001);
+}
+
+.blyrics--word[data-long-word]::after {
+  --blyrics-glow-color: color(display-p3 1 1 1 / 1);
+}
+
+@keyframes blyrics-wobble {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-0.0375em);
+  }
+}
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+
+.av-toggle.ytmusic-av-toggle {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ytmusic-av-toggle[aria-pressed="false"] {
+  background: transparent;
+}
+
+.ytmusic-av-toggle[aria-pressed="true"] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (min-width: 936px) {
+  .side-panel.ytmusic-player-page {
+    margin: 0 0 0 calc(var(--ytmusic-player-page-content-gap) - 10px);
+  }
+}
+/* scrollbar remover */
+::-webkit-scrollbar {
+  display: none !important;
+  width: 0px !important;
+  background: transparent !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+:root {
+  --ytmusic-scrollbar-width: 0px !important;
+
+}
+
+ytmusic-player-page:not([video-mode]):not([is-video-truncation-fix-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page { 
+  width: 100% !important;
+  max-width: 60vh !important;
+  aspect-ratio: 1 !important;
+  height: auto !important; 
+  max-height: none !important; 
+  border-radius: 10px !important; 
+}
+
+/* force the applied font everywhere*/
+:root {
+    --blyrics-font-family: 'SF Pro Display', sans-serif !important;
+}
+
+/* 3. failsafe rule */
+.blyrics-line, 
+.blyrics-lyric-line, 
+.blyrics-translation, 
+.blyrics-romanization {
+    font-family: 'SF Pro Display', sans-serif !important;
+}
+
+ytmusic-player-page:not([video-mode]):not([is-video-truncation-fix-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page { 
+  width: 100% !important;
+  max-width: 60vh !important;
+  aspect-ratio: 1 !important;
+  height: auto !important; 
+  max-height: none !important; 
+  border-radius: 10px !important; 
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line { 
+  position: relative !important; 
+  top: auto !important; 
+  left: auto !important; 
+  transform: none !important; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  filter: none !important; 
+  animation: blyrics-standard-fade 0.25s ease-out forwards !important; 
+  opacity: 0; 
+}
+
+ytmusic-player-page[player-fullscreened] .blyrics-container[data-no-lyrics="true"] .blyrics--line { 
+  animation: blyrics-fullscreen-sequence 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important; 
+}
+
+@keyframes blyrics-standard-fade { 
+  from { opacity: 0; transform: translateY(10px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+@keyframes blyrics-fullscreen-sequence { 
+  0% { opacity: 0; transform: translateY(20px); } 
+  20% { opacity: 1; transform: translateY(0); } 
+  70% { opacity: 1; transform: translateY(0); } 
+  100% { opacity: 0; transform: translateY(-20px); visibility: hidden; } 
+}
+/* --- 2. VIDEO TAB MODE (Audio/Video toggle set to Video) --- */
+  --lucid-video-tab-gap: 1.3vw; /* Gap between lyrics and video */
+  --lucid-video-tab-center: 17.5vw; /* Centering shift when NO lyrics are found */
+  
+  /* --- 3. AUDIO TAB MODE (Forced video fallback without YT Premium) --- */
+  --lucid-audio-tab-forced-video-gap: 1vw; /* Gap between lyrics and forced video */
+  --lucid-audio-tab-forced-video-center: 15vw; /* Centering shift when NO lyrics are found */
+  
+/* cover mode centering*/
+--lucid-audio-center: 25vw; 
+
+/* no lyrics formatting */
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main { 
+  display: none !important; 
+}
+
+.blyrics-container[data-no-lyrics="true"] { 
+  display: flex !important; 
+  flex-direction: column !important; 
+  align-items: center !important; 
+  justify-content: center !important; 
+  height: 100% !important; 
+  min-height: 50vh !important; 
+  
+}
+/* AUDIO MODE: Standard View */
+ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not([blyrics-dfs]):not([player-ui-state="MINIPLAYER"]) #player.ytmusic-player-page { 
+  width: 100% !important; 
+  max-width: 50vh !important;
+  aspect-ratio: 1 !important;
+  height: auto !important; 
+  max-height: none !important; 
+  margin: 0 auto !important; 
+  border-radius: 10px !important; 
+}
+/* 1. Strip the massive dynamic padding and center the "No Lyrics" text */
+.blyrics-container[data-no-lyrics="true"] {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important; /* Keeps the text centered horizontally */
+    height: 100% !important;
+    padding-bottom: 2rem !important;
+    position: relative !important; /* Creates an anchor point for the footer */
+}
+
+/* no lyrics formatting */
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main { 
+  display: none !important; 
+}
+
+.blyrics-container[data-no-lyrics="true"] { 
+  display: flex !important; 
+  flex-direction: column !important; 
+  align-items: center !important; 
+  justify-content: center !important; 
+  height: 100% !important; 
+  min-height: 50vh !important; 
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line::before { 
+  content: ""; 
+  font-size: 10rem; 
+  color: var(--blyrics-lyric-inactive-color); 
+  line-height: 1; 
+  margin-bottom: 0.5rem; 
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line::after { 
+  content: "You'll have to guess the lyrics for this one."; 
+  font-size: 5rem; 
+  font-weight: 600; 
+  color: var(--blyrics-lyric-inactive-color); 
+  letter-spacing: -0.5px; 
+}
+
+.blyrics-container[data-no-lyrics="true"] .blyrics--line { 
+  position: relative !important; 
+  top: auto !important; 
+  left: auto !important; 
+  transform: none !important; 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  filter: none !important; 
+  animation: blyrics-standard-fade 0.25s ease-out forwards !important; 
+  opacity: 0; 
+}
+
+/* romanized and translated styling */
+.blyrics--line>.blyrics--romanized {
+  color: var(--blyrics-lyric-inactive-color);
+  font-size: 20px;
+  /* removes romanization window */
+  padding-block: 0;
+  background: none;
+  padding: 0;
+  border: 0;
+  width: auto;
+}
+
+.blyrics-background-line {
+  margin-top: 0;
+}
+
+.blyrics--line>.blyrics--translated {
+  color: var(--blyrics-lyric-inactive-color);
+  /* removes translation window */
+  padding-block: 0;
+  background: none;
+  padding: 0;
+  border: 0;
+  font-size: 23px;
+}
+.blyrics--romanized .blyrics-line-main {
+  display: block;
+}
+
+/* killing the swipe effect on line lyrics */
+.blyrics--word.blyrics-line-synced-word {
+  /* kills any bounce animations */
+  animation: none !important;
+  animation-delay: 0s !important;
+  transition: none !important;
+  /* --blyrics-anim-delay: 0s !important; */
+}
+
+.blyrics-container[data-sync="synced"] .blyrics--word {
+  animation: none;
+  transform: translateY(0px) !important;
+}
+.blyrics-container[data-sync="synced"] .blyrics--word {
+  transition: color calc(var(--blyrics-lyric-scroll-duration) * 3) !important;
+}
+.blyrics-container[data-sync="synced"]>.blyrics--line:not(.blyrics--active):not(.blyrics--animating) .blyrics--word {
+  color: var(--blyrics-lyric-inactive-color) !important;
+}
+.blyrics-container[data-sync="synced"]>.blyrics--line.blyrics--active.blyrics--animating .blyrics--word {
+  color: var(--blyrics-lyric-active-color) !important;
+}
+.blyrics-container[data-sync="synced"] .blyrics--word,
+.blyrics-container[data-sync="synced"] .blyrics-word-highlight
+{
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0.0001) !important;
+}
+
+.blyrics--word {
+  /* disable the glow (set the color to like 0% opacity because if its none it just explodes) */
+  --blyrics-glow-color: color(display-p3 1 1 1 / 0);
+}
+
+.blyrics--word.blyrics-zero-dur-animate::after {
+  animation: none !important;
+  transition-duration: 0s !important;
+}
+/* make the progress bar white */
+#primaryProgress.tp-yt-paper-progress {
+  background: white;
+  border-radius: 100px;
+}
+ytmusic-player-bar:hover #progress-bar.ytmusic-player-bar {
+  --paper-slider-knob-color: white;
+  --paper-slider-knob-start-color: white;
+  --paper-slider-knob-start-border-color: white;
+}
+#secondaryProgress.tp-yt-paper-progress {
+  border-radius: 9px;
+}
+/* background lyric, romanization, translation, forced bold */
+.blyrics-background-lyric {
+  font-size: 1em;
+  opacity: 0.75;
+  font-weight: 700 !important;
+}
+
+.blyrics-background-line {
+  margin-top: 0;
+}
+
+.blyrics--line > .blyrics--romanized,
+.blyrics--line > .blyrics--translated {
+  color: var(--zt-ink-dim);
+  font-size: 0.40em;
+  font-weight: 700 !important;
+  letter-spacing: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+  width: auto;
+}
+
+/* Apple Music-style instrumental dots: timed wipe, follows the theme's text alignment */
+#blyrics-wrapper .blyrics-container {
+  --am-dot-size: 0.36em;
+  --am-dot-gap: 0.32em;
+  --am-dot-on: var(--blyrics-lyric-active-color, currentColor);
+  --am-dot-off: var(--blyrics-lyric-inactive-color, rgb(255 255 255 / 0.3));
+}
+
+/* hide the default SVG note (and its extra animation layer) */
+#blyrics-wrapper .blyrics--instrumental .blyrics--instrumental-icon,
+#blyrics-wrapper .blyrics--instrumental.blyrics--line::after {
+  display: none !important;
+}
+
+/* no display override here: the theme's own text-align / flex alignment places the dots */
+#blyrics-wrapper .blyrics--instrumental.blyrics--line {
+  --am-dur: 4s; /* fallback if data-duration can't be read */
+  min-height: 1.4em;
+  padding-block: 0.35em;
+}
+
+/* read the break length straight from the line (Chrome/Edge 133+) */
+@supports (width: attr(data-duration type(<number>))) {
+  #blyrics-wrapper .blyrics--instrumental.blyrics--line {
+    --am-dur: calc(attr(data-duration type(<number>), 4) * 1s);
+  }
+}
+
+/* one bar, masked into three dots, filled by a sliding gradient */
+#blyrics-wrapper .blyrics--instrumental.blyrics--line::before {
+  --step: calc(var(--am-dot-size) + var(--am-dot-gap));
+  content: "";
+  display: inline-block;  /* follows text-align; as a flex item it follows justify-content */
+  vertical-align: middle;
+  flex: none;
+  width: calc(var(--am-dot-size) * 3 + var(--am-dot-gap) * 2);
+  height: var(--am-dot-size);
+  background: linear-gradient(
+    90deg,
+    var(--am-dot-on) 0%,
+    var(--am-dot-on) 40%,
+    var(--am-dot-off) 60%,
+    var(--am-dot-off) 100%
+  );
+  background-size: 300% 100%;
+  background-position: 100% 0; /* fully "off" */
+  -webkit-mask: radial-gradient(
+      circle at calc(var(--am-dot-size) / 2) 50%,
+      #000 calc(var(--am-dot-size) / 2 - 0.5px),
+      transparent calc(var(--am-dot-size) / 2)
+    ) 0 0 / var(--step) 100% repeat-x;
+  mask: radial-gradient(
+      circle at calc(var(--am-dot-size) / 2) 50%,
+      #000 calc(var(--am-dot-size) / 2 - 0.5px),
+      transparent calc(var(--am-dot-size) / 2)
+    ) 0 0 / var(--step) 100% repeat-x;
+  transform-origin: center;
+}
+
+/* right-to-left lines: mirror the wipe so it runs the reading direction */
+#blyrics-wrapper .blyrics--instrumental:is(.blyrics--rtl, [dir="rtl"])::before {
+  scale: -1 1;
+}
+
+#blyrics-wrapper .blyrics--instrumental.blyrics--line.blyrics--active::before {
+  animation:
+    am-dots-slide var(--am-dur) linear forwards,
+    am-dots-breathe 3s ease-in-out infinite;
+}
+
+@keyframes am-dots-slide {
+  from { background-position: 100% 0; }
+  to   { background-position: 0% 0; }
+}
+
+@keyframes am-dots-breathe {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.14); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #blyrics-wrapper .blyrics--instrumental.blyrics--line.blyrics--active::before {
+    animation: am-dots-slide var(--am-dur) linear forwards;
+  }
+}
+/* 1. Define the Bold and Regular web fonts directly from GitHub */
+@font-face {
+    font-family: "SF Pro Display";
+    src: url("https://githubusercontent.com") format("opentype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "SF Pro Display";
+    src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 2. Force the defined fonts into the Better Lyrics Extension settings */
+:root {
+    --blyrics-default-font-family: "SF Pro Display", sans-serif !important;
+}
+
+/* 3. Force the fonts into the rest of YouTube Music */
+body, 
+ytmusic-app, 
+span, a, p, div {
+    font-family: "SF Pro Display", sans-serif !important;
+}
+
+/* --- Cover animations: entering / exiting fullscreen (smooth) --- */
+
+ytmusic-player-page:not([video-mode]):not([is-video-truncation-fix-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page {
+  animation: cover-fs-enter 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not([blyrics-dfs]):not([player-ui-state="MINIPLAYER"]) #player.ytmusic-player-page {
+  animation: cover-fs-exit 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+
+@keyframes cover-fs-enter {
+  0%   { transform: scale(0.9) translateY(1.5vh); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes cover-fs-exit {
+  0%   { transform: scale(1.08) translateY(-1vh); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page #player.ytmusic-player-page {
+    animation: none !important;
+  }
+}
+/* =========================================================
+   COVER ANIMATIONS (optimized). Replaces both earlier blocks.
+   Only transform/opacity are animated, so it all stays on the GPU.
+   ========================================================= */
+:root {
+  --cover-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --cover-center-duration: 1.2s;
+  --cover-center-delay: 1.4s;                   /* waits for the "no lyrics" text */
+  --lucid-audio-center: 25vw;
+  --lucid-audio-tab-forced-video-center: 15vw;
+}
+
+/* Enter fullscreen */
+ytmusic-player-page:not([video-mode]):not([is-video-truncation-fix-enabled])[player-fullscreened]:not([blyrics-dfs]) #player.ytmusic-player-page {
+  animation: cover-fs-enter 1.1s var(--cover-ease);
+}
+
+/* Exit fullscreen */
+ytmusic-player-page:not([video-mode]):not([player-fullscreened]):not([blyrics-dfs]):not([player-ui-state="MINIPLAYER"]) #player.ytmusic-player-page {
+  animation: cover-fs-exit 0.9s var(--cover-ease);
+}
+
+@keyframes cover-fs-enter {
+  from { transform: translate3d(0, 1.5vh, 0) scale(0.9); opacity: 0; }
+  35%  { opacity: 1; }
+  to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+
+@keyframes cover-fs-exit {
+  from { transform: translate3d(0, -1vh, 0) scale(1.08); opacity: 0; }
+  35%  { opacity: 1; }
+  to   { transform: translate3d(0, 0, 0) scale(1); opacity: 1; }
+}
+
+/* No-lyrics centering. The transition sits on the BASE panel (not only
+   fullscreen), so it animates in, out, and when leaving fullscreen. */
+ytmusic-player-page #main-panel.ytmusic-player-page {
+  transition: transform var(--cover-center-duration) var(--cover-ease) 0.15s !important;
+}
+
+ytmusic-player-page[player-fullscreened]:not([video-mode]):not([blyrics-video-mode]):not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #main-panel.ytmusic-player-page {
+  transform: translate3d(var(--lucid-audio-center), 0, 0) !important;
+  transition-delay: var(--cover-center-delay) !important;
+}
+
+ytmusic-player-page[player-fullscreened][video-mode]:not([blyrics-video-mode]):not([blyrics-dfs]):has(.blyrics-container[data-no-lyrics="true"]) #main-panel.ytmusic-player-page {
+  transform: translate3d(var(--lucid-audio-tab-forced-video-center), 0, 0) !important;
+  transition-delay: var(--cover-center-delay) !important;
+}
+
+/* Performance: stop the always-running background animation */
+ytmusic-player-page:before {
+  animation: none !important;
+  will-change: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page #player.ytmusic-player-page,
+  ytmusic-player-page #main-panel.ytmusic-player-page {
+    animation: none !important;
+    transition: none !important;
+  }
+}

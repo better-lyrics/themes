@@ -1,0 +1,16 @@
+{
+  "repo": "notacoderlols/Minimalisic-Music",
+  "id": "minimalism-music",
+  "version": "1.0.0",
+  "commit": "9a1d704dace450b0164756392560ddfd056f814f",
+  "integrity": "sha256-84747f211070be37bf0b595abec5743e0a34f8cb7256b4b0fed1d0e7742b4c8b",
+  "locked": "2026-10-09T15:21:50Z",
+  "builds": [
+    {
+      "version": "1.0.0",
+      "minVersion": "2.2.0",
+      "path": "themes/minimalism-music",
+      "integrity": "sha256-84747f211070be37bf0b595abec5743e0a34f8cb7256b4b0fed1d0e7742b4c8b"
+    }
+  ]
+}
