@@ -1,9 +1,9 @@
 
-/* Minimal, a marketplace theme by semicolonhope */
-/* blyrics-theme-2026-10-08T11-49-25 */
+/* Burn [alpha version] */
+/* blyrics-theme-2026-10-09T17-06-22 */
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-10-06 v1.9.39 (BetterLyrics v2.4.0+ only)   */
+ * 2026-10-06 v1.9.39+ (BetterLyrics v2.4.0+ only)  */
 
 /* - Enable Karaoke - Section 3.                    *
  * - Enable Blur    - Section-3.                    *
@@ -54,7 +54,7 @@ $blur-amount: 25px;
   /*# SECTION-3.1 ################################# */
 
   /* -- Line visibility (opacity) -- */
-  --current-lyric-visibility: 1;      /* 1    would mean 100%*/
+  --current-lyric-visibility: 1;   /* 1    would mean 100%*/
   --previous-lyrics-visibility: 0; /* 0.35 would mean 35% */
   --next-lyrics-visibility: 1;     /* 0.02 would mean 2%  */
   
@@ -111,7 +111,7 @@ $blur-amount: 25px;
   /* -- Offsets -- */
   @if $karaoke-mode != default {
   --blyrics-timing-offset: 0.4s;
-  --blyrics-richsync-timing-offset: 0.4s;
+  --blyrics-richsync-timing-offset: 0.3s;
   }
   @if $karaoke-mode == off {
   --blyrics-scroll-timing-offset: 0s;
@@ -158,24 +158,19 @@ $blur-amount: 25px;
     var(--background-image-transition-duration)
     var(--background-image-transition-easing)
     var(--background-image-transition-delay);
-  --blyrics-background-saturate: 1;
-  --background-brightness: 0.217;
-  --background-contrast: 0.92;
+  --blyrics-background-saturate: 1; /* removed */
+  --background-brightness: 0.217;   /* removed */
+  --background-contrast: 0.92;      /* removed */
+  
+  --brightness-contrast-filter: brightness(var(--background-brightness)) contrast(var(--background-contrast));
+  --filter-replacement-backgroundcolor: oklch(15.7861072% 0 0 / 0.80036);
 
   @if $enable-blur == on {
         --blyrics-background-blur: blur(#{$blur-amount});
-        --background-image-filter: saturate(var(--blyrics-background-saturate))
-    brightness(var(--background-brightness)) contrast(var(--background-contrast))
-    var(--blyrics-background-blur);
   }
-
   @else {
     --blyrics-background-blur: none;
-    --background-image-filter: saturate(var(--blyrics-background-saturate))
-    brightness(var(--background-brightness)) contrast(var(--background-contrast));
-    }
-
-  --filter-replacement-backgroundcolor: oklch(15.7861072% 0 0 / 0.80036);
+  }
 
   /*# SECTION-3.4 Custom Variables ################ */
 
@@ -243,7 +238,7 @@ blyrics-line-scroll-active-duration = var(--line-scroll-uniform-duration);
 -- say hello to old friends -- ;
 blyrics-letter-wave = false;
 blyrics-add-extra-top-padding = true;
-blyrics-lyric-ending-threshold-s = 2;
+blyrics-lyric-ending-threshold-s = 0;
 blyrics-early-scroll-consider-s = 0;
 blyrics-target-scroll-pos-ratio = 0.4;
 
@@ -310,7 +305,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Container Lines - Base State */
 .blyrics-container > div {
-  opacity: var(--previous-lyrics-visibility);
+  opacity: var(--next-lyrics-visibility);
   transform: none;
   transition: var(--lyrics-opacity-transition);
 }
@@ -321,7 +316,7 @@ ytmusic-app-layout > [slot="player-bar"] {
   opacity: var(--current-lyric-visibility);
 }
 } @else if $karaoke-mode == minimal {
-.blyrics-container > div.blyrics--animating {
+.blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -337,9 +332,13 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Next Lines (any line after an active one) */
 .blyrics-container
-  > div.blyrics--active
-  ~ div:not(.blyrics--active) {
+  > div:not(.blyrics--active.blyrics--animating):has([data-word-state="upcoming"]) {
   opacity: var(--next-lyrics-visibility);
+}
+
+.blyrics-container
+  > div:not(.blyrics--active.blyrics--animating):has([data-word-state="past"]) {
+  opacity: var(--previous-lyrics-visibility);
 }
 
 /* User Scrolling or Hover */
@@ -371,7 +370,7 @@ ytmusic-app-layout > [slot="player-bar"] {
   opacity: var(--current-lyric-visibility);
 }
 } @else if $karaoke-mode == minimal {
-.blyrics-container > div.blyrics--animating.blyrics--animating {
+.blyrics-container > div.blyrics--animating.blyrics--animating:has([data-word-state="active"]) {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -627,12 +626,13 @@ div.blyrics-container.blyrics-container > div.blyrics-footer {
 /* ## SECTION-8 - Player Background ############### */
 ytmusic-player-page::before {
   background-image: var(--blyrics-background-img);
-  background-color: var(--youtube-gray-212121);
+  background-color: var(--filter-replacement-backgroundcolor);
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
+  background-blend-mode: overlay;
   content: "";
-  filter: var(--background-image-filter);
+  filter: var(--blyrics-background-blur);
   height: 100dvh;
   inset: calc(0px - var(--ytmusic-nav-bar-height)) 0 0
     calc(0px - var(--ytmusic-guide-width));
@@ -783,12 +783,13 @@ ytmusic-app-layout {
     position: absolute;
     inset: -90px;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transition: var(--background-image-transition);
-    filter: var(--background-image-filter);
+    filter: var(--blyrics-background-blur);
     z-index: 0;
   }
 
@@ -797,12 +798,13 @@ ytmusic-app-layout {
     position: absolute;
     inset: -90px;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transition: opacity 0.3s ease-in-out 0.3s;
-    filter: var(--background-image-filter);
+    filter: var(--blyrics-background-blur);
     z-index: 0;
     opacity: 0;
   }
@@ -1133,13 +1135,13 @@ ytmusic-queue-header-renderer {
     overflow: hidden;
     position: absolute;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
     transition: var(--background-image-transition);
-    filter: brightness(var(--background-brightness))
-      contrast(var(--background-contrast));
+    filter: var(--blyrics-background-blur);
     z-index: -1;
     inset: 0;
     border: none;
@@ -2930,13 +2932,19 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   will-change: auto;
 
   transition:
-    opacity 0.15s linear 0.05s,
+    opacity 0.1s linear 0.1s,
     transform 0.2s cubic-bezier(0.5, 1, 0.89, 1);
 }
 
 .autoscroll-resume-button:hover {
   text-shadow: none;
   opacity: 1;
+  color: var(--white-1);
+}
+
+.autoscroll-resume-button:hover[autoscroll-hidden="true"] {
+  text-shadow: none;
+  opacity: 0;
   color: var(--white-1);
 }
 
@@ -2960,11 +2968,12 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 .blyrics-pip-backdrop.blyrics-pip-backdrop {
   opacity: 1 !important;
   background-image: var(--blyrics-pip-art, var(--pip-blank));
-  background-color: var(--youtube-gray-212121);
+  background-color: var(--filter-replacement-backgroundcolor);
+  background-blend-mode: overlay;
   background-position: 50%;
   background-size: cover;
   transform: scale(1.2);
-  filter: var(--background-image-filter);
+  filter: var(--blyrics-background-blur);
 }
 
 /* begone */
@@ -3387,9 +3396,7 @@ color: oklch(from var(--burnt-color) l c h / 0);
 
 .blyrics--word {
 transition: 
-            color calc(1/4 * var(--blyrics-duration)) linear step-end,
-            -webkit-text-stroke-color calc(3/4 * var(--blyrics-duration)) linear step-end,
-            visibility var(--blyrics-duration) ease 0.1s allow-discrete;
+           opacity 0s step-end;
 }
 
 /* PAST LINE */
@@ -3397,16 +3404,17 @@ transition:
 .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="past"] {
 color: oklch(from var(--unburnt-color) l c h / 0);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
-transition-duration: calc(1/4 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+opacity: 0;
+transition-delay: 0.5s;
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h);
 }
 
 /* lower */
 .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="past"] {
 color: var(--burnt-color);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
-transition-duration: calc(1/4 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h);
 }
 
 
@@ -3417,32 +3425,30 @@ transition-duration: calc(1/4 * var(--blyrics-duration)), calc(3/4 * var(--blyri
 .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="past"] {
 color: oklch(from var(--unburnt-color) l c h / 0);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
-transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h);
 }
 /* lower */
 .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="past"] {
 color: var(--burnt-color);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
-transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+opacity: 1;
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h);
 }
 
 
 /* current line - active */
 /* upper */
 .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="active"] {
-color: oklch(from var(--burnt-color) l c h / 0);
+color: oklch(from var(--unburnt-color) l c h / 0);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h);
-transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h);
 }
 /* lower */
 .blyrics--line:is(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="active"] {
 color: var(--burnt-color);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
-transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyrics-duration)), var(--blyrics-duration);
+opacity: 0;
+-webkit-text-stroke: unset; 
 }
 
   
@@ -3451,14 +3457,15 @@ transition-duration: calc(1/8 * var(--blyrics-duration)), calc(3/4 * var(--blyri
 .blyrics--line.blyrics--active .blyrics--word.blyrics-word-highlight[data-word-state="upcoming"] {
 color: oklch(from var(--unburnt-color) l c h / 0);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
+-webkit-text-stroke: 0.03em oklch(from var(--inner-fire-color) l c h); 
 }
 /* lower */
 .blyrics--line.blyrics--active .blyrics--word:not(.blyrics-word-highlight)[data-word-state="upcoming"] {
-color: var(--unburnt-color);
+color: var(--burnt-color);
 text-shadow: unset;
--webkit-text-stroke: 0.5px oklch(from var(--inner-fire-color) l c h); 
 opacity: 1;
+transition-delay: 0.5s;
+-webkit-text-stroke: unset; 
 }
 
 
@@ -3468,6 +3475,7 @@ opacity: 1;
 .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word.blyrics-word-highlight[data-word-state="upcoming"] {
 color: oklch(from var(--unburnt-color) l c h / 0);
 text-shadow: unset;
+visibility: hidden;
 -webkit-text-stroke: unset;
 }
 
@@ -3475,5 +3483,11 @@ text-shadow: unset;
 .blyrics--line:not(.blyrics--active, .blyrics--animating) .blyrics--word:not(.blyrics-word-highlight)[data-word-state="upcoming"] {
 color: var(--unburnt-color);
 text-shadow: unset;
+opacity: 1;
 -webkit-text-stroke: unset;
+}
+
+.blyrics-container[data-sync="richsync"]
+  .blyrics--word.blyrics-word-highlight:not(.blyrics-line-synced-word):is([data-word-state="upcoming"], [data-word-state="active"]) {
+  opacity: 1;
 }
