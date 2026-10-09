@@ -5,7 +5,7 @@
   "creators": ["semicolonhope"],
   "minVersion": "2.4.0.0",
   "hasShaders": false,
-  "version": "3.1.15",
+  "version": "3.1.16",
   "tags": ["opacity-based"],
   "images": ["opacity-karaoke-shotcut-video-project-updated.webp", "adele-trail.webp", "beyonce-reveal.webp"]
 }
