@@ -50,24 +50,11 @@ jobs:
       - name: Fetch discussions
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          REPO="${{ github.repository }}"
-          OWNER="${REPO%/*}"
-          NAME="${REPO#*/}"
-          # first:100 covers the registry comfortably; paginate if the repo ever
-          # exceeds 100 discussions.
-          gh api graphql -F owner="$OWNER" -F name="$NAME" -f query='
-            query($owner: String!, $name: String!) {
-              repository(owner: $owner, name: $name) {
-                discussions(first: 100) {
-                  nodes { number body }
-                }
-              }
-            }' --jq '.data.repository.discussions.nodes' > discussions.json
+        run: bash .github/scripts/fetch-discussions.sh "${{ github.repository }}" > discussions.json
 
       - name: Resolve discussions
         run: |
-          node .github/scripts/resolve-discussions.mjs "$(cat discussions.json)"
+          node .github/scripts/resolve-discussions.mjs < discussions.json
 
       # https://github.com/planetscale/ghcommit-action/issues/43#issuecomment-2313129696
       - name: Stage changes

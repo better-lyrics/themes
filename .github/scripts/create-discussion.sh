@@ -5,8 +5,30 @@ NEW_THEMES="$1"
 REPO_ID="$2"
 CATEGORY_ID="$3"
 
+DISCUSSIONS=$(bash .github/scripts/fetch-discussions.sh "$GITHUB_REPOSITORY")
+
 for REPO in $NEW_THEMES; do
   echo "Processing theme: $REPO"
+
+  # Exit 0: discussion exists, 2: none. Anything else aborts so a re-added theme never gets a duplicate.
+  STATUS=0
+  printf '%s' "$DISCUSSIONS" | node --input-type=module -e '
+    import { readFileSync } from "node:fs";
+    import { discussionNumberByRepo } from "./.github/scripts/resolve-discussions.mjs";
+    const discussions = JSON.parse(readFileSync(0, "utf8"));
+    process.exit(discussionNumberByRepo(discussions).has(process.argv[1].toLowerCase()) ? 0 : 2);
+  ' "$REPO" || STATUS=$?
+  case "$STATUS" in
+    0)
+      echo "Discussion already exists for $REPO, skipping"
+      continue
+      ;;
+    2) ;;
+    *)
+      echo "::error::Could not check for an existing discussion for $REPO (exit $STATUS)"
+      exit 1
+      ;;
+  esac
 
   # Fetch metadata.json using GitHub API (automatically uses default branch)
   METADATA=$(gh api "repos/${REPO}/contents/metadata.json" --jq '.content' 2>/dev/null | base64 -d 2>/dev/null || echo '{}')
