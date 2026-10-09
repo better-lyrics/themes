@@ -1,16 +1,16 @@
 {
   "repo": "ramansg/Burn-BlyricsTheme",
   "id": "burn",
-  "version": "0.0.2",
-  "commit": "cb55d6cd8dfa3824286cc3ff7b623a4ce14bcd32",
-  "integrity": "sha256-6c343de846574c871307db2d2a4521fd62b2df1705b6e9c7f0fe7e08b164f6a1",
-  "locked": "2026-10-09T17:15:33Z",
+  "version": "0.0.3",
+  "commit": "c019606ddf452454443eca116fc6b1a28220993c",
+  "integrity": "sha256-85c7e9086fbdbb5ade7aefa3c64991de43a6d3f294bff48b6966817eaf0ef094",
+  "locked": "2026-10-09T20:05:26Z",
   "builds": [
     {
-      "version": "0.0.2",
+      "version": "0.0.3",
       "minVersion": "2.4.0.0",
       "path": "themes/burn",
-      "integrity": "sha256-6c343de846574c871307db2d2a4521fd62b2df1705b6e9c7f0fe7e08b164f6a1"
+      "integrity": "sha256-85c7e9086fbdbb5ade7aefa3c64991de43a6d3f294bff48b6966817eaf0ef094"
     }
   ]
 }
