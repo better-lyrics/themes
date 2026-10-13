@@ -1,6 +1,8 @@
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-10-01 v1.9.38 (BetterLyrics v2.4.0+ only)   */
+ * 2026-10-01 v1.9.39 (BetterLyrics v2.4.0+ only)   */
+
+/*            2026-10-13 T17-46-54                  */
 
 /* - Enable Karaoke - Section 3.                    *
  * - Enable Blur    - Section-3.                    *
@@ -79,7 +81,8 @@ $blur-amount: 30px;
   @if $karaoke-mode == off {
   --blyrics-lyric-active-color: var(--white-1);
   --blyrics-lyric-inactive-color: var(--blyrics-lyric-active-color);
-  } @else if $karaoke-mode == minimal {
+  }
+  @if $karaoke-mode == minimal {
   --blyrics-lyric-active-color: var(--white-1);
   --blyrics-lyric-inactive-color: oklch(1 0 0 / 0.35);
   }
@@ -93,28 +96,27 @@ $blur-amount: 30px;
 
   /* -- Scroll / transition timing -- */
   @if $karaoke-mode != default {
-  --lyrics-opacity-duration: 1.5s;
-  --blyrics-lyric-scroll-timing-function: var(--transition-curve);
-  --line-scroll-uniform-duration: 1.5s;
+  --lyrics-opacity-duration: 0.4s;
+  --lyrics-opacity-transition: opacity var(--lyrics-opacity-duration) var(--blyrics-lyric-scroll-timing-function);
   --blyrics-scale-transition-duration: 0.5s;
-  }
-  /* line opacity 0.6x in off and 1x in minimal */
-  @if $karaoke-mode == off {
-  --lyrics-opacity-transition: opacity calc(var(--lyrics-opacity-duration) * 0.6) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
-  } @else if $karaoke-mode == minimal {
-  --lyrics-opacity-transition: opacity calc(var(--lyrics-opacity-duration) * 1) var(--blyrics-lyric-scroll-timing-function, cubic-bezier(0.86, 0, 0.2, 1));
-  }
+  
+  /* earliness - negative value delays */
+  --richsync-word-earliness: 0.25s;
+  --synced-active-line-earliness: 0.6s;
 
-  /* -- Offsets -- */
-  @if $karaoke-mode != default {
-  --blyrics-timing-offset: 0.4s;
-  --blyrics-richsync-timing-offset: 0.4s;
+  /* controls earliness/lateness of scrolling lines */
+  --richsync-line-scroll-earliness: 0.3s; /* karaoke */
+  --synced-line-scroll-earliness: 0.133s;   /* line sync */
+  
+  /* scroll duration */
+  --richsync-all-lines-scroll-uniform-duration: 0.7s;
+  --synced-all-lines-scroll-uniform-duration: 0.7s;;
+  
+  /* scroll timing-function - speed at scroll start and end */
+  --richsync-scroll-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --synced-scroll-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
-  @if $karaoke-mode == off {
-  --blyrics-scroll-timing-offset: 0s;
-  } @else if $karaoke-mode == minimal {
-  --blyrics-scroll-timing-offset: 0.315s;
-  }
+  
 
   /* -- Highlight fade timing -- */
   @if $karaoke-mode != default {
@@ -124,20 +126,20 @@ $blur-amount: 30px;
 
   /* -- Animation on/off toggles (0 = off, 1 = on) -- */
   @if $karaoke-mode == off {
-  --blyrics-wobble-duration: 0s;
-  --blyrics-animate-line-scale: 0;
-  --blyrics-animate-word-wobble: 0;
   --blyrics-animate-highlight-swipe: 0;
-  --blyrics-animate-highlight-glow: 0;
   --blyrics-animate-highlight-fade: 0;
-  --blyrics-animate-instrumental: 0;
-  } @else if $karaoke-mode == minimal {
+  }
+  
+  @if $karaoke-mode == minimal {
+  --blyrics-animate-highlight-swipe: 1;
+  --blyrics-animate-highlight-fade: 1;
+  }
+  
+  @if $karaoke-mode != default {
   --blyrics-wobble-duration: 0s;
   --blyrics-animate-line-scale: 0;
   --blyrics-animate-word-wobble: 0;
-  --blyrics-animate-highlight-swipe: 1;
   --blyrics-animate-highlight-glow: 0;
-  --blyrics-animate-highlight-fade: 1;
   --blyrics-animate-instrumental: 0;
   }
 
@@ -155,24 +157,19 @@ $blur-amount: 30px;
     var(--background-image-transition-duration)
     var(--background-image-transition-easing)
     var(--background-image-transition-delay);
-  --blyrics-background-saturate: 1;
-  --background-brightness: 0.217;
-  --background-contrast: 0.92;
+  --blyrics-background-saturate: 1; /* removed */
+  --background-brightness: 0.217;   /* removed */
+  --background-contrast: 0.92;      /* removed */
+  
+  --brightness-contrast-filter: brightness(var(--background-brightness)) contrast(var(--background-contrast));
+  --filter-replacement-backgroundcolor: oklch(15.7861072% 0 0 / 0.80036);
 
   @if $enable-blur == on {
         --blyrics-background-blur: blur(#{$blur-amount});
-        --background-image-filter: saturate(var(--blyrics-background-saturate))
-    brightness(var(--background-brightness)) contrast(var(--background-contrast))
-    var(--blyrics-background-blur);
   }
-
   @else {
     --blyrics-background-blur: none;
-    --background-image-filter: saturate(var(--blyrics-background-saturate))
-    brightness(var(--background-brightness)) contrast(var(--background-contrast));
-    }
-
-  --filter-replacement-backgroundcolor: oklch(15.7861072% 0 0 / 0.80036);
+  }
 
   /*# SECTION-3.4 Custom Variables ################ */
 
@@ -215,34 +212,18 @@ It's supposed to be in a comment like this to work. */
 @if $karaoke-mode == off {
 /*
 ;
--- why do these features exist -- ;
 blyrics-disable-richsync = true;
-blyrics-letter-wave = false;
-blyrics-debug-renderer = false;
-blyrics-add-extra-top-padding = true;
-
--- time is precious -- ;
-blyrics-line-synced-animation-delay = 0;
-blyrics-lyric-ending-threshold-s = 0;
-blyrics-early-scroll-consider-s = 0;
-blyrics-queue-scroll-ms = 1520;
-blyrics-target-scroll-pos-ratio = 0.4;
-
--- Scroll durations (refer Section-3.2) -- ;
-blyrics-line-scroll-duration = var(--line-scroll-uniform-duration);
-blyrics-line-scroll-above-duration = var(--line-scroll-uniform-duration);
-blyrics-line-scroll-below-duration = var(--line-scroll-uniform-duration);
-blyrics-line-scroll-active-duration = var(--line-scroll-uniform-duration);
 */
-} @else if $karaoke-mode == minimal {
-/*
-;
--- say hello to old friends -- ;
+}
+
+@if $karaoke-mode != default {
+/* 
+-- why do these features exist -- ;
 blyrics-letter-wave = false;
 blyrics-add-extra-top-padding = true;
-blyrics-lyric-ending-threshold-s = 2;
-blyrics-early-scroll-consider-s = 0;
 blyrics-target-scroll-pos-ratio = 0.4;
+
+blyrics-early-scroll-consider-s = 0;
 
 -- Scroll durations (refer Section-3.2) -- ;
 blyrics-line-scroll-duration = var(--line-scroll-uniform-duration);
@@ -251,9 +232,7 @@ blyrics-line-scroll-below-duration = var(--line-scroll-uniform-duration);
 blyrics-line-scroll-active-duration = var(--line-scroll-uniform-duration);
 */
 }
-@if $karaoke-mode == default {
-/* whatever is default in better lyrics */
-}
+
 
 /* ## SECTION-5 - Hiding Scrollbar from homepage ## */
 html {
@@ -266,6 +245,22 @@ ytmusic-app-layout > [slot="player-bar"] {
 /* ## SECTION-6 - Style and animation of lyrics ### */
 
   /* ## SECTION-6.1 - Lyrics and wrapper ########## */
+
+@if $karaoke-mode != default {
+.blyrics-container[data-sync="richsync"] {
+  --blyrics-lyric-scroll-timing-function: var(--richsync-scroll-timing-function);
+  --blyrics-scroll-timing-offset: var(--richsync-line-scroll-earliness, 0.5s);
+  --all-lines-scroll-uniform-duration:  var(--richsync-all-lines-scroll-uniform-duration);
+  --blyrics-richsync-timing-offset: var(--richsync-word-earliness);
+}
+
+.blyrics-container[data-sync="synced"] {
+  --blyrics-scroll-timing-offset: var(--synced-line-scroll-earliness, 0.5s);
+  --all-lines-scroll-uniform-duration:  var(--synced-all-lines-scroll-uniform-duration);
+  --blyrics-timing-offset: var(--synced-active-line-earliness);
+  --blyrics-lyric-scroll-timing-function: var(--synced-scroll-timing-function);
+}
+}
 
 @if $karaoke-mode != default {
 
@@ -307,7 +302,7 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Container Lines - Base State */
 .blyrics-container > div {
-  opacity: var(--previous-lyrics-visibility);
+  opacity: var(--next-lyrics-visibility);
   transform: none;
   transition: var(--lyrics-opacity-transition);
 }
@@ -317,8 +312,8 @@ ytmusic-app-layout > [slot="player-bar"] {
 .blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
-} @else if $karaoke-mode == minimal {
-.blyrics-container > div.blyrics--animating {
+} @if $karaoke-mode == minimal {
+.blyrics-container > div.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -334,9 +329,13 @@ ytmusic-app-layout > [slot="player-bar"] {
 
 /* Next Lines (any line after an active one) */
 .blyrics-container
-  > div.blyrics--active
-  ~ div:not(.blyrics--active) {
+  > div:not(.blyrics--active.blyrics--animating):has([data-word-state="upcoming"]) {
   opacity: var(--next-lyrics-visibility);
+}
+
+.blyrics-container
+  > div:not(.blyrics--active.blyrics--animating):has([data-word-state="past"]) {
+  opacity: var(--previous-lyrics-visibility);
 }
 
 /* User Scrolling or Hover */
@@ -367,8 +366,8 @@ ytmusic-app-layout > [slot="player-bar"] {
 .blyrics-container > .blyrics--active.blyrics--active {
   opacity: var(--current-lyric-visibility);
 }
-} @else if $karaoke-mode == minimal {
-.blyrics-container > div.blyrics--animating.blyrics--animating {
+} @if $karaoke-mode == minimal {
+.blyrics-container > div.blyrics--animating.blyrics--animating:has([data-word-state="active"]) {
   opacity: var(--current-lyric-visibility);
 }
 }
@@ -469,12 +468,12 @@ ytmusic-app-layout:not([is-mweb-modernization-enabled])
   box-shadow: none;
   border: 1px solid var(--blyrics-footer-border-color);
   padding: 0.5rem 1.25rem;
-  font-weight: unset;
+  font-weight: initial;
 
   & > span {
     animation: none;
     background: none;
-    -webkit-background-clip: unset;
+    -webkit-background-clip: initial;
     color: var(--blyrics-footer-link-color);
   }
 
@@ -517,12 +516,12 @@ div.blyrics-container.blyrics-container > div.blyrics-footer {
 }
 
 #blyrics-loader:not([state="showing-message"]):not([state="exiting-message"])::after {
-  background: unset;
-  -webkit-background-clip: unset;
-  background-clip: unset;
+  background: initial;
+  -webkit-background-clip: initial;
+  background-clip: initial;
   color: var(--blyrics-ui-text-color);
   animation: blyrics-shimmer 1s infinite alternate ease-in-out;
-  will-change: unset;
+  will-change: initial;
 }
 
 #blyrics-loader {
@@ -592,8 +591,8 @@ div.blyrics-container.blyrics-container > div.blyrics-footer {
 
 #blyrics-ad-overlay::after {
   background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
+  -webkit-background-clip: initial;
+  background-clip: initial;
   color: var(--blyrics-ui-text-color);
   white-space: pre-wrap;
   animation: blyrics-shimmer 1s infinite alternate ease-in-out;
@@ -624,12 +623,13 @@ div.blyrics-container.blyrics-container > div.blyrics-footer {
 /* ## SECTION-8 - Player Background ############### */
 ytmusic-player-page::before {
   background-image: var(--blyrics-background-img);
-  background-color: var(--youtube-gray-212121);
+  background-color: var(--filter-replacement-backgroundcolor);
   background-position: 50%;
   background-repeat: no-repeat;
   background-size: cover;
+  background-blend-mode: overlay;
   content: "";
-  filter: var(--background-image-filter);
+  filter: var(--blyrics-background-blur);
   height: 100dvh;
   inset: calc(0px - var(--ytmusic-nav-bar-height)) 0 0
     calc(0px - var(--ytmusic-guide-width));
@@ -645,47 +645,45 @@ ytmusic-player-page[player-fullscreened]::before {
 }
 
 /* ## SECTION-9 - Album Art Effects ############### */
-#player.ytmusic-player-page,
-.image.ytmusic-player-bar {
-  border-radius: 8% !important;
-  corner-shape: superellipse(2);
-  box-shadow: none !important;
-  outline: 1px solid var(--white-dot-10);
-  outline-offset: -1px;
-  overflow: hidden;
-}
-
-#player.ytmusic-player-page {
-  background: transparent;
-}
-
+#player,
+#song-media-window,
 #song-image,
 #thumbnail,
 #thumbnail img,
+.image.ytmusic-player-bar,
 #blyrics-img {
-  border-radius: 8%;
-  corner-shape: superellipse(2);
-  overflow: hidden;
+ border-radius: 8% !important;
+ corner-shape: superellipse(2);
+ box-shadow: none !important;
+ overflow: hidden;
 }
 
-/* creating my own album art for better transition */
-ytmusic-player-page #song-image > yt-img-shadow#thumbnail,
-div#song-image.ytmusic-player > yt-img-shadow#thumbnail {
-  background-image: var(--blyrics-background-img);
-  background-color: var(--youtube-gray-212121);
-  background-position: center;
-  background-size: cover;
-  transition: var(--background-image-transition);
-  transition-delay: 0s;
-  transition-duration: 0.6s;
+.image.ytmusic-player-bar {
+ outline: 1px solid var(--white-dot-15);
+ outline-offset: -1px;
+}
+
+#player {
+ background: transparent;
+}
+
+ytmusic-player {
+ &:hover {
+  .song-media-controls.ytmusic-player {
+   outline: 1px solid var(--white-dot-15);
+   outline-offset: -1px;
+  }
+
+  #thumbnail img {
+   outline: initial;
+   outline-offset: -1px;
+  }
+ }
+
+ #thumbnail img {
   outline: 1px solid var(--white-dot-10);
   outline-offset: -1px;
-}
-
-/* Hiding the actual album-art */
-div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#img,
-div#song-image.ytmusic-player > yt-img-shadow#thumbnail > img#blyrics-img {
-  display: none !important;
+ }
 }
 
 /* ## SECTION-10 - Portrait Window Lyrics Screen ## */
@@ -780,12 +778,13 @@ ytmusic-app-layout {
     position: absolute;
     inset: -90px;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transition: var(--background-image-transition);
-    filter: var(--background-image-filter);
+    filter: var(--blyrics-background-blur);
     z-index: 0;
   }
 
@@ -794,19 +793,19 @@ ytmusic-app-layout {
     position: absolute;
     inset: -90px;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     transition: opacity 0.3s ease-in-out 0.3s;
-    filter: var(--background-image-filter);
+    filter: var(--blyrics-background-blur);
     z-index: 0;
     opacity: 0;
   }
 
   &:not([player-ui-state="PLAYER_BAR_ONLY"]) #player-bar-background::before {
    /* background: transparent !important; */
-   
   }
 }
 
@@ -914,8 +913,12 @@ ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout {
   opacity: 0;
 }
 
+#nav-bar-background.ytmusic-app-layout {
+  transition: opacity 0.4s ease-in-out;
+}
+
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background {
-  transition: opacity 0.4s ease-in-out 0.2s;
+  transition: opacity 0.8s ease-in-out 0.2s;
 }
 
 #background > ytmusic-fullbleed-thumbnail-renderer > picture::after {
@@ -1113,13 +1116,13 @@ ytmusic-popup-container #contentWrapper {
 /* ## SECTION-19 - Player Queue Header ############ */
 ytmusic-queue-header-renderer {
   box-sizing: border-box;
-  border-radius: 5cqi;
-  corner-shape: superellipse(2);
+  border-radius: 15px;
+  corner-shape: superellipse(1);
   align-items: flex-start;
-  padding: 2.5cqi;
-  margin: 0 0cqi 2cqi;
+  padding: calc(3%);
+  margin: 0 0 calc(3%);
   position: sticky;
-  top: 2cqi;
+  top: calc(2%);
   z-index: 1000;
   container-type: inline-size;
   border: none;
@@ -1130,13 +1133,13 @@ ytmusic-queue-header-renderer {
     overflow: hidden;
     position: absolute;
     background-image: var(--blyrics-background-img);
-    background-color: var(--youtube-gray-212121);
+    background-color: var(--filter-replacement-backgroundcolor);
+    background-blend-mode: overlay;
     background-position: 50%;
     background-repeat: no-repeat;
     background-size: cover;
     transition: var(--background-image-transition);
-    filter: brightness(var(--background-brightness))
-      contrast(var(--background-contrast));
+    filter: var(--blyrics-background-blur);
     z-index: -1;
     inset: 0;
     border: none;
@@ -1174,7 +1177,7 @@ ytmusic-queue-header-renderer {
 
 ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
   & a.ytmusic-chip-cloud-chip-renderer {
-    border-radius: 2.5cqi;
+    border-radius: calc(15px + 3%);
     corner-shape: superellipse(2);
     background: var(--white-dot-60);
     padding: 6px;
@@ -1200,16 +1203,20 @@ ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
     mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 8%);  
   }
 
+  &[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"] {
+    scrollbar-color: transparent transparent;
+    -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0),var(--black-1) 50px,var(--black-1) calc(100% - 50px),transparent);
+    mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0),var(--black-1) 50px,var(--black-1) calc(100% - 50px),transparent);
+  }
+
   &:not([page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"]):not(
       [page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]
     ) {
     margin-top: 0;
   }
-}
-
-.scroller.ytmusic-player-page {
-  -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
-  mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
+  
+  -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 9%);
+  mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 9%);
   mask-attachment: scroll;
   -webkit-mask-attachment: scroll;
 }
@@ -1427,28 +1434,32 @@ ytmusic-immersive-header-renderer {
 /* ## SECTION-24 - Fullscreen No Lyrics animation #*/
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
     [blyrics-dfs]
-  ):has(.blyrics-container[data-no-lyrics="true"])
+  )[blyrics-no-lyrics]
   #main-panel {
-    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: transform 1.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not(
     [blyrics-dfs]
-  ):has(.blyrics-container[data-no-lyrics="true"])
+  )[blyrics-no-lyrics]
   #main-panel {
-    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: transform 1.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
     [blyrics-dfs]
-  ):has(.blyrics-container[data-no-lyrics="true"])
+  )[blyrics-no-lyrics]
   #player {
-    transition: max-width 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: max-width 2.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
-  #blyrics-wrapper:has(.blyrics-container[data-no-lyrics="true"]) {
-    transition: opacity 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])[blyrics-no-lyrics]
+  #blyrics-wrapper {
+  transition: opacity 1.5s ease !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 /* ## SECTION-25 - Music Note Animation disable ### */
@@ -1467,11 +1478,12 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
   filter:none;
   opacity: 1;
 }
-.blyrics--active.blyrics--instrumental.blyrics--line::after {
+.blyrics--active.blyrics--animating.blyrics--instrumental.blyrics--line::after {
   animation: note-pulse 1.5s ease-in-out infinite;
   animation-play-state: running;
 }
-.blyrics--paused.blyrics--instrumental.blyrics--line::after {
+.blyrics--paused.blyrics--active.blyrics--animating.blyrics--instrumental.blyrics--line::after,
+.blyrics-container:is(:hover, .blyrics-user-scrolling) .blyrics--instrumental.blyrics--line::after {
   animation-play-state: paused;
 }
 
@@ -1487,7 +1499,7 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
   content: "♫";
 }
 
-.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+.blyrics--active.blyrics--animating.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   animation: note-pulse 1.5s ease-in-out infinite;
   animation-play-state: running;
 }
@@ -1523,8 +1535,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])
 .blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   color: var(--blyrics-lyric-inactive-color);
 }
-.blyrics--active.blyrics--instrumental.blyrics--line::after,
-.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+.blyrics--active.blyrics--animating.blyrics--instrumental.blyrics--line::after,
+.blyrics--active.blyrics--animating.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
   color: var(--blyrics-lyric-active-color);
 }
 }
@@ -1880,6 +1892,11 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   animation:
     noteFadeIn 2s forwards 10.2s,
     i-love-a-shooting-star 6s linear infinite 12.2s;
+
+    /* test */
+  --energy-color: #FFFCF0;
+  
+    /* test */
 }
 
 @keyframes i-love-a-shooting-star {
@@ -1887,218 +1904,218 @@ ytmusic-player-page[is-mweb-modernization-enabled]
     opacity: .45;
     scale: 1;
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   25% {
     opacity: 1;
     scale: 1.5;
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   26% {
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 12px oklch(100% 0 0 / 12%);
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 12px oklch(from var(--energy-color) l c h / 12%);
   }
   29% {
     text-shadow:
-      -0.857em -0.6em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 16px oklch(100% 0 0 / 30%);
+      -0.857em -0.6em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 16px oklch(from var(--energy-color) l c h / 30%);
   }
   32% {
     text-shadow:
-      -1.714em -1.2em 28.143px oklch(100% 0 0 / 11.429%),
-      1.114em 0.043em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 20px oklch(100% 0 0 / 50%);
+      -1.714em -1.2em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      1.114em 0.043em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 20px oklch(from var(--energy-color) l c h / 50%);
   }
   33% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      1.486em 0.057em 20.429px oklch(100% 0 0 / 34.286%),
-      0.257em 0.257em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 22px oklch(100% 0 0 / 58%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.486em 0.057em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.257em 0.257em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 22px oklch(from var(--energy-color) l c h / 58%);
   }
   35% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.229em 0.086em 28.143px oklch(100% 0 0 / 11.429%),
-      0.771em 0.771em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 26px oklch(100% 0 0 / 70%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.229em 0.086em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.771em 0.771em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 26px oklch(from var(--energy-color) l c h / 70%);
   }
   36% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.029em 1.029em 20.429px oklch(100% 0 0 / 34.286%),
-      0.171em -0.329em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 28px oklch(100% 0 0 / 75%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em 1.029em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.171em -0.329em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 28px oklch(from var(--energy-color) l c h / 75%);
   }
   38% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.543em 1.543em 28.143px oklch(100% 0 0 / 11.429%),
-      0.514em -0.986em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 32px oklch(100% 0 0 / 82%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.543em 1.543em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.514em -0.986em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 32px oklch(from var(--energy-color) l c h / 82%);
   }
   39% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      0.686em -1.314em 20.429px oklch(100% 0 0 / 34.286%),
-      -0.386em 0.043em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 31px oklch(100% 0 0 / 80%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      0.686em -1.314em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.386em 0.043em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 31px oklch(from var(--energy-color) l c h / 80%);
   }
   41% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.029em -1.971em 28.143px oklch(100% 0 0 / 11.429%),
-      -1.157em 0.129em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 27px oklch(100% 0 0 / 65%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em -1.971em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -1.157em 0.129em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 27px oklch(from var(--energy-color) l c h / 65%);
   }
   42% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -1.543em 0.171em 20.429px oklch(100% 0 0 / 34.286%),
-      -0.214em 0.314em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 25px oklch(100% 0 0 / 57%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.543em 0.171em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.214em 0.314em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 25px oklch(from var(--energy-color) l c h / 57%);
   }
   44% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.314em 0.257em 28.143px oklch(100% 0 0 / 11.429%),
-      -0.643em 0.943em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 20px oklch(100% 0 0 / 42%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.314em 0.257em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -0.643em 0.943em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 20px oklch(from var(--energy-color) l c h / 42%);
   }
   45% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -0.857em 1.257em 20.429px oklch(100% 0 0 / 34.286%),
-      0.286em -0.243em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 18px oklch(100% 0 0 / 35%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -0.857em 1.257em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.286em -0.243em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 18px oklch(from var(--energy-color) l c h / 35%);
   }
   48% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      1.143em -0.971em 20.429px oklch(100% 0 0 / 34.286%),
-      0 0 14px oklch(100% 0 0 / 18%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.143em -0.971em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0 0 14px oklch(from var(--energy-color) l c h / 18%);
   }
   51% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 11px oklch(100% 0 0 / 6%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 11px oklch(from var(--energy-color) l c h / 6%);
   }
   60% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   80% {
     opacity: .65;
     scale: 1.2333;
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   100% {
     opacity: .45;
     scale: 1;
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
 }
 
@@ -2693,7 +2710,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   background: var(--youtube-gray-212121);
   opacity: 0.75;
   border: none;
-  outline: 1px solid var(--white-dot-10);
+  outline: 1px solid var(--white-dot-20);
   outline-offset: -1px;
   color: var(--white-dot-87);
   font-weight: 500;
@@ -2701,7 +2718,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   will-change: auto;
 
   transition:
-    opacity 0.15s linear 0.05s,
+    opacity 0.1s linear 0.1s,
     transform 0.2s cubic-bezier(0.5, 1, 0.89, 1);
 }
 
@@ -2711,9 +2728,15 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   color: var(--white-1);
 }
 
+.autoscroll-resume-button:hover[autoscroll-hidden="true"] {
+  text-shadow: none;
+  opacity: 0;
+  color: var(--white-1);
+}
+
 .autoscroll-resume-button:focus {
-  outline-color: var(--white-dot-10);
-  outline: 1px solid var(--white-dot-10);
+  outline-color: var(--white-dot-20);
+  outline: 1px solid var(--white-dot-20);
   outline-offset: -1px;
 }
 
@@ -2731,11 +2754,12 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 .blyrics-pip-backdrop.blyrics-pip-backdrop {
   opacity: 1 !important;
   background-image: var(--blyrics-pip-art, var(--pip-blank));
-  background-color: var(--youtube-gray-212121);
+  background-color: var(--filter-replacement-backgroundcolor);
+  background-blend-mode: overlay;
   background-position: 50%;
   background-size: cover;
   transform: scale(1.2);
-  filter: var(--background-image-filter);
+  filter: var(--blyrics-background-blur);
 }
 
 /* begone */
@@ -3105,4 +3129,34 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 } 
 
 /* ################################################ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
