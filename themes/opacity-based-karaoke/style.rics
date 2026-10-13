@@ -1,12 +1,12 @@
 
 /* NOTE: THEME ONLY WORKS ON EXTENSION VERSION 2.4.0 OR NEWER */
-/* ALTERNATIVE VARIANT: line fades are on .blyrics--line instead. v3.0.0 is the base build. */
-/* It seems that might have been a bad move. I've beeeeeen hereeee beforeee*/
+/* ALTERNATIVE VARIANT: line fades are on back on words.
+could cause bad performance */
 
 /*
  * Max Performance - Opacity based karaoke
- * v3.1.16-alternative blyrics-theme-2026-10-09T19-07-51
- * 2026-10-05
+ * v3.1.28
+ * blyrics-theme-2026-10-13T19-16-46.rics
  *
  * NOTE: - Still pretty much alpha - pip is kinda fixed
  *       - Uses a slightly older version of minimal - some merges to and from minimal are needed
@@ -263,47 +263,54 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   --blyrics-richsync-timing-offset: var(--richsync-word-earliness);
 }
 
+/* i call it gift distribution system */
 .blyrics-container[data-sync="richsync"] .blyrics--line {
-  --line-opacity: var(--opacity-words-future-line);
-  --line-fade: 0s;
-}
-
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating:not(:has([data-word-state="active"], [data-word-state="past"])) {
-  --line-opacity: calc(var(--opacity-words-future-line) / (var(--opacity-future-word-current-line) + 0.001));
+  --w-upcoming: var(--opacity-words-future-line);
+  --w-active: var(--opacity-words-future-line);
+  --w-past: var(--opacity-words-future-line);
+  --text-factor: var(--opacity-words-future-line);
+  --fade-upcoming: 0s;
+  --fade-past: 0s;
+  --text-fade: 0s;
 }
 
 .blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating:has([data-word-state="active"], [data-word-state="past"]):has([data-word-state="upcoming"], [data-word-state="active"]) {
-  --line-opacity: 1;
-  --line-fade: calc(var(--richsync-entry-duration) * #{map-get($effect-map, line-entry-fade)});
+  --w-upcoming: var(--opacity-future-word-current-line);
+  --w-active: var(--opacity-current-word-current-line);
+  --w-past: var(--opacity-past-word-current-line);
+  --text-factor: 1;
+  --fade-upcoming: calc(var(--richsync-entry-duration) * #{map-get($effect-map, line-entry-fade)});
+  --fade-past: var(--word-extra-duration);
+  --text-fade: calc(var(--richsync-entry-duration) * #{map-get($effect-map, line-entry-fade)});
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating:has([data-word-state="past"]):not(:has([data-word-state="upcoming"], [data-word-state="active"])) {
-  --line-opacity: calc(var(--opacity-words-past-line) / (var(--opacity-past-word-current-line) + 0.001));
-  --line-fade: var(--richsync-exit-duration);
-}
-
-.blyrics-container[data-sync="richsync"] .blyrics--line {
-  opacity: var(--line-opacity);
-  transition: opacity var(--line-fade) ease;
+.blyrics-container[data-sync="richsync"] .blyrics--line:has([data-word-state="past"]):not(:has([data-word-state="upcoming"], [data-word-state="active"])) {
+  --w-upcoming: var(--opacity-words-past-line);
+  --w-active: var(--opacity-words-past-line);
+  --w-past: var(--opacity-words-past-line);
+  --text-factor: var(--opacity-words-past-line);
+  --fade-upcoming: 0s;
+  --fade-past: var(--richsync-exit-duration);
+  --text-fade: var(--richsync-exit-duration);
 }
 
 .blyrics-container[data-sync="richsync"] .blyrics--word {
   opacity: 1;
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--word[data-word-state="upcoming"] {
-  opacity: var(--opacity-future-word-current-line);
-  transition: none;
+.blyrics-container[data-sync="richsync"] .blyrics--line .blyrics--word[data-word-state="upcoming"] {
+  opacity: var(--w-upcoming);
+  transition: opacity var(--fade-upcoming) ease;
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--word[data-word-state="active"] {
-  opacity: var(--opacity-current-word-current-line);
+.blyrics-container[data-sync="richsync"] .blyrics--line .blyrics--word[data-word-state="active"] {
+  opacity: var(--w-active);
   transition: opacity calc((var(--blyrics-duration, 0ms) + var(--word-extra-duration)) * 0.1) ease;
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--word[data-word-state="past"] {
-  opacity: var(--opacity-past-word-current-line);
-  transition: opacity var(--word-extra-duration) ease-in-out;
+.blyrics-container[data-sync="richsync"] .blyrics--line .blyrics--word[data-word-state="past"] {
+  opacity: var(--w-past);
+  transition: opacity var(--fade-past) ease-in-out;
 }
 
 /* Same animation on both active and past, so animation doesnt abruptly stop */
@@ -395,13 +402,12 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   opacity: var(--opacity-line-future);
 }
 
-.blyrics-container[data-sync="synced"] .blyrics--line.blyrics--animating:has([data-word-state="active"], [data-word-state="past"]):has([data-word-state="upcoming"], [data-word-state="active"]) {
+.blyrics-container[data-sync="synced"] .blyrics--line.blyrics--animating:has([data-word-state="active"]) {
   opacity: var(--opacity-line-current);
   transition: opacity var(--synced-entry-duration) ease-in-out;
 }
 
-.blyrics-container[data-sync="synced"] .blyrics--line.blyrics--animating:has([data-word-state="past"]):not(:has([data-word-state="upcoming"], [data-word-state="active"])),
-.blyrics-container[data-sync="synced"] .blyrics--line:not(.blyrics--animating):has([data-word-state="past"]):not(:has([data-word-state="upcoming"], [data-word-state="active"])) {
+.blyrics-container[data-sync="synced"] .blyrics--line:has([data-word-state="past"]):not(:has([data-word-state="active"])) {
   opacity: var(--opacity-line-past);
   transition: opacity var(--synced-exit-duration) ease-in-out var(--synced-exit-delay);
 }
@@ -428,7 +434,8 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   line-height: 1.5;
   font-size: .7071em;
   color: var(--blyrics-lyric-active-color) !important;
-  opacity: var(--opacity-trans-ratio);
+  opacity: calc(var(--text-factor) * var(--opacity-trans-ratio));
+  transition: opacity var(--text-fade) ease;
 }
 
 /* ─ B ─ [data-sync="synced"] ───────────────────── */
@@ -474,7 +481,8 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   letter-spacing: .03em;
   line-height: 1.5;
   color: var(--blyrics-lyric-active-color) !important;
-  opacity: var(--opacity-roman-ratio);
+  opacity: calc(var(--text-factor) * var(--opacity-roman-ratio));
+  transition: opacity var(--text-fade) ease;
 }
 
 /* ─ B ─ [data-sync="synced"] ───────────────────── */
@@ -523,16 +531,26 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
 /* ─ A ─ [data-sync="richsync"] ───────────────────── */
 
 .blyrics-container[data-sync="richsync"]:hover .blyrics--line:not(:hover) {
-  transform: scale(1) !important;
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline: initial !important;  outline-offset: -1px !important;
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--line.blyrics--line:hover {
-  transform: scale(1.1) !important;
-  opacity: 1 !important;
-  transition-property: transform, opacity !important;
-  transition-duration: .2s, var(--line-fade) !important;
-  transition-timing-function: ease !important;
-  transition-delay: 0s !important;
+.blyrics-container[data-sync="richsync"]:hover .blyrics--line.blyrics--animating:has([data-word-state="active"]):not(:hover) {
+  outline:1px solid var(--white-dot-15) !important;  outline-offset: -1px !important;
+}
+
+.blyrics-container[data-sync="richsync"] .blyrics--line:hover {
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline:1px solid var(--white-dot-10) !important;  outline-offset: -1px !important;
+  background: var(--white-dot-10) !important;
 }
 
 .blyrics-container[data-sync="richsync"] .blyrics--line:hover .blyrics--word {
@@ -552,13 +570,6 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   --opacity-current-word-current-line: 1;
 }
 
-.blyrics-container[data-sync="richsync"]:hover .blyrics--line {
-  transition-property: transform, opacity !important;
-  transition-duration: .2s, var(--line-fade) !important;
-  transition-timing-function: ease !important;
-  transition-delay: 0s !important;
-}
-
 .blyrics-container[data-sync="richsync"] .blyrics--line:hover .blyrics--translated {
   opacity: calc(var(--opacity-hovered) * var(--opacity-trans-ratio));
 }
@@ -570,15 +581,26 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
 /* ─ B ─ [data-sync="synced"] ───────────────────── */
 
 .blyrics-container[data-sync="synced"]:hover .blyrics--line:not(:hover) {
-  transform: scale(1) !important;
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline: initial !important;  outline-offset: -1px !important;
 }
 
-.blyrics-container[data-sync="synced"] .blyrics--line.blyrics--line.blyrics--line:hover {
-  transform: scale(1.1) !important;
-  transition-property: transform !important;
-  transition-duration: .2s !important;
-  transition-timing-function: ease !important;
-  transition-delay: 0s !important;
+.blyrics-container[data-sync="synced"]:hover .blyrics--line.blyrics--animating:has([data-word-state="active"]):not(:hover) {
+  outline:1px solid var(--white-dot-15) !important;  outline-offset: -1px !important;
+}
+
+.blyrics-container[data-sync="synced"] .blyrics--line:hover {
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline:1px solid var(--white-dot-10) !important;  outline-offset: -1px !important;
+  background: var(--white-dot-10) !important;
 }
 
 .blyrics-container[data-sync="synced"] .blyrics--line:hover .blyrics--word {
@@ -604,15 +626,22 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
 /* ─ C ─ [data-sync="none"] ───────────────────── */
 
 .blyrics-container[data-sync="none"]:hover .blyrics--line:not(:hover) {
-  transform: scale(1) !important;
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline: initial !important;  outline-offset: -1px !important;
 }
 
-.blyrics-container[data-sync="none"] .blyrics--line.blyrics--line.blyrics--line:hover {
-  transform: scale(1.1) !important;
-  transition-property: transform !important;
-  transition-duration: .2s !important;
-  transition-timing-function: ease !important;
-  transition-delay: 0s !important;
+.blyrics-container[data-sync="none"] .blyrics--line:hover {
+  transform: initial !important;
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  outline:1px solid var(--white-dot-10) !important;  outline-offset: -1px !important;
+  background: var(--white-dot-10) !important;
 }
 
 .blyrics-container[data-sync="none"] .blyrics--line:hover .blyrics--word {
@@ -625,7 +654,7 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
 }
 
 .blyrics-container[data-sync="none"]:hover .blyrics--line:not(.blyrics--active):hover {
-  opacity: var(--opacity-hovered);
+  opacity: 1;
 }
 
 .blyrics-container[data-sync="none"] .blyrics--line:hover .blyrics--translated {
@@ -650,11 +679,18 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   --opacity-current-word-current-line: 1;
 }
 
-.blyrics-container[data-sync="richsync"].blyrics-user-scrolling .blyrics--line {
-  transition-property: transform, opacity !important;
-  transition-duration: .2s, var(--line-fade) !important;
-  transition-timing-function: ease !important;
-  transition-delay: 0s !important;
+.blyrics-container[data-sync="richsync"].blyrics-user-scrolling .blyrics--line,
+.blyrics-container[data-sync="richsync"].blyrics-user-scrolling .blyrics--line .blyrics--word {
+  transition-property: initial !important;
+  transform: initial !important;
+  transition-duration: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  animation: initial !important;
+}
+
+.blyrics-container[data-sync="richsync"].blyrics-user-scrolling .blyrics--line.blyrics--animating:has([data-word-state="active"]):not(:hover) {
+  outline:1px solid var(--white-dot-15) !important;  outline-offset: -1px !important;
 }
 
 /* ─ B ─ [data-sync="synced"] ───────────────────── */
@@ -664,6 +700,20 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
   --opacity-line-future: var(--opacity-scrolling);
 }
 
+.blyrics-container[data-sync="synced"].blyrics-user-scrolling .blyrics--line,
+.blyrics-container[data-sync="synced"].blyrics-user-scrolling .blyrics--line .blyrics--word {
+  transition-property: initial !important;
+  transition-duration: initial !important;
+  transform: initial !important;
+  transition-timing-function: initial !important;
+  transition-delay: initial !important;
+  animation: initial !important;
+}
+
+.blyrics-container[data-sync="synced"].blyrics-user-scrolling .blyrics--line.blyrics--animating:has([data-word-state="active"]):not(:hover) {
+  outline:1px solid var(--white-dot-15) !important;  outline-offset: -1px !important;
+}
+
 /* ─ C ─ [data-sync="none"] ───────────────────── */
 
 .blyrics-container[data-sync="none"].blyrics-user-scrolling .blyrics--line {
@@ -671,173 +721,8 @@ blyrics-line-scroll-active-duration = var(--all-lines-scroll-uniform-duration);
 }
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++++
-   SECTION 6 - OTHER STUFF (non-sync-type specific)
+   ##################################################
    ++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-.blyrics--instrumental-icon {
-  display: none;
-}
-
-ytmusic-player-page:before {
-  background: black;
-  filter: none;
-}
-
-@keyframes blyrics-shimmer {
-  0%   { opacity: 1; }
-  100% { opacity: 0.5; }
-}
-
-@keyframes blyrics-spin {
-  0%, 100% { transform: none; }
-}
-
-#blyrics-loader::before {
-  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
-}
-
-#blyrics-loader::after {
-  color: var(--blyrics-ui-text-color);
-  white-space: pre-wrap;
-}
-
-#blyrics-loader:not([state="showing-message"]):not([state="exiting-message"])::after {
-  background: unset;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  color: var(--blyrics-ui-text-color);
-  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
-  will-change: unset;
-}
-
-#blyrics-loader {
-  visibility: visible !important;
-  transition:
-    opacity var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
-    transform var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
-    display var(--blyrics-loader-transition-duration, 0.6s) allow-discrete !important;
-}
-
-#blyrics-loader[state="hidden"],
-#blyrics-loader:not([state]) {
-  display: none !important;
-  opacity: 0 !important;
-  transform: translateY(0) scale(0.85) !important;  
-}
-
-#blyrics-loader[state="full-loader"],
-#blyrics-loader[state="small-loader"],
-#blyrics-loader[state="showing-message"],
-#blyrics-loader[state="exiting"],
-#blyrics-loader[state="exiting-message"] {
-  display: flex !important;
-}
-
-@starting-style {
-  #blyrics-loader[state="full-loader"],
-  #blyrics-loader[state="small-loader"],
-  #blyrics-loader[state="showing-message"],
-  #blyrics-loader[state="exiting"],
-  #blyrics-loader[state="exiting-message"] {
-    opacity: 0;
-    transform: translateY(0) scale(0.85);
-  }
-}
-
-#blyrics-ad-overlay {
-  display: none !important;
-  opacity: 0;
-  animation-play-state: paused;
-  transition:
-    opacity 0.4s var(--blyrics-loader-transition-easing),
-    transform 0.4s var(--blyrics-loader-transition-easing),
-    animation-play-state 0.4s allow-discrete
-    display 0.4s allow-discrete !important;
-}
-
-#blyrics-ad-overlay[active],
-:has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
-  display: flex !important;
-  opacity: 1;
-}
-
-@starting-style {
-  #blyrics-ad-overlay[active],
-  :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
-    opacity: 0;
-    transform: translateY(0) scale(0.85);
-  }
-}
-
-#blyrics-ad-overlay::before {
-  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
-}
-
-#blyrics-ad-overlay::after {
-  background: none;
-  -webkit-background-clip: unset;
-  background-clip: unset;
-  color: var(--blyrics-ui-text-color);
-  white-space: pre-wrap;
-  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
-  will-change: unset;
-}
-
-#blyrics-wrapper {
-  transition:
-    transform 0.2s var(--transition-curve),
-    opacity 0.2s var(--transition-curve),
-    display 0.2s allow-discrete !important;
-}
-
-:has(ytmusic-player-bar[is-advertisement]) #blyrics-wrapper,
-:has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
-  display: none !important;
-  opacity: 0 !important;
-  transform: translateY(0) scale(0.85) !important;
-}
-
-@starting-style {
-  #blyrics-wrapper {
-    opacity: 0;
-    transform: translateY(0) scale(0.85);
-  }
-}
-
-  /*# SECTION-6.2 - Footer #########################*/
-
-.blyrics-footer__container.blyrics-footer__shaders {
-    animation: none;
-    background: var(--blyrics-footer-bg-color);
-    box-shadow: none;
-    border: 1px solid var(--blyrics-footer-border-color);
-    padding: 0.5rem 1.25rem;
-    font-weight: unset; 
-
-    & > span {
-        animation: none;
-        background: none;
-        -webkit-background-clip: unset;
-        color: var(--blyrics-footer-link-color);
-    }
-
-    &:hover > span {
-        text-decoration: underline;
-    }
-}
-
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
-    opacity: 1;
-
-    & > * {
-        opacity: 0.3;
-        transition: opacity 0.1s var(--transition-curve, ease); 
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-}
 
 @if $enable-minimal == on {
 
@@ -948,52 +833,183 @@ ytmusic-app-layout > [slot="player-bar"] {
   width: 100dvw;
 }
 
+}
+
 /* ## SECTION-6 - Style and animation of lyrics ### */
 
   /* ## SECTION-6.1 - Lyrics and wrapper ########## */
 
+/* Fullscreen Specifics */
 ytmusic-app-layout:not([is-mweb-modernization-enabled])
   [player-fullscreened]:not([blyrics-dfs])
   .blyrics-container {
   font-size: 4.5rem;
 }
- 
+
   /*# SECTION-6.2 - Footer #########################*/
 
 .blyrics-footer__container.blyrics-footer__shaders {
+  animation: none;
+  background: var(--blyrics-footer-bg-color);
+  box-shadow: none;
+  border: 1px solid var(--blyrics-footer-border-color);
+  padding: 0.5rem 1.25rem;
+  font-weight: initial;
+
+  & > span {
     animation: none;
-    background: var(--blyrics-footer-bg-color);
-    box-shadow: none;
-    border: 1px solid var(--blyrics-footer-border-color);
-    padding: 0.5rem 1.25rem;
-    font-weight: unset; 
+    background: none;
+    -webkit-background-clip: initial;
+    color: var(--blyrics-footer-link-color);
+  }
 
-    & > span {
-        animation: none;
-        background: none;
-        -webkit-background-clip: unset;
-        color: var(--blyrics-footer-link-color);
-    }
-
-    &:hover > span {
-        text-decoration: underline;
-    }
+  &:hover > span {
+    text-decoration: underline;
+  }
 }
 
-#blyrics-wrapper#blyrics-wrapper > .blyrics-container .blyrics-footer {
-    opacity: 1;
+div.blyrics-container.blyrics-container > div.blyrics-footer {
+  opacity: 1;
 
-    & > * {
-        opacity: 0.3;
-        transition: opacity 0.1s var(--transition-curve, ease); 
+  & > * {
+    opacity: 0.3;
+    transition: opacity 0.1s var(--transition-curve, ease);
 
-        &:hover {
-            opacity: 1;
-        }
+    &:hover {
+      opacity: 1;
     }
+  }
 }
 
-/* ## SECTION-7 - Before Lyrics are Loaded ######## */   
+
+@if $enable-minimal == on {
+
+/* ## SECTION-7 - Before Lyrics are Loaded ######## */
+@keyframes blyrics-shimmer {
+  0%   { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+@keyframes blyrics-spin {
+  0%, 100% { transform: none; }
+}
+
+/* # SECTION-7.1 - Loader styles ################## */
+#blyrics-loader::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-loader::after {
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+}
+
+#blyrics-loader:not([state="showing-message"]):not([state="exiting-message"])::after {
+  background: initial;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--blyrics-ui-text-color);
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: initial;
+}
+
+#blyrics-loader {
+  visibility: visible !important;
+  transition:
+    opacity var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
+    transform var(--blyrics-loader-transition-duration, 0.6s) var(--blyrics-loader-transition-easing),
+    display var(--blyrics-loader-transition-duration, 0.6s) allow-discrete !important;
+}
+
+#blyrics-loader[state="hidden"],
+#blyrics-loader:not([state]) {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(0) scale(0.85) !important;
+}
+
+#blyrics-loader[state="full-loader"],
+#blyrics-loader[state="small-loader"],
+#blyrics-loader[state="showing-message"],
+#blyrics-loader[state="exiting"],
+#blyrics-loader[state="exiting-message"] {
+  display: flex !important;
+}
+
+@starting-style {
+  #blyrics-loader[state="full-loader"],
+  #blyrics-loader[state="small-loader"],
+  #blyrics-loader[state="showing-message"],
+  #blyrics-loader[state="exiting"],
+  #blyrics-loader[state="exiting-message"] {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+
+/* # Section 7.2 - Ad-overlay ########## */
+#blyrics-ad-overlay {
+  display: none !important;
+  opacity: 0;
+  animation-play-state: paused;
+  transition:
+    opacity 0.4s var(--blyrics-loader-transition-easing),
+    transform 0.4s var(--blyrics-loader-transition-easing),
+    animation-play-state 0.4s allow-discrete
+    display 0.4s allow-discrete !important;
+}
+
+#blyrics-ad-overlay[active],
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+  display: flex !important;
+  opacity: 1;
+}
+
+@starting-style {
+  #blyrics-ad-overlay[active],
+  :has(ytmusic-player-bar[is-advertisement]) #blyrics-ad-overlay {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+#blyrics-ad-overlay::before {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+#blyrics-ad-overlay::after {
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+  color: var(--blyrics-ui-text-color);
+  white-space: pre-wrap;
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+  will-change: opacity;
+}
+
+#blyrics-wrapper {
+  transition:
+    transform 0.2s var(--transition-curve),
+    opacity 0.2s var(--transition-curve),
+    display 0.2s allow-discrete !important;
+}
+
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-wrapper,
+:has(ytmusic-player-bar[is-advertisement]) #blyrics-loader {
+  display: none !important;
+  opacity: 0 !important;
+  transform: translateY(0) scale(0.85) !important;
+}
+
+@starting-style {
+  #blyrics-wrapper {
+    opacity: 0;
+    transform: translateY(0) scale(0.85);
+  }
+}
+
+/* ## SECTION-8 - Player Background ############### */  
 ytmusic-player-page::before {
   background-image: var(--blyrics-background-img);
   background-color: var(--filter-replacement-backgroundcolor);
@@ -1018,25 +1034,45 @@ ytmusic-player-page[player-fullscreened]::before {
 }
 
 /* ## SECTION-9 - Album Art Effects ############### */
-#player.ytmusic-player-page,
-.image.ytmusic-player-bar {
-  border-radius: 8% !important;
-  corner-shape: superellipse(2);
-  box-shadow: none !important;
-  overflow: hidden;
-}
-
-#player.ytmusic-player-page {
-  background: transparent;
-}
-
+#player,
+#song-media-window,
 #song-image,
 #thumbnail,
 #thumbnail img,
+.image.ytmusic-player-bar,
 #blyrics-img {
-  border-radius: 8%;
-  corner-shape: superellipse(2);
-  overflow: hidden;
+ border-radius: 8% !important;
+ corner-shape: superellipse(2);
+ box-shadow: none !important;
+ overflow: hidden;
+}
+
+.image.ytmusic-player-bar {
+ outline: 1px solid var(--white-dot-15);
+ outline-offset: -1px;
+}
+
+#player {
+ background: transparent;
+}
+
+ytmusic-player {
+ &:hover {
+  .song-media-controls.ytmusic-player {
+   outline: 1px solid var(--white-dot-15);
+   outline-offset: -1px;
+  }
+
+  #thumbnail img {
+   outline: initial;
+   outline-offset: -1px;
+  }
+ }
+
+ #thumbnail img {
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+ }
 }
 
 /* ## SECTION-10 - Portrait Window Lyrics Screen ## */
@@ -1159,7 +1195,6 @@ ytmusic-app-layout {
 
   &:not([player-ui-state="PLAYER_BAR_ONLY"]) #player-bar-background::before {
    /* background: transparent !important; */
-   
   }
 }
 
@@ -1267,8 +1302,12 @@ ytmusic-app-layout.content-scrolled #mini-guide-background.ytmusic-app-layout {
   opacity: 0;
 }
 
+#nav-bar-background.ytmusic-app-layout {
+  transition: opacity 0.4s ease-in-out;
+}
+
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #nav-bar-background {
-  transition: opacity 0.4s ease-in-out 0.2s;
+  transition: opacity 0.8s ease-in-out 0.2s;
 }
 
 #background > ytmusic-fullbleed-thumbnail-renderer > picture::after {
@@ -1312,10 +1351,6 @@ ytmusic-browse-response[has-background]:not([disable-gradient])
 .image.ytmusic-immersive-header-renderer
   ~ .content-container-wrapper.ytmusic-immersive-header-renderer {
   background: none;
-}
-
-#blyrics-wrapper > div > div.blyrics-footer {
-  opacity: 1;
 }
 
 /* ## SECTION-17 - Search Box ##################### */
@@ -1470,15 +1505,15 @@ ytmusic-popup-container #contentWrapper {
 /* ## SECTION-19 - Player Queue Header ############ */
 ytmusic-queue-header-renderer {
   box-sizing: border-box;
-  border-radius: 5cqi;
-  corner-shape: superellipse(2);
+  border-radius: 15px;
+  corner-shape: superellipse(1);
   align-items: flex-start;
-  padding: 2.5cqi;
-  margin: 0 0cqi 2cqi;
+  padding: calc(3%);
+  margin: 0 0 calc(3%);
   position: sticky;
-  top: 2cqi;
+  top: calc(2%);
   z-index: 1000;
-  container-type: inline-size;
+  container-t ype: inline-size;
   border: none;
   box-shadow: 0px 4px 10px 0px var(--black-dot-20);
 
@@ -1531,7 +1566,7 @@ ytmusic-queue-header-renderer {
 
 ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
   & a.ytmusic-chip-cloud-chip-renderer {
-    border-radius: 2.5cqi;
+    border-radius: calc(15px + 3%);
     corner-shape: superellipse(2);
     background: var(--white-dot-60);
     padding: 6px;
@@ -1557,16 +1592,20 @@ ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] {
     mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 8%);  
   }
 
+  &[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"] {
+    scrollbar-color: transparent transparent;
+    -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0),var(--black-1) 50px,var(--black-1) calc(100% - 50px),transparent);
+    mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0),var(--black-1) 50px,var(--black-1) calc(100% - 50px),transparent);
+  }
+
   &:not([page-type="MUSIC_PAGE_TYPE_TRACK_RELATED"]):not(
       [page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"]
     ) {
     margin-top: 0;
   }
-}
-
-.scroller.ytmusic-player-page {
-  -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
-  mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0, var(--white-dot-20) 0.5cqi, var(--black-1) 2.5cqi);
+  
+  -webkit-mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 9%);
+  mask-image: linear-gradient(to bottom in oklch, oklch(none none none / 0) 0%, var(--black-1) 9%);
   mask-attachment: scroll;
   -webkit-mask-attachment: scroll;
 }
@@ -1786,29 +1825,137 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
     [blyrics-dfs]
   )[blyrics-no-lyrics]
   #main-panel {
-    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: transform 1.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not(
     [blyrics-dfs]
   )[blyrics-no-lyrics]
   #main-panel {
-    transition: transform 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: transform 1.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
     [blyrics-dfs]
   )[blyrics-no-lyrics]
   #player {
-    transition: max-width 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: max-width 2.5s ease-in-out !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])[blyrics-no-lyrics]
   #blyrics-wrapper {
-    transition: opacity 1.3s ease-in-out var(--blyrics-no-lyrics-slide-delay);
+  transition: opacity 1.5s ease !important;
+  transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
-/* ## SECTION-25 - Music Note Animation disable ### */ 
+/* ## SECTION-25 - Music Note Animation disable ### */
+
+.blyrics--instrumental-icon {
+  display: none;
+}
+.blyrics--instrumental.blyrics--line::after {
+  content: "♫";
+  display: inline-block;
+  font-size: 1.2em;
+  animation: none;
+  animation-play-state: paused;
+  transform: scale(100%);
+  text-shadow: unset;
+  filter:none;
+  opacity: 0;
+  transition: opacity 1s ease 1s;
+}
+.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+  opacity: 1;
+  transition: opacity 1s ease 1s;
+  animation-delay: 1s;
+}
+.blyrics--paused.blyrics--active.blyrics--instrumental.blyrics--line::after {
+  animation-play-state: paused;
+  opacity: 1;
+  transition: opacity 1s ease 1s;
+}
+
+.blyrics-container:is(:hover, .blyrics-user-scrolling) .blyrics--instrumental.blyrics--line::after {
+  animation-play-state: paused;
+  opacity: var(--w-past);
+  transition: opacity 1s ease 1s;
+}
+
+/* empty lines */
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.5em;
+  line-height: var(--blyrics-line-height);
+}
+
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  content: "♫";
+  animation-play-state: paused;
+  transition: opacity 1s ease 1s;
+  opacity: 0;
+}
+
+.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation: note-pulse 1.5s ease-in-out infinite;
+  animation-play-state: running;
+  transition: opacity 1s ease 1s;
+  opacity: 1;
+  animation-delay: 1s;
+}
+
+.blyrics--paused.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before,
+.blyrics--paused.blyrics--active.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation-play-state: paused;
+  transition: opacity 1s ease 1s;
+  opacity: 1;
+}
+
+.blyrics-container:is(:hover, .blyrics-user-scrolling) .blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  animation-play-state: paused;
+  opacity: var(--w-past);
+  transition: opacity 1s ease 1s;
+}
+
+@keyframes note-pulse {
+  0% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+  50% {
+    text-shadow: 0px 0px 8px var(--white-dot-60);
+    opacity: 1;
+    transform: scale(105%);
+    transform-origin: bottom center;
+  }
+  100% {
+    text-shadow: 0px 0 2px transparent;
+    opacity: 0.6;
+    transform: scale(100%);
+    transform-origin: bottom center;
+  }
+}
+
+
+.blyrics--instrumental.blyrics--line::after,
+.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  color: var(--blyrics-lyric-inactive-color);
+}
+.blyrics--active.blyrics--animating.blyrics--instrumental.blyrics--line::after,
+.blyrics--active.blyrics--animating.blyrics--line:has(.blyrics-bidi-run:empty) .blyrics-line-main::before {
+  color: var(--blyrics-lyric-active-color);
+}
+
+
+/* ## SECTION-26 - Portrait View Player Fix ####### */
 ytmusic-player#player,
 ytmusic-player-bar,
 #top-player-bar {
@@ -2081,6 +2228,11 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   to { opacity: 1; }
 }
 
+@keyframes noteFadeIn {
+  from { opacity: 0; }
+  to { opacity: .45; }
+}
+
 @keyframes go-invisible {
   to {
     visibility: hidden;
@@ -2088,29 +2240,59 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   }
 }
 
-.blyrics-container[data-no-lyrics="true"] .blyrics--line {
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main {
   position: relative;
   min-height: 1lh;
 }
 
-.blyrics-container[data-no-lyrics="true"] .blyrics--line > .blyrics-line-main {
+.blyrics-container[data-no-lyrics="true"] .blyrics-line-main > .blyrics-bidi-run {
   animation:
     fadeOutOnly 2s forwards 8s,
     go-invisible 0s forwards 10s;
 }
 
-.blyrics-container[data-no-lyrics="true"]:hover .blyrics--line::after {
+.blyrics-container[data-no-lyrics="true"]:hover .blyrics-line-main > .blyrics-bidi-run {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.blyrics-container[data-no-lyrics="true"]::before {
   content: "No lyrics found";
-  transform: scale(1) translate(0px);
-  transition: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::before {
+  opacity: 1;
+}
+
+.blyrics-container[data-no-lyrics="true"]:hover::after {
+  opacity: 0 !important;
 }
 
 .blyrics-container[data-no-lyrics="true"] {
   padding-top: 4em;
-  padding-bottom: 4em;
+  padding-bottom: 4em !important;
 }
 
-.blyrics-container[data-no-lyrics="true"] .blyrics--line::after {
+.blyrics-no-lyrics-button-container {
+ flex-wrap: wrap;
+}
+
+/* this is from the portrait mode gradient and filter */
+.blyrics-container[data-no-lyrics="true"]::before,
+.blyrics-container[data-no-lyrics="true"]::after {
+  background: none !important;
+  filter: none !important;
+  border-radius: 0;
+}
+
+.blyrics-container[data-no-lyrics="true"]::after {
   content: "♫";
   position: absolute;
   inset: 0;
@@ -2120,229 +2302,234 @@ ytmusic-player-page[is-mweb-modernization-enabled]
   opacity: 0;
   cursor: help;
   font-size: 1.4em;
-  transform: scale(1);
+  scale: 1;
   animation:
-    fadeInOnly 2s forwards 10.2s,
+    noteFadeIn 2s forwards 10.2s,
     i-love-a-shooting-star 6s linear infinite 12.2s;
+
+    /* test */
+  --energy-color: #FFFCF0;
+  
+    /* test */
 }
 
 @keyframes i-love-a-shooting-star {
   0% {
     opacity: .45;
-    transform: scale(1);
+    scale: 1;
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   25% {
     opacity: 1;
-    transform: scale(1.5);
+    scale: 1.5;
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   26% {
     text-shadow:
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 12px oklch(100% 0 0 / 12%);
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 12px oklch(from var(--energy-color) l c h / 12%);
   }
   29% {
     text-shadow:
-      -0.857em -0.6em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 16px oklch(100% 0 0 / 30%);
+      -0.857em -0.6em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 16px oklch(from var(--energy-color) l c h / 30%);
   }
   32% {
     text-shadow:
-      -1.714em -1.2em 28.143px oklch(100% 0 0 / 11.429%),
-      1.114em 0.043em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 20px oklch(100% 0 0 / 50%);
+      -1.714em -1.2em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      1.114em 0.043em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 20px oklch(from var(--energy-color) l c h / 50%);
   }
   33% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      1.486em 0.057em 20.429px oklch(100% 0 0 / 34.286%),
-      0.257em 0.257em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 22px oklch(100% 0 0 / 58%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.486em 0.057em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.257em 0.257em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 22px oklch(from var(--energy-color) l c h / 58%);
   }
   35% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.229em 0.086em 28.143px oklch(100% 0 0 / 11.429%),
-      0.771em 0.771em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 26px oklch(100% 0 0 / 70%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.229em 0.086em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.771em 0.771em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 26px oklch(from var(--energy-color) l c h / 70%);
   }
   36% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.029em 1.029em 20.429px oklch(100% 0 0 / 34.286%),
-      0.171em -0.329em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 28px oklch(100% 0 0 / 75%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em 1.029em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.171em -0.329em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 28px oklch(from var(--energy-color) l c h / 75%);
   }
   38% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.543em 1.543em 28.143px oklch(100% 0 0 / 11.429%),
-      0.514em -0.986em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 32px oklch(100% 0 0 / 82%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.543em 1.543em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      0.514em -0.986em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 32px oklch(from var(--energy-color) l c h / 82%);
   }
   39% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      0.686em -1.314em 20.429px oklch(100% 0 0 / 34.286%),
-      -0.386em 0.043em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 31px oklch(100% 0 0 / 80%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      0.686em -1.314em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.386em 0.043em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 31px oklch(from var(--energy-color) l c h / 80%);
   }
   41% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.029em -1.971em 28.143px oklch(100% 0 0 / 11.429%),
-      -1.157em 0.129em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 27px oklch(100% 0 0 / 65%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.029em -1.971em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -1.157em 0.129em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 27px oklch(from var(--energy-color) l c h / 65%);
   }
   42% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -1.543em 0.171em 20.429px oklch(100% 0 0 / 34.286%),
-      -0.214em 0.314em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 5px oklch(100% 0 0 / 0%),
-      0 0 25px oklch(100% 0 0 / 57%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.543em 0.171em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      -0.214em 0.314em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 5px oklch(from var(--energy-color) l c h / 0%),
+      0 0 25px oklch(from var(--energy-color) l c h / 57%);
   }
   44% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.314em 0.257em 28.143px oklch(100% 0 0 / 11.429%),
-      -0.643em 0.943em 16.571px oklch(100% 0 0 / 45.714%),
-      0 0 5px oklch(100% 0 0 / 80%),
-      0 0 20px oklch(100% 0 0 / 42%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.314em 0.257em 28.143px oklch(from var(--energy-color) l c h / 11.429%),
+      -0.643em 0.943em 16.571px oklch(from var(--energy-color) l c h / 45.714%),
+      0 0 5px oklch(from var(--energy-color) l c h / 80%),
+      0 0 20px oklch(from var(--energy-color) l c h / 42%);
   }
   45% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -0.857em 1.257em 20.429px oklch(100% 0 0 / 34.286%),
-      0.286em -0.243em 8.857px oklch(100% 0 0 / 68.571%),
-      0 0 18px oklch(100% 0 0 / 35%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -0.857em 1.257em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0.286em -0.243em 8.857px oklch(from var(--energy-color) l c h / 68.571%),
+      0 0 18px oklch(from var(--energy-color) l c h / 35%);
   }
   48% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      1.143em -0.971em 20.429px oklch(100% 0 0 / 34.286%),
-      0 0 14px oklch(100% 0 0 / 18%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.143em -0.971em 20.429px oklch(from var(--energy-color) l c h / 34.286%),
+      0 0 14px oklch(from var(--energy-color) l c h / 18%);
   }
   51% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 11px oklch(100% 0 0 / 6%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 11px oklch(from var(--energy-color) l c h / 6%);
   }
   60% {
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   80% {
     opacity: .65;
-    transform: scale(1.2333);
+    scale: 1.2333;
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
   100% {
     opacity: .45;
-    transform: scale(1);
+    scale: 1;
     text-shadow:
-      -2em -1.4em 32px oklch(100% 0 0 / 0%),
-      2.6em 0.1em 32px oklch(100% 0 0 / 0%),
-      1.8em 1.8em 32px oklch(100% 0 0 / 0%),
-      1.2em -2.3em 32px oklch(100% 0 0 / 0%),
-      -2.7em 0.3em 32px oklch(100% 0 0 / 0%),
-      -1.5em 2.2em 32px oklch(100% 0 0 / 0%),
-      2em -1.7em 32px oklch(100% 0 0 / 0%),
-      0 0 10px oklch(100% 0 0 / 0%);
+      -2em -1.4em 32px oklch(from var(--energy-color) l c h / 0%),
+      2.6em 0.1em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.8em 1.8em 32px oklch(from var(--energy-color) l c h / 0%),
+      1.2em -2.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -2.7em 0.3em 32px oklch(from var(--energy-color) l c h / 0%),
+      -1.5em 2.2em 32px oklch(from var(--energy-color) l c h / 0%),
+      2em -1.7em 32px oklch(from var(--energy-color) l c h / 0%),
+      0 0 10px oklch(from var(--energy-color) l c h / 0%);
   }
 }
 
@@ -2875,7 +3062,7 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   background: var(--youtube-gray-212121);
   opacity: 0.75;
   border: none;
-  outline: 1px solid var(--white-dot-10);
+  outline: 1px solid var(--white-dot-20);
   outline-offset: -1px;
   color: var(--white-dot-87);
   font-weight: 500;
@@ -2900,8 +3087,8 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 }
 
 .autoscroll-resume-button:focus {
-  outline-color: var(--white-dot-10);
-  outline: 1px solid var(--white-dot-10);
+  outline-color: var(--white-dot-20);
+  outline: 1px solid var(--white-dot-20);
   outline-offset: -1px;
 }
 
@@ -3294,10 +3481,6 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 } 
 /* ################################################ */
 
-
-} @else {
-
-#sliderKnob {display: none;}
 
 }
 
