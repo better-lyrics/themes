@@ -226,10 +226,10 @@
     {
       "builds": [
         {
-          "integrity": "sha256-2fae0d25132565bd9965c3bc4193acc3fa90ce4198b7bc3fc839be8208dff12a",
+          "integrity": "sha256-8d0063d8b1081890b62ba2c2abf9841c32db93be14e27b29899c5486cee168d2",
           "minVersion": "2.4.0.0",
           "path": "themes/minimal",
-          "version": "1.9.38"
+          "version": "1.9.39"
         },
         {
           "integrity": "sha256-5d71d7370c407805f2672149f21eac7c28219aebef5726d64431f88c2e77c4f8",
@@ -238,13 +238,13 @@
           "version": "1.7.9"
         }
       ],
-      "commit": "7dcb61264ead665a5e28f5d0782e0331947d439b",
+      "commit": "f0433f796c0c876b6255cc66af90ac729653c27b",
       "discussion": 5,
       "id": "minimal",
-      "integrity": "sha256-2fae0d25132565bd9965c3bc4193acc3fa90ce4198b7bc3fc839be8208dff12a",
-      "locked": "2026-09-30T20:26:26Z",
+      "integrity": "sha256-8d0063d8b1081890b62ba2c2abf9841c32db93be14e27b29899c5486cee168d2",
+      "locked": "2026-10-13T19:05:13Z",
       "repo": "ramansg/Minimal",
-      "version": "1.9.38"
+      "version": "1.9.39"
     },
     {
       "builds": [
@@ -443,6 +443,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-10-13T18:54:03Z",
+  "updated": "2026-10-13T19:05:47Z",
   "version": 1
 }
