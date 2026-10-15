@@ -117,6 +117,10 @@ ytmusic-player-page[video-mode][blyrics-karaoke] :is(.html5-video-container, vid
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }
 
+.blyrics-pip-shell #blyrics-karaoke .blyrics-karaoke-surface {
+  border-radius: 12px !important;
+}
+
 #blyrics-karaoke :is(.blyrics-karaoke__card, .blyrics-karaoke__plate[data-end-card]) {
   background: rgba(15, 15, 15, 0.6) !important;
 }
