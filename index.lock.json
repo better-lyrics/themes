@@ -382,19 +382,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-ffd2936034d9face5f28c4541804a2d0ef31df5d585db73223e8baf82435b599",
+          "integrity": "sha256-eef1298b0603dbada687b437fe8a7f043d26c6bdaceb1a1f543ed29ca52c8498",
           "minVersion": "2.4.0.0",
           "path": "themes/thejosueps-equal-tweaks-id",
-          "version": "1.1.0"
+          "version": "1.2.0"
         }
       ],
-      "commit": "be47b45d26a336fb2fcbef7124b18b2d163a152e",
+      "commit": "63452f451a752efa4806f36765830c6a182aa24f",
       "discussion": 97,
       "id": "thejosueps-equal-tweaks-id",
-      "integrity": "sha256-ffd2936034d9face5f28c4541804a2d0ef31df5d585db73223e8baf82435b599",
-      "locked": "2026-10-05T03:32:07Z",
+      "integrity": "sha256-eef1298b0603dbada687b437fe8a7f043d26c6bdaceb1a1f543ed29ca52c8498",
+      "locked": "2026-10-17T22:59:03Z",
       "repo": "TheJosuep/better-lyrics-equal-tweaks-theme",
-      "version": "1.1.0"
+      "version": "1.2.0"
     },
     {
       "builds": [
@@ -443,6 +443,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-10-15T13:06:51Z",
+  "updated": "2026-10-17T22:59:28Z",
   "version": 1
 }
