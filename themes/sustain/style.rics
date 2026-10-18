@@ -1,3 +1,5 @@
+/* Sustain, a marketplace theme by boidushya */
+
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 
 /*
@@ -482,4 +484,38 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   } @else {
     flex-direction: row;
   }
+}
+
+
+/* Mostrar TODAS las líneas futuras */
+.blyrics-container:has(.blyrics--active) > .blyrics--active ~ .blyrics--line,
+.blyrics-container:has(.blyrics--animating) > .blyrics--animating ~ .blyrics--line {
+  opacity: 0.65 !important;
+  visibility: visible !important;
+  filter: none !important;
+  display: block !important;
+}
+
+/* Mantener visibles todas las líneas anteriores */
+.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
+  > div:not(.blyrics--active):not(.blyrics--active ~ div),
+.blyrics-container:has(.blyrics--animating):not(.blyrics-user-scrolling)
+  > div:not(.blyrics--animating):not(.blyrics--animating ~ div) {
+  opacity: 0.45 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+/* Destacar la línea actual */
+.blyrics-container > .blyrics--active,
+.blyrics-container > .blyrics--animating {
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+
+/* Fondo del álbum: rotación más lenta */
+ytmusic-player-page::before {
+  animation-duration: 120s !important;
 }
