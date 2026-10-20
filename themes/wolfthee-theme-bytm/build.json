@@ -1,16 +1,16 @@
 {
   "repo": "WolftheE/better-ytm",
   "id": "wolfthee-theme-bytm",
-  "version": "4.1.2",
-  "commit": "86aef775b0012f7b1ba146810ff2e1395d96b333",
-  "integrity": "sha256-97499dd0275dc5adcf9925e99a73e385cdbcc8c453bc9c6519451fbf1b5aa1bc",
-  "locked": "2026-09-24T08:16:47Z",
+  "version": "5.0.0",
+  "commit": "1bc1125ddc0f6899dce66f449e188b1e25bbc099",
+  "integrity": "sha256-4b6e3d19a15e1b57f978456eff8f4d6e4406fb6bd5b8b012830acf237aa3948a",
+  "locked": "2026-10-20T10:03:03Z",
   "builds": [
     {
-      "version": "4.1.2",
+      "version": "5.0.0",
       "minVersion": "2.4.0",
       "path": "themes/wolfthee-theme-bytm",
-      "integrity": "sha256-97499dd0275dc5adcf9925e99a73e385cdbcc8c453bc9c6519451fbf1b5aa1bc"
+      "integrity": "sha256-4b6e3d19a15e1b57f978456eff8f4d6e4406fb6bd5b8b012830acf237aa3948a"
     },
     {
       "version": "4.1.0",

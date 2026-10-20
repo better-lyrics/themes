@@ -11,8 +11,12 @@
 - All while keeping that YTM feel
 
 
-## Version 4.1!
-- Updated theme to work with Blyrics 2.4!
-- Fixed small visual bugs
+## Version 5.0
+- Big rewrite (again) of the whole theme
+- Added way more smoother animations
+- Added better hover effects to many elements
+- Improved Player-Bar
+- Search bar is now a apart of the page rather then overlaying ontop of it
+- Many bug fixes
 
 If you find any bugs please report it on the blyric discord server by pinging '@wolfthee' or open an issue

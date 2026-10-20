@@ -6,7 +6,7 @@
   "minVersion": "2.4.0",
   "hasShaders": true,
   "hasSettings": true,
-  "version": "4.1.2",
+  "version": "5.0.0",
   "tags": ["dark", "animations", "dynamic"],
-  "images": ["1.png", "2.png", "3.png", "4.png"]
+  "images": ["1.png", "2.png", "3.gif", "4.png"]
 }
