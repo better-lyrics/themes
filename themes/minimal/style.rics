@@ -1,8 +1,8 @@
 
 /* ## SECTION-0 - Info and Intro ################## *
- * 2026-10-01 v1.9.39 (BetterLyrics v2.4.0+ only)   */
+ * v3.0.5                  2026-10-20T18-14-32.rics */
 
-/*            2026-10-13 T17-46-54                  */
+/*         cold hands build towers of gold          */
 
 /* - Enable Karaoke - Section 3.                    *
  * - Enable Blur    - Section-3.                    *
@@ -45,38 +45,34 @@ $karaoke-mode: off; /* off / minimal / default */
 /* -- Blur toggle -- */
 $enable-blur: off; /* on / off */
 
-$blur-amount: 30px;
+$blur-amount: 25px;
 /* higher number = more blur      *
  * less blur = better performance */
  
-:root {
+
   /*# SECTION-3.1 ################################# */
 
   /* -- Line visibility (opacity) -- */
-  --current-lyric-visibility: 1;      /* 1    would mean 100%*/
-  --previous-lyrics-visibility: 0.35; /* 0.35 would mean 35% */
-  --next-lyrics-visibility: 0.02;     /* 0.02 would mean 2%  */
+  .blyrics-container[data-sync="synced"] {
+    --current-lyric-visibility: 1;      /* 1    would mean 100%*/
+    --previous-lyrics-visibility: 0.6; /* 0.35 would mean 35% */
+    --next-lyrics-visibility: 0.15;     /* 0.02 would mean 2%  */
+  }
   
-  --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
-  --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
-  --translated-lyric-visibility: 0.82;
-  --romanized-lyric-visibility: 0.55;
-
-  /* -- Typography -- */
-  @if $karaoke-mode != default {
-  --blyrics-font-family: var(--whole-website-font-family);
-  --blyrics-font-weight: 600;
-  --blyrics-font-size: 3.5rem;
-  --blyrics-line-height: 1.5;
-  --blyrics-padding: 0.45em;
+  .blyrics-container[data-sync="richsync"] {
+    --current-lyric-visibility: 1;      /* 1    would mean 100%*/
+    --previous-lyrics-visibility: 1; /* 0.35 would mean 35% */
+    --next-lyrics-visibility: 1;     /* 0.02 would mean 2%  */
   }
-  /* -- Footer -- */
-  --blyrics-footer-font-family: var(--whole-website-font-family);
-  @if $karaoke-mode != default {
-  --blyrics-translated-font-size: 0.7071em;
-  }
-  --romanized-font-size: 0.6429em;
 
+  .blyrics-container {  
+    --hovered-line-visibility: calc(var(--current-lyric-visibility) * 0.8);
+    --non-hovered-lines-visibility: calc(var(--current-lyric-visibility) * 0.5);
+    --translated-lyric-visibility: 0.82;
+    --romanized-lyric-visibility: 0.65;
+  }
+
+:root {
   /* -- Colors -- */
   @if $karaoke-mode == off {
   --blyrics-lyric-active-color: var(--white-1);
@@ -91,6 +87,21 @@ $blur-amount: 30px;
   --blyrics-translated-color: var(--white-dot-60);
   --blyrics-error-color: oklch(0.75 0.25 20);
   }
+
+  /* -- Typography -- */
+  @if $karaoke-mode != default {
+  --blyrics-font-family: var(--whole-website-font-family);
+  --blyrics-font-weight: 600;
+  --blyrics-font-size: 3.0rem;
+  --blyrics-line-height: 1.5;
+  --blyrics-padding: 0.45em;
+  }
+  /* -- Footer -- */
+  --blyrics-footer-font-family: var(--whole-website-font-family);
+  @if $karaoke-mode != default {
+  --blyrics-translated-font-size: 2rem;
+  }
+  --romanized-font-size: 1.5rem;
 
   /*# SECTION-3.2 ################################# */
 
@@ -152,7 +163,7 @@ $blur-amount: 30px;
   --blyrics-gradient-stops: none;
   --background-image-transition-duration: 2.5s;
   --background-image-transition-easing: ease-in-out;
-  --background-image-transition-delay: 5s;
+  --background-image-transition-delay: 2.5s;
   --background-image-transition: background
     var(--background-image-transition-duration)
     var(--background-image-transition-easing)
@@ -177,6 +188,8 @@ $blur-amount: 30px;
   --white-1:      oklch(1 0 0 / 1);
   --white-dot-87: oklch(1 0 0 / 0.87);
   --white-dot-60: oklch(1 0 0 / 0.60);
+  --white-dot-30: oklch(1 0 0 / 0.30);
+  --white-dot-25: oklch(1 0 0 / 0.25);
   --white-dot-20: oklch(1 0 0 / 0.20);
   --white-dot-15: oklch(1 0 0 / 0.15);
   --white-dot-10: oklch(1 0 0 / 0.10);
@@ -222,6 +235,7 @@ blyrics-disable-richsync = true;
 blyrics-letter-wave = false;
 blyrics-add-extra-top-padding = true;
 blyrics-target-scroll-pos-ratio = 0.4;
+blyrics-passive-scroll-enabled = false;
 
 blyrics-early-scroll-consider-s = 0;
 
@@ -440,22 +454,39 @@ ytmusic-app-layout > [slot="player-bar"] {
   border-radius: 0;
   margin-top: .2em;
   margin-bottom: .2em;
-  font-weight: 350;
+  font-weight: 400;
   letter-spacing: .03em;
+}
+
+.blyrics-pip-lyrics .blyrics--romanized {
+  padding: initial !important;
+  border-radius: 0 !important;
 }
 
 .blyrics-container .blyrics--translated {
   margin-top: 0.4em;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* -- 6.1.e Fullscreen specifics -- */
 
 /* Fullscreen Specifics */
 ytmusic-app-layout:not([is-mweb-modernization-enabled])
-  [player-fullscreened]:not([blyrics-dfs])
-  .blyrics-container {
-  font-size: 4.5rem;
+  [player-fullscreened]:not([blyrics-dfs]) .blyrics-container {
+  font-size: calc(var(--blyrics-font-size) * 1.4);
+  
+  & .blyrics--romanized {
+    font-size: calc(var(--romanized-font-size) * 1.4);
+  }
+  & .blyrics--translated {
+    font-size: calc(var(--blyrics-translated-font-size) * 1.4);
+  }
+}
+
+/* -- 6.1.f Songwriter credits -- */
+.blyrics-container > .blyrics-credits {
+  font-weight: 400;
+  letter-spacing: .03em;
 }
 
 } /* end of $karaoke-mode != default for 6.1 */
@@ -810,11 +841,74 @@ ytmusic-app-layout {
 }
 
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 
 ytmusic-app #guide-wrapper.ytmusic-app {
   height: calc(100vh - var(--ytmusic-player-bar-height));
+}
+
+ytmusic-app-layout[player-fullscreened] > [slot="player-bar"] {
+  background: linear-gradient(
+    to bottom in oklch,
+    oklch(from var(--filter-replacement-backgroundcolor) 0 / 0) 0%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.002) 2%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.007) 4%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.015) 6%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.026) 8%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.041) 10%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.058) 12%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.078) 14%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.1) 16%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.124) 18%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.151) 20%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.179) 22%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.208) 24%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.238) 26%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.269) 28%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.3) 30%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.331) 32%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.363) 34%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.394) 36%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.424) 38%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.454) 40%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.482) 42%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.51) 44%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.536) 46%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.561) 48%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.584) 50%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.607) 52%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.627) 54%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.646) 56%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.664) 58%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.68) 60%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.695) 62%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.708) 64%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.72) 66%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.731) 68%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.741) 70%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.75) 72%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.757) 74%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.764) 76%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.77) 78%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.775) 80%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.78) 82%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.784) 84%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.787) 86%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.79) 88%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.792) 90%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.795) 92%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.796) 94%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.798) 96%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.799) 98%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.8) 100%
+  ) !important;
+}
+
+@media (min-width: 936px) {
+  ytmusic-app-layout[player-fullscreened][show-fullscreen-controls]:not([blyrics-dfs], [blyrics-karaoke]) > [slot="player-bar"]:before {
+    content: none;
+  }
 }
 
 /* ## SECTION-13 - Bottom Left Nofication ######### */
@@ -1433,7 +1527,8 @@ ytmusic-immersive-header-renderer {
 
 /* ## SECTION-24 - Fullscreen No Lyrics animation #*/
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
-    [blyrics-dfs]
+    [blyrics-dfs],
+    [blyrics-karaoke]
   )[blyrics-no-lyrics]
   #main-panel {
   transition: transform 1.5s ease-in-out !important;
@@ -1441,7 +1536,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
 }
 
 ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not(
-    [blyrics-dfs]
+    [blyrics-dfs],
+    [blyrics-karaoke]
   )[blyrics-no-lyrics]
   #main-panel {
   transition: transform 1.5s ease-in-out !important;
@@ -1449,14 +1545,15 @@ ytmusic-player-page[player-fullscreened][blyrics-video-mode]:not(
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-video-mode]):not(
-    [blyrics-dfs]
+    [blyrics-dfs],
+    [blyrics-karaoke]
   )[blyrics-no-lyrics]
   #player {
   transition: max-width 2.5s ease-in-out !important;
   transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
 }
 
-ytmusic-player-page[player-fullscreened]:not([blyrics-dfs])[blyrics-no-lyrics]
+ytmusic-player-page[player-fullscreened]:not([blyrics-dfs], [blyrics-karaoke])[blyrics-no-lyrics]
   #blyrics-wrapper {
   transition: opacity 1.5s ease !important;
   transition-delay: var(--blyrics-no-lyrics-slide-delay) !important;
@@ -2223,7 +2320,7 @@ ytmusic-guide-entry-renderer[active] tp-yt-paper-item.ytmusic-guide-entry-render
   background-color: var(--white-dot-87);
   color: var(--black-dot-87);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 5px 12px;
   border-radius: 20.88px;
   corner-shape: superellipse(1.2);
@@ -2836,22 +2933,40 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
 .blyrics-pip-artwork.blyrics-pip-artwork,
 .blyrics-pip-artwork__face.blyrics-pip-artwork__face,
 .blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
-  --blyrics-pip-artwork-radius: 8%;
-  border-radius: 8% !important;
+  --blyrics-pip-artwork-radius: 1em;
+  border-radius: 1em !important;
   corner-shape: superellipse(2);
+}
+
+.blyrics-pip-artwork__music-video.blyrics-pip-artwork__music-video {
+  corner-shape: inherit;
 }
 
 /*# SECTION-39.4 - Artwork Controls ########### */
 /* backround when controls hovered - scrim */
 .blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
   background: var(--filter-replacement-backgroundcolor);
+  /* background of controls and song/video */
+  --blyrics-pip-control-tint: var(--white-dot-10);
+  --blyrics-pip-control-backdrop: none;
   /* transition: none; */
 }
 
-/* prev / next */
+/* here's how them folks get down and dirty (ought to replicate)
+ *   none             --white-dot-10
+ *   hover            --white-dot-15
+ *   pressed (active) --white-dot-20
+ *   keyboard focus   --white-dot-25  (focus-visible; 2px;)
+ *   focus + hover    --white-dot-30  (or focus + pressed)
+
+ * current default look in this system: 1px outline on transparent background */
+
+/* prev / next / whatevs */
 .blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control {
-  background: none;
-  outline: none;
+  --pip-control-tone: var(--white-dot-10);
+  background: oklch(1 0 0 / 0);
+  outline: 1px solid var(--pip-control-tone);
+  outline-offset: -1px;
   opacity: 0.7;
   transition: none;
 
@@ -2860,26 +2975,82 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   }
 
   &:hover {
-    background-color: var(--white-dot-10);
-    outline: 1px solid var(--white-dot-10);
-    outline-offset: -1px;
+    --pip-control-tone: var(--white-dot-15);
+    background-color: var(--pip-control-tone);
     opacity: 1;
+  }
+
+  &:active {
+    --pip-control-tone: var(--white-dot-20);
+    background-color: var(--pip-control-tone);
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    --pip-control-tone: var(--white-dot-25);
+    background-color: var(--pip-control-tone);
+    outline-width: 2px;
+    outline-offset: -2px;
+    opacity: 1;
+  }
+
+  &:focus-visible:is(:hover, :active) {
+    --pip-control-tone: var(--white-dot-30);
   }
 }
 
 /* play / pause */
 .blyrics-pip-shell .blyrics-pip-artwork__control.blyrics-pip-artwork__control--play-pause {
   color: var(--white-1);
-  background-color: var(--white-dot-10);
+  background-color: var(--pip-control-tone);
+  opacity: 0.87;
+}
+
+/* song / video pill and close button (v3.0.0+) */
+.blyrics-pip-shell .blyrics-pip-mode-toggle.blyrics-pip-mode-toggle {
   outline: 1px solid var(--white-dot-10);
   outline-offset: -1px;
-  opacity: 0.87;
+}
+
+/* sure... yays */
+.blyrics-pip-shell .blyrics-pip-mode-toggle__option.blyrics-pip-mode-toggle__option {
+  --pip-control-tone: var(--white-dot-10);
+  color: var(--white-dot-60);
+  background: oklch(1 0 0 / 0);
+  transition: none;
 
   &:hover {
-    background-color: var(--white-dot-15);
-    outline: 1px solid var(--white-dot-15);
-    outline-offset: -1px;
-    opacity: 1;
+    --pip-control-tone: var(--white-dot-15);
+    background-color: var(--pip-control-tone);
+    color: var(--white-1);
+  }
+
+  &:active {
+    --pip-control-tone: var(--white-dot-25);
+    background-color: var(--pip-control-tone);
+    color: var(--white-1);
+  }
+
+  &[aria-pressed="true"] {
+    --pip-control-tone: var(--white-dot-20);
+    background-color: var(--pip-control-tone);
+    color: var(--white-1);
+
+    &:hover,
+    &:active {
+      --pip-control-tone: var(--white-dot-25);
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--white-dot-25);
+    outline-offset: -2px;
+    color: var(--white-1);
+
+    &:hover,
+    &:active {
+      outline-color: var(--white-dot-30);
+    }
   }
 }
 
@@ -3032,6 +3203,45 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   }
 }
 
+/*# SECTION-39.9 - Ad ######################### */
+/* the same old love */
+.blyrics-pip-intermission__mark.blyrics-pip-intermission__mark {
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+.blyrics-pip-intermission__label.blyrics-pip-intermission__label {
+  background: unset;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--white-1);
+  animation: blyrics-shimmer 1s infinite alternate ease-in-out;
+}
+
+/*# SECTION-39.10 - Video Stage ################ */
+
+/* rounded corners- i never knew ya */
+.blyrics-pip-shell[data-layout="stage"] .blyrics-pip-artwork__controls.blyrics-pip-artwork__controls {
+  border-radius: 0 !important;
+  /* my colors in you */
+  background: linear-gradient(
+    to bottom in oklch,
+    var(--filter-replacement-backgroundcolor),
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.5) 32%,
+    oklch(from var(--filter-replacement-backgroundcolor) l c h / 0.5) 62%,
+    var(--filter-replacement-backgroundcolor)
+  );
+}
+
+/* hide away, the video is playing */
+.blyrics-pip-shell[data-layout="stage"] .blyrics-pip-backdrop.blyrics-pip-backdrop {
+  background-color: var(--black-1);
+}
+
+/* was something there */
+.blyrics-pip-shell[data-layout="stage"] .blyrics-pip-artwork::after {
+  display: none;
+}
+
 /* ## SECTION-40 - Unison ######################### */
 .blyrics-gam__featured,
 .blyrics-gam__seal,
@@ -3107,6 +3317,11 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   }
 }
 
+/* Ring-a-ring of roses */
+.blyrics-footer__unison-author:hover .blyrics-gam__ring--avatar {
+  max-height: 48px;
+}
+
 .blyrics-footer__unison-actions-block:hover {
   & .blyrics-footer__unison-score-line {
     max-height: 20px;
@@ -3128,35 +3343,254 @@ ytmusic-responsive-header-renderer .icon.ytmusic-play-button-renderer {
   }
 } 
 
+/* ## SECTION-41 - Fullscreen controls ############ */
+#blyrics-fs-controls,
+.blyrics-fs-info-actions {
+  opacity: 1;
+  transition: opacity 320ms ease-in-out;
+}
+
+#blyrics-fs-controls,
+.blyrics-fs-info-actions {
+  opacity: 0.7;
+  transition: opacity 0.3s ease-in-out;
+  &:hover {opacity:1;}
+}
+
+.blyrics-fs-disc {
+  color: var(--white-1);
+  transition: initial;
+  opacity: 0.87;
+}
+
+.blyrics-fs-disc:hover {
+  background: var(--white-dot-10);
+  transform: initial;
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+.blyrics-fs-disc[data-menu-open] {
+  background: var(--white-dot-10);
+}
+
+.blyrics-fs-disc:focus,
+.blyrics-progress__end:focus,
+.blyrics-progress__bar:focus {
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+.blyrics-fs-disc:focus-visible,
+.blyrics-progress__end:focus-visible {
+  outline: 1px solid var(--white-dot-20);
+  outline-offset: -1px;
+  opacity:1;
+}
+
+.blyrics-fs-play {
+  background: var(--white-dot-10);
+  color: var(--white-1);
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  &:hover {
+  background: var(--white-dot-15);
+  outline: 1px solid var(--white-dot-15);
+  outline-offset: -1px;
+  }
+}
+
+.blyrics-fs-disc[data-active] {
+  color: var(--white-1);
+}
+
+.blyrics-fs-rate-icon {
+  width: 70%;
+  height: 70%;
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike) .blyrics-fs-rate-layer path:nth-child(2) {
+  display: none;
+}
+
+/* Filled ones */
+:is(.blyrics-fs-like, .blyrics-fs-dislike) .blyrics-fs-rate-layer--fill path:first-child {
+  d: path("M7.55 19.72L8.45 20.15L9.38 20.49L10.35 20.75L11.33 20.92L12.00 20.98L12.70 21.00L16.29 21.00L16.62 20.98L16.98 20.91L17.44 20.75L17.90 20.48L18.27 20.17L18.57 19.79L18.78 19.42L18.92 19.07L18.98 18.78L19.02 18.30L19.08 18.12L19.17 17.95L19.54 17.51L19.75 17.19L19.94 16.80L20.06 16.39L20.11 16.06L20.12 15.73L20.09 15.40L20.01 14.98L20.01 14.70L20.10 14.42L20.38 13.97L20.56 13.59L20.66 13.22L20.72 12.80L20.71 12.42L20.65 12.03L20.51 11.63L20.32 11.26L19.99 10.83L19.58 10.48L19.11 10.22L18.66 10.07L18.12 10.00L13.90 10.00L13.61 9.92L13.44 9.83L13.29 9.70L13.16 9.55L13.07 9.37L13.02 9.18L13.01 8.89L13.69 5.65L13.71 5.08L13.62 4.52L13.50 4.14L13.32 3.78L13.10 3.44L12.83 3.14L12.53 2.87L12.12 2.61L11.75 2.44L11.36 2.33L10.16 2.13L7.18 10.66L7.03 10.98L6.83 11.27L6.62 11.49L6.39 11.67L6.12 11.82L5.85 11.92L5.61 11.97L5.29 12.00L3.42 12.01L3.27 12.05L3.16 12.14L3.07 12.25L3.01 12.40L3.00 18.49L3.02 18.63L3.07 18.76L3.23 18.92L3.45 19.00L5.50 19.00L5.80 19.02L6.09 19.06L6.42 19.15L6.71 19.27Z");
+  fill: currentColor;
+  stroke: none;
+}
+
+/* Outlined only */
+:is(.blyrics-fs-like, .blyrics-fs-dislike) .blyrics-fs-rate-layer--outline path:first-child {
+  d: path("M7.55 19.72L8.45 20.15L9.38 20.49L10.35 20.75L11.33 20.92L12.00 20.98L12.70 21.00L16.29 21.00L16.62 20.98L16.98 20.91L17.44 20.75L17.90 20.48L18.27 20.17L18.57 19.79L18.78 19.42L18.92 19.07L18.98 18.78L19.02 18.30L19.08 18.12L19.17 17.95L19.54 17.51L19.75 17.19L19.94 16.80L20.06 16.39L20.11 16.06L20.12 15.73L20.09 15.40L20.01 14.98L20.01 14.70L20.10 14.42L20.38 13.97L20.56 13.59L20.66 13.22L20.72 12.80L20.71 12.42L20.65 12.03L20.51 11.63L20.32 11.26L19.99 10.83L19.58 10.48L19.11 10.22L18.66 10.07L18.12 10.00L13.90 10.00L13.61 9.92L13.44 9.83L13.29 9.70L13.16 9.55L13.07 9.37L13.02 9.18L13.01 8.89L13.69 5.65L13.71 5.08L13.62 4.52L13.50 4.14L13.32 3.78L13.10 3.44L12.83 3.14L12.53 2.87L12.12 2.61L11.75 2.44L11.36 2.33L10.16 2.13L7.18 10.66L7.03 10.98L6.83 11.27L6.62 11.49L6.39 11.67L6.12 11.82L5.85 11.92L5.61 11.97L5.29 12.00L3.42 12.01L3.27 12.05L3.16 12.14L3.07 12.25L3.01 12.40L3.00 18.49L3.02 18.63L3.07 18.76L3.23 18.92L3.45 19.00L5.50 19.00L5.80 19.02L6.09 19.06L6.42 19.15L6.71 19.27ZM8.12 10.99L8.00 11.28L7.86 11.55L7.53 11.99L7.31 12.21L7.08 12.41L6.60 12.70L6.14 12.88L5.66 12.98L5.35 13.00L4.00 13.00L4.00 18.00L5.68 18.00L6.05 18.04L6.46 18.12L7.11 18.35L8.37 19.02L9.35 19.43L9.89 19.60L10.44 19.74L11.07 19.87L11.64 19.94L12.61 20.00L16.45 19.99L16.77 19.93L17.07 19.82L17.38 19.63L17.61 19.40L17.86 19.04L17.99 18.67L18.00 17.67L18.75 16.90L18.93 16.60L19.06 16.28L19.11 15.94L19.11 15.62L18.84 14.40L19.46 13.56L19.64 13.17L19.71 12.87L19.72 12.63L19.69 12.32L19.62 12.09L19.46 11.76L19.18 11.43L18.88 11.22L18.49 11.06L18.06 11.00L13.76 10.99L13.42 10.91L13.09 10.78L12.79 10.59L12.52 10.35L12.28 10.01L12.12 9.69L12.02 9.29L12.00 8.94L12.04 8.58L12.68 5.63L12.71 5.30L12.69 4.98L12.57 4.51L12.33 4.09L12.16 3.88L11.97 3.70L11.55 3.44L11.25 3.33L10.83 3.25Z");
+  fill: currentColor;
+  fill-rule: evenodd;
+  stroke: none;
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike) {
+  --nudge-x: 0.626%;
+  --nudge-y: -2.761%;
+}
+
+.blyrics-fs-like .blyrics-fs-rate-layer svg {
+  transform: translate(var(--nudge-x), var(--nudge-y));
+}
+
+.blyrics-fs-dislike .blyrics-fs-rate-layer svg {
+  transform: translate(calc(var(--nudge-x) * -1), calc(var(--nudge-y) * -1)) rotate(180deg);
+}
+
+/* ## SECTION-42 - PIP Portrait Layout and size ### */
+main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-artwork__controls {
+  container-type: size;
+  --blyrics-pip-control-size: clamp(0px, clamp(24px, 8vw, 36px), 22cqmin);
+}
+
+@media (max-aspect-ratio: 4/5) {
+  /* minimum portrait artwork size */
+  main.blyrics-pip-shell:not([data-layout="stage"]) {
+    --pip-portrait-art-min: 160px;
+  }
+
+  main.blyrics-pip-shell[data-video="on"]:not([data-layout="stage"]) {
+    --pip-portrait-art-min: 192px;
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) {
+    display: grid;
+    grid-template-columns: clamp(var(--pip-portrait-art-min), 35%, 9999px) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 14px;
+    row-gap: 10px;
+    align-items: start;
+    max-height: none;
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-art-col,
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-content {
+    display: contents;
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-artwork {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    aspect-ratio: var(--blyrics-pip-artwork-aspect, 1);
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-artwork__controls {
+    --blyrics-pip-control-size: clamp(0px, clamp(36px, 13vw, 52px), 22cqmin);
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-header {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    min-width: 0;
+    padding: 0;
+  }
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-header__title {
+    font-size: clamp(15px, 4.8vw, 20px);
+  }
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-header__artist {
+    font-size: clamp(11px, 3.4vw, 14px);
+    margin-top: 0;
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-progress {
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    min-width: 0;
+  }
+
+  main.blyrics-pip-shell:not([data-layout="stage"]) .blyrics-pip-lyrics {
+    grid-column: 1/-1;
+    grid-row: 2;
+    align-self: stretch;
+    min-height: 0;
+  }
+}
+
+.blyrics-footer__discord.blyrics-footer__discord > img,
+.blyrics-footer__discord.blyrics-footer__discord:hover > img {
+  filter: none;
+  transition: none;
+}
+
+/* ## SECTION-43 - Karaoke Subtitles ############### */
+:root {
+  --blyrics-karaoke-video-scale: 1;
+  --blyrics-karaoke-plate-radius: 0.3em;
+}
+
+/* i accidentally dropped the plates on the floor and they cracked. sorry for you - play the song alexa */
+#blyrics-karaoke .blyrics-karaoke__plate.blyrics-karaoke__plate {
+  display: none !important;
+  transition: initial !important;
+  backdrop-filter: initial !important;
+  -webkit-backdrop-filter: initial !important;
+  box-shadow: initial !important;
+}
+
+#blyrics-karaoke .blyrics-karaoke__mount.blyrics-karaoke__mount {
+  transition: initial !important;
+  clip-path: none !important;
+}
+
+/* hither come my beloved, taste the soup */
+.blyrics-container[data-layout="stage"] > .blyrics--line:not([data-blank="true"], [data-instrumental="true"]),
+.blyrics-container[data-layout="stage"] > .blyrics-credits.blyrics-credits {
+  --pip-stage-pad: var(--blyrics-karaoke-plate-padding-block, 0.18em);
+  --pip-stage-r: var(--blyrics-karaoke-plate-radius, 0.46em);
+  background: var(--filter-replacement-backgroundcolor);
+  border-radius: var(--pip-stage-r);
+  corner-shape: superellipse(2);
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+}
+
+/* credits */
+.blyrics-container[data-layout="stage"] > .blyrics-credits.blyrics-credits {
+  --pip-stage-pad: var(--blyrics-karaoke-card-padding-block, 0.36em);
+}
+
+/* nothing to see here */
+@media (max-aspect-ratio: 4/5) {
+  .blyrics-pip-shell[data-layout="stage"] .blyrics-container[data-layout="stage"] > .blyrics--line:not([data-blank="true"], [data-instrumental="true"]),
+  .blyrics-pip-shell[data-layout="stage"] .blyrics-container[data-layout="stage"] > .blyrics-credits.blyrics-credits {
+    background: none;
+    outline: none;
+  }
+}
+
+/* no one is forgiven */
+.blyrics-container[data-layout="stage"] > :is(.blyrics--line, .blyrics-credits) {
+  filter: none !important;
+}
+
+/* sometimes i do forgive */
+#blyrics-karaoke .blyrics-karaoke-surface {
+  background: var(--filter-replacement-backgroundcolor);
+ /* box-shadow: inset 0 0 0 1px var(--white-dot-10); */
+  outline: 1px solid var(--white-dot-10);
+  outline-offset: -1px;
+  /* --blyrics-background-blur is a whole filter value, so it cannot go through calc(). */
+  @if $enable-blur == on {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  @else {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
 /* ################################################ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
