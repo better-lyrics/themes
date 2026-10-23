@@ -21,10 +21,10 @@ blyrics-letter-wave = true;
 blyrics-early-scroll-consider-s = 0;
 blyrics-swipe-lead-ratio = 0;
 blyrics-swipe-duration-ratio = 1;
-blyrics-line-scroll-timing-function = cubic-bezier(0.34, 1.22, 0.64, 1);
-blyrics-line-scroll-duration = 850ms;
-blyrics-line-scroll-above-duration = calc(850ms + var(--blyrics-line-scroll-abs-relative-index) * 15ms);
-blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-relative-index) * 45ms);
+blyrics-line-scroll-timing-function = cubic-bezier(0.16, 1, 0.3, 1);
+blyrics-line-scroll-duration = 700ms;
+blyrics-line-scroll-above-duration = 700ms;
+blyrics-line-scroll-below-duration = 700ms;
 */
 
 /* ---------------------------------------------------------------------------
@@ -64,20 +64,23 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   --spicy-kawarp-saturate: 2.5;
   --spicy-kawarp-brightness: 0.65;
 
-  /* word bounce, Spicy's own values (LyricsAnimator.ts). Lift is in em of
-     the lyrics size, as Spicy multiplies it by its font size. Most of the
-     Spicy look comes from size: a word of the line being sung waits at 0.95
-     and a little low, grows to 1.05 while sung, then settles to 1. The
-     waiting words leave slightly wider gaps (scaling does not move the
-     layout); Spicy shows the same. Set the rest scale to 1 to avoid that. */
+  /* word bounce, simulated from Spicy's LyricsAnimator.ts + Spring.ts:
+     - Scale spring (0.88 Hz, damping 0.64) starts at 0.95 and reaches ~1.02
+       before the goal drops back to 1 at the end of a typical word.
+     - YOffset spring (1.45 Hz, damping 0.40) is driven by a natural cubic
+       spline (0.01 -> -1/60 -> 0 at knots 0, 0.9, 1.0) which bows to -0.044em
+       mid-word, lifting the spring to -0.034em and peaking ~90ms earlier than
+       the slower scale spring. */
   --spicy-word-rest-scale: 0.95;
   --spicy-word-rest-y: 0.01em;
-  --spicy-word-peak-scale: 1.05;
-  --spicy-word-peak-y: -0.017em;
-  /* how long a word rises: the syllable's own length plus
-     --spicy-word-rise-extra, but never shorter than --spicy-word-rise-min */
-  --spicy-word-rise-min: 300ms;
-  --spicy-word-rise-extra: 100ms;
+  --spicy-word-peak-scale: 1.02;
+  --spicy-word-peak-y: -0.034em;
+  /* how long the vertical lift rises: the syllable's own length plus
+     --spicy-word-rise-extra, at least --spicy-word-rise-min; the slower
+     0.88 Hz scale spring peaks --spicy-word-scale-lag later */
+  --spicy-word-rise-min: 280ms;
+  --spicy-word-rise-extra: 60ms;
+  --spicy-word-scale-lag: 90ms;
 
   /* instrumental dots breathing */
   --spicy-dots-breathe-duration: 2.4s;
@@ -433,15 +436,18 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
 }
 
 .blyrics-container[data-sync="richsync"] .blyrics--word {
-  --spicy-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
+  --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
+  --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
   backface-visibility: hidden;
 }
 
 .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
   will-change: scale, translate;
   animation:
-    spicy-word-settle 1.64s linear var(--spicy-rise) backwards,
-    spicy-word-rise var(--spicy-rise) cubic-bezier(0.37, 0, 0.63, 1);
+    spicy-word-lift-settle 1.64s linear var(--spicy-lift-rise) backwards,
+    spicy-word-lift-rise var(--spicy-lift-rise) cubic-bezier(0.33, 0, 0.58, 1),
+    spicy-word-scale-settle 1.64s linear var(--spicy-scale-rise) backwards,
+    spicy-word-scale-rise var(--spicy-scale-rise) cubic-bezier(0.37, 0, 0.63, 1);
 }
 
 /* the bounce stops with the music */
@@ -449,51 +455,93 @@ blyrics-line-scroll-below-duration = calc(850ms + var(--blyrics-line-scroll-abs-
   animation-play-state: paused;
 }
 
-@keyframes spicy-word-rise {
+@keyframes spicy-word-lift-rise {
   from {
-    scale: var(--spicy-word-rest-scale);
     translate: 0 var(--spicy-word-rest-y);
   }
   to {
-    scale: var(--spicy-word-peak-scale);
     translate: 0 var(--spicy-word-peak-y);
   }
 }
 
+@keyframes spicy-word-scale-rise {
+  from {
+    scale: var(--spicy-word-rest-scale);
+  }
+  to {
+    scale: var(--spicy-word-peak-scale);
+  }
+}
+
 /* the Spicy springs from the peak back to rest, sampled every 2.5% */
-@keyframes spicy-word-settle {
-  0% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 1.0000); translate: 0 calc(var(--spicy-word-peak-y) * 1.0000); }
-  2.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9767); translate: 0 calc(var(--spicy-word-peak-y) * 0.9374); }
-  5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9159); translate: 0 calc(var(--spicy-word-peak-y) * 0.7792); }
-  7.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.8297); translate: 0 calc(var(--spicy-word-peak-y) * 0.5690); }
-  10% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.7284); translate: 0 calc(var(--spicy-word-peak-y) * 0.3453); }
-  12.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.6203); translate: 0 calc(var(--spicy-word-peak-y) * 0.1382); }
-  15% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.5118); translate: 0 calc(var(--spicy-word-peak-y) * -0.0319); }
-  17.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.4079); translate: 0 calc(var(--spicy-word-peak-y) * -0.1543); }
-  20% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.3121); translate: 0 calc(var(--spicy-word-peak-y) * -0.2266); }
-  22.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.2265); translate: 0 calc(var(--spicy-word-peak-y) * -0.2533); }
-  25% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.1525); translate: 0 calc(var(--spicy-word-peak-y) * -0.2428); }
-  27.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0903); translate: 0 calc(var(--spicy-word-peak-y) * -0.2061); }
-  30% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0397); translate: 0 calc(var(--spicy-word-peak-y) * -0.1544); }
-  32.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0002); translate: 0 calc(var(--spicy-word-peak-y) * -0.0975); }
-  35% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0294); translate: 0 calc(var(--spicy-word-peak-y) * -0.0438); }
-  37.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0503); translate: 0 calc(var(--spicy-word-peak-y) * 0.0013); }
-  40% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0637); translate: 0 calc(var(--spicy-word-peak-y) * 0.0346); }
-  42.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0708); translate: 0 calc(var(--spicy-word-peak-y) * 0.0552); }
-  45% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0730); translate: 0 calc(var(--spicy-word-peak-y) * 0.0638); }
-  47.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0715); translate: 0 calc(var(--spicy-word-peak-y) * 0.0627); }
-  50% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0671); translate: 0 calc(var(--spicy-word-peak-y) * 0.0543); }
-  52.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0609); translate: 0 calc(var(--spicy-word-peak-y) * 0.0417); }
-  55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0535); translate: 0 calc(var(--spicy-word-peak-y) * 0.0273); }
-  57.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0456); translate: 0 calc(var(--spicy-word-peak-y) * 0.0134); }
-  60% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0377); translate: 0 calc(var(--spicy-word-peak-y) * 0.0015); }
-  62.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0301); translate: 0 calc(var(--spicy-word-peak-y) * -0.0075); }
-  65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0230); translate: 0 calc(var(--spicy-word-peak-y) * -0.0133); }
-  67.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0168); translate: 0 calc(var(--spicy-word-peak-y) * -0.0160); }
-  70% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); translate: 0 calc(var(--spicy-word-peak-y) * -0.0161); }
-  72.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); translate: 0 calc(var(--spicy-word-peak-y) * -0.0143); }
-  75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); translate: 0 calc(var(--spicy-word-peak-y) * -0.0112); }
-  100% { scale: 1; translate: 0 0; }
+@keyframes spicy-word-lift-settle {
+  0% { translate: 0 calc(var(--spicy-word-peak-y) * 1.0000); }
+  2.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.9374); }
+  5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.7792); }
+  7.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.5690); }
+  10% { translate: 0 calc(var(--spicy-word-peak-y) * 0.3453); }
+  12.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.1382); }
+  15% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0319); }
+  17.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.1543); }
+  20% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2266); }
+  22.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2533); }
+  25% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2428); }
+  27.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2061); }
+  30% { translate: 0 calc(var(--spicy-word-peak-y) * -0.1544); }
+  32.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0975); }
+  35% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0438); }
+  37.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0013); }
+  40% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0346); }
+  42.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0552); }
+  45% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0638); }
+  47.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0627); }
+  50% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0543); }
+  52.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0417); }
+  55% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0273); }
+  57.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0134); }
+  60% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0015); }
+  62.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0075); }
+  65% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0133); }
+  67.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0160); }
+  70% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0161); }
+  72.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0143); }
+  75% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0112); }
+  100% { translate: 0 0; }
+}
+
+@keyframes spicy-word-scale-settle {
+  0% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 1.0000); }
+  2.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9767); }
+  5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.9159); }
+  7.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.8297); }
+  10% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.7284); }
+  12.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.6203); }
+  15% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.5118); }
+  17.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.4079); }
+  20% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.3121); }
+  22.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.2265); }
+  25% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.1525); }
+  27.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0903); }
+  30% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0397); }
+  32.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * 0.0002); }
+  35% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0294); }
+  37.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0503); }
+  40% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0637); }
+  42.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0708); }
+  45% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0730); }
+  47.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0715); }
+  50% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0671); }
+  52.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0609); }
+  55% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0535); }
+  57.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0456); }
+  60% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0377); }
+  62.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0301); }
+  65% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0230); }
+  67.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0168); }
+  70% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0113); }
+  72.5% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0067); }
+  75% { scale: calc(1 + (var(--spicy-word-peak-scale) - 1) * -0.0030); }
+  100% { scale: 1; }
 }
 
 /* Spicy letter wave in held syllables (over the threshold). Every letter gets an
@@ -1272,6 +1320,51 @@ ytmusic-two-row-item-renderer .image-wrapper {
 ytmusic-two-row-item-renderer:hover .image-wrapper {
   will-change: transform;
   transform: scale(1.03);
+}
+
+/* cover play button: large centered arrow on albums and playlists too, matching songs */
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-item-thumbnail-overlay-renderer #content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-item-thumbnail-overlay-renderer #play-button {
+  position: relative !important;
+  right: auto !important;
+  bottom: auto !important;
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.2, 0, 0.6, 1);
+  --ytmusic-play-button-size: 48px !important;
+  --ytmusic-play-button-icon-size: 48px !important;
+  --ytmusic-play-button-loading-indicator-size: 48px !important;
+  --ytmusic-play-button-background-color: transparent !important;
+  --ytmusic-play-button-active-background-color: transparent !important;
+  --ytmusic-play-button-icon-loading-color: transparent !important;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) :is(.image-wrapper:hover, ytmusic-item-thumbnail-overlay-renderer:hover, ytmusic-item-thumbnail-overlay-renderer[focus-within]) #play-button,
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-item-thumbnail-overlay-renderer #play-button:not([state="default"]) {
+  opacity: 1;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-item-thumbnail-overlay-renderer #play-button .content-wrapper {
+  background: transparent !important;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-item-thumbnail-overlay-renderer #background {
+  --ytmusic-background-overlay-background: rgb(0 0 0 / 0.5) !important;
+  background: rgb(0 0 0 / 0.5) !important;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-play-button-renderer[show-equalizer] {
+  --ytmusic-equalizer-bar-gap: 7px !important;
+  --ytmusic-equalizer-bar-width: 6px !important;
+  --ytmusic-equalizer-bar-height: 40px !important;
+}
+
+:is(ytmusic-two-row-item-renderer, ytmusic-card-shelf-renderer) ytmusic-play-button-renderer[show-equalizer][state="playing"] .content-wrapper {
+  border-radius: 0 !important;
 }
 
 /* mood chips: light fill instead of flat grey, same shape (no backdrop
