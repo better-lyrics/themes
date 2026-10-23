@@ -65,16 +65,20 @@ blyrics-line-scroll-below-duration = 700ms;
   --spicy-kawarp-brightness: 0.65;
 
   /* word bounce, simulated from Spicy's LyricsAnimator.ts + Spring.ts:
-     - Scale spring (0.88 Hz, damping 0.64) starts at 0.95 and reaches ~1.02
-       before the goal drops back to 1 at the end of a typical word.
+     - ScaleRange peaks at 1.0505 from a 0.95 resting scale (ScaleFrequency 0.88 Hz,
+       ScaleDamping 0.64).
      - YOffset spring (1.45 Hz, damping 0.40) is driven by a natural cubic
        spline (0.01 -> -1/60 -> 0 at knots 0, 0.9, 1.0) which bows to -0.044em
        mid-word, lifting the spring to -0.034em and peaking ~90ms earlier than
        the slower scale spring. */
   --spicy-word-rest-scale: 0.95;
   --spicy-word-rest-y: 0.01em;
-  --spicy-word-peak-scale: 1.02;
+  --spicy-word-peak-scale: 1.0505;
   --spicy-word-peak-y: -0.034em;
+  /* extra breathing room between word groups to match Spicy's 0.32ch gap,
+     plus outward horizontal push of split syllables inside a word */
+  --spicy-word-gap: 0.06em;
+  --spicy-word-spread: 0.02em;
   /* how long the vertical lift rises: the syllable's own length plus
      --spicy-word-rise-extra, at least --spicy-word-rise-min; the slower
      0.88 Hz scale spring peaks --spicy-word-scale-lag later */
@@ -166,11 +170,12 @@ blyrics-line-scroll-below-duration = 700ms;
      off and section 4 runs the Spicy letter wave itself. */
   --blyrics-animate-word-wobble: 0;
   /* letters of a held syllable wait a bit smaller and lower (Spicy), and
-     the wave strength scales Spicy's typical letter swell (about 1.07 and
-     0.03em up; 1 means as in Spicy) */
+     the wave strength scales Spicy's letter swell and outward spread
+     (LetterScaleRange 1.175 and RefreshedEmphasis.Spread 0.03em) */
   --spicy-letter-rest-scale: 0.95;
   --spicy-letter-rest-y: 0.02em;
-  --spicy-letter-strength: 1;
+  --spicy-letter-strength: 1.4;
+  --spicy-letter-spread: 0.03em;
   /* glow of a waving letter (Spicy: up to full white and 16px while the
      letter swells); 0 turns it off */
   --spicy-letter-glow: 1;
@@ -385,25 +390,36 @@ blyrics-line-scroll-below-duration = 700ms;
    Uses the separate scale and translate properties, so it stacks with the
    engine's own transform animations instead of fighting them.
    Rich-synced lyrics only: line-synced words have no timing of their own. */
+/* extra spacing between words to match Spicy's 0.32ch gap */
+.blyrics-bidi-run > .blyrics-word-group:not(:last-child) {
+  margin-inline-end: var(--spicy-word-gap);
+}
+
 /* one-syllable words and middle syllables grow from their centre, as in
-   Spicy, so a word pops in place instead of drifting to one side */
+   Spicy, while the outer syllables of a split word anchor at their inner
+   seam and push slightly outward (--spicy-word-push-x) when sung */
 .blyrics-word-group > .blyrics--word {
+  --spicy-word-push-x: 0px;
   transform-origin: center center;
 }
 
 .blyrics-word-group > .blyrics--word:first-child:not(:last-child) {
+  --spicy-word-push-x: calc(var(--spicy-word-spread) * -1);
   transform-origin: right center;
 }
 
 .blyrics-word-group > .blyrics--word:last-child:not(:first-child) {
+  --spicy-word-push-x: var(--spicy-word-spread);
   transform-origin: left center;
 }
 
 .blyrics-rtl .blyrics-word-group > .blyrics--word:first-child:not(:last-child) {
+  --spicy-word-push-x: var(--spicy-word-spread);
   transform-origin: left center;
 }
 
 .blyrics-rtl .blyrics-word-group > .blyrics--word:last-child:not(:first-child) {
+  --spicy-word-push-x: calc(var(--spicy-word-spread) * -1);
   transform-origin: right center;
 }
 
@@ -460,7 +476,7 @@ blyrics-line-scroll-below-duration = 700ms;
     translate: 0 var(--spicy-word-rest-y);
   }
   to {
-    translate: 0 var(--spicy-word-peak-y);
+    translate: var(--spicy-word-push-x, 0px) var(--spicy-word-peak-y);
   }
 }
 
@@ -475,37 +491,37 @@ blyrics-line-scroll-below-duration = 700ms;
 
 /* the Spicy springs from the peak back to rest, sampled every 2.5% */
 @keyframes spicy-word-lift-settle {
-  0% { translate: 0 calc(var(--spicy-word-peak-y) * 1.0000); }
-  2.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.9374); }
-  5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.7792); }
-  7.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.5690); }
-  10% { translate: 0 calc(var(--spicy-word-peak-y) * 0.3453); }
-  12.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.1382); }
-  15% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0319); }
-  17.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.1543); }
-  20% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2266); }
-  22.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2533); }
-  25% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2428); }
-  27.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.2061); }
-  30% { translate: 0 calc(var(--spicy-word-peak-y) * -0.1544); }
-  32.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0975); }
-  35% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0438); }
-  37.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0013); }
-  40% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0346); }
-  42.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0552); }
-  45% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0638); }
-  47.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0627); }
-  50% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0543); }
-  52.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0417); }
-  55% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0273); }
-  57.5% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0134); }
-  60% { translate: 0 calc(var(--spicy-word-peak-y) * 0.0015); }
-  62.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0075); }
-  65% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0133); }
-  67.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0160); }
-  70% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0161); }
-  72.5% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0143); }
-  75% { translate: 0 calc(var(--spicy-word-peak-y) * -0.0112); }
+  0% { translate: calc(var(--spicy-word-push-x, 0px) * 1.0000) calc(var(--spicy-word-peak-y) * 1.0000); }
+  2.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.9374) calc(var(--spicy-word-peak-y) * 0.9374); }
+  5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.7792) calc(var(--spicy-word-peak-y) * 0.7792); }
+  7.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.5690) calc(var(--spicy-word-peak-y) * 0.5690); }
+  10% { translate: calc(var(--spicy-word-push-x, 0px) * 0.3453) calc(var(--spicy-word-peak-y) * 0.3453); }
+  12.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.1382) calc(var(--spicy-word-peak-y) * 0.1382); }
+  15% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0319) calc(var(--spicy-word-peak-y) * -0.0319); }
+  17.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1543) calc(var(--spicy-word-peak-y) * -0.1543); }
+  20% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2266) calc(var(--spicy-word-peak-y) * -0.2266); }
+  22.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2533) calc(var(--spicy-word-peak-y) * -0.2533); }
+  25% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2428) calc(var(--spicy-word-peak-y) * -0.2428); }
+  27.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.2061) calc(var(--spicy-word-peak-y) * -0.2061); }
+  30% { translate: calc(var(--spicy-word-push-x, 0px) * -0.1544) calc(var(--spicy-word-peak-y) * -0.1544); }
+  32.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0975) calc(var(--spicy-word-peak-y) * -0.0975); }
+  35% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0438) calc(var(--spicy-word-peak-y) * -0.0438); }
+  37.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0013) calc(var(--spicy-word-peak-y) * 0.0013); }
+  40% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0346) calc(var(--spicy-word-peak-y) * 0.0346); }
+  42.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0552) calc(var(--spicy-word-peak-y) * 0.0552); }
+  45% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0638) calc(var(--spicy-word-peak-y) * 0.0638); }
+  47.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0627) calc(var(--spicy-word-peak-y) * 0.0627); }
+  50% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0543) calc(var(--spicy-word-peak-y) * 0.0543); }
+  52.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0417) calc(var(--spicy-word-peak-y) * 0.0417); }
+  55% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0273) calc(var(--spicy-word-peak-y) * 0.0273); }
+  57.5% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0134) calc(var(--spicy-word-peak-y) * 0.0134); }
+  60% { translate: calc(var(--spicy-word-push-x, 0px) * 0.0015) calc(var(--spicy-word-peak-y) * 0.0015); }
+  62.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0075) calc(var(--spicy-word-peak-y) * -0.0075); }
+  65% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0133) calc(var(--spicy-word-peak-y) * -0.0133); }
+  67.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0160) calc(var(--spicy-word-peak-y) * -0.0160); }
+  70% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0161) calc(var(--spicy-word-peak-y) * -0.0161); }
+  72.5% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0143) calc(var(--spicy-word-peak-y) * -0.0143); }
+  75% { translate: calc(var(--spicy-word-push-x, 0px) * -0.0112) calc(var(--spicy-word-peak-y) * -0.0112); }
   100% { translate: 0 0; }
 }
 
@@ -558,6 +574,10 @@ blyrics-line-scroll-below-duration = 700ms;
    off (wobble off). */
 .blyrics-container[data-sync="richsync"] .blyrics--word[data-long-word] {
   --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
+}
+
+.blyrics--word[data-long-word] > .blyrics--letter {
+  --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
 }
 
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(1) { --spicy-letter-i: 0; }
@@ -633,29 +653,29 @@ blyrics-line-scroll-below-duration = 700ms;
 /* one letter's wave; the start and the end are left to the letter's own
    value, so it rises from and settles to wherever it rests */
 @keyframes spicy-letter-wave {
-  4% { scale: calc(var(--spicy-letter-rest-scale) + 0.0013 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0007em * var(--spicy-letter-strength)); text-shadow: 0 0 4.1px rgb(255 255 255 / calc(0.011 * var(--spicy-letter-glow))); }
-  8% { scale: calc(var(--spicy-letter-rest-scale) + 0.0080 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0044em * var(--spicy-letter-strength)); text-shadow: 0 0 4.8px rgb(255 255 255 / calc(0.065 * var(--spicy-letter-glow))); }
-  12% { scale: calc(var(--spicy-letter-rest-scale) + 0.0215 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0117em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.176 * var(--spicy-letter-glow))); }
-  16% { scale: calc(var(--spicy-letter-rest-scale) + 0.0405 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0220em * var(--spicy-letter-strength)); text-shadow: 0 0 8.0px rgb(255 255 255 / calc(0.331 * var(--spicy-letter-glow))); }
-  20% { scale: calc(var(--spicy-letter-rest-scale) + 0.0629 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0335em * var(--spicy-letter-strength)); text-shadow: 0 0 10.2px rgb(255 255 255 / calc(0.515 * var(--spicy-letter-glow))); }
-  24% { scale: calc(var(--spicy-letter-rest-scale) + 0.0843 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0445em * var(--spicy-letter-strength)); text-shadow: 0 0 12.3px rgb(255 255 255 / calc(0.690 * var(--spicy-letter-glow))); }
-  28% { scale: calc(var(--spicy-letter-rest-scale) + 0.1000 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0499em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.818 * var(--spicy-letter-glow))); }
-  32% { scale: calc(var(--spicy-letter-rest-scale) + 0.1090 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0488em * var(--spicy-letter-strength)); text-shadow: 0 0 14.7px rgb(255 255 255 / calc(0.892 * var(--spicy-letter-glow))); }
-  36% { scale: calc(var(--spicy-letter-rest-scale) + 0.1151 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0447em * var(--spicy-letter-strength)); text-shadow: 0 0 15.3px rgb(255 255 255 / calc(0.942 * var(--spicy-letter-glow))); }
-  40% { scale: calc(var(--spicy-letter-rest-scale) + 0.1194 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0393em * var(--spicy-letter-strength)); text-shadow: 0 0 15.7px rgb(255 255 255 / calc(0.977 * var(--spicy-letter-glow))); }
-  44% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0339em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
-  48% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0289em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
-  52% { scale: calc(var(--spicy-letter-rest-scale) + 0.1176 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0227em * var(--spicy-letter-strength)); text-shadow: 0 0 15.5px rgb(255 255 255 / calc(0.962 * var(--spicy-letter-glow))); }
-  56% { scale: calc(var(--spicy-letter-rest-scale) + 0.1095 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0157em * var(--spicy-letter-strength)); text-shadow: 0 0 14.8px rgb(255 255 255 / calc(0.896 * var(--spicy-letter-glow))); }
-  60% { scale: calc(var(--spicy-letter-rest-scale) + 0.0997 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0093em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.816 * var(--spicy-letter-glow))); }
-  64% { scale: calc(var(--spicy-letter-rest-scale) + 0.0890 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0042em * var(--spicy-letter-strength)); text-shadow: 0 0 12.7px rgb(255 255 255 / calc(0.728 * var(--spicy-letter-glow))); }
-  68% { scale: calc(var(--spicy-letter-rest-scale) + 0.0783 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + -0.0008em * var(--spicy-letter-strength)); text-shadow: 0 0 11.7px rgb(255 255 255 / calc(0.641 * var(--spicy-letter-glow))); }
-  72% { scale: calc(var(--spicy-letter-rest-scale) + 0.0676 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0010em * var(--spicy-letter-strength)); text-shadow: 0 0 10.6px rgb(255 255 255 / calc(0.553 * var(--spicy-letter-glow))); }
-  76% { scale: calc(var(--spicy-letter-rest-scale) + 0.0557 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0020em * var(--spicy-letter-strength)); text-shadow: 0 0 9.5px rgb(255 255 255 / calc(0.456 * var(--spicy-letter-glow))); }
-  80% { scale: calc(var(--spicy-letter-rest-scale) + 0.0454 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0023em * var(--spicy-letter-strength)); text-shadow: 0 0 8.5px rgb(255 255 255 / calc(0.372 * var(--spicy-letter-glow))); }
-  84% { scale: calc(var(--spicy-letter-rest-scale) + 0.0361 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0019em * var(--spicy-letter-strength)); text-shadow: 0 0 7.5px rgb(255 255 255 / calc(0.295 * var(--spicy-letter-glow))); }
-  88% { scale: calc(var(--spicy-letter-rest-scale) + 0.0279 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0012em * var(--spicy-letter-strength)); text-shadow: 0 0 6.7px rgb(255 255 255 / calc(0.228 * var(--spicy-letter-glow))); }
-  92% { scale: calc(var(--spicy-letter-rest-scale) + 0.0210 * var(--spicy-letter-strength)); translate: 0 calc(var(--spicy-letter-rest-y) + 0.0002em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.172 * var(--spicy-letter-glow))); }
+  4% { scale: calc(var(--spicy-letter-rest-scale) + 0.0013 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.011) calc(var(--spicy-letter-rest-y) + -0.0007em * var(--spicy-letter-strength)); text-shadow: 0 0 4.1px rgb(255 255 255 / calc(0.011 * var(--spicy-letter-glow))); }
+  8% { scale: calc(var(--spicy-letter-rest-scale) + 0.0080 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.065) calc(var(--spicy-letter-rest-y) + -0.0044em * var(--spicy-letter-strength)); text-shadow: 0 0 4.8px rgb(255 255 255 / calc(0.065 * var(--spicy-letter-glow))); }
+  12% { scale: calc(var(--spicy-letter-rest-scale) + 0.0215 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.176) calc(var(--spicy-letter-rest-y) + -0.0117em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.176 * var(--spicy-letter-glow))); }
+  16% { scale: calc(var(--spicy-letter-rest-scale) + 0.0405 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.331) calc(var(--spicy-letter-rest-y) + -0.0220em * var(--spicy-letter-strength)); text-shadow: 0 0 8.0px rgb(255 255 255 / calc(0.331 * var(--spicy-letter-glow))); }
+  20% { scale: calc(var(--spicy-letter-rest-scale) + 0.0629 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.515) calc(var(--spicy-letter-rest-y) + -0.0335em * var(--spicy-letter-strength)); text-shadow: 0 0 10.2px rgb(255 255 255 / calc(0.515 * var(--spicy-letter-glow))); }
+  24% { scale: calc(var(--spicy-letter-rest-scale) + 0.0843 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.690) calc(var(--spicy-letter-rest-y) + -0.0445em * var(--spicy-letter-strength)); text-shadow: 0 0 12.3px rgb(255 255 255 / calc(0.690 * var(--spicy-letter-glow))); }
+  28% { scale: calc(var(--spicy-letter-rest-scale) + 0.1000 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.818) calc(var(--spicy-letter-rest-y) + -0.0499em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.818 * var(--spicy-letter-glow))); }
+  32% { scale: calc(var(--spicy-letter-rest-scale) + 0.1090 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.892) calc(var(--spicy-letter-rest-y) + -0.0488em * var(--spicy-letter-strength)); text-shadow: 0 0 14.7px rgb(255 255 255 / calc(0.892 * var(--spicy-letter-glow))); }
+  36% { scale: calc(var(--spicy-letter-rest-scale) + 0.1151 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.942) calc(var(--spicy-letter-rest-y) + -0.0447em * var(--spicy-letter-strength)); text-shadow: 0 0 15.3px rgb(255 255 255 / calc(0.942 * var(--spicy-letter-glow))); }
+  40% { scale: calc(var(--spicy-letter-rest-scale) + 0.1194 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.977) calc(var(--spicy-letter-rest-y) + -0.0393em * var(--spicy-letter-strength)); text-shadow: 0 0 15.7px rgb(255 255 255 / calc(0.977 * var(--spicy-letter-glow))); }
+  44% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0339em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
+  48% { scale: calc(var(--spicy-letter-rest-scale) + 0.1222 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 1.000) calc(var(--spicy-letter-rest-y) + -0.0289em * var(--spicy-letter-strength)); text-shadow: 0 0 16.0px rgb(255 255 255 / calc(1.000 * var(--spicy-letter-glow))); }
+  52% { scale: calc(var(--spicy-letter-rest-scale) + 0.1176 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.962) calc(var(--spicy-letter-rest-y) + -0.0227em * var(--spicy-letter-strength)); text-shadow: 0 0 15.5px rgb(255 255 255 / calc(0.962 * var(--spicy-letter-glow))); }
+  56% { scale: calc(var(--spicy-letter-rest-scale) + 0.1095 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.896) calc(var(--spicy-letter-rest-y) + -0.0157em * var(--spicy-letter-strength)); text-shadow: 0 0 14.8px rgb(255 255 255 / calc(0.896 * var(--spicy-letter-glow))); }
+  60% { scale: calc(var(--spicy-letter-rest-scale) + 0.0997 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.816) calc(var(--spicy-letter-rest-y) + -0.0093em * var(--spicy-letter-strength)); text-shadow: 0 0 13.8px rgb(255 255 255 / calc(0.816 * var(--spicy-letter-glow))); }
+  64% { scale: calc(var(--spicy-letter-rest-scale) + 0.0890 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.728) calc(var(--spicy-letter-rest-y) + -0.0042em * var(--spicy-letter-strength)); text-shadow: 0 0 12.7px rgb(255 255 255 / calc(0.728 * var(--spicy-letter-glow))); }
+  68% { scale: calc(var(--spicy-letter-rest-scale) + 0.0783 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.641) calc(var(--spicy-letter-rest-y) + -0.0008em * var(--spicy-letter-strength)); text-shadow: 0 0 11.7px rgb(255 255 255 / calc(0.641 * var(--spicy-letter-glow))); }
+  72% { scale: calc(var(--spicy-letter-rest-scale) + 0.0676 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.553) calc(var(--spicy-letter-rest-y) + 0.0010em * var(--spicy-letter-strength)); text-shadow: 0 0 10.6px rgb(255 255 255 / calc(0.553 * var(--spicy-letter-glow))); }
+  76% { scale: calc(var(--spicy-letter-rest-scale) + 0.0557 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.456) calc(var(--spicy-letter-rest-y) + 0.0020em * var(--spicy-letter-strength)); text-shadow: 0 0 9.5px rgb(255 255 255 / calc(0.456 * var(--spicy-letter-glow))); }
+  80% { scale: calc(var(--spicy-letter-rest-scale) + 0.0454 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.372) calc(var(--spicy-letter-rest-y) + 0.0023em * var(--spicy-letter-strength)); text-shadow: 0 0 8.5px rgb(255 255 255 / calc(0.372 * var(--spicy-letter-glow))); }
+  84% { scale: calc(var(--spicy-letter-rest-scale) + 0.0361 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.295) calc(var(--spicy-letter-rest-y) + 0.0019em * var(--spicy-letter-strength)); text-shadow: 0 0 7.5px rgb(255 255 255 / calc(0.295 * var(--spicy-letter-glow))); }
+  88% { scale: calc(var(--spicy-letter-rest-scale) + 0.0279 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.228) calc(var(--spicy-letter-rest-y) + 0.0012em * var(--spicy-letter-strength)); text-shadow: 0 0 6.7px rgb(255 255 255 / calc(0.228 * var(--spicy-letter-glow))); }
+  92% { scale: calc(var(--spicy-letter-rest-scale) + 0.0210 * var(--spicy-letter-strength)); translate: calc(var(--spicy-letter-x, 0px) * 0.172) calc(var(--spicy-letter-rest-y) + 0.0002em * var(--spicy-letter-strength)); text-shadow: 0 0 6.1px rgb(255 255 255 / calc(0.172 * var(--spicy-letter-glow))); }
 }
 
 /* all letters of a sung word back to normal on the Spicy springs */
