@@ -1,16 +1,16 @@
 {
   "repo": "olafix52/spicy-for-youtube-music",
   "id": "spicy-for-ytm",
-  "version": "1.4.0",
-  "commit": "8a7134a412598bc9dcac62e39f1f05a72d053c84",
-  "integrity": "sha256-0fbf681a4a4990660cace9f22c1882c5ea257e209d178662b88df9da5a88ce82",
-  "locked": "2026-10-24T18:35:17Z",
+  "version": "1.4.1",
+  "commit": "949c647a8727b951d663b9e72dbb216f8acd9a69",
+  "integrity": "sha256-8a97dcfd4d2228a5fb03cadfaa3ac1b5ffcebf520c0c8d7f093fa35c9805a197",
+  "locked": "2026-10-24T22:25:11Z",
   "builds": [
     {
-      "version": "1.4.0",
+      "version": "1.4.1",
       "minVersion": "2.4.1",
       "path": "themes/spicy-for-ytm",
-      "integrity": "sha256-0fbf681a4a4990660cace9f22c1882c5ea257e209d178662b88df9da5a88ce82"
+      "integrity": "sha256-8a97dcfd4d2228a5fb03cadfaa3ac1b5ffcebf520c0c8d7f093fa35c9805a197"
     }
   ]
 }

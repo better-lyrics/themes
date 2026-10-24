@@ -2486,9 +2486,9 @@ ytmusic-app-layout tp-yt-app-drawer#guide:not([opened]) #contentContainer {
   transform: translateX(-100%) !important;
 }
 
-/* the mini bar stays in layout and cross-fades: it fades out just after the
-   panel starts covering it and fades back in once the panel is leaving */
-ytmusic-app-layout #mini-guide {
+/* the mini bar stays in layout and cross-fades on browse pages: it fades out
+   just after the panel starts covering it and fades back in once the panel is leaving */
+ytmusic-app-layout:not([player-fullscreened], [player-ui-state="FULLSCREEN"]):not(:has(ytmusic-player-page[player-fullscreened])) #mini-guide {
   display: block !important;
   opacity: 1;
   transition: opacity 0.2s ease 0.16s !important;
@@ -2498,6 +2498,15 @@ ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) #mini-guide {
   opacity: 0;
   pointer-events: none;
   transition-delay: 0.08s !important;
+}
+
+/* in fullscreen mode, the navigation side bars stay strictly hidden */
+ytmusic-app-layout:is([player-fullscreened], [player-ui-state="FULLSCREEN"]) :is(#mini-guide, #mini-guide-background, tp-yt-app-drawer#guide),
+ytmusic-app-layout:has(ytmusic-player-page[player-fullscreened]) :is(#mini-guide, #mini-guide-background, tp-yt-app-drawer#guide) {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }
 
 ytmusic-app-layout #mini-guide-background {
