@@ -53,9 +53,9 @@ blyrics-line-scroll-below-duration = 700ms;
   /* background vocals relative size */
   --spicy-bg-vocal-size: 0.75em;
 
-  /* credits brightness matched to Spicy Lyrics (0.6 during song, 0.85 when focused) */
-  --spicy-credits-opacity: 0.6;
-  --spicy-credits-focused-opacity: 0.85;
+  /* credits brightness matched to Spicy Lyrics Refined Credits (0.55 while playing, 1 when focused) */
+  --spicy-credits-opacity: 0.55;
+  --spicy-credits-focused-opacity: 1;
 
   /* animated background */
   --spicy-bg-duration: 45s;
@@ -980,7 +980,8 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   font-family: var(--spicy-font) !important;
 }
 
-/* title and artist scale with the cover, like the Spicy NowBar */
+/* title and artist scale with the cover, like the Spicy NowBar (weight 700
+   title, 85%/80% max-width with soft horizontal edge fade masks) */
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-title {
   font-family: var(--spicy-font) !important;
   font-size: calc(var(--spicy-fs-art-size) * 0.054);
@@ -988,6 +989,26 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info >
   opacity: 0.95;
   letter-spacing: -0.015em;
   line-height: 1.25;
+  max-width: 85%;
+  margin-inline: auto;
+  padding-inline: 2.5%;
+  text-overflow: clip;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
 }
 
 ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info > p#blyrics-artist {
@@ -996,7 +1017,27 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]) #blyrics-song-info >
   font-weight: 400;
   opacity: 0.7;
   margin-top: 0.35rem;
+  margin-inline: auto;
+  max-width: 80%;
+  padding-inline: 2.5%;
   letter-spacing: -0.005em;
+  text-overflow: clip;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #fff 2.5%,
+    #000 2.5%,
+    #000 calc(100% - 3.75%),
+    transparent 100%
+  );
 }
 
 /* artist links: smooth opacity hover feedback matching Spicy */
@@ -1174,6 +1215,44 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
 .blyrics-fs-play svg {
   width: 72%;
   height: 72%;
+}
+
+/* rating buttons (like/dislike): Spicy NowBar .Heart 0.85s spring scale on the icon */
+:is(.blyrics-fs-like, .blyrics-fs-dislike) .blyrics-fs-rate-icon {
+  transition: scale 0.85s
+    linear(
+      0,
+      0.009 0.9%,
+      0.037 1.9%,
+      0.088 3%,
+      0.155 4.1%,
+      0.307 6.1%,
+      0.783 11.7%,
+      1.007 15%,
+      1.088 16.6%,
+      1.146 18.1%,
+      1.189 19.7%,
+      1.215 21.4%,
+      1.224 23.6%,
+      1.207 26%,
+      1.171 28.4%,
+      1.057 34.4%,
+      1.009 37.4%,
+      0.971 40.8%,
+      0.953 44.2%,
+      0.953 49.1%,
+      0.997 60.4%,
+      1.01 66.8%,
+      1
+    );
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike):hover .blyrics-fs-rate-icon {
+  scale: 1.245;
+}
+
+:is(.blyrics-fs-like, .blyrics-fs-dislike):active .blyrics-fs-rate-icon {
+  scale: 0.925;
 }
 
 /* progress bar: thicker rounded track, knob only on hover or drag */
@@ -1463,6 +1542,20 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
   transform: scale(1.08);
 }
 
+/* like and dislike: grow with a springy bounce on hover and squeeze on press */
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)) {
+  transition: scale 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)):hover {
+  scale: 1.28;
+}
+
+ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-shape-dislike, yt-icon-button:not(:is(#button-shape-like, #button-shape-dislike) *)):active {
+  scale: 0.92;
+  transition-duration: 0.12s;
+}
+
 /* ---------------------------------------------------------------------------
    7e. Picture-in-Picture / Spicy Popup Lyrics
    ------------------------------------------------------------------------ */
@@ -1715,29 +1808,847 @@ ytmusic-player-bar :is(.left-controls-buttons, .right-controls-buttons, .middle-
 }
 
 /* ---------------------------------------------------------------------------
-   8. Credits
+   8. Credits & Footer (Spicy Lyrics Refined Credits)
+      Quiet footnote typography close under the last lyric line: songwriters
+      first, then the source/contributor row, set apart by size and tone
+      rather than a pill box or border.
    ------------------------------------------------------------------------ */
-.blyrics-credits {
-  color: white;
+.blyrics-container > .blyrics-credits {
+  --spicy-credits-text: color-mix(in srgb, #fff 70%, transparent);
+  --spicy-credits-muted: color-mix(in srgb, #fff 55%, transparent);
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  color: var(--spicy-credits-text);
   font-weight: 600;
+  line-height: 1.35;
   letter-spacing: 0;
+  text-wrap: pretty;
+  max-width: clamp(0px, 46em, 100%);
+  padding-inline: var(--spicy-line-side-padding) !important;
+  padding-top: clamp(0.75em, 1.2cqw, 1.35em) !important;
+  padding-bottom: 0.15em !important;
   opacity: var(--blyrics-credits-opacity);
   transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-.blyrics-credits:hover {
-  opacity: var(--blyrics-credits-focused-opacity);
+/* songwriter names stay at 70% white while the "Written by" label sits quieter at 55% */
+.blyrics-credits__text {
+  color: var(--spicy-credits-text);
+  font-size: clamp(13px, calc(var(--blyrics-font-size) * 0.4), 22px) !important;
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: pretty;
 }
 
+.blyrics-credits__text::before {
+  color: var(--spicy-credits-muted);
+  font-weight: 500;
+}
+
+.blyrics-credits:hover,
 .blyrics-container[data-credits-focused] > .blyrics-credits,
 .blyrics-container[data-sync="none"] > .blyrics-credits {
   opacity: var(--blyrics-credits-focused-opacity);
+}
+
+/* CreditsFollowLastLine: when the last lyric line is a right-aligned secondary
+   voice, the narrower credits and footer block aligns to the right side too */
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits {
+  margin-inline-start: auto !important;
+  text-align: right;
+  transform-origin: right center;
+}
+
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits + .blyrics-footer,
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-footer {
+  justify-content: flex-end !important;
+  text-align: right;
+}
+
+/* Second footnote row (Source provider & community contributor):
+   sits directly under the songwriters on one inline row, scaled proportionally
+   to --blyrics-font-size (86% of the songwriters line, as in Spicy) */
+.blyrics-container > .blyrics-footer {
+  --spicy-credits-text: color-mix(in srgb, #fff 70%, transparent);
+  --spicy-credits-muted: color-mix(in srgb, #fff 55%, transparent);
+  height: auto !important;
+  margin-top: 0.15rem !important;
+  padding-inline: var(--spicy-line-side-padding) !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.25rem 0 !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: clamp(12px, calc(var(--blyrics-font-size) * 0.345), 19px) !important;
+  transform: scale(var(--blyrics-scale));
+  transform-origin: left center;
+  opacity: var(--blyrics-credits-opacity);
+  transition: opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-credits + .blyrics-footer,
+.blyrics-container > .blyrics--line:is([data-agent="v2"], [data-agent="v3"], [data-agent="v1000"]) + .blyrics-footer {
+  transform-origin: right center;
+}
+
+.blyrics-container > .blyrics-footer:hover,
+.blyrics-container[data-credits-focused] > .blyrics-footer,
+.blyrics-container[data-sync="none"] > .blyrics-footer {
+  opacity: var(--blyrics-credits-focused-opacity);
+}
+
+/* keep the footer at a steady scale on hover like Spicy's footnote */
+.blyrics-container > .blyrics-footer:hover {
+  transform: scale(var(--blyrics-scale)) !important;
+}
+
+/* hide action/promo pills ("Search on Genius", "Submit to Unison", Discord, Shaders)
+   so only the actual Source and Unison lyric creator remain */
+.blyrics-footer > :not(:has(#betterLyricsFooterLink), .blyrics-footer__unison) {
+  display: none !important;
+}
+
+/* provider line ("Source: ..."): plain footnote text instead of a bordered pill */
+.blyrics-footer__container:has(#betterLyricsFooterLink) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: inherit !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
+  color: var(--spicy-credits-muted) !important;
+}
+
+/* hide the red Better Lyrics logo icon before "Source:" to match Spicy's clean text */
+.blyrics-footer__container:has(#betterLyricsFooterLink) > img {
+  display: none !important;
+}
+
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a {
+  color: var(--spicy-credits-text) !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.18em !important;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent) !important;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.blyrics-footer__container:has(#betterLyricsFooterLink):hover > a,
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a:is(:hover, :focus-visible) {
+  color: #fff !important;
+  text-decoration-color: currentColor !important;
+}
+
+/* community contributor (Unison): stripped to a clean inline footnote showing
+   only who created the lyrics (avatar + name + label), sitting right after
+   "Source: Unison" separated by a middle dot, just like Spicy Lyrics */
+.blyrics-footer__unison:not(:has(.blyrics-footer__unison-author)) {
+  display: none !important;
+}
+
+.blyrics-footer__unison {
+  flex-basis: auto !important;
+  width: auto !important;
+  margin-top: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+.blyrics-footer__unison::before {
+  content: "\00b7";
+  margin-inline: 0.45em;
+  color: var(--spicy-credits-muted);
+  font-weight: 500;
+}
+
+.blyrics-footer__container.blyrics-footer__unison-card,
+.blyrics-footer__container.blyrics-footer__unison-card:hover {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 0.35em !important;
+  cursor: default !important;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: inherit !important;
+}
+
+/* hide divider, voting/report buttons, score counter, XP ring, level badge, tier and gems */
+.blyrics-footer__unison-divider,
+.blyrics-footer__unison-actions-block,
+.blyrics-gam__ring svg,
+.blyrics-gam__ring-num,
+.blyrics-gam__ring-level,
+.blyrics-gam__ring:not(.blyrics-gam__ring--avatar),
+.blyrics-gam__tier,
+.blyrics-gam__tier-slot,
+.blyrics-gam__featured,
+.blyrics-gam__featured-slot-outer,
+.blyrics-gam__seal {
+  display: none !important;
+}
+
+/* lay out avatar, creator name and "submitted this lyric" label on one line */
+.blyrics-footer__unison-author {
+  flex-direction: row !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.35em !important;
+  font-size: inherit !important;
+  line-height: 1.35 !important;
+}
+
+.blyrics-footer__unison-author-row {
+  gap: 0.35em !important;
+  font-size: inherit !important;
+}
+
+/* clean circular avatar without the level-badge cutout mask */
+.blyrics-gam__ring.blyrics-gam__ring--avatar {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  display: inline-flex !important;
+}
+
+.blyrics-gam__ring-avatar {
+  width: 100% !important;
+  height: 100% !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  border-radius: 50% !important;
+  opacity: 0.85;
+}
+
+.blyrics-footer__author-name {
+  color: var(--spicy-credits-text) !important;
+  font-weight: 600 !important;
+}
+
+.blyrics-footer__unison-author-label {
+  color: var(--spicy-credits-muted) !important;
+  font-size: inherit !important;
+  font-weight: 500 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   8b. Autoscroll Pill & Controls Dock (Spicy Lyrics Liquid Glass)
+       Uses Spicy's Liquid Glass material tokens (tokens.css): translucent
+       frosted blur(16px) saturate(1.7) brightness(1.06), dual top/bottom
+       specular bevel (--liquid-edge), tinted ambient shadow (--liquid-cast-soft),
+       pill geometry and 0.97 press scale.
+   ------------------------------------------------------------------------ */
+.autoscroll-resume-button {
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  line-height: 1.2 !important;
+  color: hsla(0, 0%, 100%, 0.92) !important;
+  padding: 0.65rem 1.35rem !important;
+  border: none !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  text-shadow: none !important;
+  transition:
+    opacity 0.15s linear 50ms,
+    transform 0.25s cubic-bezier(0.23, 1, 0.32, 1),
+    background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.autoscroll-resume-button:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+.autoscroll-resume-button:active {
+  scale: 0.97;
+}
+
+/* Controls dock: Liquid Glass capsule with neutral iOS-mono accent
+   and smooth intrinsic width expansion (interpolate-size: allow-keywords) */
+.blyrics-dock,
+.blyrics-dock__menu {
+  --dock-accent: #ffffff;
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  interpolate-size: allow-keywords;
+}
+
+.blyrics-dock__inner {
+  border-radius: 999px !important;
+  padding: 6px 10px !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    -webkit-filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.22s ease,
+    box-shadow 0.22s ease !important;
+}
+
+.blyrics-dock__inner:hover {
+  background: rgba(0, 0, 0, 0.2) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.26) !important;
+}
+
+/* Smoothly interpolate source label to its exact text width (max-content)
+   instead of 220px, eliminating the collapse lag and snap */
+.blyrics-dock__source-label {
+  margin: 0 !important;
+  transition:
+    max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.34s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.blyrics-dock__inner:hover .blyrics-dock__source-label,
+.blyrics-dock__inner--expanded .blyrics-dock__source-label,
+.blyrics-dock__inner:focus-within .blyrics-dock__source-label {
+  max-width: max-content !important;
+  margin: 0 4px !important;
+}
+
+/* Remove static flex gap around collapsed offset step buttons and animate
+   their margin alongside max-width so all dock items expand in unison */
+.blyrics-dock__offset {
+  gap: 0 !important;
+}
+
+.blyrics-dock__offset-value {
+  margin-inline: 4px;
+}
+
+.blyrics-dock__offset-step {
+  margin: 0 !important;
+}
+
+.blyrics-dock__inner:hover .blyrics-dock__offset-step,
+.blyrics-dock__inner--expanded .blyrics-dock__offset-step,
+.blyrics-dock__inner:focus-within .blyrics-dock__offset-step {
+  margin: 0 2px !important;
+}
+
+.blyrics-dock__control,
+.blyrics-dock__cycle,
+.blyrics-dock__offset-step,
+.blyrics-dock__offset-row-step,
+.blyrics-dock__inner .blyrics-footer__vote {
+  border-radius: 999px !important;
+  transition:
+    background-color 0.16s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.16s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.34s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+:is(.blyrics-dock__control, .blyrics-dock__cycle, .blyrics-dock__offset-step, .blyrics-dock__offset-row-step, .blyrics-dock__inner .blyrics-footer__vote):active {
+  scale: 0.94;
+}
+
+.blyrics-dock__control--active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+.blyrics-dock__control--active:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Dock popover menu (source selector & offset panel):
+   Liquid Glass flyout aligned to the dock capsule with zero overlap */
+.blyrics-dock__menu {
+  box-sizing: border-box !important;
+  border-radius: 16px !important;
+  padding: 6px !important;
+  margin-bottom: 18px !important;
+  margin-top: 18px !important;
+  background: rgba(20, 20, 24, 0.76) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(24px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 16px 40px -8px rgba(8, 10, 18, 0.55),
+    0 4px 12px -2px rgba(8, 10, 18, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Symmetrical alignment covering cycle controls (< >) */
+.blyrics-dock__menu:not(.blyrics-dock__menu--offset) {
+  margin-left: -35px !important;
+  min-width: 156px !important;
+  width: max-content !important;
+}
+
+.blyrics-dock__menu-item {
+  font-family: "SF Pro Text", var(--spicy-font) !important;
+  border-radius: 10px !important;
+  padding: 6px 10px !important;
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease,
+    transform 0.12s ease !important;
+}
+
+.blyrics-dock__menu-item:hover {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.blyrics-dock__menu-item--active {
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   8c. Side-Panel Tab Bar (Icons-only Spicy Liquid Glass Capsule)
+       Replaces the wide uppercase text header ("UP NEXT | LYRICS | RELATED")
+       and harsh bottom underline with a compact centered Liquid Glass pill
+       housing 4 minimalist icons and a smooth sliding active indicator.
+   ------------------------------------------------------------------------ */
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container {
+  --spicy-tab-width: 48px;
+  --spicy-tab-height: 36px;
+  --spicy-tab-gap: 4px;
+  width: fit-content !important;
+  max-width: 100% !important;
+  height: 44px !important;
+  margin: 0 auto 10px !important;
+  /* measured on the live page: the queue glyph sits 22.5px from the left edge
+     and the sparkles glyph 20.8px from the right edge, so the side padding is
+     shifted by 0.85px to make both gaps equal */
+  padding: 4px 6.85px 4px 5.15px !important;
+  border-bottom: none !important;
+  border-radius: 999px !important;
+  background: rgba(0, 0, 0, 0.14) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  box-shadow:
+    0 10px 24px -6px rgba(8, 10, 18, 0.42),
+    0 2px 6px -1px rgba(8, 10, 18, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+  overflow: visible !important;
+}
+
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container > tp-yt-paper-icon-button,
+ytmusic-player-page #side-panel #selectionBar,
+ytmusic-player-page #side-panel tp-yt-paper-tab.tab-header tp-yt-paper-ripple {
+  display: none !important;
+}
+
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContainer,
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContent {
+  position: relative !important;
+  inset: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--spicy-tab-gap) !important;
+  width: fit-content !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+/* Sliding Liquid Glass active pill behind the selected tab */
+ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin-block: auto;
+  width: var(--spicy-tab-width);
+  height: var(--spicy-tab-height);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  transition:
+    transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header.iron-selected)::before {
+  opacity: 1;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(1).iron-selected)::before {
+  transform: translate3d(0, 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(2).iron-selected)::before {
+  transform: translate3d(calc(1 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(3).iron-selected)::before {
+  transform: translate3d(calc(2 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(4).iron-selected)::before {
+  transform: translate3d(calc(3 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(5).iron-selected)::before {
+  transform: translate3d(calc(4 * (var(--spicy-tab-width) + var(--spicy-tab-gap))), 0, 0);
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header {
+  flex: 0 0 var(--spicy-tab-width) !important;
+  width: var(--spicy-tab-width) !important;
+  height: var(--spicy-tab-height) !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: relative !important;
+  z-index: 1 !important;
+  color: rgba(255, 255, 255, 0.55) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transition:
+    color 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Remove .tab-content from flex layout so it never pushes the centered icon */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header .tab-content {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  flex: 0 0 0px !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 0 !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:not(.iron-selected):hover:not([disabled]) {
+  color: rgba(255, 255, 255, 0.88) !important;
+  background: rgba(255, 255, 255, 0.07) !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:active:not([disabled]) {
+  scale: 0.92;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header[disabled] {
+  opacity: 0.28 !important;
+  pointer-events: none !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  display: block;
+  width: 20px;
+  height: 20px;
+  background-color: currentColor;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.28s ease;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected::before {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+}
+
+/* Tab 1: Up Next / Queue */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(1)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M3 6.2a.9.9 0 0 1 1.38-.76l3.4 2.13a.9.9 0 0 1 0 1.52l-3.4 2.13A.9.9 0 0 1 3 10.46V6.2Zm8.5 1.1a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm0 5.2a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm-7.5 5.2a1 1 0 0 1 1-1h15a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M3 6.2a.9.9 0 0 1 1.38-.76l3.4 2.13a.9.9 0 0 1 0 1.52l-3.4 2.13A.9.9 0 0 1 3 10.46V6.2Zm8.5 1.1a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm0 5.2a1 1 0 0 1 1-1h7.5a1 1 0 1 1 0 2h-7.5a1 1 0 0 1-1-1Zm-7.5 5.2a1 1 0 0 1 1-1h15a1 1 0 1 1 0 2H5a1 1 0 0 1-1-1Z'/%3E%3C/svg%3E");
+}
+
+/* Tab 2: Lyrics */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(2)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 0 0 7 0v-5A3.5 3.5 0 0 0 12 3ZM6.5 10.5a1 1 0 0 1 1 1 4.5 4.5 0 0 0 9 0 1 1 0 1 1 2 0 6.5 6.5 0 0 1-5.5 6.42V20h2.5a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2H11v-2.08A6.5 6.5 0 0 1 5.5 11.5a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3a3.5 3.5 0 0 0-3.5 3.5v5a3.5 3.5 0 0 0 7 0v-5A3.5 3.5 0 0 0 12 3ZM6.5 10.5a1 1 0 0 1 1 1 4.5 4.5 0 0 0 9 0 1 1 0 1 1 2 0 6.5 6.5 0 0 1-5.5 6.42V20h2.5a1 1 0 1 1 0 2h-7a1 1 0 1 1 0-2H11v-2.08A6.5 6.5 0 0 1 5.5 11.5a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E");
+}
+
+/* Tab 3 (when 4 tabs exist): Comments */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:nth-of-type(3):not(:last-of-type)::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3.5c5.25 0 9.5 3.58 9.5 8s-4.25 8-9.5 8c-1.34 0-2.62-.24-3.78-.67L4.3 20.4a.9.9 0 0 1-1.22-.97l.63-3.15A7.46 7.46 0 0 1 2.5 11.5c0-4.42 4.25-8 9.5-8Zm-4 6.5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 3.5a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M12 3.5c5.25 0 9.5 3.58 9.5 8s-4.25 8-9.5 8c-1.34 0-2.62-.24-3.78-.67L4.3 20.4a.9.9 0 0 1-1.22-.97l.63-3.15A7.46 7.46 0 0 1 2.5 11.5c0-4.42 4.25-8 9.5-8Zm-4 6.5a1 1 0 0 0 0 2h8a1 1 0 1 0 0-2H8Zm0 3.5a1 1 0 0 0 0 2h5a1 1 0 1 0 0-2H8Z'/%3E%3C/svg%3E");
+}
+
+/* Last tab (Tab 3 or 4): Related / Discover */
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:last-of-type::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M10.5 2.5a.8.8 0 0 1 1.5 0l1.38 4.15a3.5 3.5 0 0 0 2.22 2.22l4.15 1.38a.8.8 0 0 1 0 1.5l-4.15 1.38a3.5 3.5 0 0 0-2.22 2.22L12 19.5a.8.8 0 0 1-1.5 0l-1.38-4.15a3.5 3.5 0 0 0-2.22-2.22L2.75 11.75a.8.8 0 0 1 0-1.5l4.15-1.38a3.5 3.5 0 0 0 2.22-2.22L10.5 2.5Zm8 12a.6.6 0 0 1 1.12 0l.58 1.62a1.5 1.5 0 0 0 .96.96l1.62.58a.6.6 0 0 1 0 1.12l-1.62.58a1.5 1.5 0 0 0-.96.96l-.58 1.62a.6.6 0 0 1-1.12 0l-.58-1.62a1.5 1.5 0 0 0-.96-.96l-1.62-.58a.6.6 0 0 1 0-1.12l1.62-.58a1.5 1.5 0 0 0 .96-.96l.58-1.62Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns%3D'http://www.w3.org/2000/svg' viewBox%3D'0 0 24 24' fill%3D'black'%3E%3Cpath d%3D'M10.5 2.5a.8.8 0 0 1 1.5 0l1.38 4.15a3.5 3.5 0 0 0 2.22 2.22l4.15 1.38a.8.8 0 0 1 0 1.5l-4.15 1.38a3.5 3.5 0 0 0-2.22 2.22L12 19.5a.8.8 0 0 1-1.5 0l-1.38-4.15a3.5 3.5 0 0 0-2.22-2.22L2.75 11.75a.8.8 0 0 1 0-1.5l4.15-1.38a3.5 3.5 0 0 0 2.22-2.22L10.5 2.5Zm8 12a.6.6 0 0 1 1.12 0l.58 1.62a1.5 1.5 0 0 0 .96.96l1.62.58a.6.6 0 0 1 0 1.12l-1.62.58a1.5 1.5 0 0 0-.96.96l-.58 1.62a.6.6 0 0 1-1.12 0l-.58-1.62a1.5 1.5 0 0 0-.96-.96l-1.62-.58a.6.6 0 0 1 0-1.12l1.62-.58a1.5 1.5 0 0 0 .96-.96l.58-1.62Z'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   8d. Sidebar expand / collapse (smooth slide, fade and content shift)
+       The left navigation drawer and the collapsed mini bar share one
+       spring-like curve, so hiding or revealing the sidebar glides instead of
+       snapping. Verified against the live DOM: the drawer carries the opened
+       attribute and the mini bar is toggled through an inline display rule.
+   ------------------------------------------------------------------------ */
+ytmusic-app-layout {
+  --spicy-guide-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --spicy-guide-time: 0.38s;
+  --spicy-guide-width: 240px;
+}
+
+/* the expanded panel keeps its full width in both directions. YouTube Music
+   shrinks it to the 72px bar width the instant it closes, which squeezed the
+   entries on top of the mini bar icons. A fixed width plus a full-width
+   slide-out removes that ghost frame */
+ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
+ytmusic-app-layout tp-yt-app-drawer#guide #guide-wrapper {
+  width: var(--spicy-guide-width) !important;
+}
+
+ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer {
+  transition:
+    transform var(--spicy-guide-time) var(--spicy-guide-ease),
+    visibility var(--spicy-guide-time) linear !important;
+  will-change: transform;
+  overflow-x: clip;
+}
+
+ytmusic-app-layout tp-yt-app-drawer#guide:not([opened]) #contentContainer {
+  transform: translateX(-100%) !important;
+}
+
+/* the mini bar stays in layout and cross-fades: it fades out just after the
+   panel starts covering it and fades back in once the panel is leaving */
+ytmusic-app-layout #mini-guide {
+  display: block !important;
+  opacity: 1;
+  transition: opacity 0.2s ease 0.16s !important;
+}
+
+ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) #mini-guide {
+  opacity: 0;
+  pointer-events: none;
+  transition-delay: 0.08s !important;
+}
+
+ytmusic-app-layout #mini-guide-background {
+  transition: opacity 0.2s ease 0.16s !important;
+}
+
+/* drawer scrim fades smoothly */
+ytmusic-app-layout tp-yt-app-drawer#guide #scrim {
+  transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease) !important;
+}
+
+ytmusic-guide-renderer :is(ytmusic-guide-entry-renderer, ytmusic-guide-section-renderer) :is(.title, .guide-entry-text, yt-formatted-string) {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+/* glass layer of the expanded drawer fades along with the slide */
+#layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #guide-wrapper::before {
+  transition: opacity var(--spicy-guide-time) var(--spicy-guide-ease);
+}
+
+/* ---------------------------------------------------------------------------
+   8e. Popups and dropdowns (context menu, account menu, search suggestions)
+       YouTube Music shows and hides these by flipping display, so they pop
+       in and vanish in a single frame. Discrete display transitions plus a
+       starting style give them a soft scale and fade in, and the same on
+       the way out, in line with the rest of the theme.
+   ------------------------------------------------------------------------ */
+ytmusic-popup-container tp-yt-iron-dropdown {
+  --spicy-pop-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  transform-origin: var(--spicy-pop-origin, bottom center);
+  opacity: 1;
+  scale: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.2s var(--spicy-pop-ease),
+    scale 0.28s var(--spicy-pop-ease),
+    translate 0.28s var(--spicy-pop-ease),
+    display 0.28s allow-discrete,
+    overlay 0.28s allow-discrete;
+}
+
+@starting-style {
+  ytmusic-popup-container tp-yt-iron-dropdown {
+    opacity: 0;
+    scale: 0.94;
+    translate: 0 8px;
+  }
+}
+
+ytmusic-popup-container tp-yt-iron-dropdown[aria-hidden="true"] {
+  opacity: 0;
+  scale: 0.96;
+  translate: 0 6px;
+  pointer-events: none;
+}
+
+/* account menu: opens from the top, unlike the context menus that rise */
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer) {
+  transform-origin: var(--spicy-pop-origin, top right);
+}
+
+ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer)[aria-hidden="true"] {
+  translate: 0 -6px;
+}
+
+@starting-style {
+  ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer) {
+    translate: 0 -8px;
+  }
+}
+
+html ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-renderer {
+  animation-name: spicy-pop-item-down;
+}
+
+@keyframes spicy-pop-item-down {
+  from {
+    opacity: 0;
+    translate: 0 -4px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* menu items cascade in a touch after the panel, like Spicy's lists */
+ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
+  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+
+@keyframes spicy-pop-item {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* search suggestions drop down from the search box */
+ytmusic-search-box #suggestion-list {
+  transform-origin: top center;
+  animation: spicy-search-drop 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes spicy-search-drop {
+  from {
+    opacity: 0;
+    scale: 0.97;
+    translate: 0 -8px;
+  }
+
+  to {
+    opacity: 1;
+    scale: 1;
+    translate: 0 0;
+  }
 }
 
 /* ---------------------------------------------------------------------------
    9. Reduced motion
    ------------------------------------------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
+  ytmusic-player-page #side-panel #tabsContent::before,
+  ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header,
+  ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before,
+  ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
+  ytmusic-app-layout #content.ytmusic-app-layout,
+  ytmusic-app-layout #main-panel.ytmusic-app-layout,
+  ytmusic-app-layout #mini-guide,
+  ytmusic-app-layout #mini-guide-background,
+  ytmusic-player-bar ytmusic-like-button-renderer * {
+    transition: none !important;
+  }
+
+  ytmusic-popup-container tp-yt-iron-dropdown {
+    transition: none;
+  }
+
+  ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) *,
+  ytmusic-search-box #suggestion-list {
+    animation: none !important;
+  }
+
   ytmusic-player-page:before,
   ytmusic-player-page:after,
   .blyrics--instrumental.blyrics--animating .blyrics--instrumental-icon {

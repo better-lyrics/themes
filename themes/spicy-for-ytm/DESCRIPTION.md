@@ -18,6 +18,9 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
   - sleek glass progress bar;
   - top and bottom soft gradient fades on the lyrics container;
   - active line positioned comfortably above center with smooth spring scrolling and word bounce.
+- **Side-Panel Tab Bar:** minimalist Liquid Glass capsule housing 4 clean icons with a smooth sliding active pill indicator, replacing bulky uppercase text headers.
+- **Refined Controls & Dock:** Liquid Glass autoscroll resume button, symmetrical dock source selector with floating clearance, and discreet creator credits footnote.
+- **Micro-interactions:** smooth sidebar expand/collapse without layout snapping, growing like/dislike buttons on hover, and fluid GPU-accelerated popups and context menus.
 - **Rest of YouTube Music** (home, library), kept subtle:
   - a blurred cover background;
   - a glass top bar and side bar;
