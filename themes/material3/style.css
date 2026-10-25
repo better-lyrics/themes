@@ -295,6 +295,274 @@ ytmusic-search-box[opened] .search-box {
   border-radius: 28px 28px 0 0 !important;
 }
 
+@keyframes m3-search-results-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+ytmusic-search-box[opened] #suggestion-list {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  animation: m3-search-results-fade-in 280ms cubic-bezier(0.2, 0, 0, 1) both !important;
+}
+
+ytmusic-search-box[opened] #suggestion-list > * {
+  animation: m3-search-results-fade-in 220ms ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-search-box[opened] #suggestion-list,
+  ytmusic-search-box[opened] #suggestion-list > * {
+    animation-duration: 0.01ms !important;
+  }
+}
+
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Final wrapper cleanup: no surface or shadow behind the field. */
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep only the search field visible; all host layers stay transparent. */
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep only the search field visible; all host layers stay transparent. */
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* The wrapper must not create a second surface behind the search field. */
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box tp-yt-paper-input,
+ytmusic-search-box #input-container {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box .search-box {
+  background: var(--m3c-surface-container-high) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+ytmusic-search-box:not([opened]),
+ytmusic-search-box:not([opened]) #layout,
+ytmusic-search-box:not([opened]) #input-box,
+ytmusic-search-box:not([opened]) .search-box-container,
+ytmusic-search-box:not([opened]) tp-yt-paper-input,
+ytmusic-search-box:not([opened]) #input-container,
+ytmusic-search-box:not([opened]) .search-box {
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  border-radius: 28px !important;
+}
+
+ytmusic-search-box:not([opened]) .search-box {
+  background-color: var(--m3c-surface-container-high) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--m3c-surface-container-lowest) 45%, transparent) !important;
+}
+
+ytmusic-search-box[opened] #layout,
+ytmusic-search-box[opened] #input-box {
+  overflow: hidden !important;
+  border-radius: 28px 28px 0 0 !important;
+}
+
+ytmusic-search-box[opened] #suggestion-list {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  transition:
+    opacity 260ms ease,
+    transform 320ms cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+ytmusic-search-box #suggestion-list {
+  opacity: 0;
+  transform: translateY(-8px);
+  transform-origin: top center;
+  transition:
+    opacity 180ms ease,
+    transform 220ms cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-search-box #suggestion-list {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+ytmusic-search-box,
+ytmusic-search-box #layout,
+ytmusic-search-box #input-box,
+ytmusic-search-box .search-box,
+ytmusic-search-box .search-box-container,
+ytmusic-search-box #input-container {
+  transition:
+    background-color 220ms ease,
+    border-radius 320ms cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 220ms ease,
+    transform 220ms cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+ytmusic-search-box .search-box {
+  transform-origin: center;
+}
+
+ytmusic-search-box:hover .search-box,
+ytmusic-search-box:focus-within .search-box {
+  background-color: var(--m3c-surface-container-highest) !important;
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--m3c-primary) 18%, transparent) !important;
+}
+
+ytmusic-search-box[opened] .search-box {
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--m3c-primary) 22%, transparent) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ytmusic-search-box,
+  ytmusic-search-box *,
+  ytmusic-search-box::before,
+  ytmusic-search-box::after {
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Material 3 expressive loading indicator */
+:root {
+  --m3-loader-size: 48px;
+  --m3-loader-color: var(--m3c-on-surface-variant);
+  --m3-loader-shape: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cpath fill='%23000' d='m37.4 24.7 0.5 0.7 0.8 0.9 0.8 1.0 0.6 1.0 -0.1 0.8 -0.0 0.1 -0.6 0.7 -1.1 0.5 -1.3 0.3 -1.0 0.2 -0.9 0.4 -0.7 1.1 0.1 1.0 0.1 1.1 0.0 1.2 -0.2 1.1 -0.4 0.5 -0.3 0.2 -0.8 0.2 -1.2 -0.4 -1.2 -0.4 -1.0 -0.5 -0.8 -0.1 -1.3 0.5 -0.5 0.8 -0.6 0.9 -0.6 1.0 -0.8 0.8 -0.8 0.2 -0.1 -0.0 -0.9 -0.3 -0.8 -1.0 -0.6 -1.0 -0.6 -0.9 -0.5 -0.7 -1.3 -0.3 -0.9 0.2 -0.9 0.4 -1.2 0.5 -1.2 0.3 -0.8 -0.3 -0.0 -0.1 -0.6 -0.6 -0.1 -1.2 0.1 -1.2 0.0 -1.1 0.0 -0.9 -0.7 -1.1 -0.9 -0.3 -1.1 -0.3 -1.2 -0.3 -1.1 -0.4 -0.5 -0.8 -0.0 0.0 -0.1 -0.9 0.6 -1.0 0.8 -0.9 0.8 -0.9 0.5 -0.7 -0.0 -1.4 -0.5 -0.7 -0.8 -0.9 -0.8 -0.9 -0.6 -1.0 0.1 -0.9 0.0 -0.0 0.5 -0.8 1.1 -0.4 1.2 -0.3 1.1 -0.3 0.9 -0.3 0.7 -1.1 0.0 -0.9 -0.0 -1.1 -0.1 -1.2 0.1 -1.2 0.6 -0.6 0.0 -0.1 0.8 -0.3 1.2 0.3 1.2 0.5 0.9 0.4 0.9 0.2 1.3 -0.3 0.5 -0.7 0.6 -0.9 0.6 -1.0 0.8 -1.0 0.9 -0.3 0.1 0.0 0.8 0.2 0.8 0.8 0.6 1.0 0.6 0.9 0.5 0.8 1.3 0.5 0.8 -0.1 1.0 -0.5 1.2 -0.4 1.2 -0.4 0.8 0.2 0.3 0.2 0.4 0.5 0.2 1.1 -0.0 1.2 -0.1 1.1 -0.1 1.0 0.7 1.1 0.9 0.4 1.0 0.2 1.3 0.3 1.1 0.5 0.6 0.7 0.0 0.1 0.1 0.8 -0.5 1.0 -0.9 1.0 -0.8 0.9 -0.5 0.7 z'%3E%3Canimate attributeName='d' dur='5s' repeatCount='indefinite' calcMode='spline' keySplines='0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8' keyTimes='0;0.14;0.29;0.43;0.57;0.71;0.86;1' values='m37.4 24.7 0.5 0.7 0.8 0.9 0.8 1.0 0.6 1.0 -0.1 0.8 -0.0 0.1 -0.6 0.7 -1.1 0.5 -1.3 0.3 -1.0 0.2 -0.9 0.4 -0.7 1.1 0.1 1.0 0.1 1.1 0.0 1.2 -0.2 1.1 -0.4 0.5 -0.3 0.2 -0.8 0.2 -1.2 -0.4 -1.2 -0.4 -1.0 -0.5 -0.8 -0.1 -1.3 0.5 -0.5 0.8 -0.6 0.9 -0.6 1.0 -0.8 0.8 -0.8 0.2 -0.1 -0.0 -0.9 -0.3 -0.8 -1.0 -0.6 -1.0 -0.6 -0.9 -0.5 -0.7 -1.3 -0.3 -0.9 0.2 -0.9 0.4 -1.2 0.5 -1.2 0.3 -0.8 -0.3 -0.0 -0.1 -0.6 -0.6 -0.1 -1.2 0.1 -1.2 0.0 -1.1 0.0 -0.9 -0.7 -1.1 -0.9 -0.3 -1.1 -0.3 -1.2 -0.3 -1.1 -0.4 -0.5 -0.8 -0.0 0.0 -0.1 -0.9 0.6 -1.0 0.8 -0.9 0.8 -0.9 0.5 -0.7 -0.0 -1.4 -0.5 -0.7 -0.8 -0.9 -0.8 -0.9 -0.6 -1.0 0.1 -0.9 0.0 -0.0 0.5 -0.8 1.1 -0.4 1.2 -0.3 1.1 -0.3 0.9 -0.3 0.7 -1.1 0.0 -0.9 -0.0 -1.1 -0.1 -1.2 0.1 -1.2 0.6 -0.6 0.0 -0.1 0.8 -0.3 1.2 0.3 1.2 0.5 0.9 0.4 0.9 0.2 1.3 -0.3 0.5 -0.7 0.6 -0.9 0.6 -1.0 0.8 -1.0 0.9 -0.3 0.1 0.0 0.8 0.2 0.8 0.8 0.6 1.0 0.6 0.9 0.5 0.8 1.3 0.5 0.8 -0.1 1.0 -0.5 1.2 -0.4 1.2 -0.4 0.8 0.2 0.3 0.2 0.4 0.5 0.2 1.1 -0.0 1.2 -0.1 1.1 -0.1 1.0 0.7 1.1 0.9 0.4 1.0 0.2 1.3 0.3 1.1 0.5 0.6 0.7 0.0 0.1 0.1 0.8 -0.5 1.0 -0.9 1.0 -0.8 0.9 -0.5 0.7 z;m39.9 24.0 -0.3 0.8 -0.4 0.8 -0.3 0.8 -0.2 1.5 0.1 0.9 0.1 0.9 -0.1 0.9 -0.2 0.8 -0.3 0.8 -0.2 0.4 -0.3 0.4 -0.5 0.7 -0.7 0.5 -0.8 0.4 -0.8 0.4 -0.8 0.4 -1.2 1.0 -0.5 0.7 -0.5 0.8 -0.6 0.6 -0.6 0.6 -0.8 0.4 -0.4 0.2 -0.5 0.1 -0.9 0.2 -0.8 -0.0 -0.9 -0.2 -0.9 -0.3 -0.8 -0.1 -1.6 -0.1 -0.8 0.2 -0.9 0.3 -0.9 0.2 -0.8 -0.0 -0.9 -0.2 -0.5 -0.1 -0.4 -0.2 -0.8 -0.4 -0.6 -0.5 -0.6 -0.7 -0.5 -0.8 -0.5 -0.7 -1.2 -1.0 -0.7 -0.4 -0.9 -0.4 -0.8 -0.4 -0.6 -0.5 -0.6 -0.7 -0.3 -0.4 -0.2 -0.4 -0.3 -0.8 -0.2 -0.8 -0.1 -0.9 0.1 -0.9 0.1 -0.9 -0.2 -1.5 -0.3 -0.8 -0.4 -0.8 -0.3 -0.8 -0.2 -0.8 -0.1 -0.9 0.1 -0.7 -0.0 -0.2 0.2 -0.8 0.4 -0.8 0.5 -0.7 0.6 -0.6 0.7 -0.7 0.5 -0.6 0.6 -1.3 0.3 -0.9 0.2 -0.8 0.3 -0.8 0.5 -0.7 0.5 -0.6 0.2 -0.2 0.5 -0.4 0.8 -0.4 0.8 -0.3 0.8 -0.2 0.9 -0.0 0.8 -0.1 1.4 -0.5 0.7 -0.4 0.7 -0.5 0.7 -0.5 0.8 -0.3 0.8 -0.2 0.9 -0.1 0.0 -0.0 0.8 0.1 0.9 0.2 0.8 0.3 0.7 0.5 0.7 0.5 0.7 0.4 1.4 0.5 0.8 0.1 0.9 0.0 0.9 0.2 0.8 0.3 0.7 0.4 0.5 0.4 0.2 0.1 0.5 0.7 0.5 0.7 0.3 0.8 0.2 0.8 0.3 0.9 0.6 1.3 0.5 0.6 0.7 0.7 0.6 0.6 0.5 0.7 0.4 0.8 0.2 0.8 0.0 0.2 0.1 0.7 -0.1 0.9 z;m38.9 24.2 -0.2 0.8 -0.2 0.7 -0.3 0.8 -0.2 0.8 -0.3 0.7 -0.2 0.8 -0.3 0.8 -0.2 0.7 -0.3 0.8 -0.2 0.8 -0.3 0.7 -0.2 0.8 -0.4 1.0 -0.4 0.8 -0.4 0.8 -0.6 0.6 -0.7 0.5 0.0 0.1 -0.7 0.4 -0.8 0.3 -0.8 0.3 -0.9 0.1 -1.1 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -0.8 -0.0 -1.1 -0.0 -0.9 -0.1 -0.8 -0.3 -0.8 -0.3 -0.7 -0.5 -0.1 0.0 -0.6 -0.5 -0.6 -0.7 -0.4 -0.7 -0.4 -0.8 -0.4 -1.0 -0.2 -0.8 -0.3 -0.7 -0.2 -0.8 -0.3 -0.8 -0.2 -0.7 -0.3 -0.8 -0.2 -0.8 -0.3 -0.7 -0.2 -0.8 -0.3 -0.7 -0.2 -0.8 -0.3 -0.8 -0.2 -0.7 -0.3 -1.1 -0.2 -0.9 -0.0 -0.8 0.0 -0.9 0.2 -0.8 0.1 -0.1 0.3 -0.7 0.4 -0.8 0.6 -0.6 0.6 -0.6 0.9 -0.7 0.6 -0.5 0.7 -0.4 0.6 -0.5 0.7 -0.5 0.6 -0.4 0.7 -0.5 0.6 -0.5 0.7 -0.5 0.6 -0.4 0.7 -0.5 0.6 -0.5 0.7 -0.4 0.6 -0.5 0.9 -0.7 0.8 -0.4 0.8 -0.3 0.8 -0.2 0.8 -0.0 0.1 -0.0 0.9 0.0 0.8 0.2 0.8 0.3 0.8 0.4 0.9 0.7 0.6 0.5 0.7 0.4 0.6 0.5 0.7 0.5 0.6 0.4 0.7 0.5 0.6 0.5 0.7 0.5 0.6 0.4 0.7 0.5 0.6 0.5 0.7 0.4 0.6 0.5 0.9 0.7 0.6 0.6 0.6 0.7 0.4 0.7 0.3 0.7 0.0 0.1 0.2 0.8 0.1 0.9 -0.0 0.9 -0.2 0.8 -0.3 1.1 z;m39.6 24.0 -0.1 0.8 -0.3 0.8 -0.2 0.8 -0.3 0.7 -0.3 0.8 -0.4 0.7 -0.4 0.7 -0.5 0.6 -0.4 0.6 -0.6 0.6 -0.6 0.6 -0.4 0.4 -0.6 0.6 -0.4 0.5 -0.9 0.8 -0.5 0.5 -0.6 0.6 -0.4 0.4 -0.7 0.7 -0.5 0.5 -0.6 0.4 -0.7 0.5 -0.6 0.4 -0.7 0.4 -0.7 0.3 -0.8 0.3 -0.8 0.3 -0.8 0.2 -0.8 0.1 -0.8 0.1 -0.8 0.1 -0.9 0.0 -0.8 -0.0 -0.9 -0.1 -0.8 -0.2 -0.8 -0.2 -0.9 -0.2 -0.8 -0.3 -0.8 -0.4 -0.8 -0.4 -0.7 -0.5 -0.7 -0.5 -0.7 -0.5 -0.6 -0.6 -0.1 -0.1 -0.5 -0.6 -0.6 -0.7 -0.5 -0.7 -0.5 -0.8 -0.4 -0.7 -0.4 -0.8 -0.3 -0.8 -0.2 -0.8 -0.2 -0.9 -0.2 -0.8 -0.1 -0.9 0.0 -0.8 0.0 -0.9 0.1 -0.8 0.1 -0.8 0.1 -0.8 0.3 -0.8 0.2 -0.8 0.3 -0.7 0.4 -0.8 0.3 -0.7 0.5 -0.6 0.4 -0.7 0.4 -0.5 0.6 -0.6 0.6 -0.7 0.4 -0.4 0.6 -0.6 0.5 -0.4 0.8 -0.9 0.5 -0.5 0.6 -0.6 0.4 -0.4 0.7 -0.7 0.5 -0.5 0.6 -0.4 0.7 -0.5 0.6 -0.4 0.7 -0.4 0.7 -0.3 0.8 -0.3 0.8 -0.3 0.8 -0.2 0.8 -0.1 0.8 -0.1 0.8 -0.1 0.9 -0.0 0.8 0.0 0.9 0.1 0.8 0.2 0.8 0.2 0.9 0.2 0.8 0.4 0.8 0.3 0.8 0.4 0.7 0.5 0.7 0.5 0.7 0.5 0.6 0.7 0.1 -0.0 0.5 0.6 0.6 0.7 0.5 0.7 0.5 0.8 0.4 0.7 0.3 0.8 0.4 0.8 0.2 0.8 0.2 0.9 0.2 0.8 0.1 0.9 0.0 0.8 -0.0 0.8 -0.1 0.9 z;m40.0 24.0 -0.1 0.8 -0.5 0.8 -0.6 0.8 -0.6 0.6 -0.6 0.7 -0.5 0.6 -0.7 1.2 -0.1 0.7 -0.1 0.8 -0.0 0.9 -0.1 0.9 -0.1 0.9 -0.2 0.9 -0.5 0.7 -0.0 0.0 -0.7 0.5 -0.9 0.2 -0.9 0.1 -0.9 0.1 -0.8 0.0 -0.8 0.1 -0.8 0.1 -1.2 0.7 -0.6 0.5 -0.7 0.6 -0.6 0.6 -0.8 0.6 -0.8 0.5 -0.8 0.1 -0.0 0.0 -0.8 -0.1 -0.8 -0.5 -0.8 -0.6 -0.6 -0.6 -0.7 -0.6 -0.6 -0.5 -1.2 -0.7 -0.7 -0.1 -0.8 -0.1 -0.9 -0.0 -0.9 -0.1 -0.9 -0.1 -0.9 -0.2 -0.7 -0.5 -0.0 0.0 -0.5 -0.7 -0.2 -0.9 -0.1 -0.9 -0.1 -0.9 -0.0 -0.8 -0.1 -0.8 -0.1 -0.8 -0.7 -1.2 -0.5 -0.6 -0.6 -0.7 -0.6 -0.6 -0.6 -0.8 -0.5 -0.8 -0.1 -0.8 -0.0 -0.0 0.1 -0.8 0.5 -0.8 0.6 -0.8 0.6 -0.6 0.6 -0.7 0.5 -0.6 0.7 -1.2 0.1 -0.7 0.1 -0.8 0.0 -0.9 0.1 -0.9 0.1 -0.9 0.2 -0.9 0.5 -0.7 -0.0 -0.0 0.7 -0.5 0.9 -0.2 0.9 -0.1 0.9 -0.1 0.8 -0.0 0.8 -0.1 0.8 -0.1 1.2 -0.7 0.6 -0.5 0.7 -0.6 0.6 -0.6 0.8 -0.6 0.8 -0.5 0.8 -0.1 0.0 -0.0 0.8 0.1 0.8 0.5 0.8 0.6 0.6 0.6 0.7 0.6 0.6 0.5 1.2 0.7 0.7 0.1 0.8 0.1 0.9 0.0 0.9 0.1 0.9 0.1 0.9 0.2 0.7 0.5 0.0 -0.0 0.5 0.7 0.2 0.9 0.1 0.9 0.1 0.9 0.0 0.8 0.1 0.8 0.1 0.8 0.7 1.2 0.5 0.6 0.6 0.7 0.6 0.6 0.6 0.8 0.5 0.8 0.1 0.8 z;m36.9 24.6 0.1 0.7 0.2 0.8 0.2 0.7 0.4 0.9 0.4 0.9 0.2 0.9 0.1 1.0 0.1 0.9 -0.1 0.9 -0.3 0.9 -0.3 0.9 -0.4 0.8 -0.5 0.8 -0.6 0.6 -0.1 0.1 -0.6 0.6 -0.8 0.5 -0.8 0.4 -0.9 0.3 -0.9 0.3 -0.9 0.1 -0.9 -0.1 -1.0 -0.1 -0.9 -0.2 -0.9 -0.4 -0.9 -0.4 -0.7 -0.2 -0.8 -0.2 -0.7 -0.1 -1.2 0.0 -0.7 0.1 -0.8 0.2 -0.7 0.2 -0.9 0.4 -0.9 0.4 -0.9 0.2 -1.0 0.1 -0.9 0.1 -0.9 -0.1 -0.9 -0.3 -0.9 -0.3 -0.8 -0.4 -0.8 -0.5 -0.6 -0.6 -0.1 -0.1 -0.6 -0.6 -0.5 -0.8 -0.4 -0.8 -0.3 -0.9 -0.3 -0.9 -0.1 -0.9 0.1 -0.9 0.1 -1.0 0.2 -0.9 0.4 -0.9 0.4 -0.9 0.2 -0.7 0.2 -0.8 0.1 -0.7 -0.0 -1.2 -0.1 -0.7 -0.2 -0.8 -0.2 -0.7 -0.4 -0.9 -0.4 -0.9 -0.2 -0.9 -0.1 -1.0 -0.1 -0.9 0.1 -0.9 0.3 -0.9 0.3 -0.9 0.4 -0.8 0.5 -0.8 0.6 -0.6 0.1 -0.1 0.6 -0.6 0.8 -0.5 0.8 -0.4 0.9 -0.3 0.9 -0.3 0.9 -0.1 0.9 0.1 1.0 0.1 0.9 0.2 0.9 0.4 0.9 0.4 0.7 0.2 0.8 0.2 0.7 0.1 1.2 -0.0 0.7 -0.1 0.8 -0.2 0.7 -0.2 0.9 -0.4 0.9 -0.4 0.9 -0.2 1.0 -0.1 0.9 -0.1 0.9 0.1 0.9 0.3 0.9 0.3 0.8 0.4 0.8 0.5 0.6 0.6 0.1 0.1 0.6 0.6 0.5 0.8 0.4 0.8 0.3 0.9 0.3 0.9 0.1 0.9 -0.1 0.9 -0.1 1.0 -0.2 0.9 -0.4 0.9 -0.4 0.9 -0.2 0.7 -0.2 0.8 -0.1 0.7 z;m37.7 24.0 -0.3 0.7 -0.4 0.7 -0.3 0.6 -0.3 0.7 -0.4 0.6 -0.3 0.5 -0.4 0.6 -0.4 0.5 -0.4 0.5 -0.4 0.5 -0.4 0.5 -0.4 0.5 -0.3 0.4 -0.5 0.4 -0.8 0.8 -0.4 0.5 -0.4 0.3 -0.5 0.4 -0.5 0.4 -0.5 0.4 -0.5 0.4 -0.5 0.4 -0.6 0.4 -0.5 0.3 -0.6 0.4 -0.7 0.3 -0.6 0.3 -0.7 0.4 -0.7 0.3 -0.7 0.2 -0.7 0.3 -0.9 0.3 -0.8 0.2 -0.8 0.1 -0.9 0.1 -1.0 0.1 -0.9 -0.0 -0.9 -0.1 -0.9 -0.1 -0.9 -0.3 -0.9 -0.3 -0.8 -0.4 -0.8 -0.6 -0.7 -0.6 -0.0 0.0 -0.6 -0.7 -0.6 -0.8 -0.4 -0.8 -0.3 -0.9 -0.3 -0.9 -0.1 -0.9 -0.1 -0.9 0.0 -0.9 0.1 -1.0 0.1 -0.9 0.1 -0.8 0.2 -0.8 0.3 -0.9 0.3 -0.7 0.2 -0.7 0.3 -0.7 0.4 -0.7 0.3 -0.6 0.3 -0.7 0.4 -0.6 0.3 -0.5 0.4 -0.6 0.4 -0.5 0.4 -0.5 0.4 -0.5 0.4 -0.5 0.4 -0.5 0.3 -0.4 0.5 -0.4 0.8 -0.8 0.4 -0.5 0.4 -0.3 0.5 -0.4 0.5 -0.4 0.5 -0.4 0.5 -0.4 0.5 -0.4 0.6 -0.4 0.5 -0.3 0.6 -0.4 0.7 -0.3 0.6 -0.3 0.7 -0.4 0.7 -0.3 0.7 -0.2 0.7 -0.3 0.9 -0.3 0.8 -0.2 0.8 -0.1 0.9 -0.1 1.0 -0.1 0.9 0.0 0.9 0.1 0.9 0.1 0.9 0.3 0.9 0.3 0.8 0.4 0.8 0.6 0.7 0.6 -0.0 0.0 0.6 0.7 0.6 0.8 0.4 0.8 0.3 0.9 0.3 0.9 0.1 0.9 0.1 0.9 -0.0 0.9 -0.1 1.0 -0.1 0.9 -0.1 0.8 -0.2 0.8 -0.3 0.9 -0.3 0.7 z;m37.4 24.7 0.5 0.7 0.8 0.9 0.8 1.0 0.6 1.0 -0.1 0.8 -0.0 0.1 -0.6 0.7 -1.1 0.5 -1.3 0.3 -1.0 0.2 -0.9 0.4 -0.7 1.1 0.1 1.0 0.1 1.1 0.0 1.2 -0.2 1.1 -0.4 0.5 -0.3 0.2 -0.8 0.2 -1.2 -0.4 -1.2 -0.4 -1.0 -0.5 -0.8 -0.1 -1.3 0.5 -0.5 0.8 -0.6 0.9 -0.6 1.0 -0.8 0.8 -0.8 0.2 -0.1 -0.0 -0.9 -0.3 -0.8 -1.0 -0.6 -1.0 -0.6 -0.9 -0.5 -0.7 -1.3 -0.3 -0.9 0.2 -0.9 0.4 -1.2 0.5 -1.2 0.3 -0.8 -0.3 -0.0 -0.1 -0.6 -0.6 -0.1 -1.2 0.1 -1.2 0.0 -1.1 0.0 -0.9 -0.7 -1.1 -0.9 -0.3 -1.1 -0.3 -1.2 -0.3 -1.1 -0.4 -0.5 -0.8 -0.0 0.0 -0.1 -0.9 0.6 -1.0 0.8 -0.9 0.8 -0.9 0.5 -0.7 -0.0 -1.4 -0.5 -0.7 -0.8 -0.9 -0.8 -0.9 -0.6 -1.0 0.1 -0.9 0.0 -0.0 0.5 -0.8 1.1 -0.4 1.2 -0.3 1.1 -0.3 0.9 -0.3 0.7 -1.1 0.0 -0.9 -0.0 -1.1 -0.1 -1.2 0.1 -1.2 0.6 -0.6 0.0 -0.1 0.8 -0.3 1.2 0.3 1.2 0.5 0.9 0.4 0.9 0.2 1.3 -0.3 0.5 -0.7 0.6 -0.9 0.6 -1.0 0.8 -1.0 0.9 -0.3 0.1 0.0 0.8 0.2 0.8 0.8 0.6 1.0 0.6 0.9 0.5 0.8 1.3 0.5 0.8 -0.1 1.0 -0.5 1.2 -0.4 1.2 -0.4 0.8 0.2 0.3 0.2 0.4 0.5 0.2 1.1 -0.0 1.2 -0.1 1.1 -0.1 1.0 0.7 1.1 0.9 0.4 1.0 0.2 1.3 0.3 1.1 0.5 0.6 0.7 0.0 0.1 0.1 0.8 -0.5 1.0 -0.9 1.0 -0.8 0.9 -0.5 0.7 z'/%3E%3CanimateTransform attributeName='transform' attributeType='XML' type='rotate' dur='5s' repeatCount='indefinite' calcMode='spline' keySplines='0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8;0.5 0.2 0 0.8' keyTimes='0;0.14;0.29;0.43;0.57;0.71;0.86;1' values='0 24 24;154 24 24;309 24 24;463 24 24;617 24 24;771 24 24;926 24 24;1080 24 24'/%3E%3C/path%3E%3C/svg%3E");
+}
+
+tp-yt-paper-spinner,
+tp-yt-paper-spinner-lite {
+  position: relative;
+  overflow: visible !important;
+  margin-inline: auto !important;
+  align-self: center !important;
+  justify-self: center !important;
+  flex: 0 0 var(--m3-loader-size) !important;
+  min-width: var(--m3-loader-size) !important;
+  min-height: var(--m3-loader-size) !important;
+  width: var(--m3-loader-size) !important;
+  height: var(--m3-loader-size) !important;
+  --paper-spinner-color: transparent !important;
+  --paper-spinner-layer-1-color: transparent !important;
+  --paper-spinner-layer-2-color: transparent !important;
+  --paper-spinner-layer-3-color: transparent !important;
+  --paper-spinner-layer-4-color: transparent !important;
+  --paper-spinner-stroke-width: 0px !important;
+}
+
+tp-yt-paper-spinner::before,
+tp-yt-paper-spinner-lite::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-color: var(--m3-loader-color);
+  -webkit-mask-image: var(--m3-loader-shape);
+  mask-image: var(--m3-loader-shape);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  filter: drop-shadow(0 2px 6px color-mix(in srgb, var(--m3-loader-color) 35%, transparent));
+}
+
 ytmusic-search-box[opened] #suggestion-list {
   background-color: var(--m3c-surface-container-high) !important;
   border: 0 !important;
@@ -559,6 +827,81 @@ ytmusic-tabs tp-yt-paper-tabs {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+}
+
+/* Smoothly animate the navigation drawer and its scrim in both directions. */
+tp-yt-app-drawer#guide,
+ytmusic-app-layout #guide {
+  transition: opacity 320ms cubic-bezier(0.2, 0, 0, 1) !important;
+  will-change: opacity;
+}
+
+tp-yt-app-drawer#guide #contentContainer,
+ytmusic-app-layout #guide #contentContainer {
+  transition:
+    opacity 320ms cubic-bezier(0.2, 0, 0, 1),
+    transform 320ms cubic-bezier(0.2, 0, 0, 1) !important;
+  transform-origin: left center;
+  will-change: opacity, transform;
+}
+
+tp-yt-app-drawer#guide:not([opened]),
+ytmusic-app-layout #guide:not([opened]) {
+  transition-duration: 420ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  opacity: 0 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+tp-yt-app-drawer#guide:not([opened]) #contentContainer,
+ytmusic-app-layout #guide:not([opened]) #contentContainer {
+  transition-duration: 420ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  opacity: 0 !important;
+  transform: translateX(-94%) !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+tp-yt-app-drawer#guide:not([opened]) #scrim,
+ytmusic-app-layout #guide:not([opened]) #scrim {
+  opacity: 0 !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+tp-yt-app-drawer#guide[opened],
+ytmusic-app-layout #guide[opened] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+tp-yt-app-drawer#guide[opened] #contentContainer,
+ytmusic-app-layout #guide[opened] #contentContainer {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+tp-yt-app-drawer#guide #scrim,
+ytmusic-app-layout #guide #scrim {
+  transition:
+    opacity 360ms cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 360ms linear !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  tp-yt-app-drawer#guide,
+  ytmusic-app-layout #guide,
+  tp-yt-app-drawer#guide #contentContainer,
+  ytmusic-app-layout #guide #contentContainer,
+  tp-yt-app-drawer#guide #scrim,
+  ytmusic-app-layout #guide #scrim {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 ytmusic-tabs {
