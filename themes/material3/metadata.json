@@ -1,0 +1,24 @@
+{
+  "id": "material3",
+  "title": "Material 3",
+  "creators": [
+    "adidotzip"
+  ],
+  "minVersion": "2.0.5.6",
+  "hasShaders": false,
+  "version": "1.0.1",
+  "tags": [
+    "dark",
+    "material-you",
+    "material-3",
+    "expressive",
+    "dynamic-colors",
+    "minimal",
+    "colorful"
+  ],
+  "images": [
+    "Home.png",
+    "Lyrics.png",
+    "Explore.png"
+  ]
+}
