@@ -6,7 +6,7 @@
   ],
   "minVersion": "2.0.5.6",
   "hasShaders": false,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "tags": [
     "dark",
     "material-you",
@@ -17,6 +17,7 @@
     "colorful"
   ],
   "images": [
+    "cover.png",
     "Home.png",
     "Lyrics.png",
     "Explore.png"
