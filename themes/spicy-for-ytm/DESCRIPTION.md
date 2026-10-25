@@ -21,6 +21,7 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 - **Side-Panel Tab Bar:** minimalist Liquid Glass capsule housing 4 clean icons with a smooth sliding active pill indicator, replacing bulky uppercase text headers.
 - **Refined Controls & Dock:** Liquid Glass autoscroll resume button, symmetrical dock source selector with floating clearance, and discreet creator credits footnote.
 - **Micro-interactions:** smooth sidebar expand/collapse without layout snapping, growing like/dislike buttons on hover, and fluid GPU-accelerated popups and context menus.
+- **International Apple Typography:** bundled Variable Web Fonts for **SF Arabic**, **SF Hebrew**, **SF Armenian**, and **SF Georgian** (`100`–`900` weights), ensuring authentic San Francisco styling across Arabic, Hebrew, Armenian and Georgian lyrics.
 - **Rest of YouTube Music** (home, library), kept subtle:
   - a blurred cover background;
   - a glass top bar and side bar;

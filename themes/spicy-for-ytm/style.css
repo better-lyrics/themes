@@ -121,7 +121,7 @@ blyrics-line-scroll-below-duration = 700ms;
   --blyrics-fullscreen-panel-size: 53%;
 
   /* rest of YouTube Music (home, library, browse pages) */
-  --spicy-font: "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+  --spicy-font: "SF Pro Display", "SF Pro Text", "SF Pro", "SF Arabic", "SF Hebrew", "SF Armenian", "SF Georgian", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
   --spicy-page-bg-brightness: 30%;
   --spicy-page-bg-blur: 120px;
   --spicy-page-bg-duration: 90s;
@@ -222,7 +222,7 @@ blyrics-line-scroll-below-duration = 700ms;
 .blyrics--romanized {
   /* written out, not var(--spicy-font): a variable from :root would carry
      the root's Noto order and lose the per-language CJK fallback */
-  --blyrics-font-family: "SF Pro Display", "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
+  --blyrics-font-family: "SF Pro Display", "SF Pro Text", "SF Pro", "SF Arabic", "SF Hebrew", "SF Armenian", "SF Georgian", -apple-system, BlinkMacSystemFont, "Inter", var(--noto-sans-universal), sans-serif;
 }
 
 /* Spicy sets letter-spacing 0 on its lines */
