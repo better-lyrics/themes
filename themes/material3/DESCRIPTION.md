@@ -1,4 +1,4 @@
-# Material 3 Expressive
+# Material 3
 
 Bring a polished Material 3 feel to YouTube Music with a theme designed for Better Lyrics. Material 3 Expressive combines a warm dark foundation with vivid accent colors, rounded surfaces, clear typography, and subtle visual depth inspired by Material You.
 
