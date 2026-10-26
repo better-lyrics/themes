@@ -232,19 +232,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-79f72455f6922c22396b47e580e6b22ffb15d12ade0338544b5a75fad935b2e7",
+          "integrity": "sha256-d75e78bcc934cbda61e0dbc60f7c30b16d972476479744f8b177fb7c27d5d90e",
           "minVersion": "2.0.5.6",
           "path": "themes/material3",
-          "version": "1.0.4"
+          "version": "1.0.5"
         }
       ],
-      "commit": "770a5776399648baa1c99ad7015634c9c3548ec5",
+      "commit": "d7b1cc799d3770c52bc132838af7cb64b8bb0778",
       "discussion": 117,
       "id": "material3",
-      "integrity": "sha256-79f72455f6922c22396b47e580e6b22ffb15d12ade0338544b5a75fad935b2e7",
-      "locked": "2026-10-25T20:29:52Z",
+      "integrity": "sha256-d75e78bcc934cbda61e0dbc60f7c30b16d972476479744f8b177fb7c27d5d90e",
+      "locked": "2026-10-26T19:50:33Z",
       "repo": "adidotzip/Material3",
-      "version": "1.0.4"
+      "version": "1.0.5"
     },
     {
       "builds": [
@@ -466,6 +466,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-10-25T20:30:27Z",
+  "updated": "2026-10-26T19:50:58Z",
   "version": 1
 }
