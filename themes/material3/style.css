@@ -723,57 +723,14 @@ ytmusic-guide-entry-renderer[is-collapsed] .title-column {
   }
 }
 
-ytmusic-app-layout:not([player-fullscreened]) #layout[player-ui-state="PLAYER_PAGE_OPEN"]:not([player-fullscreened]):not([blyrics-dfs]):not([blyrics-karaoke])
-  ytmusic-player-page:not([player-fullscreened])::before {
-  position: fixed !important;
-  inset: 0 !important;
-  pointer-events: none !important;
-}
-
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] ytmusic-player-page::after {
-  content: none !important;
-  display: none !important;
-}
-
-#layout[player-fullscreened] ytmusic-player-page::after,
-#layout[blyrics-dfs] ytmusic-player-page::after,
-#layout[blyrics-karaoke] ytmusic-player-page::after,
-#layout ytmusic-player-page[player-fullscreened]::after,
-#layout ytmusic-player-page[blyrics-dfs]::after,
-#layout ytmusic-player-page[blyrics-karaoke]::after,
-ytmusic-app-layout[player-fullscreened] ytmusic-player-page::after {
-  content: none !important;
-  display: none !important;
-}
-
 ytmusic-player-bar {
   color: var(--m3c-on-surface) !important;
-}
-
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] > [slot="player-bar"],
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] > [slot="player-bar"]::before,
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] ytmusic-player-bar,
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] ytmusic-player-bar::before,
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background,
-ytmusic-app[blyrics-stylized] #layout[player-ui-state="PLAYER_PAGE_OPEN"] #player-bar-background {
-  background: transparent !important;
-  background-color: transparent !important;
-  box-shadow: none !important;
-}
-
-#layout[player-ui-state="PLAYER_PAGE_OPEN"] ytmusic-player-page :is(.background-image, .background-gradient) {
-  background: transparent !important;
 }
 
 ytmusic-player-bar yt-icon-button,
 ytmusic-player-bar #play-pause-button,
 ytmusic-player-bar .time-info {
   color: var(--m3c-on-surface-variant) !important;
-}
-
-ytmusic-player-bar .toggle-player-page-button,
-ytmusic-player-bar .toggle-player-page-button #button {
-  pointer-events: auto !important;
 }
 
 tp-yt-paper-dialog,
@@ -1271,36 +1228,22 @@ ytmusic-multi-select-menu-renderer #container {
   }
 }
 
-ytmusic-browse-response,
-ytmusic-player-page,
-ytmusic-player-bar {
+ytmusic-browse-response {
   animation: m3-content-fade-in 320ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
+ytmusic-player-page,
+ytmusic-player-bar,
 #song-media-window {
-  transition:
-    opacity 240ms ease,
-    transform 320ms cubic-bezier(0.2, 0, 0, 1) !important;
-  will-change: opacity, transform;
-}
-
-#song-media-window > .top-row-buttons {
-  animation: m3-content-fade-in 260ms cubic-bezier(0.2, 0, 0, 1) both;
-}
-
-ytmusic-player-bar :is(.content, .title, .byline, .thumbnail, .image),
-ytmusic-player-page :is(.title, .byline, .thumbnail, .image) {
-  animation: m3-content-fade-in 280ms ease both;
+  animation: none !important;
+  transition: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
   ytmusic-browse-response,
   ytmusic-player-page,
   ytmusic-player-bar,
-  #song-media-window,
-  #song-media-window > .top-row-buttons,
-  ytmusic-player-bar :is(.content, .title, .byline, .thumbnail, .image),
-  ytmusic-player-page :is(.title, .byline, .thumbnail, .image) {
+  #song-media-window {
     animation: none !important;
     transition-duration: 0.01ms !important;
   }
