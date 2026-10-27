@@ -727,6 +727,7 @@ ytmusic-app-layout:not([player-fullscreened]) #layout[player-ui-state="PLAYER_PA
   ytmusic-player-page:not([player-fullscreened])::before {
   position: fixed !important;
   inset: 0 !important;
+  pointer-events: none !important;
 }
 
 #layout[player-ui-state="PLAYER_PAGE_OPEN"] ytmusic-player-page::after {
@@ -768,6 +769,11 @@ ytmusic-player-bar yt-icon-button,
 ytmusic-player-bar #play-pause-button,
 ytmusic-player-bar .time-info {
   color: var(--m3c-on-surface-variant) !important;
+}
+
+ytmusic-player-bar .toggle-player-page-button,
+ytmusic-player-bar .toggle-player-page-button #button {
+  pointer-events: auto !important;
 }
 
 tp-yt-paper-dialog,
