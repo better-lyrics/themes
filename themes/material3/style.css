@@ -1232,19 +1232,85 @@ ytmusic-browse-response {
   animation: m3-content-fade-in 320ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 
-ytmusic-player-page,
-ytmusic-player-bar,
-#song-media-window {
-  animation: none !important;
-  transition: none !important;
-}
-
+/*
+ * Keep YouTube Music's native player transitions intact.
+ * Only the theme-owned browse entrance animation is controlled here.
+ */
 @media (prefers-reduced-motion: reduce) {
   ytmusic-browse-response,
-  ytmusic-player-page,
-  ytmusic-player-bar,
-  #song-media-window {
+  ytmusic-search-box[opened] #suggestion-list,
+  ytmusic-search-box[opened] #suggestion-list > *,
+  ytmusic-guide-entry-renderer tp-yt-paper-item,
+  ytmusic-guide-entry-renderer .guide-icon,
+  ytmusic-guide-entry-renderer .title-column,
+  ytmusic-comments ytd-comment-thread-renderer,
+  ytmusic-comments ytd-comment-replies-renderer,
+  ytmusic-menu-popup-renderer,
+  ytmusic-menu-popup-renderer tp-yt-paper-listbox > *,
+  ytmusic-multi-select-menu-renderer,
+  ytmusic-multi-select-menu-renderer #container {
     animation: none !important;
-    transition-duration: 0.01ms !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
+
+  tp-yt-app-drawer#guide,
+  tp-yt-app-drawer#guide #contentContainer,
+  tp-yt-app-drawer#guide #scrim,
+  ytmusic-app-layout #guide,
+  ytmusic-app-layout #guide #contentContainer,
+  ytmusic-app-layout #guide #scrim,
+  ytmusic-nav-bar #left-content,
+  ytmusic-search-box,
+  ytmusic-search-box * {
+    transition: none !important;
+  }
+}
+
+
+/* Remove the theme's card-hover wash in the browse area.
+   Keep focus-visible feedback and all player controls interactive. */
+ytmusic-browse-response :is(
+  ytmusic-two-row-item-renderer,
+  ytmusic-four-row-item-renderer,
+  ytmusic-compact-station-renderer,
+  ytmusic-responsive-list-item-renderer
+):hover {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Disable hover-only visual shifts/highlights across the theme, without
+   suppressing keyboard focus or pressed/selected states. */
+@media (hover: hover) {
+  ytmusic-browse-response :is(
+    ytmusic-two-row-item-renderer,
+    ytmusic-four-row-item-renderer,
+    ytmusic-compact-station-renderer,
+    ytmusic-responsive-list-item-renderer
+  ):hover {
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+
+/*
+ * Prevent the document from scrolling while the player page is open.
+ * Inner queue and lyrics scrollers remain available.
+ */
+html:has(ytmusic-player[player-page-open]),
+body:has(ytmusic-player[player-page-open]) {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+ytmusic-player-page:has(ytmusic-player[player-page-open]) {
+  overscroll-behavior: contain !important;
+}
+
+ytmusic-player-page:has(ytmusic-player[player-page-open]) .content,
+ytmusic-player-page:has(ytmusic-player[player-page-open]) #main-panel,
+ytmusic-player-page:has(ytmusic-player[player-page-open]) ytmusic-tab-renderer.scroller {
+  overscroll-behavior: contain !important;
 }
