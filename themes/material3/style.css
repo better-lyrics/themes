@@ -361,7 +361,7 @@ ytmusic-search-box .search-box {
   box-shadow: none !important;
 }
 
-/* Final wrapper cleanup: no surface or shadow behind the field. */
+
 ytmusic-search-box,
 ytmusic-search-box #layout,
 ytmusic-search-box #input-box,
@@ -380,7 +380,7 @@ ytmusic-search-box .search-box {
   box-shadow: none !important;
 }
 
-/* Keep only the search field visible; all host layers stay transparent. */
+
 ytmusic-search-box,
 ytmusic-search-box #layout,
 ytmusic-search-box #input-box,
@@ -399,7 +399,7 @@ ytmusic-search-box .search-box {
   box-shadow: none !important;
 }
 
-/* Keep only the search field visible; all host layers stay transparent. */
+
 ytmusic-search-box,
 ytmusic-search-box #layout,
 ytmusic-search-box #input-box,
@@ -418,7 +418,7 @@ ytmusic-search-box .search-box {
   box-shadow: none !important;
 }
 
-/* The wrapper must not create a second surface behind the search field. */
+
 ytmusic-search-box,
 ytmusic-search-box #layout,
 ytmusic-search-box #input-box,
@@ -723,8 +723,8 @@ ytmusic-guide-entry-renderer[is-collapsed] .title-column {
   }
 }
 
-#layout[player-ui-state="PLAYER_PAGE_OPEN"]:not([player-fullscreened]):not([blyrics-dfs]):not([blyrics-karaoke])
-  ytmusic-player-page::before {
+ytmusic-app-layout:not([player-fullscreened]) #layout[player-ui-state="PLAYER_PAGE_OPEN"]:not([player-fullscreened]):not([blyrics-dfs]):not([blyrics-karaoke])
+  ytmusic-player-page:not([player-fullscreened])::before {
   position: fixed !important;
   inset: 0 !important;
 }
