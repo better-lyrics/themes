@@ -1,16 +1,16 @@
 {
   "repo": "adidotzip/Material3",
   "id": "material3",
-  "version": "1.1.1",
-  "commit": "ad2b0dd9acdd7e020c22cc98add5fb6bf182f51e",
-  "integrity": "sha256-925cb5dfbfd03e71b4daa92dbe9cf7b53556b81a388b5a8c144a4c06cdf5e633",
-  "locked": "2026-10-27T18:46:53Z",
+  "version": "1.1.2",
+  "commit": "27624e01549beaf2f7747d3e3a44b1126e8eab6d",
+  "integrity": "sha256-3111b6adfa0d62035a4f61038d09f23ec073b11b90afe9fd1d8ccc69b1794a93",
+  "locked": "2026-10-28T08:22:04Z",
   "builds": [
     {
-      "version": "1.1.1",
+      "version": "1.1.2",
       "minVersion": "2.0.5.6",
       "path": "themes/material3",
-      "integrity": "sha256-925cb5dfbfd03e71b4daa92dbe9cf7b53556b81a388b5a8c144a4c06cdf5e633"
+      "integrity": "sha256-3111b6adfa0d62035a4f61038d09f23ec073b11b90afe9fd1d8ccc69b1794a93"
     }
   ]
 }
