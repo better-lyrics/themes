@@ -483,3 +483,38 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
     flex-direction: row;
   }
 }
+
+.blyrics-progress__bar{
+  height: var(--fs-progress-height);
+  border-radius: var(--fs-progress-radius);
+}
+
+.blyrics-progress__fill{
+  border-radius: calc(var(--fs-progress-radius) / 2);
+}
+
+.blyrics-progress__fill-clip{
+  border-radius: var(--fs-progress-radius);
+}
+
+.blyrics-progress__knob, .blyrics-progress__knob-dot{
+  display: none;
+}
+
+.blyrics-progress__times {
+  top: calc(-1 * var(--fs-progress-height) - 2px);
+  padding-inline: 6px;
+  font-size: 1.25rem;
+  color: white;
+  mix-blend-mode: difference;
+  pointer-events: none;
+}
+
+.blyrics-progress__times > button {
+  pointer-events: auto;
+}
+
+.blyrics-fs-disc{
+  height: 36px;
+  width: 36px;
+}
