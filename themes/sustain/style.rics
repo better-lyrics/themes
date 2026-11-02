@@ -508,6 +508,7 @@ ytmusic-player-page:not([is-mweb-modernization-enabled])[player-fullscreened]:no
   color: white;
   mix-blend-mode: difference;
   pointer-events: none;
+  font-weight: 600;
 }
 
 .blyrics-progress__times > button {
