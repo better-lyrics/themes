@@ -382,10 +382,10 @@
     {
       "builds": [
         {
-          "integrity": "sha256-fabb158daee7f98ebb56a2a9bd4390e566edca362de764014166e5f4723a6772",
+          "integrity": "sha256-7430360638d693fa79cba35d887ad9f3a03a3f809972b331d57bcb88bcb8493d",
           "minVersion": "2.4.0",
           "path": "themes/sustain",
-          "version": "1.0.30"
+          "version": "1.0.31"
         },
         {
           "integrity": "sha256-8b8fb4db8441a3f03c1cc9719ffe403107f13b249bf279f457748f90b2913a28",
@@ -394,13 +394,13 @@
           "version": "1.0.13"
         }
       ],
-      "commit": "d6dd1c68b267c43d9089002a43ba71e58a689394",
+      "commit": "f5e881fe32538b9ac11b453f9717e4c6e3376945",
       "discussion": 38,
       "id": "sustain",
-      "integrity": "sha256-fabb158daee7f98ebb56a2a9bd4390e566edca362de764014166e5f4723a6772",
-      "locked": "2026-11-02T13:29:06Z",
+      "integrity": "sha256-7430360638d693fa79cba35d887ad9f3a03a3f809972b331d57bcb88bcb8493d",
+      "locked": "2026-11-03T09:50:11Z",
       "repo": "better-lyrics/theme-sustain",
-      "version": "1.0.30"
+      "version": "1.0.31"
     },
     {
       "builds": [
@@ -466,6 +466,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-11-02T13:29:27Z",
+  "updated": "2026-11-03T09:50:44Z",
   "version": 1
 }
