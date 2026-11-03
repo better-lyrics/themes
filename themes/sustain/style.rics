@@ -36,6 +36,8 @@ blyrics-letter-wave = true;
   --blyrics-letter-wave-settle: translateY(-0.015em);
   --blyrics-letter-wave-duration: 0.75s;
   --blyrics-letter-wave-emphasis-scale: 1.09;
+  --fs-progress-radius: 6px;
+  --fs-progress-height: 24px;
 }
 
 
