@@ -1,11 +1,8 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
-## v1.3.0 Update
+## v1.3.1 Update
 
-- Karaoke mode fix
-- M/V mode improvements
-- Updated Better Lyrics Shaders preset
-- bug fixes
+- Search bar fix for Firefox
   
 ## Features
 
@@ -31,4 +28,4 @@ A minimal theme that adds numerous improvements whilst keeping the original YTM 
 
 ## Compatibility
 
-- Works with Better Lyrics v2.0.5.6+
+- Works with Better Lyrics v3.0.0

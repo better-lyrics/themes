@@ -1,3 +1,5 @@
+/* Lucid, a marketplace theme by drago-oo */
+
 @font-face {
   font-family: "MySanFrancisco";
   src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
@@ -22,10 +24,8 @@ blyrics-hide-instrumental-only = true;
 :root {
   /* --- 1. GLASS & BLUR SETTINGS --- */
   --lucid-glass-blur: 25px; /* Master blur amount for the top nav, player bar, and menus */
-  
   --lucid-nav-glass-bg: rgba(30, 30, 30, 0); /* Top navigation bar background */
   --lucid-player-glass-bg: rgba(20, 20, 20, 0.2); /* Bottom player bar background */
-  
   --lucid-menu-dark-bg: rgba(30, 30, 30, 0.35); /* Settings & Profile menu background */
   --lucid-menu-light-bg: rgba(30, 30, 30, 0.1); /* 3-Dot Song menu background */
   
@@ -48,12 +48,10 @@ blyrics-hide-instrumental-only = true;
   --blyrics-lyric-scroll-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
   --blyrics-scale-transition-duration: 0.6s;
   --blyrics-scroll-timing-offset: 0.6s;
-  --blyrics-background-rotate-speed: 30s;
-  --blyrics-animate-word-wobble: 0;
+  --blyrics-wobble-duration: 0;
   --blyrics-credits-opacity: 0.2; 
   --blyrics-credits-focused-opacity: 1;
-  --blyrics-karaoke-video-scale: 1;
-  
+  --blyrics-karaoke-video-scale: 0.9; /* Fullscreened Music Video Size Adjustment */
   --blyrics-panel-size: 50%;
   --blyrics-video-panel-size: 37%;
   --blyrics-fullscreen-panel-size: 55%;
@@ -202,6 +200,15 @@ ytmusic-search-box[opened]:not(:has(ytmusic-search-suggestion)):not(:has(ytmusic
   border-radius: 12px !important; 
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   transition: background-color 0.2s ease, border-color 0.2s ease, border-radius 0.2s ease 0s !important;
+}
+
+/* Firefox-Specific Dropdown Background Fix */
+/* Forces Firefox to paint the dark background ON the search bar itself to match the dropdown below it */
+@supports (-moz-appearance: none) {
+  ytmusic-search-box[opened] .search-box {
+    background: var(--lucid-menu-dark-bg) !important;
+    backdrop-filter: blur(var(--lucid-glass-blur)) !important;
+  }
 }
 
 /* Search Dropdown List Container */
@@ -1739,53 +1746,71 @@ ytmusic-app-layout:not([player-ui-state="PLAYER_PAGE_OPEN"]) #nav-bar-background
   z-index: 4 !important;
 }
 
-/* STEP 1: Make the original dropdown transparent and set it as an Anchor */
 ytmusic-search-box {
   --ytmusic-search-background: transparent !important;
 }
 
-ytmusic-search-box #suggestion-list {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  anchor-name: --search-dropdown; 
+/* --- CHROMIUM / EDGE / SAFARI (Uses Anchor Positioning Pseudo-Element) --- */
+@supports (not (-moz-appearance: none)) {
+  ytmusic-search-box #suggestion-list {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    anchor-name: --search-dropdown; 
+  }
+
+  ytmusic-app-layout::after {
+    content: "";
+    position: fixed; 
+    position-anchor: --search-dropdown;      
+    top: calc(anchor(top) - 40px) !important;              
+    left: anchor(left) !important;            
+    width: calc(anchor-size(width) - 2px) !important;    
+    height: calc(anchor-size(height) + 38px) !important;  
+    
+    backdrop-filter: blur(var(--lucid-glass-blur));
+    -webkit-backdrop-filter: blur(var(--lucid-glass-blur));
+    background: var(--lucid-menu-dark-bg);  
+    border-radius: 12px; 
+    border: 1px solid rgba(255, 255, 255, 0.08); 
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); 
+    
+    z-index: 4 !important;
+    pointer-events: none; 
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.25s !important;
+  }
+
+  ytmusic-app-layout:has(ytmusic-search-box:focus-within)::after,
+  ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.1s ease-out, visibility 0.1s !important; 
+  }
 }
 
-/* STEP 2: The Lucid Frosted Glass Layer */
-ytmusic-app-layout::after {
-  content: "";
-  position: fixed; 
-  position-anchor: --search-dropdown;      
-  top: calc(anchor(top) - 40px) !important;              
-  left: anchor(left) !important;            
-  width: calc(anchor-size(width) - 2px) !important;    
-  height: calc(anchor-size(height) + 38px) !important;  
+/* --- FIREFOX FIX --- */
+@supports (-moz-appearance: none) {
   
-  /* --- LUCID GLASS STYLING (NOW VARIABLE-BOUND) --- */
-  backdrop-filter: blur(var(--lucid-glass-blur));
-  -webkit-backdrop-filter: blur(var(--lucid-glass-blur));
-  background: var(--lucid-menu-dark-bg);  
-  border-radius: 12px; 
-  border: 1px solid rgba(255, 255, 255, 0.08); 
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4); 
-  /* --------------------------- */
-  
-  z-index: 4 !important;
-  pointer-events: none; 
-
-  /* Smooth fade-out transition */
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0.25s !important;
+  /* 2. Top Half (Search Box) */
+  html ytmusic-search-box[opened]:has(ytmusic-search-suggestion) .search-box,
+  html ytmusic-search-box[opened]:has(ytmusic-responsive-list-item-renderer) .search-box,
+  html ytmusic-search-box[opened] .search-box {
+    background: var(--lucid-menu-dark-bg) !important;
+    backdrop-filter: blur(var(--lucid-glass-blur)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* STEP 3: Active State Trigger */
-ytmusic-app-layout:has(ytmusic-search-box:focus-within)::after,
-ytmusic-app-layout:has(ytmusic-search-box[opened])::after {
-  opacity: 1;
-  visibility: visible;
-  /* Instant, snappy appear */
-  transition: opacity 0.1s ease-out, visibility 0.1s !important; 
+  /* 3. Bottom Half (Dropdown) */
+  html ytmusic-search-box[opened] #suggestion-list {
+    background: var(--lucid-menu-dark-bg) !important;
+    backdrop-filter: blur(var(--lucid-glass-blur)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4) !important;
+    clip-path: inset(0px -100px -100px -100px) !important;
+  }
 }
 
 /* =========================================

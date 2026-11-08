@@ -1,0 +1,22 @@
+{
+  "id": "lucid",
+  "title": "Lucid",
+  "creators": [
+    "drago-oo"
+  ],
+  "minVersion": "3.0.0.3",
+  "hasShaders": true,
+  "version": "1.3.0",
+  "tags": [
+    "minimal",
+    "animated",
+    "glassmorphism"
+  ],
+  "images": [
+    "1.png",
+    "2.png",
+    "3.png",
+    "4.png",
+    "5.png"
+  ]
+}

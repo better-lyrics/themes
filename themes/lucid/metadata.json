@@ -4,9 +4,9 @@
   "creators": [
     "drago-oo"
   ],
-  "minVersion": "3.0.0.3",
+  "minVersion": "3.0.0",
   "hasShaders": true,
-  "version": "1.3.0",
+  "version": "1.3.1",
   "tags": [
     "minimal",
     "animated",
