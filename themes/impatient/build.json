@@ -1,0 +1,16 @@
+{
+  "repo": "tezvii/impatient-theme",
+  "id": "impatient",
+  "version": "1.0.0",
+  "commit": "e0d8250eb3c0f4eb72de1c9fa83621f4a3d8fa7d",
+  "integrity": "sha256-d478eae14771fe5bf49acdc759aa5c126aa9f8c2c6f3a3390f02e2736f91b954",
+  "locked": "2026-11-08T11:47:35Z",
+  "builds": [
+    {
+      "version": "1.0.0",
+      "minVersion": "3.0.0",
+      "path": "themes/impatient",
+      "integrity": "sha256-d478eae14771fe5bf49acdc759aa5c126aa9f8c2c6f3a3390f02e2736f91b954"
+    }
+  ]
+}

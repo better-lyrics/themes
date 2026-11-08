@@ -1,0 +1,17 @@
+{
+  "id": "impatient",
+  "title": "Impatient",
+  "creators": [
+    "tezvii"
+  ],
+  "minVersion": "3.0.0",
+  "hasShaders": false,
+  "version": "1.0.0",
+  "tags": [
+    "minimal",
+    "animated"
+  ],
+  "images": [
+    "preview.png"
+  ]
+}

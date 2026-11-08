@@ -1,0 +1,71 @@
+/*
+ * Impatient theme for Better Lyrics
+ * Inspired by the Toxi lyrics renderer at https://toxiplays.github.io/ttmlrenderer/
+ * 
+ * Copyright © 2026 tezvii
+ * This work is free. You can redistribute it and/or modify it under the terms of the Do What The Fuck You Want To Public License, Version 2, as published by Sam Hocevar.
+ * See http://www.wtfpl.net/ for more details.
+  
+ * Configurables:
+ * --syllable-dip-tightness is the factor by which you multiply the syllable duration to get the dip animation duration, default: 1.25
+ * --minimal-dip-animation-duration is the smallest amount of time the dip animation will ever play, default: 175ms
+ * The comment below controls the amount of time it takes for the lines to scroll, --blyrics-scroll-timing-offset should be half of the comment's variables, default: 0.2s
+ */
+
+/*
+  blyrics-line-scroll-duration = 0.4s;
+  blyrics-line-scroll-above-duration = 0.4s;
+  blyrics-line-scroll-below-duration = 0.4s;
+*/
+
+:root {
+  --syllable-dip-tightness: 1.25;
+  --minimal-dip-animation-duration: 175ms;
+}
+
+.blyrics-container[data-sync="richsync"] {
+  --blyrics-lyric-scroll-timing-function: cubic-bezier(0.594, 0.251, 0.23, 1.004);
+  --blyrics-scroll-timing-offset: 0.2s;
+  --blyrics-richsync-timing-offset: 0.150s;
+}
+
+.blyrics-container[data-sync="richsync"] .blyrics--line.blyrics--animating .blyrics--word:is([data-word-state="active"], [data-word-state="past"]) {
+  animation-name: word-dip;
+  animation-duration: max(var(--minimal-dip-animation-duration), calc(var(--blyrics-duration) * var(--syllable-dip-tightness)));
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.blyrics-container .blyrics--word.blyrics--paused, .blyrics-container .blyrics--line.blyrics--paused .blyrics--word {
+  animation-play-state: paused;
+}
+
+.blyrics-word-group-long .blyrics--word:not(.blyrics-bidi-sensitive *) {
+  display: inline-block;
+}
+
+@keyframes word-dip {
+  0% {
+    transform: translate(0) scaleY(1) scaleX(1);
+    animation-timing-function: ease-in;
+  }
+  10% {
+    transform: translateY(0.05em) scaleY(1.1) scaleX(0.95);
+    animation-timing-function: linear;
+  }
+  25% {
+    transform: translateY(0.14em) scaleY(0.975) scaleX(1.02);
+    animation-timing-function: linear;
+  }
+  50% {
+    transform: translateY(0.12em) scaleY(1) scaleX(1);
+    animation-timing-function: linear;
+  }
+  75% {
+    transform: translateY(0.07em) scaleY(1) scaleX(1);
+    animation-timing-function: linear;
+  }
+  100% {
+    transform: translate(0) scaleY(1) scaleX(1);
+  }
+}
