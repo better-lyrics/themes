@@ -192,6 +192,22 @@
     {
       "builds": [
         {
+          "integrity": "sha256-d478eae14771fe5bf49acdc759aa5c126aa9f8c2c6f3a3390f02e2736f91b954",
+          "minVersion": "3.0.0",
+          "path": "themes/impatient",
+          "version": "1.0.0"
+        }
+      ],
+      "commit": "e0d8250eb3c0f4eb72de1c9fa83621f4a3d8fa7d",
+      "id": "impatient",
+      "integrity": "sha256-d478eae14771fe5bf49acdc759aa5c126aa9f8c2c6f3a3390f02e2736f91b954",
+      "locked": "2026-11-08T11:47:35Z",
+      "repo": "tezvii/impatient-theme",
+      "version": "1.0.0"
+    },
+    {
+      "builds": [
+        {
           "integrity": "sha256-5a73faf423a6d0b715ea2df969a7def322041d85fe82ee321d6964d8cf671aba",
           "minVersion": "3.0.0.3",
           "path": "themes/lucid",
@@ -466,6 +482,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-11-07T22:09:07Z",
+  "updated": "2026-11-08T11:48:01Z",
   "version": 1
 }
