@@ -199,6 +199,7 @@
         }
       ],
       "commit": "e0d8250eb3c0f4eb72de1c9fa83621f4a3d8fa7d",
+      "discussion": 120,
       "id": "impatient",
       "integrity": "sha256-d478eae14771fe5bf49acdc759aa5c126aa9f8c2c6f3a3390f02e2736f91b954",
       "locked": "2026-11-08T11:47:35Z",
@@ -488,6 +489,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-11-08T19:55:28Z",
+  "updated": "2026-11-09T12:59:06Z",
   "version": 1
 }
