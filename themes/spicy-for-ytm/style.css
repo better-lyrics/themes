@@ -237,7 +237,7 @@ blyrics-line-scroll-below-duration = 700ms;
 /* default: far away */
 .blyrics-container > :where(.blyrics--line) {
   --spicy-level: 4;
-  contain: layout;
+  contain: layout style;
   backface-visibility: hidden;
   transition:
     opacity var(--spicy-line-transition),
@@ -361,7 +361,6 @@ blyrics-line-scroll-below-duration = 700ms;
 .blyrics-container:not([data-sync="none"]) > .blyrics--line:not(.blyrics--instrumental):hover::before {
   opacity: 1;
   scale: 1;
-  will-change: opacity, scale;
 }
 
 /* manual scrolling (autoscroll paused): show everything sharp. In YTM the
@@ -441,6 +440,7 @@ blyrics-line-scroll-below-duration = 700ms;
    the next line visibly shrink and thin out shortly before it started
    (with early scroll on, the engine marks it active before it starts). */
 .blyrics-container[data-sync="richsync"] .blyrics--word {
+  backface-visibility: hidden;
   transition:
     scale 0.3s ease,
     translate 0.3s ease;
@@ -451,13 +451,9 @@ blyrics-line-scroll-below-duration = 700ms;
   translate: 0 var(--spicy-word-rest-y);
 }
 
-.blyrics-container[data-sync="richsync"] .blyrics--word {
+.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
   --spicy-lift-rise: clamp(var(--spicy-word-rise-min), calc(var(--blyrics-duration, 300ms) + var(--spicy-word-rise-extra)), 100s);
   --spicy-scale-rise: calc(var(--spicy-lift-rise) + var(--spicy-word-scale-lag));
-  backface-visibility: hidden;
-}
-
-.blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word:not([data-word-state="upcoming"]) {
   will-change: scale, translate;
   animation:
     spicy-word-lift-settle 1.64s linear var(--spicy-lift-rise) backwards,
@@ -572,14 +568,6 @@ blyrics-line-scroll-below-duration = 700ms;
    which gives the delay below; change it if the swipe settings change. Once the word is sung all its letters spring back to
    normal together, as in Spicy. The engine's own letter animation stays
    off (wobble off). */
-.blyrics-container[data-sync="richsync"] .blyrics--word[data-long-word] {
-  --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
-}
-
-.blyrics--word[data-long-word] > .blyrics--letter {
-  --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
-}
-
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(1) { --spicy-letter-i: 0; }
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(2) { --spicy-letter-i: 1; }
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(3) { --spicy-letter-i: 2; }
@@ -588,22 +576,6 @@ blyrics-line-scroll-below-duration = 700ms;
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(6) { --spicy-letter-i: 5; }
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(7) { --spicy-letter-i: 6; }
 .blyrics--word[data-long-word] > .blyrics--letter:nth-child(8) { --spicy-letter-i: 7; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(9) { --spicy-letter-i: 8; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(10) { --spicy-letter-i: 9; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(11) { --spicy-letter-i: 10; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(12) { --spicy-letter-i: 11; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(13) { --spicy-letter-i: 12; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(14) { --spicy-letter-i: 13; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(15) { --spicy-letter-i: 14; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(16) { --spicy-letter-i: 15; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(17) { --spicy-letter-i: 16; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(18) { --spicy-letter-i: 17; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(19) { --spicy-letter-i: 18; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(20) { --spicy-letter-i: 19; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(21) { --spicy-letter-i: 20; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(22) { --spicy-letter-i: 21; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(23) { --spicy-letter-i: 22; }
-.blyrics--word[data-long-word] > .blyrics--letter:nth-child(24) { --spicy-letter-i: 23; }
 
 /* only short held syllables wave: Better Lyrics marks any word over the
    threshold, including plain long words like "everybody" (0.8s over 9
@@ -632,6 +604,8 @@ blyrics-line-scroll-below-duration = 700ms;
      spring holds normal size until the line moves out of this range, where
      letters are at normal size anyway. */
   .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word[data-long-word]:not([data-word-state="upcoming"]) > .blyrics--letter {
+    --spicy-letter-slot: calc(var(--blyrics-duration, 1000ms) / var(--letters, 1));
+    --spicy-letter-x: calc((var(--spicy-letter-i, 0) - (var(--letters, 1) - 1) / 2) * var(--spicy-letter-spread));
     animation:
       spicy-letter-sung 1.64s linear var(--blyrics-duration, 1000ms) forwards,
       spicy-letter-wave calc(var(--spicy-letter-slot) * 2 + 0.55s) linear clamp(0s, calc(var(--spicy-letter-slot) * (var(--spicy-letter-i, 0) + 1) / 1.2 + var(--blyrics-duration, 1000ms) / 6 + var(--spicy-letter-follow) - (var(--spicy-letter-slot) * 2 + 0.55s) * 0.46), 100s);
@@ -1417,7 +1391,6 @@ ytmusic-two-row-item-renderer .image-wrapper {
 }
 
 ytmusic-two-row-item-renderer:hover .image-wrapper {
-  will-change: transform;
   transform: scale(1.03);
 }
 
@@ -1578,7 +1551,11 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   --blyrics-pip-artwork-shadow: var(--spicy-pip-artwork-shadow, 0 10px 28px rgb(0 0 0 / 0.42));
   border-radius: var(--blyrics-pip-artwork-radius);
   box-shadow: var(--blyrics-pip-artwork-shadow);
-  transition: filter 0.3s ease, transform 0.3s ease;
+  transition: transform 0.3s ease;
+}
+
+.blyrics-pip-artwork__image {
+  transition: filter 0.3s ease;
 }
 
 /* subtle dimming on hover to bring out the player controls */
@@ -2494,7 +2471,7 @@ ytmusic-app-layout:not([player-fullscreened], [player-ui-state="FULLSCREEN"]):no
   transition: opacity 0.2s ease 0.16s !important;
 }
 
-ytmusic-app-layout:has(tp-yt-app-drawer#guide[opened]) #mini-guide {
+ytmusic-app-layout:has(> tp-yt-app-drawer#guide[opened]) #mini-guide {
   opacity: 0;
   pointer-events: none;
   transition-delay: 0.08s !important;
@@ -2580,14 +2557,19 @@ ytmusic-popup-container tp-yt-iron-dropdown:has(ytmusic-multi-page-menu-renderer
   }
 }
 
-html ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-renderer {
+/* menu items cascade in a touch after the panel, like Spicy's lists */
+ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
+  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
+}
+
+ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-renderer {
   animation-name: spicy-pop-item-down;
 }
 
-@keyframes spicy-pop-item-down {
+@keyframes spicy-pop-item {
   from {
     opacity: 0;
-    translate: 0 -4px;
+    translate: 0 4px;
   }
 
   to {
@@ -2596,15 +2578,10 @@ html ytmusic-popup-container ytmusic-multi-page-menu-renderer ytd-compact-link-r
   }
 }
 
-/* menu items cascade in a touch after the panel, like Spicy's lists */
-ytmusic-popup-container :is(ytmusic-menu-popup-renderer, ytmusic-multi-page-menu-renderer) :is(ytmusic-menu-navigation-item-renderer, ytmusic-menu-service-item-renderer, ytmusic-toggle-menu-service-item-renderer, ytd-compact-link-renderer) {
-  animation: spicy-pop-item 0.34s var(--spicy-pop-ease, cubic-bezier(0.22, 1, 0.36, 1)) backwards;
-}
-
-@keyframes spicy-pop-item {
+@keyframes spicy-pop-item-down {
   from {
     opacity: 0;
-    translate: 0 4px;
+    translate: 0 -4px;
   }
 
   to {
@@ -2641,11 +2618,19 @@ ytmusic-search-box #suggestion-list {
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header,
   ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::before,
   ytmusic-app-layout tp-yt-app-drawer#guide #contentContainer,
-  ytmusic-app-layout #content.ytmusic-app-layout,
-  ytmusic-app-layout #main-panel.ytmusic-app-layout,
+  ytmusic-app-layout tp-yt-app-drawer#guide #scrim,
+  #layout #guide-wrapper::before,
   ytmusic-app-layout #mini-guide,
   ytmusic-app-layout #mini-guide-background,
-  ytmusic-player-bar ytmusic-like-button-renderer * {
+  ytmusic-player-bar ytmusic-like-button-renderer *,
+  .autoscroll-resume-button,
+  .blyrics-dock__inner,
+  .blyrics-dock__control,
+  .blyrics-dock__cycle,
+  .blyrics-dock__offset-step,
+  .blyrics-dock__offset-row-step,
+  .blyrics-dock__source-label,
+  .blyrics-dock__menu-item {
     transition: none !important;
   }
 
