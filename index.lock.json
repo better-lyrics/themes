@@ -209,10 +209,10 @@
     {
       "builds": [
         {
-          "integrity": "sha256-eed8999d603bd30853624f7111489f2b58f32d89e4221686b8ae8bf2a3b22f22",
+          "integrity": "sha256-038b046c2bc803dc8e084446b717973edc0b8aed65d8421a9cea7b9980e709f1",
           "minVersion": "3.0.0",
           "path": "themes/lucid",
-          "version": "1.4.0"
+          "version": "1.4.1"
         },
         {
           "integrity": "sha256-5a73faf423a6d0b715ea2df969a7def322041d85fe82ee321d6964d8cf671aba",
@@ -227,13 +227,13 @@
           "version": "1.2.2"
         }
       ],
-      "commit": "fe524199622958275a11e0d4076503d34b389605",
+      "commit": "41480fd8726b2db264dd1d41db11444561184e7c",
       "discussion": 33,
       "id": "lucid",
-      "integrity": "sha256-eed8999d603bd30853624f7111489f2b58f32d89e4221686b8ae8bf2a3b22f22",
-      "locked": "2026-11-11T18:44:40Z",
+      "integrity": "sha256-038b046c2bc803dc8e084446b717973edc0b8aed65d8421a9cea7b9980e709f1",
+      "locked": "2026-11-11T19:04:17Z",
       "repo": "drago-oo/lucid-theme",
-      "version": "1.4.0"
+      "version": "1.4.1"
     },
     {
       "builds": [
@@ -489,6 +489,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-11-11T18:45:18Z",
+  "updated": "2026-11-11T19:04:41Z",
   "version": 1
 }
