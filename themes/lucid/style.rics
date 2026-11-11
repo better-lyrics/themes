@@ -1967,6 +1967,25 @@ ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
   letter-spacing: -0.2px !important;
 }
 
+/* 1. Force the translation & romanization to display instantly so JS measures them correctly */
+#blyrics-karaoke .blyrics--romanized, 
+#blyrics-karaoke .blyrics--translated {
+  animation: none !important; 
+  max-height: none !important;
+  overflow: visible !important;
+  transform: none !important;
+  padding-top: 4px !important; /* Gives the sub-text a little breathing room */
+}
+
+/* Prevent smoothReveal from hiding sub-text height when Karaoke JS measures the line */
+#blyrics-karaoke .blyrics--romanized, 
+#blyrics-karaoke .blyrics--translated {
+  animation: none !important; 
+  max-height: none !important;
+  overflow: visible !important;
+  transform: none !important;
+}
+
 #blyrics-karaoke .blyrics-karaoke__card,
 #blyrics-karaoke .blyrics-karaoke__plate[data-end-card] {
   background: rgba(15, 15, 15, 0.6) !important;
@@ -2002,3 +2021,4 @@ ytmusic-player-page[video-mode][blyrics-karaoke] .html5-video-player {
   background: transparent !important;
   background-color: transparent !important;
 }
+

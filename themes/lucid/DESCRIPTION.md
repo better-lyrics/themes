@@ -1,6 +1,6 @@
 A minimal theme that adds numerous improvements whilst keeping the original YTM feel.
 
-## v1.4.0 Update
+## v1.4.1 Update
 
 * **Karaoke Mode Tweaks:** Fixed translation and romanization display, reduced font size, and lowered the video scale for a better layout.
 * **UI & Design Polish:** Updated the progress bar design and refreshed the songwriter credits styling.
