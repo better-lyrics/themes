@@ -1,3 +1,5 @@
+/* Lucid, a marketplace theme by drago-oo */
+
 @font-face {
   font-family: "MySanFrancisco";
   src: url("https://raw.githubusercontent.com/sahibjotsaggu/San-Francisco-Pro-Fonts/refs/heads/master/SF-Pro-Display-Bold.otf") format("opentype");
@@ -965,6 +967,11 @@ ytmusic-player-page[player-fullscreened] .blyrics-container[data-no-lyrics="true
   20% { opacity: 1; transform: translateY(0); } 
   70% { opacity: 1; transform: translateY(0); } 
   100% { opacity: 0; transform: translateY(-20px); visibility: hidden; } 
+}
+
+/* Base Alignment */
+ytmusic-player-page[player-ui-state="FULLSCREEN"] > div > div#side-panel { 
+  margin: 0 !important; 
 }
 
 /* =========================================
@@ -1974,16 +1981,6 @@ ytmusic-card-shelf-renderer .yt-spec-button-shape-next--tonal:hover {
   max-height: none !important;
   overflow: visible !important;
   transform: none !important;
-  padding-top: 4px !important; /* Gives the sub-text a little breathing room */
-}
-
-/* Prevent smoothReveal from hiding sub-text height when Karaoke JS measures the line */
-#blyrics-karaoke .blyrics--romanized, 
-#blyrics-karaoke .blyrics--translated {
-  animation: none !important; 
-  max-height: none !important;
-  overflow: visible !important;
-  transform: none !important;
 }
 
 #blyrics-karaoke .blyrics-karaoke__card,
@@ -2021,4 +2018,5 @@ ytmusic-player-page[video-mode][blyrics-karaoke] .html5-video-player {
   background: transparent !important;
   background-color: transparent !important;
 }
+
 

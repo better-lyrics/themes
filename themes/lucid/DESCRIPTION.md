@@ -8,6 +8,10 @@ A minimal theme that adds numerous improvements whilst keeping the original YTM 
 * **Performance Optimisations:** Code cleanup & re-writes to hopefully improve performance.
 * **Layout Fixes:** Minor details fixed from YTM's updates.
 
+### v1.4.2 Update
+
+* Bug fixes
+
   
 ## Features
 
