@@ -31,6 +31,11 @@ blyrics-line-scroll-below-duration = 700ms;
    1. Tunables
    ------------------------------------------------------------------------ */
 :root {
+  /* global lyrics size multiplier (0.6 to 2.0, matching Spicy 6.5.0 --SL-LyricsScale) */
+  --spicy-lyrics-scale: 1;
+  /* vertical gap between lyric lines (matching Spicy 6.5.0 Spring wide gap 0.6em) */
+  --spicy-line-gap: 0.6em;
+
   /* distance blur: per line away from the active one, capped at level 4 */
   --spicy-blur-step: 1.1px;
   /* lines other than the one being sung. Spicy draws its text twice (50%
@@ -107,7 +112,7 @@ blyrics-line-scroll-below-duration = 700ms;
   /* lyrics size in fullscreen, measured from the Spicy screenshot (2.2% of
      the screen width). Pixels and vw on purpose: YouTube Music sets the
      root font size to 10px, so rem values come out 37% smaller than usual. */
-  --spicy-fs-font-size: clamp(24px, 2.2vw, 72px);
+  --spicy-fs-font-size: calc(clamp(24px, 2.2vw, 72px) * var(--spicy-lyrics-scale, 1));
   --spicy-fs-translated-font-size: calc(var(--spicy-fs-font-size) * 0.5);
   /* early scroll: Better Lyrics normally scrolls to a line and marks it
      active up to about 1s before it starts (its scroll clock runs 0.5s
@@ -134,14 +139,14 @@ blyrics-line-scroll-below-duration = 700ms;
   /* ---- Better Lyrics variables ---- */
 
   /* typography */
-  --blyrics-font-size: 3.8rem;
+  --blyrics-font-size: calc(3.8rem * var(--spicy-lyrics-scale, 1));
   --blyrics-font-weight: 700;
   --blyrics-line-height: 1.2;
-  --blyrics-translated-font-size: 1.9rem;
+  --blyrics-translated-font-size: calc(1.9rem * var(--spicy-lyrics-scale, 1));
   --blyrics-translated-font-weight: 600;
   --blyrics-translated-opacity: 0.5;
-  /* line spacing: Spicy pads each line by about 1% of the panel width */
-  --blyrics-padding: 1.5rem;
+  /* line spacing: Spicy 6.5.0 Spring wide gap (0.6em total between lines, half on each side) */
+  --blyrics-padding: calc(var(--spicy-line-gap, 0.6em) * 0.5);
 
   /* colors, from the Spicy gradient: words not sung yet at 50% white,
      sung words at 85% white (not pure white) */
@@ -206,8 +211,8 @@ blyrics-line-scroll-below-duration = 700ms;
 
   --blyrics-lyric-highlight-fade-out-duration: 0.8s;
 
-  /* background */
-  --blyrics-background-blur: 90px;
+  /* background (7 blur passes in Spicy 6.5.0 Refined Background) */
+  --blyrics-background-blur: 80px;
   --blyrics-background-saturate: 2.2;
 }
 
@@ -717,20 +722,36 @@ blyrics-line-scroll-below-duration = 700ms;
   opacity: 0.7;
 }
 
-.blyrics--translated,
-.blyrics--romanized {
+.blyrics--translated {
   line-height: 1.25;
   margin-top: 0.4em;
   letter-spacing: -0.01em;
 }
 
-/* Spicy shows romanization as plain text, not as a pill */
+/* Spicy 6.5.0 RomanizedRow: plain text row under each line (0.6em of the line
+   size, 0.65 opacity, 0.1em top and 0.3em bottom margin), syllable-timed with
+   the same gradient as the main lyric */
 .blyrics--romanized {
   background: none;
   border: none;
   border-radius: 0;
   padding: 0;
-  font-size: var(--blyrics-translated-font-size);
+  font-size: calc(var(--blyrics-font-size) * 0.6);
+  font-weight: 500;
+  line-height: 1.38;
+  letter-spacing: -0.01em;
+  opacity: 0.65;
+  margin: 0.1em 0 0.3em;
+}
+
+/* Keep background vocals and romanization close together when both appear
+   in the same lyric line (matching RomanizedRow.BeforeBackground in 6.5.0) */
+.blyrics--line:has(> .blyrics--romanized) > .blyrics-background-line {
+  margin-bottom: 0;
+}
+
+.blyrics--line > .blyrics-background-line + .blyrics--romanized {
+  margin-top: 0.08em;
 }
 
 /* Spicy never centers lyrics: lines sung by both voices (v1000) sit on the
@@ -1259,6 +1280,131 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   color: rgb(255 255 255 / 0.55);
 }
 
+/* Portrait Fullscreen Layout (Spicy Lyrics 6.5.0 PortraitFullscreen.css):
+   When the fullscreen viewport is taller than wide, the cover becomes a
+   compact header at the top-left (growing smoothly on hover), title and
+   artist sit beside it aligned to its bottom edge, and lyrics span the
+   full width below. Uses clamp() instead of min() for rics compatibility. */
+@media (orientation: portrait) {
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) {
+    --spicy-fs-art-size: clamp(0px, 13vh, 24vw);
+    --spicy-fs-font-size: calc(clamp(1.85rem, 6.5vw, 5.5rem) * var(--spicy-lyrics-scale, 1));
+    --blyrics-fullscreen-panel-size: 100%;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .content.ytmusic-player-page {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    padding: 5vw 5vw 0 !important;
+    gap: clamp(12px, 2vh, 24px) !important;
+    box-sizing: border-box !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel.ytmusic-player-page {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    flex: 0 0 auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    gap: clamp(14px, 3vw, 24px) !important;
+    z-index: 4;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #main-panel:has(#player:hover, #blyrics-fs-controls:hover, #player:focus-visible) {
+    --spicy-fs-art-size: clamp(0px, 27vh, 44vw);
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #player.ytmusic-player-page {
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+    transition:
+      width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.3s ease !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-column {
+    position: static !important;
+    flex: 1 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    align-self: flex-end !important;
+    text-align: left !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) .blyrics-fs-info-row,
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-column #blyrics-song-info {
+    justify-content: flex-start !important;
+    text-align: left !important;
+    transform: none !important;
+    padding-top: 0 !important;
+    margin: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-song-info > p#blyrics-title {
+    font-size: calc(var(--spicy-fs-font-size) * 0.72) !important;
+    line-height: 1.08 !important;
+    letter-spacing: -0.02em !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-song-info > p#blyrics-artist {
+    font-size: calc(var(--spicy-fs-font-size) * 0.44) !important;
+    line-height: 1.2 !important;
+    font-weight: 500 !important;
+    opacity: 0.72 !important;
+    margin-top: 0.25em !important;
+    margin-inline: 0 !important;
+    max-width: 100% !important;
+    padding-inline: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    -webkit-mask-image: none !important;
+    mask-image: none !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #blyrics-fs-controls {
+    left: 0 !important;
+    right: auto !important;
+    width: var(--spicy-fs-art-size) !important;
+    bottom: 0 !important;
+    z-index: 5 !important;
+    box-sizing: border-box !important;
+    transition:
+      opacity 0.3s ease,
+      width 0.35s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]) #side-panel.ytmusic-player-page {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding-inline: 0 !important;
+  }
+}
+
 /* ---------------------------------------------------------------------------
    7c. Rest of YouTube Music (home, library, browse), kept subtle
        Better Lyrics sets the cover as --blyrics-background-img on #layout,
@@ -1695,9 +1841,9 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-pip-shell .blyrics-container {
   --blyrics-target-scroll-pos-ratio: var(--spicy-pip-target-scroll, 0.38);
   --blyrics-scroll-timing-offset: 0s;
-  --blyrics-font-size: clamp(1.25rem, 5.2cqw, 2.3rem) !important;
-  --blyrics-translated-font-size: clamp(0.75rem, 2.8cqw, 1.25rem) !important;
-  --blyrics-padding: clamp(0.35rem, 1.8cqw, 0.75rem) !important;
+  --blyrics-font-size: calc(clamp(1.25rem, 5.2cqw, 2.3rem) * var(--spicy-lyrics-scale, 1)) !important;
+  --blyrics-translated-font-size: calc(clamp(0.75rem, 2.8cqw, 1.25rem) * var(--spicy-lyrics-scale, 1)) !important;
+  --blyrics-padding: calc(var(--spicy-line-gap, 0.6em) * 0.5) !important;
   --spicy-blur-step: var(--spicy-pip-blur-step, 0.85px);
   --spicy-line-side-padding: 0.55em;
   --spicy-hover-box-radius: 12px;
@@ -1904,7 +2050,7 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   display: none !important;
 }
 
-.blyrics-footer__container:has(#betterLyricsFooterLink) > a {
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a#betterLyricsFooterLink {
   color: var(--spicy-credits-text) !important;
   font-weight: 600 !important;
   text-decoration: underline !important;
@@ -1916,8 +2062,42 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
     text-decoration-color 0.15s ease;
 }
 
-.blyrics-footer__container:has(#betterLyricsFooterLink):hover > a,
-.blyrics-footer__container:has(#betterLyricsFooterLink) > a:is(:hover, :focus-visible) {
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a#betterLyricsFooterLink:is(:hover, :focus-visible) {
+  color: #fff !important;
+  text-decoration-color: currentColor !important;
+}
+
+/* Spicy Lyrics contributor links ("Synced by ... · Uploaded by ..."):
+   matches Refined Credits in Spicy 6.5.0 with muted role label, middle dot
+   separator, and underlined contributor handle */
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a.blyrics-footer__contributor {
+  color: var(--spicy-credits-muted) !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 0.28em !important;
+}
+
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a.blyrics-footer__contributor .blyrics-footer__contributor-label {
+  color: var(--spicy-credits-muted) !important;
+  font-weight: 500 !important;
+  text-decoration: none !important;
+}
+
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a.blyrics-footer__contributor .blyrics-footer__contributor-name {
+  color: var(--spicy-credits-text) !important;
+  font-weight: 600 !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: 0.18em !important;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent) !important;
+  transition:
+    color 0.15s ease,
+    text-decoration-color 0.15s ease;
+}
+
+.blyrics-footer__container:has(#betterLyricsFooterLink) > a.blyrics-footer__contributor:is(:hover, :focus-visible) .blyrics-footer__contributor-name {
   color: #fff !important;
   text-decoration-color: currentColor !important;
 }
@@ -2015,13 +2195,15 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 }
 
 /* ---------------------------------------------------------------------------
-   8b. Autoscroll Pill & Controls Dock (Spicy Lyrics Liquid Glass)
-       Uses Spicy's Liquid Glass material tokens (tokens.css): translucent
-       frosted blur(16px) saturate(1.7) brightness(1.06), dual top/bottom
-       specular bevel (--liquid-edge), tinted ambient shadow (--liquid-cast-soft),
-       pill geometry and 0.97 press scale.
+   8b. Autoscroll Pill & Controls Dock (Spicy 6.5.0 GroupedViewControls
+       & ScrollToActive material)
+       Uses Spicy 6.5.0 frosted glass capsule material: subtle 8% white tint,
+       blur(24px) contrast(0.6) brightness(0.8) saturate(1.8), crisp inner
+       highlight rim, inner hover disc on Scroll to Active, and high-contrast
+       knockout white active disc on dock toggles.
    ------------------------------------------------------------------------ */
 .autoscroll-resume-button {
+  isolation: isolate;
   font-family: "SF Pro Text", var(--spicy-font) !important;
   font-size: 13.5px !important;
   font-weight: 600 !important;
@@ -2032,14 +2214,12 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
   border: none !important;
   border-radius: 999px !important;
   background: rgba(255, 255, 255, 0.08) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
-  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
+  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
   box-shadow:
-    0 10px 24px -6px rgba(8, 10, 18, 0.42),
-    0 2px 6px -1px rgba(8, 10, 18, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+    0 12px 28px -12px rgba(8, 10, 18, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   text-shadow: none !important;
   transition:
     opacity 0.15s linear 50ms,
@@ -2049,24 +2229,37 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
     scale 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
+.autoscroll-resume-button::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  z-index: -1;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0);
+  pointer-events: none;
+  transition: background-color 0.18s ease;
+}
+
 .autoscroll-resume-button:hover {
   color: #fff !important;
-  background: rgba(255, 255, 255, 0.14) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
   text-shadow: none !important;
   box-shadow:
-    0 10px 24px -6px rgba(8, 10, 18, 0.42),
-    0 2px 6px -1px rgba(8, 10, 18, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.3) !important;
+    0 12px 28px -12px rgba(8, 10, 18, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+}
+
+.autoscroll-resume-button:hover::before {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .autoscroll-resume-button:active {
-  scale: 0.97;
+  scale: 0.95;
 }
 
-/* Controls dock: Liquid Glass capsule with neutral iOS-mono accent
-   and smooth intrinsic width expansion (interpolate-size: allow-keywords) */
+/* Controls dock: Spicy 6.5.0 frosted glass capsule with neutral iOS-mono
+   accent and smooth intrinsic width expansion (interpolate-size allow-keywords) */
 .blyrics-dock,
 .blyrics-dock__menu {
   --dock-accent: #ffffff;
@@ -2077,15 +2270,13 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 .blyrics-dock__inner {
   border-radius: 999px !important;
   padding: 6px 10px !important;
-  background: rgba(0, 0, 0, 0.14) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
-  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
+  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
   box-shadow:
-    0 10px 24px -6px rgba(8, 10, 18, 0.42),
-    0 2px 6px -1px rgba(8, 10, 18, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+    0 12px 28px -12px rgba(8, 10, 18, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   transition:
     transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -2096,13 +2287,11 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 }
 
 .blyrics-dock__inner:hover {
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
   box-shadow:
-    0 10px 24px -6px rgba(8, 10, 18, 0.42),
-    0 2px 6px -1px rgba(8, 10, 18, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.26) !important;
+    0 12px 28px -12px rgba(8, 10, 18, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
 }
 
 /* Smoothly interpolate source label to its exact text width (max-content)
@@ -2162,14 +2351,14 @@ ytmusic-player-bar ytmusic-like-button-renderer :is(#button-shape-like, #button-
 }
 
 .blyrics-dock__control--active {
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.14) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+  color: rgba(10, 12, 18, 0.92) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18) !important;
 }
 
 .blyrics-dock__control--active:hover {
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.22) !important;
+  color: #0a0c12 !important;
+  background: rgba(255, 255, 255, 0.94) !important;
 }
 
 /* Dock popover menu (source selector & offset panel):
@@ -2239,15 +2428,13 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container {
   padding: 4px 6.85px 4px 5.15px !important;
   border-bottom: none !important;
   border-radius: 999px !important;
-  background: rgba(0, 0, 0, 0.14) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
-  backdrop-filter: blur(16px) saturate(1.7) brightness(1.06) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  -webkit-backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
+  backdrop-filter: blur(24px) contrast(0.6) brightness(0.8) saturate(1.8) !important;
   box-shadow:
-    0 10px 24px -6px rgba(8, 10, 18, 0.42),
-    0 2px 6px -1px rgba(8, 10, 18, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+    0 12px 28px -12px rgba(8, 10, 18, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
   overflow: visible !important;
 }
 
@@ -2272,7 +2459,7 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsConte
   overflow: visible !important;
 }
 
-/* Sliding Liquid Glass active pill behind the selected tab */
+/* Sliding knockout white active disc behind the selected tab */
 ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsContent::before {
   content: "";
   position: absolute;
@@ -2283,11 +2470,8 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsConte
   width: var(--spicy-tab-width);
   height: var(--spicy-tab-height);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.34),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
   opacity: 0;
   pointer-events: none;
   z-index: 0;
@@ -2300,6 +2484,10 @@ ytmusic-player-page #side-panel tp-yt-paper-tabs.tab-header-container #tabsConte
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header.iron-selected)::before {
   opacity: 1;
+}
+
+ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header.iron-selected:hover)::before {
+  background: rgba(255, 255, 255, 0.94);
 }
 
 ytmusic-player-page #side-panel #tabsContent:has(> tp-yt-paper-tab.tab-header:nth-of-type(1).iron-selected)::before {
@@ -2371,8 +2559,12 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header:active
 }
 
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected {
-  color: #ffffff !important;
+  color: rgba(10, 12, 18, 0.92) !important;
   background: transparent !important;
+}
+
+ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected:hover {
+  color: #0a0c12 !important;
 }
 
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header[disabled] {
@@ -2402,7 +2594,7 @@ ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header::befor
 
 ytmusic-player-page #side-panel #tabsContent > tp-yt-paper-tab.tab-header.iron-selected::before {
   transform: scale(1.06);
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.35));
+  filter: none;
 }
 
 /* Tab 1: Up Next / Queue */
