@@ -361,19 +361,19 @@
     {
       "builds": [
         {
-          "integrity": "sha256-8e70f5b79d163154cddf11c3edaa7ba109c7692019fcb386feff9fdb15c96c66",
+          "integrity": "sha256-890c3829ef946642712f3e5f653143d3bf69d364098471d033d25acec757411b",
           "minVersion": "2.4.1",
           "path": "themes/spicy-for-ytm",
-          "version": "1.6.0"
+          "version": "1.7.0"
         }
       ],
-      "commit": "dabbf9a9bb0308221419e80c10cfc7a7255629ba",
+      "commit": "023d00c639505965f38ff249d7e20bc644d82ad9",
       "discussion": 100,
       "id": "spicy-for-ytm",
-      "integrity": "sha256-8e70f5b79d163154cddf11c3edaa7ba109c7692019fcb386feff9fdb15c96c66",
-      "locked": "2026-11-14T13:41:30Z",
+      "integrity": "sha256-890c3829ef946642712f3e5f653143d3bf69d364098471d033d25acec757411b",
+      "locked": "2026-11-14T15:28:25Z",
       "repo": "olafix52/spicy-for-youtube-music",
-      "version": "1.6.0"
+      "version": "1.7.0"
     },
     {
       "commit": "2b3ac598ef80c33a4620fce826950ccae474a304",
@@ -489,6 +489,6 @@
       "version": "1.1.1"
     }
   ],
-  "updated": "2026-11-14T13:41:58Z",
+  "updated": "2026-11-14T15:28:50Z",
   "version": 1
 }
