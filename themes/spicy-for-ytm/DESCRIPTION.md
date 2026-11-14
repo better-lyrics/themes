@@ -11,6 +11,7 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 - **Background vocals** sit under the line at 75% size and dim once they are sung.
 - **Spicy-style fullscreen:**
   - a big rounded cover with the title and artist centered under it, and lyrics from the middle of the screen;
+  - **Canvas Immersive** stage for tracks with active animated covers from Better Lyrics Shaders (full-height left-side animated artwork with a feathered blend, dark bottom vignette, and a hover-reveal bottom-left player dock);
   - **Portrait Fullscreen Layout** in tall/portrait windows with a compact top-left cover header, adjacent metadata, and full-width lyrics;
   - playback controls sit on the cover and show on hover.
 - **Spicy Popup Lyrics (Picture-in-Picture):**

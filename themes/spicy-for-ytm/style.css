@@ -103,6 +103,9 @@ blyrics-line-scroll-below-duration = 700ms;
   --spicy-fs-info-gap: calc(var(--spicy-fs-art-size) * 0.05);
   /* how dark the cover gets while the controls are shown */
   --spicy-fs-art-hover-brightness: 0.6;
+  /* animated cover stage (Canvas Immersive in fullscreen): translucent video
+     stage on the left side that blends with the Kawarp background */
+  --spicy-canvas-stage-opacity: 0.75;
 
   /* picture-in-picture / spicy popup lyrics */
   --spicy-pip-artwork-radius: clamp(10px, 3vw, 16px);
@@ -1280,6 +1283,225 @@ ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-m
   color: rgb(255 255 255 / 0.55);
 }
 
+/* Canvas Immersive Stage for Animated Covers (Spicy Lyrics CanvasImmersive.css):
+   Activates in landscape fullscreen only when Better Lyrics Shaders injects an
+   active animated artwork video (#bls-video with opacity 1 after canplay).
+   Expands the animated cover across the full height of the left side with a
+   multi-stop feathered right edge, bottom contrast vignette, and a bottom-left
+   dock where title and artist sit low at rest and glide up on hover to reveal
+   the full-width progress bar and transport controls. */
+@media (orientation: landscape) {
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #main-panel.ytmusic-player-page {
+    position: relative !important;
+    height: 100vh !important;
+    justify-content: flex-end !important;
+    align-items: flex-start !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) .av.ytmusic-player-page {
+    position: static !important;
+    padding: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page {
+    --spicy-stage-feather: calc(var(--spicy-fs-art-size) * 0.45);
+    position: fixed !important;
+    top: calc(var(--ytmusic-nav-bar-height, 64px) * -1) !important;
+    bottom: auto !important;
+    left: 0 !important;
+    width: calc(var(--spicy-fs-art-size) + 9vw + var(--spicy-stage-feather)) !important;
+    max-width: none !important;
+    height: 100vh !important;
+    aspect-ratio: auto !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    opacity: var(--spicy-canvas-stage-opacity, 0.75) !important;
+    filter: none !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    -webkit-mask-image: linear-gradient(
+      to left,
+      transparent 0px,
+      rgba(0, 0, 0, 0.1) calc(var(--spicy-stage-feather) * 0.18),
+      rgba(0, 0, 0, 0.36) calc(var(--spicy-stage-feather) * 0.38),
+      rgba(0, 0, 0, 0.85) calc(var(--spicy-stage-feather) * 0.72),
+      #000 var(--spicy-stage-feather)
+    ) !important;
+    mask-image: linear-gradient(
+      to left,
+      transparent 0px,
+      rgba(0, 0, 0, 0.1) calc(var(--spicy-stage-feather) * 0.18),
+      rgba(0, 0, 0, 0.36) calc(var(--spicy-stage-feather) * 0.38),
+      rgba(0, 0, 0, 0.85) calc(var(--spicy-stage-feather) * 0.72),
+      #000 var(--spicy-stage-feather)
+    ) !important;
+    transition: opacity 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.6) 30%,
+      transparent 58%
+    );
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page :is(#song-media-window, #song-image, #thumbnail, #bls-video) {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    inset: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page :is(#song-image img, #thumbnail img) {
+    opacity: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #player.ytmusic-player-page #bls-video {
+    object-fit: cover !important;
+    object-position: 50% 50% !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #side-panel.ytmusic-player-page {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* The YouTube Music bottom player bar duplicates the dock controls and
+     overlaps them, so it is hidden while the animated cover stage is active.
+     Escape still leaves fullscreen. */
+  ytmusic-app-layout[player-fullscreened]:not([blyrics-dfs]):has(ytmusic-player-page:not([blyrics-video-mode]) #bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) :is([slot="player-bar"], ytmusic-player-bar, #player-bar-background) {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Bottom-left dock: Title & Artist sit low in the corner at rest, and glide
+     upward on #main-panel hover while the full-width timeline and transport
+     controls fade in underneath them (matching Spicy CanvasImmersive.css). */
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-column {
+    --spicy-dock-gap: clamp(12px, calc(var(--spicy-fs-art-size) * 0.026), 20px);
+    --spicy-dock-reserve: calc(var(--spicy-fs-art-size) * 0.1 + clamp(38px, calc(var(--spicy-fs-art-size) * 0.085), 62px) + var(--spicy-dock-gap));
+    position: fixed !important;
+    left: clamp(28px, 3.2vw, 56px) !important;
+    bottom: calc(clamp(24px, 3.5vh, 48px) + var(--ytmusic-nav-bar-height, 64px)) !important;
+    width: var(--spicy-fs-art-size) !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 4 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    justify-content: flex-end !important;
+    gap: var(--spicy-dock-gap) !important;
+    text-align: left !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) .blyrics-fs-info-row {
+    justify-content: flex-start !important;
+    translate: 0 var(--spicy-dock-reserve);
+    transition: translate 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: translate;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #main-panel:is(:hover, :focus-within) .blyrics-fs-info-row,
+  html[blyrics-fs-controls-pinned] ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) .blyrics-fs-info-row {
+    translate: 0 0;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-column #blyrics-song-info {
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-song-info > p#blyrics-title {
+    font-size: calc(var(--spicy-fs-art-size) * 0.046) !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    max-width: 100% !important;
+    margin-inline: 0 !important;
+    padding-inline: 0 !important;
+    text-align: left !important;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 3.75%), transparent 100%) !important;
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 3.75%), transparent 100%) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-song-info > p#blyrics-artist {
+    font-size: calc(var(--spicy-fs-art-size) * 0.032) !important;
+    line-height: 1.35 !important;
+    opacity: 0.75 !important;
+    margin-top: 0.2rem !important;
+    margin-inline: 0 !important;
+    max-width: 100% !important;
+    padding-inline: 0 !important;
+    text-align: left !important;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 3.75%), transparent 100%) !important;
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 3.75%), transparent 100%) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls {
+    position: static !important;
+    flex-direction: column !important;
+    gap: var(--spicy-dock-gap) !important;
+    padding: 0 !important;
+    width: 100% !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    translate: 0 0.5rem;
+    transition:
+      opacity 0.28s ease,
+      translate 0.55s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #main-panel:is(:hover, :focus-within) #blyrics-fs-controls,
+  html[blyrics-fs-controls-pinned] ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    translate: 0 0;
+  }
+
+  /* Full-width progress bar on row 1, elapsed and duration times below on row 2 */
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress {
+    grid-template-columns: 1fr auto !important;
+    grid-template-areas:
+      "bar bar"
+      "start end" !important;
+    row-gap: 0.45rem !important;
+    column-gap: 0 !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__bar {
+    height: clamp(8px, calc(var(--spicy-fs-art-size) * 0.016), 12px) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls :is(.blyrics-progress__bar:hover, .blyrics-progress__bar.dragging) {
+    height: clamp(12px, calc(var(--spicy-fs-art-size) * 0.026), 16px) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__times {
+    margin-top: 0 !important;
+    font-size: calc(var(--spicy-fs-art-size) * 0.024) !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__elapsed {
+    text-align: left !important;
+  }
+
+  ytmusic-player-page[player-fullscreened]:not([blyrics-dfs]):not([blyrics-video-mode]):has(#bls-video:not([style*="opacity: 0"]):not([style*="opacity:0"])) #blyrics-fs-controls .blyrics-progress__end {
+    text-align: right !important;
+  }
+}
+
 /* Portrait Fullscreen Layout (Spicy Lyrics 6.5.0 PortraitFullscreen.css):
    When the fullscreen viewport is taller than wide, the cover becomes a
    compact header at the top-left (growing smoothly on hover), title and
@@ -1465,6 +1687,18 @@ ytmusic-browse-response #contents {
 
 #layout:not([player-ui-state="PLAYER_PAGE_OPEN"], [player-ui-state="FULLSCREEN"]) #nav-bar-divider {
   display: none;
+}
+
+/* fullscreen: YouTube Music keeps its top bar background and divider (a
+   tinted strip across the top of the screen). Better Lyrics hides them only
+   on the player page, so hide them in fullscreen as well. */
+#layout:is([player-ui-state="FULLSCREEN"], [player-fullscreened]) :is(#nav-bar-background, #nav-bar-divider, #mini-guide-background),
+ytmusic-app-layout:is([player-fullscreened], [player-ui-state="FULLSCREEN"]) :is(#nav-bar-background, #nav-bar-divider, #mini-guide-background) {
+  opacity: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* after scrolling, keep the collapsed side bar clear and drop the line
