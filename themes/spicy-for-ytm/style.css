@@ -475,6 +475,13 @@ blyrics-line-scroll-below-duration = 700ms;
   animation-play-state: paused;
 }
 
+/* Variant A: in pure RTL rows with lettered words, allow inline-block on
+   lettered RTL words so whole-word bounce (scale and translate) applies
+   without breaking mixed-direction rows or Arabic joining. */
+.blyrics-container[data-sync="richsync"] .blyrics-bidi-sensitive .blyrics-bidi-run.blyrics-rtl:not(:has(.blyrics--word:not(.blyrics-rtl))) .blyrics-word-group:not(.blyrics-word-group-long) > .blyrics--word.blyrics-word--lettered.blyrics-rtl {
+  display: inline-block;
+}
+
 @keyframes spicy-word-lift-rise {
   from {
     translate: 0 var(--spicy-word-rest-y);
