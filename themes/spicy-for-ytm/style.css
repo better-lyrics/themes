@@ -618,6 +618,11 @@ blyrics-line-scroll-below-duration = 700ms;
       spicy-letter-sung 1.64s linear var(--blyrics-duration, 1000ms) forwards,
       spicy-letter-wave calc(var(--spicy-letter-slot) * 2 + 0.55s) linear clamp(0s, calc(var(--spicy-letter-slot) * (var(--spicy-letter-i, 0) + 1) / 1.2 + var(--blyrics-duration, 1000ms) / 6 + var(--spicy-letter-follow) - (var(--spicy-letter-slot) * 2 + 0.55s) * 0.46), 100s);
   }
+
+  /* RTL letters sit right-to-left in DOM order, so reverse the horizontal spread */
+  .blyrics-container[data-sync="richsync"] > .blyrics--line:is(.blyrics--active, .blyrics--animating, :has(+ .blyrics--active)) .blyrics--word.blyrics-rtl[data-long-word]:not([data-word-state="upcoming"]) > .blyrics--letter {
+    --spicy-letter-x: calc(((var(--letters, 1) - 1) / 2 - var(--spicy-letter-i, 0)) * var(--spicy-letter-spread));
+  }
 }
 
 /* the letter glow is drawn once: the engine lays a highlighted copy of every
