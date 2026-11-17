@@ -4,9 +4,9 @@
 blyrics-hide-instrumental-only = true;
 blyrics-target-scroll-pos-ratio = 0.5;
 blyrics-letter-wave = true;
-blyrics-line-scroll-duration = 581.71ms;
-blyrics-line-scroll-above-duration = 581.71ms;
-blyrics-line-scroll-below-duration = 581.71ms;
+blyrics-line-scroll-duration = 650ms;
+blyrics-line-scroll-above-duration = calc(650ms + min(var(--blyrics-line-scroll-abs-relative-index), 6) * 20ms);
+blyrics-line-scroll-below-duration = calc(650ms + var(--blyrics-line-scroll-abs-relative-index) * 80ms);
 */
 
 :root {
@@ -56,7 +56,7 @@ $fullscreen-lyrics-placement: left; // Can be `left` or `right`
 $playing: ":is(.blyrics--active, .blyrics--animating)";
 $selector: "+ .blyrics--line:not(#{$playing})";
 
-@for $i from 1 through 20 {
+@for $i from 1 through 5 {
   $blur: $i + ($i * $i * 0.125);
   $opacity: 1 - ($i * 0.1) - ($i * $i * 0.02);
 
@@ -70,10 +70,17 @@ $selector: "+ .blyrics--line:not(#{$playing})";
     } @else {
       opacity: 0;
       visibility: hidden;
+      filter: blur(#{$blur}px);
     }
   }
 
-  $selector: "#{$selector} + .blyrics--line";
+  $selector: "#{$selector} + .blyrics--line:not(#{$playing})";
+}
+
+.blyrics--line#{$playing} #{$selector},
+.blyrics--line#{$playing} #{$selector} ~ .blyrics--line:not(#{$playing}) {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .blyrics--line.blyrics--active {
@@ -257,17 +264,18 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer:hover {
 
 .blyrics-container > div.blyrics--active {
   opacity: 1;
-  filter: blur(0px);
 }
 
 .blyrics-container > div.blyrics--active ~ div {
   opacity: 0.66;
-  filter: blur(0px);
 }
 
 .blyrics-container > :is(.blyrics--active, .blyrics--animating) {
   opacity: 1 !important;
-  filter: blur(0px);
+}
+
+.blyrics-container > :is(.blyrics--active, .blyrics--animating, .blyrics--active ~ div) {
+  filter: none;
 }
 
 .blyrics-container > div {
@@ -281,7 +289,7 @@ tp-yt-paper-item.ytmusic-guide-entry-renderer:hover {
 
 .blyrics-container > div:hover {
   opacity: 1 !important;
-  filter: blur(0px) !important;
+  filter: none !important;
   transform: scale(var(--blyrics-hover-scale));
   transition: all 0.3s ease;
 }
@@ -353,6 +361,11 @@ ytmusic-player-page::before {
     slowRotate 30s linear infinite;
   animation-composition: add;
   will-change: transform;
+}
+
+/* Better Lyrics Shaders draws its own background; skip ours under it. */
+ytmusic-player-page:has(> #better-lyrics-kawarp-player)::before {
+  display: none;
 }
 
 ytmusic-player-bar {
