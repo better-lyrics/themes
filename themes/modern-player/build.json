@@ -1,8 +1,16 @@
 {
   "repo": "snw-mint/better-lyrics-modern-player",
   "id": "modern-player",
-  "version": "1.0.1",
-  "commit": "98cfaab13a28f394f674a3159cd59a03c0c76009",
-  "integrity": "sha256-8a37bdf803e8542552a5c7ebb76244af46b98e2a48b7315927af07f91e190400",
-  "locked": "2026-03-23T00:51:41Z"
+  "version": "2.0.0",
+  "commit": "04531ff727b18c56a35e6c070344eb4ac25c327d",
+  "integrity": "sha256-73d73075ee4c2f9e28d16326c347ed712d04ee486634d7ac9d9ca31648360e72",
+  "locked": "2026-11-18T12:05:39Z",
+  "builds": [
+    {
+      "version": "2.0.0",
+      "minVersion": "2.0.5.6",
+      "path": "themes/modern-player",
+      "integrity": "sha256-73d73075ee4c2f9e28d16326c347ed712d04ee486634d7ac9d9ca31648360e72"
+    }
+  ]
 }

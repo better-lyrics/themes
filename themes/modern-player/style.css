@@ -1,38 +1,18 @@
-ytmusic-player[player-page-open] .player-wrapper,
-ytmusic-two-row-item-renderer .image-wrapper {
-    border-radius: 24px !important;
+/* ModernPlayer, a marketplace theme by snw-mint */
+
+/* Variables */
+:root {
+    --mp-radius-lg: 24px;
+    --mp-radius-md: 16px;
+    --mp-radius-sm: 8px;
+    --mp-surface-glass: rgb(255 255 255 / 0.15);
+    --mp-font-family: "Google Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
-#player:not([player-ui-state="PLAYER_BAR_ONLY"]) {
-    border-radius: 24px !important;
-    box-shadow: 0 4px 16px rgb(0 0 0 / 0.2) !important;
-    overflow: hidden !important;
-    --ytmusic-player-padding: 0px !important;
-    padding: 0 !important;
-    display: flex !important;
-}
-#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image,
-#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image yt-img-shadow,
-#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image yt-img-shadow img {
-    width: 100% !important;
-    height: 100% !important;
-    margin: 0 !important;
-    max-width: none !important;
-    max-height: none !important;
-    object-fit: cover !important;
-    flex-grow: 1 !important;
-}
-.ytmusic-av-toggle {
-    border-radius: 16px !important;
-}
-.av-toggle.ytmusic-av-toggle {
-    background: rgb(255 255 255 / 0.1) !important;
-    border: transparent !important;
-}
-.song-button.ytmusic-av-toggle,
-.video-button.ytmusic-av-toggle {
-    background: transparent !important;
-    color: white !important;
-}
+
+/* Global Font */
+html,
+body,
+ytmusic-app,
 yt-formatted-string,
 input,
 label,
@@ -48,37 +28,91 @@ tp-yt-paper-item,
 .tab-content,
 .promo-title,
 [role="text"] {
-    font-family: "Google Sans", sans-serif !important;
+    font-family: var(--mp-font-family) !important;
 }
-tp-yt-paper-tabs.ytmusic-player-page {
+
+/* Scrollbars */
+* {
+    scrollbar-width: thin !important;
+    scrollbar-color: rgb(255 255 255 / 0.2) transparent !important;
+}
+
+::-webkit-scrollbar {
+    width: 14px !important;
+    height: 14px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+::-webkit-scrollbar-thumb {
+    border: 4px solid transparent !important;
+    background-clip: padding-box !important;
+    background-color: rgb(255 255 255 / 0.2) !important;
+    border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(255 255 255 / 0.4) !important;
+}
+
+/* Thumbnails & Chips */
+ytmusic-player[player-page-open] .player-wrapper,
+ytmusic-two-row-item-renderer .image-wrapper,
+ytmusic-responsive-list-item-renderer .thumbnail-overlay,
+ytmusic-thumbnail-renderer {
+    border-radius: var(--mp-radius-lg) !important;
+    overflow: hidden !important;
+}
+
+ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] a.ytmusic-chip-cloud-chip-renderer {
+    background: var(--mp-surface-glass) !important;
+    border-radius: 6px !important;
+    height: 20px !important;
+    color: #d1d1d1 !important;
+    padding: 5px 8px !important;
+    margin-right: 10px !important;
+}
+
+.ytmusic-shelf.style-scope.ytmusic-carousel-shelf-renderer {
+    padding: 10px !important;
+}
+
+/* Top Bar & Player Height Expansion */
+ytmusic-app:has([player-page-open]) ytmusic-nav-bar ytmusic-search-box,
+ytmusic-app:has([player-page-open]) ytmusic-nav-bar .right-content,
+ytmusic-app:has([player-page-open]) ytmusic-nav-bar #right-content {
+    display: none !important;
+}
+
+ytmusic-app:has([player-page-open]) ytmusic-nav-bar {
+    background: transparent !important;
     border-bottom: none !important;
+    box-shadow: none !important;
+    pointer-events: none !important;
 }
-.tabs-content.tp-yt-paper-tabs {
-    background: rgb(255 255 255 / 0.15) !important;
-    border-radius: 8px !important;
-    height: 40px !important;
+
+ytmusic-app:has([player-page-open]) ytmusic-nav-bar .left-content {
+    pointer-events: auto !important;
 }
-.selection-bar.tp-yt-paper-tabs {
-    visibility: hidden !important;
+
+ytmusic-app:has([player-page-open]) ytmusic-player-page #main-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    margin-top: -16px !important;
+    padding-top: 0 !important;
 }
-ytmusic-player-page tp-yt-paper-tabs .tp-yt-paper-tabs[style-target="content"] {
-    text-transform: none !important;
+
+ytmusic-app:has([player-page-open]) ytmusic-player-page #side-panel {
+    margin-top: -36px !important;
+    height: calc(100% + 12px) !important;
+    max-height: calc(100% + 12px) !important;
 }
-tp-yt-paper-tab.iron-selected.ytmusic-player-page {
-    position: relative !important;
-}
-tp-yt-paper-tab.iron-selected.ytmusic-player-page::before {
-    position: absolute;
-    content: "";
-    width: calc(100% - 1rem);
-    height: calc(100% - 1rem);
-    top: 0;
-    left: 0;
-    background: rgb(255 255 255 / 0.15);
-    margin: 0.5rem;
-    border-radius: 6px;
-}
-ytmusic-player-page:before {
+
+/* Player Background */
+ytmusic-player-page::before {
     content: "";
     background: var(--blyrics-background-img);
     background-position: center !important;
@@ -91,41 +125,200 @@ ytmusic-player-page:before {
     filter: saturate(1.5) blur(60px);
     opacity: 0.3;
 }
-ytmusic-player-bar {
-    display: grid !important;
-    grid-template-columns: 1.5fr 2fr 1fr !important;
-    grid-template-areas: "start middle end" !important;
+
+/* Album Cover */
+#player:not([player-ui-state="PLAYER_BAR_ONLY"]) {
+    border-radius: var(--mp-radius-lg) !important;
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.2) !important;
+    overflow: hidden !important;
+    --ytmusic-player-padding: 0px !important;
+    padding: 0 !important;
+    display: flex !important;
+    max-width: none !important;
 }
-.left-controls.ytmusic-player-bar {
-    grid-area: middle !important;
-    justify-self: center !important;
-    margin-left: calc(56px - 140px) !important;
+
+#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image,
+#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image yt-img-shadow,
+#player:not([player-ui-state="PLAYER_BAR_ONLY"]) #song-image yt-img-shadow img {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    flex-grow: 1 !important;
 }
-.middle-controls.ytmusic-player-bar {
-    grid-area: start !important;
-    justify-content: start !important;
-    margin-left: 16px !important;
+
+/* Song / Video Toggle */
+.av.ytmusic-player-page {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+    padding-bottom: 12px !important;
+    margin-top: 0 !important;
+    position: relative !important;
+    z-index: 10 !important;
 }
-.blyrics-container {
+
+.av.ytmusic-player-page[hidden] {
+    display: none !important;
+}
+
+.ytmusic-av-toggle {
+    border-radius: 999px !important;
+}
+
+.av-toggle.ytmusic-av-toggle {
+    background: rgb(255 255 255 / 0.08) !important;
+    border: 1px solid rgb(255 255 255 / 0.08) !important;
+    border-radius: 999px !important;
+    padding: 3px !important;
+}
+
+.song-button.ytmusic-av-toggle,
+.video-button.ytmusic-av-toggle {
+    background: transparent !important;
+    color: rgb(255 255 255 / 0.7) !important;
+    border-radius: 999px !important;
+    transition: background 0.2s ease, color 0.2s ease !important;
+}
+
+.song-button.ytmusic-av-toggle[aria-pressed="true"],
+.video-button.ytmusic-av-toggle[aria-pressed="true"],
+.song-button.ytmusic-av-toggle.selected,
+.video-button.ytmusic-av-toggle.selected {
+    background: var(--mp-surface-glass) !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2) !important;
+}
+
+/* Player Tabs */
+tp-yt-paper-tabs.ytmusic-player-page {
+    border-bottom: none !important;
+}
+
+.tabs-content.tp-yt-paper-tabs {
+    background: var(--mp-surface-glass) !important;
+    border-radius: var(--mp-radius-sm) !important;
+    height: 40px !important;
+}
+
+.selection-bar.tp-yt-paper-tabs {
+    visibility: hidden !important;
+}
+
+ytmusic-player-page tp-yt-paper-tabs .tp-yt-paper-tabs[style-target="content"] {
+    text-transform: none !important;
+}
+
+tp-yt-paper-tab.iron-selected.ytmusic-player-page {
+    position: relative !important;
+}
+
+tp-yt-paper-tab.iron-selected.ytmusic-player-page::before {
+    position: absolute;
+    content: "";
+    width: calc(100% - 1rem);
+    height: calc(100% - 1rem);
+    top: 0;
+    left: 0;
+    background: var(--mp-surface-glass);
+    margin: 0.5rem;
+    border-radius: 6px;
+}
+
+/* Side Panel */
+ytmusic-player-page #side-panel {
+    background: rgb(255 255 255 / 0.06) !important;
+    border: 1px solid rgb(255 255 255 / 0.1) !important;
+    border-radius: var(--mp-radius-lg) !important;
+    padding: 16px !important;
+    margin-bottom: 24px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+/* Queue Tab */
+#tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_QUEUE"],
+ytmusic-player-page #side-panel #tab-renderer:first-of-type {
     overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 4px !important;
+}
+
+ytmusic-player-queue #contents.ytmusic-player-queue {
+    overflow: visible !important;
+}
+
+ytmusic-player-queue ytmusic-chip-cloud-renderer #scroll-container {
+    scrollbar-width: none !important;
+}
+
+ytmusic-player-queue ytmusic-chip-cloud-renderer #scroll-container::-webkit-scrollbar {
+    display: none !important;
+}
+
+ytmusic-player-queue ytmusic-chip-cloud-chip-renderer a {
+    border-radius: 999px !important;
+    border: none !important;
+    padding: 6px 14px !important;
+}
+
+/* Queue Items */
+ytmusic-player-queue-item {
+    --ytmusic-list-item-thumbnail-size: 44px !important;
+    border-radius: 12px !important;
+    margin-bottom: 4px !important;
+    padding: 6px 10px !important;
+    border-bottom: none !important;
+    transition: background 0.2s ease !important;
+}
+
+ytmusic-player-queue-item:hover {
+    background: rgb(255 255 255 / 0.08) !important;
+}
+
+ytmusic-player-queue-item[selected] {
+    background: rgb(255 255 255 / 0.14) !important;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1) !important;
+}
+
+ytmusic-player-queue-item .thumbnail-wrapper,
+ytmusic-player-queue-item yt-img-shadow {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    background: transparent !important;
+}
+
+ytmusic-player-queue-item img {
+    object-fit: cover !important;
+}
+
+ytmusic-player-queue-item .thumbnail-overlay,
+ytmusic-player-queue-item #play-button {
+    border-radius: 8px !important;
+    background: rgb(0 0 0 / 0.45) !important;
+}
+
+/* Better Lyrics */
+#tab-renderer[page-type="MUSIC_PAGE_TYPE_TRACK_LYRICS"] {
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgb(255 255 255 / 0.2) transparent !important;
+}
+
+#blyrics-wrapper,
+.blyrics-container {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
     scroll-behavior: smooth !important;
     padding: 10px !important;
 }
-.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)
-    > div:not(.blyrics--active):not(.blyrics--active ~ div) {
-    opacity: 0.33 !important;
-    filter: blur(2.5px) !important;
-}
-.blyrics-container > div.blyrics--active,
-.blyrics-container > .blyrics--animating {
-    opacity: 1 !important;
-    filter: blur(0) !important;
-}
-.blyrics-container > div.blyrics--active ~ div {
-    opacity: 0.66 !important;
-    filter: blur(0) !important;
-}
-.blyrics-container > div {
+
+.blyrics-container>div {
     transition:
         filter calc(var(--blyrics-duration) / 3) 0.4s,
         opacity calc(var(--blyrics-duration) / 2) 0.166s,
@@ -133,51 +326,269 @@ ytmusic-player-bar {
     padding: 16px 0 !important;
     transform-origin: left center !important;
 }
-.blyrics-container > div:hover {
+
+.blyrics-container:has(.blyrics--active):not(.blyrics-user-scrolling)>div:not(.blyrics--active):not(.blyrics--active ~ div) {
+    opacity: 0.33 !important;
+    filter: blur(2.5px) !important;
+}
+
+.blyrics-container>div.blyrics--active,
+.blyrics-container>.blyrics--animating {
+    opacity: 1 !important;
+    filter: blur(0) !important;
+}
+
+.blyrics-container>div.blyrics--active~div {
+    opacity: 0.66 !important;
+    filter: blur(0) !important;
+}
+
+.blyrics-container>div:hover {
     opacity: 1 !important;
     filter: blur(0) !important;
     transform: scale(1.01) !important;
     transition: all 0.3s ease !important;
 }
-.av.ytmusic-player-page {
-    padding-bottom: 10px;
+
+/* Better Lyrics Dock */
+.blyrics-dock__inner {
+    transform: translateX(calc(var(--dock-tx, 0px) - 16px)) scale(1) !important;
+    border-radius: var(--mp-radius-md) !important;
 }
 
-ytmusic-player-page:not([is-mweb-modernization-enabled]):not([blyrics-video-mode]):not([video-mode]):not([player-fullscreened]) #player.ytmusic-player-page {
-    max-width: 520px !important;
+/* Player Bar (A/B Test Redesign) */
+ytmusic-player-bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
+    height: var(--ytmusic-player-bar-height, 72px) !important;
+    z-index: 100 !important;
 }
-* {
-    scrollbar-width: thin;
-    scrollbar-color: rgb(255 255 255 / 0.2) #fff0;
+
+/* Unwrap structural wrappers so every control becomes a direct flex item */
+.middle-controls.ytmusic-player-bar,
+.middle-controls-buttons.ytmusic-player-bar,
+#left-controls.ytmusic-player-bar,
+#right-controls.ytmusic-player-bar,
+#right-controls .right-controls-buttons {
+    display: contents !important;
 }
-::-webkit-scrollbar {
-    width: 14px !important;
-    height: 14px !important;
+
+/* 1. Left: Thumbnail + Track Title/Artist (truncated cleanly so it never pushes center controls) */
+.thumbnail-image-wrapper.ytmusic-player-bar {
+    order: 1 !important;
+    margin-right: 12px !important;
+    flex-shrink: 0 !important;
 }
-::-webkit-scrollbar-track {
+
+.content-info-wrapper.ytmusic-player-bar {
+    order: 2 !important;
+    flex: 0 1 auto !important;
+    max-width: calc(50vw - 210px) !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}
+
+.content-info-wrapper.ytmusic-player-bar .title,
+.content-info-wrapper.ytmusic-player-bar .byline-wrapper,
+.content-info-wrapper.ytmusic-player-bar .subtitle {
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+}
+
+/* 2. Center: Shuffle, Prev, Play/Pause, Next, Repeat (locked to exact screen center) */
+.left-controls-buttons.ytmusic-player-bar {
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    z-index: 5 !important;
+}
+
+ytmusic-player-bar .shuffle {
+    position: absolute !important;
+    left: calc(50% - 114px) !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    z-index: 5 !important;
+}
+
+ytmusic-player-bar .repeat {
+    position: absolute !important;
+    left: calc(50% + 114px) !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    z-index: 5 !important;
+}
+
+/* 3. Right: Time + Like/Dislike Pill + Volume + Menu */
+.time-info.ytmusic-player-bar {
+    order: 6 !important;
+    margin: 0 14px 0 auto !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+    opacity: 0.75 !important;
+    pointer-events: none !important;
+    flex-shrink: 0 !important;
+}
+
+ytmusic-like-button-renderer.ytmusic-player-bar {
+    order: 7 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 36px !important;
+    background: rgb(255 255 255 / 0.1) !important;
+    border-radius: 999px !important;
+    padding: 0 4px !important;
+    margin: 0 6px 0 0 !important;
+    gap: 2px !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+}
+
+ytmusic-like-button-renderer.ytmusic-player-bar #button-shape-like,
+ytmusic-like-button-renderer.ytmusic-player-bar #button-shape-dislike {
+    margin: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 32px !important;
+    height: 32px !important;
+}
+
+ytmusic-like-button-renderer.ytmusic-player-bar yt-button-shape button {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+ytmusic-player-bar .volume {
+    order: 8 !important;
+    margin: 0 4px !important;
+    flex-shrink: 0 !important;
+}
+
+ytmusic-player-bar .middle-controls-buttons ytmusic-menu-renderer {
+    order: 9 !important;
+    margin: 0 0 0 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
+}
+
+ytmusic-player-bar .toggle-player-page-button {
+    order: 10 !important;
+    margin: 0 0 0 4px !important;
+    flex-shrink: 0 !important;
+}
+
+/* Volume Slider */
+#volume-slider.ytmusic-player-bar {
+    position: absolute !important;
+    right: 92px !important;
+    bottom: 64px !important;
+    width: 110px !important;
+    height: 36px !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+    background: #1c1c20 !important;
+    border: 1px solid rgb(255 255 255 / 0.14) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.45) !important;
+    z-index: 20 !important;
+    pointer-events: auto !important;
+}
+
+#volume-slider.ytmusic-player-bar #sliderContainer {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    pointer-events: auto !important;
+}
+
+/* Player Bar Buttons */
+ytmusic-player-bar [hidden] {
+    display: none !important;
+}
+
+ytmusic-player-bar yt-icon-button:not([hidden]),
+ytmusic-player-bar .middle-controls-buttons yt-button-shape button {
     background: transparent !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    box-sizing: border-box !important;
+    transition: background 0.2s ease, transform 0.15s ease !important;
 }
-::-webkit-scrollbar-thumb {
-    border: 4px solid transparent !important;
-    background-clip: padding-box !important;
-    background-color: rgb(255 255 255 / 0.2) !important;
-    border-radius: 10px !important;
+
+ytmusic-player-bar yt-icon-button:not([hidden])>button#button {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
-::-webkit-scrollbar-thumb:hover {
-    background-color: rgb(255 255 255 / 0.4) !important;
+
+ytmusic-player-bar yt-icon-button:not([hidden]):hover,
+ytmusic-player-bar .middle-controls-buttons yt-button-shape button:hover {
+    background: rgb(255 255 255 / 0.12) !important;
+    transform: scale(1.06) !important;
 }
-* {
-    scrollbar-width: thin !important;
-    scrollbar-color: rgb(255 255 255 / 0.2) transparent !important;
+
+ytmusic-player-bar .volume:not([hidden]),
+ytmusic-player-bar .middle-controls-buttons ytmusic-menu-renderer yt-button-shape button {
+    background: rgb(255 255 255 / 0.1) !important;
 }
-ytmusic-chip-cloud-chip-renderer[chip-style="STYLE_TRANSPARENT"] a.ytmusic-chip-cloud-chip-renderer {
-    background: rgb(255 255 255 / 0.15) !important;
-    border-radius: 5px !important;
-    height: 20px !important;
-    color: #d1d1d1;
-    padding: 5px;
-    margin-right: 10px;
+
+ytmusic-player-bar #play-pause-button {
+    background: rgb(255 255 255 / 0.18) !important;
+    width: 44px !important;
+    height: 44px !important;
 }
-.ytmusic-shelf.style-scope.ytmusic-carousel-shelf-renderer {
-    padding: 10px;
+
+ytmusic-player-bar #play-pause-button yt-icon {
+    width: 24px !important;
+    height: 24px !important;
+}
+
+ytmusic-player-bar #play-pause-button:hover {
+    background: rgb(255 255 255 / 0.28) !important;
+}
+
+/* Progress Bar */
+#progress-bar.ytmusic-player-bar {
+    position: absolute !important;
+    top: 0 !important;
+    transform: translateY(-50%) !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#progress-bar.ytmusic-player-bar #sliderContainer,
+#progress-bar.ytmusic-player-bar #sliderBar {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
 }
