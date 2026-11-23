@@ -7,7 +7,7 @@
   ],
   "minVersion": "2.4.1",
   "hasShaders": true,
-  "version": "1.7.2",
+  "version": "1.8.0",
   "tags": [
     "spicy-lyrics",
     "spotify",
@@ -19,8 +19,8 @@
   ],
   "images": [
     "1.webp",
-    "2.png",
-    "3.png",
-    "4.png"
+    "2.webp",
+    "3.webp",
+    "4.webp"
   ]
 }

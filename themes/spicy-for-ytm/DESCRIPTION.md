@@ -33,12 +33,14 @@ Brings the look of [Spicy Lyrics](https://github.com/Spikerko/spicy-lyrics) (the
 ## Recommended
 
 - **[Better Lyrics Shaders](https://github.com/better-lyrics/shaders).** The included music-reactive shader settings match the Spicy Lyrics 6.5.0 Kawarp background (7 blur passes, subtle beat zoom, 1500ms crossfade), and the theme adds the same dim and saturation filter Spicy uses. Without Shaders, a CSS blurred-cover background is used instead.
-- **SF Pro Display** installed locally, the font Spicy Lyrics uses. It is not bundled because of its license; the theme falls back to Inter.
+- **SF Pro Display / SF Pro Text** installed locally (optional). The theme loads SF Pro web fonts via `fonts.css` and falls back to Inter when offline, so installing them locally avoids CDN fetches.
 
 ## Tuning
 
 Everything adjustable is in the **Tunables** block at the top of the CSS, including:
 
+- glass surface style (`$spicy-glass-style`: `liquid` by default, `frosted`, or `lite` with no backdrop blur);
+- side-panel scroll edge fade (`$spicy-scroll-fade`: `false` by default for smoother Chromium scrolling, or `true`);
 - global lyrics scale (`--spicy-lyrics-scale`) and line spacing (`--spicy-line-gap`);
 - blur per line;
 - line opacities;
