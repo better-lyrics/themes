@@ -1364,15 +1364,15 @@ ytmusic-player-page {
 
 @if $anim-extra {
   /* Smooth Progress Bar */
-  #primaryProgress.tp-yt-paper-progress,
-  #secondaryProgress.tp-yt-paper-progress {
+  #progress-bar:not(:hover):not(:active) #primaryProgress.tp-yt-paper-progress,
+  #progress-bar:not(:hover):not(:active) #secondaryProgress.tp-yt-paper-progress {
     transition: transform 1s linear;
   }
   #progressContainer.tp-yt-paper-progress {
     transition: height 0.2s ease-out;
   }
-  ytmusic-app-layout[is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"] .slider-knob.tp-yt-paper-slider,
-  ytmusic-app-layout:not([is-mweb-modernization-enabled]) .slider-knob.tp-yt-paper-slider:not(.dragging) {
+  ytmusic-app-layout[is-mweb-modernization-enabled][player-ui-state="PLAYER_PAGE_OPEN"] #progress-bar:not(:hover):not(:active) .slider-knob.tp-yt-paper-slider,
+  ytmusic-app-layout:not([is-mweb-modernization-enabled]) #progress-bar:not(:hover):not(:active) .slider-knob.tp-yt-paper-slider:not(.dragging) {
     transition: left 1s linear;
   }
   /* Expanding Description */
